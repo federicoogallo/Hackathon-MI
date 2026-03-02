@@ -139,12 +139,18 @@ def slow_classify(events: list[HackathonEvent], delay: int) -> list[HackathonEve
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
 
+            # Popola date_str dal LLM se l'evento non ne ha già una
+            if result.event_date and result.event_date.lower() not in ("null", "none", ""):
+                if not event.date_str.strip():
+                    event.date_str = result.event_date
+                    logger.info("    📅 Data estratta: %s", result.event_date)
+
             if result.confidence == 0.0 and result.reason == "API error":
                 logger.warning("    ⚠️  API ERROR: '%s'", event.title[:60])
                 batch_has_error = True
             elif result.is_hackathon and result.confidence >= config.LLM_CONFIDENCE_THRESHOLD:
                 confirmed.append(event)
-                logger.info("    ✅ '%s' (conf=%.2f) %s", event.title[:60], result.confidence, result.reason)
+                logger.info("    ✅ '%s' (conf=%.2f, date=%s) %s", event.title[:60], result.confidence, event.date_str or "TBD", result.reason)
             else:
                 logger.info("    ❌ '%s' (conf=%.2f) %s", event.title[:60], result.confidence, result.reason)
 
@@ -241,15 +247,22 @@ def main():
         else:
             logger.info("Nessun hackathon confermato (risultato legittimo)")
 
-    # ── 3. Dedup semantica ──
+    # ── 3. Filtra eventi passati post-LLM (date estratte dal LLM) ──
+    pre_date = len(confirmed)
+    confirmed = [e for e in confirmed if e.is_upcoming()]
+    if pre_date > len(confirmed):
+        logger.info("Post LLM date filter: %d → %d (rimossi %d eventi passati)",
+                    pre_date, len(confirmed), pre_date - len(confirmed))
+
+    # ── 4. Dedup semantica ──
     if len(confirmed) > 1:
-        logger.info("4. Dedup semantica LLM...")
+        logger.info("5. Dedup semantica LLM...")
         time.sleep(args.delay)  # pausa prima della dedup
         confirmed = llm_dedup(confirmed)
         logger.info("Post dedup: %d unici", len(confirmed))
 
-    # ── 4. Salva in events.json ──
-    logger.info("5. Salvataggio...")
+    # ── 5. Salva in events.json ──
+    logger.info("6. Salvataggio...")
     store = EventStore()
 
     for event in confirmed:
@@ -259,8 +272,8 @@ def main():
     store.save_with_timestamp(start.isoformat())
     logger.info("Salvati %d eventi totali in events.json", store.count)
 
-    # ── 5. Genera HTML ──
-    logger.info("6. Genera pagina HTML...")
+    # ── 6. Genera HTML ──
+    logger.info("7. Genera pagina HTML...")
     try:
         generate_html()
         logger.info("HTML generata: docs/index.html")

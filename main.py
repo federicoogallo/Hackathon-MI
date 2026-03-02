@@ -249,6 +249,16 @@ def run_pipeline(dry_run: bool = False) -> None:
             post_llm_count, post_llm_dedup_count,
         )
 
+    # 5c. Filtra eventi passati post-LLM (ora le date sono estratte dal LLM)
+    pre_date_filter2 = len(llm_confirmed)
+    llm_confirmed = [e for e in llm_confirmed if e.is_upcoming()]
+    post_date_filter2 = len(llm_confirmed)
+    if pre_date_filter2 > post_date_filter2:
+        logger.info(
+            "Post LLM date filter: %d → %d (rimossi %d eventi passati grazie a date LLM)",
+            pre_date_filter2, post_date_filter2, pre_date_filter2 - post_date_filter2,
+        )
+
     # 6. Notifica nuovi hackathon
     notified_count = 0
     for event in llm_confirmed:

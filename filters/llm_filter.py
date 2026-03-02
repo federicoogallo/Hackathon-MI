@@ -45,19 +45,26 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
 4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}) o senza data ma con indicazioni di essere nel {current_year} o futuro.
    NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti. Se l'URL/titolo menziona solo anni < {current_year} → false.
 
+ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la data di inizio nel campo "event_date" in formato YYYY-MM-DD.
+- Cerca la data nel titolo, descrizione, URL (es. "10-11 April 2026" → "2026-04-10")
+- Se ci sono più giorni (es. "26-27 febbraio 2026"), usa il PRIMO giorno
+- Se trovi solo mese/anno ma non il giorno, usa il primo del mese (es. "maggio 2026" → "2026-05-01")
+- Se non riesci a determinare la data → event_date: null
+- Per eventi scartati (is_hackathon: false) → event_date: null
+
 ESEMPI:
-1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento"}}
-2. Titolo: "Hackathon LinkedIn post" | URL: linkedin.com/posts/... | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Post social, non pagina evento"}}
-3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico"}}
-4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)"}}
-5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano"}}
-6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro"}}
-7. Titolo: "Página Principal - Meta-Wiki" | URL: meta.wikimedia.org/wiki/Main_Page/pt | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Homepage wiki, non pagina evento"}}
-8. Titolo: "AssoSoftware organizza il primo Hackathon..." | URL: polihub.it/news-it/hackathon-assosoftware | Loc: "" → {{"is_hackathon": false, "confidence": 0.85, "reason": "Articolo/news su hackathon, non pagina evento diretta"}}
+1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento", "event_date": null}}
+2. Titolo: "Hackathon LinkedIn post" | URL: linkedin.com/posts/... | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Post social, non pagina evento", "event_date": null}}
+3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico", "event_date": null}}
+4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)", "event_date": null}}
+5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano", "event_date": null}}
+6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" | Desc: "30 Gennaio - 1 Febbraio 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro", "event_date": "2026-01-30"}}
+7. Titolo: "Página Principal - Meta-Wiki" | URL: meta.wikimedia.org/wiki/Main_Page/pt | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Homepage wiki, non pagina evento", "event_date": null}}
+8. Titolo: "HSIL Hackathon 2026" | Desc: "10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro", "event_date": "2026-04-10"}}
 
 NEL DUBBIO → is_hackathon: false.
 
-Rispondi SOLO con JSON: {{"results": [{{"index": 0, "is_hackathon": bool, "confidence": float, "reason": "stringa breve"}}]}}"""
+Rispondi SOLO con JSON: {{"results": [{{"index": 0, "is_hackathon": bool, "confidence": float, "reason": "stringa breve", "event_date": "YYYY-MM-DD o null"}}]}}"""
 
 
 def _get_system_prompt() -> str:
@@ -75,6 +82,7 @@ class LLMResult:
     is_hackathon: bool
     confidence: float
     reason: str
+    event_date: str = ""  # Data estratta dal LLM in formato YYYY-MM-DD
 
 
 def _build_user_prompt(events: list[HackathonEvent]) -> str:
@@ -155,7 +163,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
         ritorna risultati "passanti" di default (meglio un falso positivo
         che perdere un hackathon vero).
     """
-    default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error") for _ in range(count)]
+    default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error", event_date="") for _ in range(count)]
 
     # Step 1: Pulisci markdown code blocks
     cleaned = content.strip()
@@ -185,6 +193,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     is_hackathon=bool(item.get("is_hackathon", True)),
                     confidence=float(item.get("confidence", 0.5)),
                     reason=str(item.get("reason", "")),
+                    event_date=str(item.get("event_date") or ""),
                 ))
             if len(results) != count:
                 logger.warning(
@@ -192,7 +201,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     len(results), count,
                 )
                 while len(results) < count:
-                    results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from LLM"))
+                    results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from LLM", event_date=""))
             return results[:count]
     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
         pass  # Prova il fallback
@@ -218,10 +227,11 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     is_hackathon=bool(item.get("is_hackathon", True)),
                     confidence=float(item.get("confidence", 0.5)),
                     reason=str(item.get("reason", "")),
+                    event_date=str(item.get("event_date") or ""),
                 ))
             else:
                 # Evento mancante — scarta per sicurezza
-                results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from truncated LLM response"))
+                results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from truncated LLM response", event_date=""))
         return results
 
     # Step 4: Nessun oggetto estratto — usa default
@@ -331,11 +341,20 @@ def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
 
+            # Popola date_str dal LLM se l'evento non ne ha già una
+            if result.event_date and result.event_date.lower() not in ("null", "none", ""):
+                if not event.date_str.strip():
+                    event.date_str = result.event_date
+                    logger.info(
+                        "LLM DATA ESTRATTA: '%s' → %s",
+                        event.title[:50], result.event_date,
+                    )
+
             if result.is_hackathon and result.confidence >= config.LLM_CONFIDENCE_THRESHOLD:
                 confirmed.append(event)
                 logger.info(
-                    "LLM CONFERMATO: '%s' (conf=%.2f, reason=%s)",
-                    event.title, result.confidence, result.reason,
+                    "LLM CONFERMATO: '%s' (conf=%.2f, date=%s, reason=%s)",
+                    event.title, result.confidence, event.date_str or "TBD", result.reason,
                 )
             else:
                 discarded += 1
