@@ -205,6 +205,41 @@ def run_pipeline(dry_run: bool = False) -> None:
         post_llm_count, llm_discarded,
     )
 
+    # ── Protezione anti-sovrascrittura ──
+    # Se c'erano candidati keyword ma l'LLM li ha scartati TUTTI,
+    # potrebbe essere per errori API (non risultati legittimi).
+    # Controlliamo se tutti gli eventi hanno confidence=0.0 (segno di API error).
+    # In quel caso, mantieni lo storico e l'HTML intatti.
+    if post_keyword_count >= 5 and post_llm_count == 0:
+        api_error_count = sum(
+            1 for e in keyword_passed
+            if getattr(e, "confidence", 1.0) == 0.0
+        )
+        if api_error_count == post_keyword_count:
+        logger.warning(
+            "⚠️  LLM ha fallito su tutti i %d candidati (probabili errori API) — "
+            "storico e HTML NON sovrascritti per preservare i dati precedenti.",
+            post_keyword_count,
+        )
+        elapsed = (datetime.now() - start_time).total_seconds()
+        if not dry_run:
+            total_upcoming = sum(
+                1 for ev in store.all_events()
+                if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)
+            )
+            page_url = "https://federicoogallo.github.io/Hackathon-MI/"
+            notify_run_summary(
+                new_events=0,
+                total_upcoming=total_upcoming,
+                elapsed_seconds=elapsed,
+                failed_collectors=[f.split(":")[0] for f in failed_collectors],
+                page_url=page_url,
+            )
+        logger.info("=" * 60)
+        logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
+        logger.info("=" * 60)
+        return
+
     # 5b. Dedup semantica con LLM (rimuove duplicati con titoli/URL diversi)
     llm_confirmed = llm_dedup(llm_confirmed)
     post_llm_dedup_count = len(llm_confirmed)
