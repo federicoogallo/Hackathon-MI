@@ -33,6 +33,8 @@ from collectors.devpost import DevpostCollector
 from collectors.polihub import PoliHubCollector
 from collectors.universities import UniversitiesCollector
 from collectors.reddit import RedditCollector
+from collectors.eventbrite_web import EventbriteWebCollector
+from collectors.taikai import TaikaiCollector
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
@@ -65,6 +67,8 @@ def get_collectors() -> list[BaseCollector]:
         PoliHubCollector(),
         UniversitiesCollector(),
         RedditCollector(),
+        EventbriteWebCollector(),
+        TaikaiCollector(),
     ]
 
 
