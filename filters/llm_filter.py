@@ -27,15 +27,15 @@ DATA ODIERNA: {current_date}
 
 CRITERI (TUTTI e 3 devono essere soddisfatti):
 1. TIPO: L'evento deve essere una competizione/sfida a tempo limitato dove si costruisce/programma qualcosa. Include: hackathon, hack day/week/fest, appathon/codathon/buildathon/makeathon/datathon e simili, code jam, game jam, coding challenge/competition/contest, programming competition/contest, startup weekend, codefest, innovation challenge (con componente di building/coding), CTF (Capture The Flag), open innovation con prototipazione. NON include: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, aperitivi tech, networking puro, pitch competition SENZA coding, bootcamp PURAMENTE formativi (senza gara/premi).
-2. LOCATION: L'evento deve essere fisicamente a Milano/Lombardia OPPURE essere online/remoto (partecipabile da Milano). Se l'evento è esplicitamente in un'altra città italiana (Roma, Torino, Napoli, Bari, Caserta, ecc.) o all'estero e non prevede partecipazione online → is_hackathon: false.
+2. LOCATION: L'evento DEVE svolgersi FISICAMENTE a Milano o nell'area metropolitana milanese/Lombardia. Eventi online, remoti o virtuali → is_hackathon: false. Se l'evento è in un'altra città italiana (Roma, Torino, Napoli, Bari, ecc.) o all'estero → is_hackathon: false.
 3. TEMPO: L'evento DEVE essere futuro o in corso (data >= oggi). Se l'evento è chiaramente nel passato (es. "Hackathon 2024", date già trascorse) → is_hackathon: false. Se la data non è specificata ma non ci sono indicazioni che sia passato → lascia passare. Se un evento è ricorrente (es. "Global Game Jam"), consideralo solo se l'edizione è del {current_year} o futura.
 
 ESEMPI:
 1. "PoliHack 2026 — 24h coding marathon" (Milano) → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon competitivo 24h a Milano, futuro"}}
 2. "AI Coding Challenge Milano 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Competizione coding con tema AI a Milano"}}
-3. "CASSINI Hackathon - Space for Water" (Online) → {{"is_hackathon": true, "confidence": 0.85, "reason": "Hackathon online partecipabile da Milano"}}
+3. "CASSINI Hackathon - Space for Water" (Online, remoto) → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online/remoto, non fisicamente a Milano"}}
 4. "Hackathon Milano 2024 — recap" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento passato (2024)"}}
-5. "Hackathon Taranto 2026" (solo in presenza Taranto) → {{"is_hackathon": false, "confidence": 0.85, "reason": "Hackathon fisico non a Milano"}}
+5. "Hackathon Taranto 2026" (solo in presenza Taranto) → {{"is_hackathon": false, "confidence": 0.90, "reason": "Hackathon fisico non a Milano"}}
 6. "Corso full-stack bootcamp Milano" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Bootcamp formativo, non gara"}}
 7. "HackerX Milan — Job Fair 2026" → {{"is_hackathon": false, "confidence": 0.88, "reason": "Evento recruiting, non competizione"}}
 
