@@ -1,29 +1,34 @@
 # 🏆 Hackathon Milano Monitor
 
-Aggregatore automatico di eventi hackathon a Milano da 8+ fonti eterogenee.  
-Filtra con LLM (Groq · Llama 3.3 70B, gratuito), notifica via Telegram Bot, avviabile in locale o su GitHub Actions.
+**Sito pubblico → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
+
+Aggregatore automatico di eventi hackathon a Milano da 10+ fonti eterogenee.  
+Filtra con LLM (Groq · Llama 3.3 70B, gratuito), notifica via Telegram Bot, genera una pagina web statica su GitHub Pages. Avviabile in locale o su GitHub Actions.
 
 ---
 
 ## Architettura
 
 ```
-Collectors (8 fonti in parallelo)
+Collectors (10 fonti in parallelo)
         │
         ▼
   Deduplicazione (SHA256 URL + fuzzy titolo SequenceMatcher > 0.85)
         │
         ▼
-  Pre-filtro Keyword (regex word-boundary: scarta "growth hacking", "biohacking"…)
+  Pre-filtro Keyword (62 pattern regex word-boundary: scarta "growth hacking", "biohacking"…)
         │
         ▼
   Filtro LLM (Groq · Llama 3.3 70B, batch da 20, few-shot, threshold 0.7)
-        │
+        │  Solo eventi FISICAMENTE a Milano — online/remoti → scartati
         ▼
   Notifica Telegram (nuovo hackathon + report giornaliero)
         │
         ▼
   Salvataggio storico (data/events.json)
+        │
+        ▼
+  Generazione pagina HTML (docs/index.html → GitHub Pages)
 ```
 
 ### Collector registrati
@@ -31,13 +36,15 @@ Collectors (8 fonti in parallelo)
 | # | Fonte | Metodo | Note |
 |---|-------|--------|------|
 | 1 | **Eventbrite** | REST API | Richiede `EVENTBRITE_API_KEY` |
-| 2 | **Google CSE** | Custom Search API | Meta-aggregatore: copre LinkedIn, Meetup, Twitter indirettamente. Richiede `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
-| 3 | **InnovUp** | HTML scraping | innovup.net/eventi |
-| 4 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
-| 5 | **Devpost** | HTML scraping | Bassa copertura per Milano |
-| 6 | **PoliHub** | HTML scraping | Bloccato da WAF (coperto indirettamente da Google CSE) |
-| 7 | **Università** | HTML scraping | PoliMi, Bocconi, Bicocca (parser indipendenti) |
-| 8 | **Reddit** | PRAW (API ufficiale) | r/ItalyInformatica + r/italy. Richiede `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback senza API key — funziona in CI |
+| 3 | **Google CSE** | Custom Search API | Meta-aggregatore: copre LinkedIn, Meetup, Twitter indirettamente. Richiede `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
+| 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
+| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
+| 6 | **Devpost** | HTML scraping | Bassa copertura per Milano |
+| 7 | **PoliHub** | HTML scraping | Bloccato da WAF (coperto indirettamente da Google CSE) |
+| 8 | **Università** | HTML scraping | PoliMi, Bocconi, Bicocca (parser indipendenti) |
+| 9 | **Reddit** | PRAW (API ufficiale) | r/ItalyInformatica + r/italy. Richiede `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 10 | **Taikai** | HTML scraping | taikai.network — hackathon tech internazionali |
 
 ---
 
@@ -46,8 +53,8 @@ Collectors (8 fonti in parallelo)
 ### 1. Clona e crea il virtual environment
 
 ```bash
-git clone <repo-url>
-cd hackathon-monitor
+git clone https://github.com/federicoogallo/Hackathon-MI.git
+cd Hackathon-MI
 
 python3 -m venv .venv
 source .venv/bin/activate
@@ -99,12 +106,20 @@ python -m pytest tests/ -v
 
 Vai su **Settings → Secrets and variables → Actions → New repository secret** e aggiungi tutte le chiavi dal `.env`.
 
-### 3. Abilita il workflow
+### 3. Abilita GitHub Pages
+
+Vai su **Settings → Pages** e imposta:
+- **Source**: `Deploy from a branch`
+- **Branch**: `main` · **Folder**: `/docs`
+
+Il sito sarà disponibile su `https://<username>.github.io/<repo>/`.
+
+### 4. Abilita il workflow
 
 Il workflow si trova in `.github/workflows/check_hackathons.yml`:
-- **Cron**: ogni giorno alle 9:00 CET (`0 8 * * *` UTC)
+- **Cron**: ogni giorno alle 12:00 CET (`0 11 * * *` UTC)
 - **Manuale**: dal tab "Actions" → "Run workflow"
-- Auto-commit di `data/events.json` con tutto lo storico
+- Auto-commit di `data/events.json` + `docs/index.html` ad ogni run
 
 ---
 
@@ -188,13 +203,15 @@ hackathon-monitor/
 ├── .gitignore
 ├── collectors/
 │   ├── eventbrite.py
+│   ├── eventbrite_web.py    # Scraping HTML (no API key, CI-affidabile)
 │   ├── google_cse.py
 │   ├── innovup.py
 │   ├── luma.py
 │   ├── devpost.py
 │   ├── polihub.py
 │   ├── universities.py
-│   └── reddit.py
+│   ├── reddit.py
+│   └── taikai.py
 ├── filters/
 │   ├── keyword_filter.py    # Pre-filtro regex
 │   └── llm_filter.py        # Groq · Llama 3.3 70B classifier
@@ -203,9 +220,12 @@ hackathon-monitor/
 ├── storage/
 │   └── json_store.py        # Persistenza + dedup 2 livelli
 ├── utils/
-│   └── http.py              # HTTP client con retry/backoff
+│   ├── http.py              # HTTP client con retry/backoff
+│   └── html_export.py       # Generatore pagina GitHub Pages
 ├── data/
 │   └── events.json          # Storico eventi (auto-generato)
+├── docs/
+│   └── index.html           # Pagina pubblica GitHub Pages (auto-generata)
 ├── tests/
 │   ├── test_models.py
 │   ├── test_storage.py
