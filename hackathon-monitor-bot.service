@@ -1,0 +1,14 @@
+[Unit]
+Description=Hackathon Monitor Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/Users/federico/Desktop/prova/hackathon-monitor
+ExecStart=/Users/federico/Desktop/prova/.venv/bin/python /Users/federico/Desktop/prova/hackathon-monitor/bot.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,28 @@
+# Secrets — MAI pubblicare
+.env
+
+# Dati runtime (generati localmente, non necessari in repo)
+# NOTA: data/events.json è tracciato intenzionalmente per
+# permettere al workflow GitHub Actions di persistere lo storico.
+data/last_report.json
+data/.bot.lock
+data/.history_cleared
+data/pending_notifications.json
+
+# Log
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
