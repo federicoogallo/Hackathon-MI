@@ -2,9 +2,10 @@ name: Check Hackathons Milano
 
 on:
   schedule:
-    # Ogni giorno alle 8:00 UTC (9:00 CET / 10:00 CEST)
-    - cron: '0 8 * * *'
-  workflow_dispatch: {} # Lancio manuale da tab Actions
+    # 11:00 UTC = 12:00 CET (inverno) / 13:00 CEST (estate)
+    # GitHub Actions non gestisce il DST — offset di 1h in estate
+    - cron: '0 11 * * *'
+  workflow_dispatch: # Lancio manuale dalla tab Actions → "Run workflow"
 
 permissions:
   contents: write  # Necessario per auto-commit
