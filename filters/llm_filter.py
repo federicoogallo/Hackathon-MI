@@ -31,14 +31,16 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
 
 1. TIPO — L'evento deve essere una COMPETIZIONE/SFIDA A TEMPO LIMITATO dove si COSTRUISCE/PROGRAMMA qualcosa.
    SÌ: hackathon, code jam, game jam, coding challenge/contest, startup weekend, makeathon, datathon, CTF, innovation challenge CON building.
-   NO: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, networking, pitch senza coding, bootcamp formativi, articoli/blog/notizie, pagine di listing/ricerca, profili utente.
+   NO: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, networking, pitch senza coding, bootcamp formativi, pagine di listing/ricerca, profili utente.
 
-2. PAGINA EVENTO — L'URL DEVE essere una PAGINA EVENTO SPECIFICA (es. lu.ma/xxx, eventbrite.it/e/xxx, devpost.com/hackathons/xxx).
-   NO: post LinkedIn/Facebook/Instagram/Twitter, articoli di blog, pagine di ricerca/listing (eventbrite.it/d/...), pagine di profilo, pagine di notizie generiche, homepage di organizzazioni.
+2. CONTENUTO EVENTO — Il testo (titolo + descrizione) DEVE descrivere un EVENTO SPECIFICO con informazioni concrete (nome dell'hackathon, data, luogo, organizzatore).
+   SÌ: pagine evento (lu.ma, eventbrite, devpost), siti ufficiali, ma ANCHE post social (LinkedIn, Facebook) che ANNUNCIANO un hackathon specifico con dettagli concreti.
+   NO: pagine di ricerca/listing (eventbrite.it/d/...), homepage di organizzazioni, pagine di profilo, articoli generici senza riferimento a un evento specifico.
+   NOTA: Un post LinkedIn/Facebook che annuncia un hackathon reale con data e luogo è VALIDO — conta il CONTENUTO, non il tipo di URL.
 
 3. LOCATION — L'evento DEVE svolgersi FISICAMENTE a Milano o area metropolitana milanese.
    NO: eventi online/remoti/virtuali, eventi in altre città (Roma, Torino, Napoli...) o all'estero.
-   ATTENZIONE: La location DEVE contenere esplicitamente "Milano", "Milan", "Politecnico", "Bocconi", "Bicocca" o un indirizzo/luogo noto milanese.
+   ATTENZIONE: La location DEVE contenere esplicitamente "Milano", "Milan", "Politecnico", "Bocconi", "Bicocca", "MIND" o un indirizzo/luogo noto milanese.
    Se la location è vuota/non specificata e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
    Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel testo.
 
@@ -54,12 +56,12 @@ ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la dat
 
 ESEMPI:
 1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento", "event_date": null}}
-2. Titolo: "Hackathon LinkedIn post" | URL: linkedin.com/posts/... | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Post social, non pagina evento", "event_date": null}}
+2. Titolo: "HSIL Hackathon 2026" | URL: linkedin.com/posts/... | Desc: "Global Hackathon on AI in Medicine, 10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Post LinkedIn annuncia hackathon reale a Milano con data", "event_date": "2026-04-10"}}
 3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico", "event_date": null}}
 4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)", "event_date": null}}
 5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano", "event_date": null}}
 6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" | Desc: "30 Gennaio - 1 Febbraio 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro", "event_date": "2026-01-30"}}
-7. Titolo: "Página Principal - Meta-Wiki" | URL: meta.wikimedia.org/wiki/Main_Page/pt | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Homepage wiki, non pagina evento", "event_date": null}}
+7. Titolo: "Excited about my hackathon win!" | URL: linkedin.com/posts/... | Desc: "Great experience last weekend" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Racconto personale, non annuncio evento futuro", "event_date": null}}
 8. Titolo: "HSIL Hackathon 2026" | Desc: "10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro", "event_date": "2026-04-10"}}
 
 NEL DUBBIO → is_hackathon: false.

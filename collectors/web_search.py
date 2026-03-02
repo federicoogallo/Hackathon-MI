@@ -39,11 +39,10 @@ SEARCH_QUERIES = [
     "site:fondazionetriulza.org hackathon",
 ]
 
-# URL che NON sono pagine evento (listing, profili, post social, ...)
+# URL che NON sono pagine evento (listing, profili, wiki, ...)
+# NOTA: NON blocchiamo post social (LinkedIn, Facebook) — possono contenere
+# annunci di hackathon reali. Lasciamo che il LLM valuti il contenuto.
 _NOISE_URL_PATTERNS = [
-    re.compile(r"linkedin\.com/posts/", re.I),
-    re.compile(r"linkedin\.com/pulse/", re.I),
-    re.compile(r"facebook\.com/(photos|posts|watch|reel|story)", re.I),
     re.compile(r"wiki.*/Main_Page", re.I),
     re.compile(r"wiki.*/Pagina_principale", re.I),
     re.compile(r"wikipedia\.org/wiki/", re.I),
@@ -52,19 +51,12 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"wiki\.wikimedia\.it/wiki/(Diario|Wikimedia_news)", re.I),
     re.compile(r"planet\.wikimedia\.org", re.I),
     re.compile(r"businesspeople\.it/", re.I),
-    re.compile(r"instagram\.com/p/", re.I),
-    re.compile(r"twitter\.com/.+/status/", re.I),
-    re.compile(r"x\.com/.+/status/", re.I),
     re.compile(r"/users?/[^/]+/?$", re.I),             # profile pages
     re.compile(r"eventbrite\.[a-z]+/d/", re.I),          # listing/search pages
     re.compile(r"allevents\.in/", re.I),                  # aggregatore rumoroso
     re.compile(r"stayhappening\.com/", re.I),             # aggregatore rumoroso
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
     re.compile(r"youtube\.com/watch", re.I),
-    re.compile(r"codemotion\.com/magazine", re.I),         # articoli, non eventi
-    re.compile(r"ninjamarketing\.it/", re.I),             # articoli di blog
-    re.compile(r"uomoemanager\.it/", re.I),               # articoli di blog
-    re.compile(r"/news/", re.I),                          # pagine news/articoli generiche
 ]
 
 

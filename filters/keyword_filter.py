@@ -26,12 +26,6 @@ _year_pattern = re.compile(r'\b(20[0-9]{2})\b')
 
 # URL che sicuramente NON sono pagine evento
 _JUNK_URL_PATTERNS = [
-    # Social media
-    re.compile(r"linkedin\.com/(posts|pulse)/", re.I),
-    re.compile(r"facebook\.com/(photos|posts|watch|reel|story)", re.I),
-    re.compile(r"instagram\.com/p/", re.I),
-    re.compile(r"(twitter|x)\.com/.+/status/", re.I),
-    re.compile(r"youtube\.com/watch", re.I),
     # Profili utente (Devpost, GitHub, ecc.)
     re.compile(r"devpost\.com/[A-Za-z0-9_-]+(/[a-z]+)?/?$", re.I),  # profili e sotto-pagine
     re.compile(r"/users?/[^/]+/?$", re.I),
@@ -67,31 +61,13 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"wiki\.wikimedia\.it/wiki/(Diario|Wikimedia_news)", re.I),
     re.compile(r"planet\.wikimedia\.org", re.I),
     re.compile(r"foss\.events/", re.I),
-    # News / blog / articoli (non pagina evento)
-    re.compile(r"/news[_-]?(it|en|es)?/", re.I),
-    re.compile(r"/blog/", re.I),
-    re.compile(r"/magazine/", re.I),
-    re.compile(r"/articoli?/", re.I),
-    re.compile(r"businesspeople\.it/", re.I),
-    re.compile(r"startupbusiness\.it/", re.I),
-    re.compile(r"wired\.it/", re.I),
-    re.compile(r"ilsole24ore\.com/", re.I),
-    re.compile(r"corriere\.it/", re.I),
-    re.compile(r"repubblica\.it/", re.I),
-    re.compile(r"atmosferamag\.it/", re.I),
-    re.compile(r"cagliaripost\.com/", re.I),
-    re.compile(r"gioconews\.it/", re.I),
-    re.compile(r"gamespress\.com/", re.I),
-    re.compile(r"meridiananotizie\.it/", re.I),
-    re.compile(r"analyticsinsight\.net/", re.I),
+    # NON blocchiamo news/blog/articoli — possono contenere annunci di
+    # hackathon reali (es. polihub.it/news-it/). Il LLM valuta il contenuto.
     # Forum / community / Q&A
     re.compile(r"forum\.freecodecamp\.org/", re.I),
     re.compile(r"meetup\.com/[^/]+/?$", re.I),            # meetup group pages (non eventi)
     # Documenti
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)(\?|$)", re.I),
-    re.compile(r"codemotion\.com/magazine", re.I),
-    re.compile(r"ninjamarketing\.it/", re.I),
-    re.compile(r"uomoemanager\.it/", re.I),
     # Siti generici non-evento
     re.compile(r"welcometothejungle\.com/", re.I),
     re.compile(r"makerbot\.com/", re.I),
