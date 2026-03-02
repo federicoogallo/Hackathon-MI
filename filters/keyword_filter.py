@@ -26,32 +26,49 @@ _year_pattern = re.compile(r'\b(20[0-9]{2})\b')
 
 # URL che sicuramente NON sono pagine evento
 _JUNK_URL_PATTERNS = [
-    re.compile(r"linkedin\.com/posts/", re.I),
-    re.compile(r"linkedin\.com/pulse/", re.I),
+    # Social media
+    re.compile(r"linkedin\.com/(posts|pulse)/", re.I),
     re.compile(r"facebook\.com/(photos|posts|watch|reel|story)", re.I),
     re.compile(r"instagram\.com/p/", re.I),
-    re.compile(r"twitter\.com/.+/status/", re.I),
-    re.compile(r"x\.com/.+/status/", re.I),
-    re.compile(r"/users?/[^/]+/?$", re.I),              # profile pages
-    re.compile(r"eventbrite\.[a-z]+/d/", re.I),           # listing/search
+    re.compile(r"(twitter|x)\.com/.+/status/", re.I),
+    re.compile(r"youtube\.com/watch", re.I),
+    # Profili utente (Devpost, GitHub, ecc.)
+    re.compile(r"devpost\.com/[A-Za-z0-9_-]+(/[a-z]+)?/?$", re.I),  # profili e sotto-pagine
+    re.compile(r"/users?/[^/]+/?$", re.I),
+    # Pagine di listing/ricerca/directory (non evento singolo)
+    re.compile(r"eventbrite\.[a-z]+/d/", re.I),
+    re.compile(r"eventbrite\.[a-z]+/b/", re.I),          # browse categories
+    re.compile(r"eventbrite\.[a-z]+/organizer/", re.I),   # organizer pages
+    re.compile(r"allhackathons\.com/", re.I),
+    re.compile(r"hackathon\.com/city/", re.I),            # listing per città
     re.compile(r"allevents\.in/", re.I),
     re.compile(r"stayhappening\.com/", re.I),
-    re.compile(r"youtube\.com/watch", re.I),
-    re.compile(r"\.(pdf|doc|docx|ppt|pptx)(\?|$)", re.I),
-    re.compile(r"codemotion\.com/magazine", re.I),
-    re.compile(r"ninjamarketing\.it/", re.I),
-    re.compile(r"uomoemanager\.it/", re.I),
-    # Wiki homepages / main pages
+    re.compile(r"itch\.io/jams", re.I),                   # listing game jams
+    re.compile(r"ctftime\.org/?$", re.I),                 # homepage CTF
+    re.compile(r"hackthedate\.com/?$", re.I),             # homepage calendar
+    # Pagine tag/categoria/archivio (non evento singolo)
+    re.compile(r"/tag/[^/]+", re.I),                      # qualsiasi /tag/xxx
+    re.compile(r"/event-category/", re.I),                # categorie eventi
+    re.compile(r"/category/", re.I),                      # categorie generiche
+    # Homepage organizzazioni (non evento singolo)
+    re.compile(r"fondazionetriulza\.org/?$", re.I),
+    re.compile(r"techstars\.com/communities/", re.I),
+    re.compile(r"fi\.co/insight/", re.I),
+    re.compile(r"smau\.it/.*/Events$", re.I),
+    re.compile(r"iniziativa\.cc/", re.I),
+    re.compile(r"cyberchallenge\.it/(en/)?(students|workshop)", re.I),
+    # Wiki
     re.compile(r"wiki.*/Main_Page", re.I),
     re.compile(r"wiki.*/Pagina_principale", re.I),
     re.compile(r"wikipedia\.org/wiki/", re.I),
-    # Wiki subpages (traduzioni, partecipanti, diari, newsletter)
+    re.compile(r"mediawiki\.org/wiki/", re.I),
     re.compile(r"/wiki/.+/(zh|nl|es|fr|de|ja|ko|pt|ru|ar|hi|he|pl|sv|da|ca|fi|no|cs|sk|hu|ro|tr|uk|vi|id|th|bn|ms)$", re.I),
     re.compile(r"/wiki/.+/Participants", re.I),
     re.compile(r"wiki\.wikimedia\.it/wiki/(Diario|Wikimedia_news)", re.I),
     re.compile(r"planet\.wikimedia\.org", re.I),
-    # News articles / blog (non pagine evento)
-    re.compile(r"/news[_-]?it/", re.I),
+    re.compile(r"foss\.events/", re.I),
+    # News / blog / articoli (non pagina evento)
+    re.compile(r"/news[_-]?(it|en|es)?/", re.I),
     re.compile(r"/blog/", re.I),
     re.compile(r"/magazine/", re.I),
     re.compile(r"/articoli?/", re.I),
@@ -61,6 +78,34 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"ilsole24ore\.com/", re.I),
     re.compile(r"corriere\.it/", re.I),
     re.compile(r"repubblica\.it/", re.I),
+    re.compile(r"atmosferamag\.it/", re.I),
+    re.compile(r"cagliaripost\.com/", re.I),
+    re.compile(r"gioconews\.it/", re.I),
+    re.compile(r"gamespress\.com/", re.I),
+    re.compile(r"meridiananotizie\.it/", re.I),
+    re.compile(r"analyticsinsight\.net/", re.I),
+    # Forum / community / Q&A
+    re.compile(r"forum\.freecodecamp\.org/", re.I),
+    re.compile(r"meetup\.com/[^/]+/?$", re.I),            # meetup group pages (non eventi)
+    # Documenti
+    re.compile(r"\.(pdf|doc|docx|ppt|pptx)(\?|$)", re.I),
+    re.compile(r"codemotion\.com/magazine", re.I),
+    re.compile(r"ninjamarketing\.it/", re.I),
+    re.compile(r"uomoemanager\.it/", re.I),
+    # Siti generici non-evento
+    re.compile(r"welcometothejungle\.com/", re.I),
+    re.compile(r"makerbot\.com/", re.I),
+    re.compile(r"citadel\.com/careers/", re.I),
+    re.compile(r"yourinspirationweb\.com/", re.I),
+    re.compile(r"daryo\.uz/", re.I),
+    re.compile(r"gazeta\.uz/", re.I),
+    re.compile(r"centralasian\.uz/", re.I),
+    # Homepage/listing siti globali
+    re.compile(r"globalgamejam\.org/?$", re.I),
+    re.compile(r"globalgamejam\.org/jam-sites/\d{4}/?$", re.I),  # listing sedi (non sede singola)
+    re.compile(r"globalgamejam\.it/?$", re.I),                     # homepage IGDA Italy
+    re.compile(r"meetup\.com/topics/", re.I),                      # topic listing
+    re.compile(r"pretix\.eu/", re.I),                              # ticketing (non pagina evento)
 ]
 
 

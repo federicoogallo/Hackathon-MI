@@ -321,9 +321,9 @@ def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]
     for i in range(0, len(events), config.LLM_BATCH_SIZE):
         batch = events[i : i + config.LLM_BATCH_SIZE]
 
-        # Pausa tra batch per rispettare rate limit (15 RPM free)
+        # Pausa tra batch per rispettare rate limit (30 RPM free)
         if i > 0:
-            time.sleep(5)
+            time.sleep(8)
 
         results = classify_batch(batch)
 

@@ -134,10 +134,10 @@ HTTP_USER_AGENT = (
 # Groq free tier: 14.400 RPD, 30 RPM (vs Gemini 20 RPD)
 LLM_MODEL = "llama-3.3-70b-versatile"
 LLM_CONFIDENCE_THRESHOLD = 0.7
-LLM_BATCH_SIZE = 20  # eventi per singola chiamata API
+LLM_BATCH_SIZE = 5  # eventi per singola chiamata API (ridotto per rate-limit)
 LLM_MAX_DESCRIPTION_LENGTH = 500  # troncamento descrizione
-LLM_RETRY_MAX = 3
-LLM_RETRY_DELAY = 5  # secondi base per exponential backoff (Groq è veloce)
+LLM_RETRY_MAX = 2
+LLM_RETRY_DELAY = 10  # secondi base per exponential backoff
 
 # ─── Dedup ──────────────────────────────────────────────────────────────────
 FUZZY_DEDUP_THRESHOLD = 0.75  # SequenceMatcher ratio minimo per match
