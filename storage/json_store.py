@@ -65,6 +65,10 @@ class EventStore:
     def count(self) -> int:
         return len(self._events)
 
+    def all_events(self) -> list[dict]:
+        """Ritorna tutti gli eventi come lista di dict."""
+        return list(self._events.values())
+
     def has_event(self, event_id: str) -> bool:
         """Livello 1: check esatto per ID (hash URL)."""
         return event_id in self._events

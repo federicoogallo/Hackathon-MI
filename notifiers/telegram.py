@@ -1,10 +1,11 @@
 """
 Notifiche Telegram via Bot API.
 
-Tre tipi di messaggio:
+Tipi di messaggio:
 1. Notifica nuovo hackathon (per ogni evento nuovo)
-2. Report giornaliero (riepilogo di fine run)
-3. Alert errore (se un collector crasha)
+2. Summary di fine run (sempre inviato, anche se 0 nuovi eventi)
+3. Report giornaliero dettagliato
+4. Alert errore (se un collector crasha)
 """
 
 import logging
@@ -133,6 +134,41 @@ def notify_daily_report(report: RunReport) -> bool:
         f"🆕 Nuovi notificati: <b>{report.new_events}</b>",
         f"📚 Storico: <b>{report.total_stored}</b> eventi",
     ]
+    return _send_message("\n".join(lines))
+
+
+def notify_run_summary(
+    new_events: int,
+    total_upcoming: int,
+    elapsed_seconds: float,
+    failed_collectors: list[str],
+    page_url: str = "",
+) -> bool:
+    """Invia sempre un summary a fine run — anche quando non ci sono nuovi eventi.
+
+    Permette di verificare che il bot sia vivo e la pipeline abbia girato.
+    """
+    if new_events > 0:
+        header = f"🆕 <b>+{new_events} nuovo{'i' if new_events > 1 else ''} hackathon</b>"
+    else:
+        header = "🔍 <b>Scansione completata</b>\n<i>Nessun nuovo hackathon trovato oggi.</i>"
+
+    lines = [header, ""]
+
+    if total_upcoming > 0:
+        label = f"hackathon {'attivi' if total_upcoming > 1 else 'attivo'}"
+        lines.append(f"📅 In archivio: <b>{total_upcoming}</b> {label} (futuri)")
+    else:
+        lines.append("📅 Nessun hackathon futuro confermato in archivio.")
+
+    if failed_collectors:
+        lines.append(f"⚠️ Collector falliti: {_escape_html(', '.join(failed_collectors))}")
+
+    lines.append(f"\n<i>⏱ Completata in {elapsed_seconds:.0f}s</i>")
+
+    if page_url:
+        lines.append(f"\n🌐 <a href=\"{page_url}\">Vedi tutti gli hackathon</a>")
+
     return _send_message("\n".join(lines))
 
 

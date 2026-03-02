@@ -38,7 +38,9 @@ from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
 from notifiers.telegram import (
     notify_new_hackathon,
+    notify_run_summary,
 )
+from utils.html_export import generate_html
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -114,6 +116,20 @@ def _safe_collect(
         return events, None
     except Exception as e:
         return [], str(e)
+
+
+def _event_is_upcoming_dict(e: dict) -> bool:
+    """Verifica se un evento (dict) è futuro o senza data."""
+    try:
+        ev = HackathonEvent(
+            title=e.get("title", ""),
+            url=e.get("url", ""),
+            source=e.get("source", ""),
+            date_str=e.get("date_str", ""),
+        )
+        return ev.is_upcoming()
+    except Exception:
+        return True
 
 
 def deduplicate_against_store(
@@ -238,8 +254,32 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 8. Salva storico
     store.save_with_timestamp(start_time.isoformat())
 
-    # Riepilogo finale
+    # 9. Genera pagina HTML statica (docs/index.html → GitHub Pages)
+    try:
+        generate_html()
+        logger.info("HTML page generata: docs/index.html")
+    except Exception as e:
+        logger.warning("Impossibile generare HTML page: %s", e)
+
+    # 10. Conta hackathon futuri confermati nello storico (per summary)
+    total_upcoming = sum(
+        1 for ev in store.all_events()
+        if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)
+    )
+
+    # 11. Invia sempre il summary Telegram (anche se 0 nuovi eventi)
     elapsed = (datetime.now() - start_time).total_seconds()
+    if not dry_run:
+        page_url = "https://federicoogallo.github.io/Hackathon-MI/"
+        notify_run_summary(
+            new_events=notified_count,
+            total_upcoming=total_upcoming,
+            elapsed_seconds=elapsed,
+            failed_collectors=[f.split(":")[0] for f in failed_collectors],
+            page_url=page_url,
+        )
+
+    # Riepilogo finale nei log
     logger.info("=" * 60)
     logger.info("Run completata in %.1f secondi", elapsed)
     logger.info(
@@ -247,6 +287,7 @@ def run_pipeline(dry_run: bool = False) -> None:
         raw_count, post_dedup_count, post_keyword_count, post_llm_count,
     )
     logger.info("Nuovi hackathon notificati: %d", notified_count)
+    logger.info("Hackathon futuri in storico: %d", total_upcoming)
     logger.info("Storico totale: %d eventi", store.count)
     logger.info("=" * 60)
 
