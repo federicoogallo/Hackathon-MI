@@ -21,25 +21,23 @@ from models import HackathonEvent
 logger = logging.getLogger(__name__)
 
 
-_SYSTEM_PROMPT_TEMPLATE = """Sei un classificatore di eventi. Dati il titolo e la descrizione di un evento, determina se è un HACKATHON FUTURO che si svolge a MILANO (o nelle immediate vicinanze, Lombardia).
+_SYSTEM_PROMPT_TEMPLATE = """Sei un classificatore di eventi. Dati il titolo e la descrizione di un evento, determina se è un HACKATHON (o evento assimilabile) FUTURO accessibile da MILANO.
 
 DATA ODIERNA: {current_date}
 
 CRITERI (TUTTI e 3 devono essere soddisfatti):
-1. TIPO: Un hackathon è una competizione di coding/building a tempo limitato (tipicamente 24-72h) dove team di sviluppatori creano progetti software/hardware. Include anche: appathon, codathon, buildathon, makeathon, ideathon, datathon, code jam, game jam, coding challenge/competition, startup weekend, codefest.
-2. LOCATION: L'evento DEVE svolgersi a Milano, area metropolitana milanese o essere un evento online aperto a partecipanti da Milano. Se la location non è Milano (es. Roma, Torino, Caserta, Bari, estero) → is_hackathon: false.
-3. TEMPO: L'evento DEVE essere futuro o in corso (data >= oggi). Se l'evento è chiaramente nel passato (es. "Hackathon 2024", "edizione 2023", date già trascorse) → is_hackathon: false. Se la data non è specificata ma non ci sono indicazioni che sia passato → lascia passare. Se un evento è ricorrente (es. "Global Game Jam"), consideralo solo se l'edizione è del {current_year} o futura.
-
-NON sono hackathon: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, aperitivi tech, networking event, pitch competition (senza coding), bootcamp formativi.
-NON sono a Milano: eventi a Torino, Roma, Caserta, Bari, Napoli, estero, o con location non specificata.
-NON sono futuri: eventi con anno < {current_year}, date passate, edizioni concluse, articoli/resoconti su eventi passati.
+1. TIPO: L'evento deve essere una competizione/sfida a tempo limitato dove si costruisce/programma qualcosa. Include: hackathon, hack day/week/fest, appathon/codathon/buildathon/makeathon/datathon e simili, code jam, game jam, coding challenge/competition/contest, programming competition/contest, startup weekend, codefest, innovation challenge (con componente di building/coding), CTF (Capture The Flag), open innovation con prototipazione. NON include: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, aperitivi tech, networking puro, pitch competition SENZA coding, bootcamp PURAMENTE formativi (senza gara/premi).
+2. LOCATION: L'evento deve essere fisicamente a Milano/Lombardia OPPURE essere online/remoto (partecipabile da Milano). Se l'evento è esplicitamente in un'altra città italiana (Roma, Torino, Napoli, Bari, Caserta, ecc.) o all'estero e non prevede partecipazione online → is_hackathon: false.
+3. TEMPO: L'evento DEVE essere futuro o in corso (data >= oggi). Se l'evento è chiaramente nel passato (es. "Hackathon 2024", date già trascorse) → is_hackathon: false. Se la data non è specificata ma non ci sono indicazioni che sia passato → lascia passare. Se un evento è ricorrente (es. "Global Game Jam"), consideralo solo se l'edizione è del {current_year} o futura.
 
 ESEMPI:
 1. "PoliHack 2026 — 24h coding marathon" (Milano) → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon competitivo 24h a Milano, futuro"}}
-2. "Hackathon Milano 2024 — recap" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento passato (2024)"}}
-3. "Community Hackathon Milano 2023" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento passato (2023)"}}
-4. "Hackathon Taranto 2026" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Hackathon ma NON a Milano"}}
-5. "Global Game Jam 2025 — SAE Milano" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Edizione 2025 ormai passata"}}
+2. "AI Coding Challenge Milano 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Competizione coding con tema AI a Milano"}}
+3. "CASSINI Hackathon - Space for Water" (Online) → {{"is_hackathon": true, "confidence": 0.85, "reason": "Hackathon online partecipabile da Milano"}}
+4. "Hackathon Milano 2024 — recap" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento passato (2024)"}}
+5. "Hackathon Taranto 2026" (solo in presenza Taranto) → {{"is_hackathon": false, "confidence": 0.85, "reason": "Hackathon fisico non a Milano"}}
+6. "Corso full-stack bootcamp Milano" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Bootcamp formativo, non gara"}}
+7. "HackerX Milan — Job Fair 2026" → {{"is_hackathon": false, "confidence": 0.88, "reason": "Evento recruiting, non competizione"}}
 
 Rispondi SOLO con un oggetto JSON con chiave "results" contenente un array. Per ogni evento nell'input, restituisci un oggetto con:
 - "index": indice dell'evento (partendo da 0)

@@ -39,40 +39,75 @@ SEARCH_RADIUS_KM = 30
 # ─── Keyword per i filtri ──────────────────────────────────────────────────
 # Regex word-boundary (\b) per evitare falsi positivi (es. "jam" → "Jazz Jam")
 POSITIVE_KEYWORDS = [
-    # ── Core ──
+    # ── Core hackathon ──
     r"\bhackathon\b",
-    r"\bhacka\w*\b",            # hacka-thon, hacka-ton varianti
+    r"\bhacka\w*\b",                    # hacka-thon, hacka-ton varianti
     r"\bhack\s*day\b",
     r"\bhack\s*fest\b",
     r"\bhack\s*week\b",
+    r"\bhacker\w*\b",                   # HackerX, HackerSpace event, ...
     # ── *-athon varianti ──
     r"\bcodathon\b",
     r"\bcodeathon\b",
     r"\bbuildathon\b",
     r"\bappathon\b",
     r"\bmakeathon\b",
-    r"\bmake[\-\s]?a[\-\s]?thon\b",  # make-a-thon, make a thon
+    r"\bmake[\-\s]?a[\-\s]?thon\b",
     r"\bideathon\b",
     r"\bdatathon\b",
     r"\bhealthathon\b",
     r"\bethathon\b",
     r"\bdesignathon\b",
-    # ── Jam / Sprint ──
+    # ── Jam / Sprint / Marathon ──
     r"\bcode\s*jam\b",
     r"\bgame\s+jam\b",
     r"\bdev\s*jam\b",
     r"\bcode\s*sprint\b",
     r"\bdev\s*sprint\b",
-    # ── Challenge / Contest / Competition ──
+    r"\bcoding\s+marathon\b",
+    r"\bprogramming\s+marathon\b",
+    # ── Challenge / Contest / Competition (EN) ──
     r"\bcoding\s+challenge\b",
     r"\bcoding\s+competition\b",
     r"\bcoding\s+contest\b",
-    r"\bcoding\s+marathon\b",
+    r"\bprogramming\s+challenge\b",
+    r"\bprogramming\s+competition\b",
+    r"\bprogramming\s+contest\b",
     r"\binnovation\s+challenge\b",
+    r"\binnovation\s+competition\b",
     r"\btech\s+challenge\b",
+    r"\btech\s+competition\b",
+    r"\bai\s+challenge\b",
+    r"\bai\s+competition\b",
+    r"\bdata\s+challenge\b",
+    r"\bdata\s+competition\b",
+    r"\bstartup\s+competition\b",
+    r"\bstartup\s+contest\b",
+    r"\bpitch\s+competition\b",
+    r"\bpitch\s+contest\b",
+    r"\bopen\s+innovation\b",
+    r"\bbuild\s+challenge\b",
+    r"\bctf\b",                          # Capture The Flag
+    r"\bcapture\s+the\s+flag\b",
+    # ── Termini italiani ──
+    r"\bcompetizione\s+(?:di\s+)?(?:coding|programmazione|tech|software|ai)\b",
+    r"\bgara\s+(?:di\s+)?(?:coding|programmazione|informatica)\b",
+    r"\bsfida\s+(?:tech|digitale|innovazione|coding)\b",
+    r"\bconcorso\s+(?:tech|digitale|innovazione|programmazione)\b",
+    r"\bmaratona\s+(?:di\s+)?(?:coding|programmazione|innovazione)\b",
+    r"\bcompetizione\s+studentesc\w+\b",
+    r"\bsfida\s+studentesc\w+\b",
+    r"\bopen\s+call\b",                  # spesso usato per challenge/competition
+    r"\bcall\s+for\s+(?:ideas?|innovation|solutions?|makers?)\b",
+    # ── Bootcamp tech ──
+    r"\bcoding\s+bootcamp\b",
+    r"\btech\s+bootcamp\b",
+    r"\bai\s+bootcamp\b",
+    r"\bdev\s+bootcamp\b",
     # ── Format specifici ──
     r"\bcodefest\b",
     r"\bstartup\s+weekend\b",
+    r"\bthon\b",                         # catchall per varianti non previste (buildthon, etc.)
 ]
 
 NEGATIVE_KEYWORDS = [
@@ -80,6 +115,9 @@ NEGATIVE_KEYWORDS = [
     r"\bgrowth\s*hack\w*\b",
     r"\bikea\s*hack\w*\b",
     r"\bbiohack\w*\b",
+    # Escludi competizioni sportive/culturali non tech
+    r"\bconcorso\s+(?:musicale|canoro|fotografico|letterario|pittori|artistic\w+)\b",
+    r"\bgara\s+(?:sportiva|ciclistica|automobilistica|calcio|nuoto|atletica)\b",
 ]
 
 # ─── HTTP ───────────────────────────────────────────────────────────────────
