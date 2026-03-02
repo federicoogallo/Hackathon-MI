@@ -216,29 +216,29 @@ def run_pipeline(dry_run: bool = False) -> None:
             if getattr(e, "confidence", 1.0) == 0.0
         )
         if api_error_count == post_keyword_count:
-        logger.warning(
-            "⚠️  LLM ha fallito su tutti i %d candidati (probabili errori API) — "
-            "storico e HTML NON sovrascritti per preservare i dati precedenti.",
-            post_keyword_count,
-        )
-        elapsed = (datetime.now() - start_time).total_seconds()
-        if not dry_run:
-            total_upcoming = sum(
-                1 for ev in store.all_events()
-                if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)
+            logger.warning(
+                "⚠️  LLM ha fallito su tutti i %d candidati (probabili errori API) — "
+                "storico e HTML NON sovrascritti per preservare i dati precedenti.",
+                post_keyword_count,
             )
-            page_url = "https://federicoogallo.github.io/Hackathon-MI/"
-            notify_run_summary(
-                new_events=0,
-                total_upcoming=total_upcoming,
-                elapsed_seconds=elapsed,
-                failed_collectors=[f.split(":")[0] for f in failed_collectors],
-                page_url=page_url,
-            )
-        logger.info("=" * 60)
-        logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
-        logger.info("=" * 60)
-        return
+            elapsed = (datetime.now() - start_time).total_seconds()
+            if not dry_run:
+                total_upcoming = sum(
+                    1 for ev in store.all_events()
+                    if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)
+                )
+                page_url = "https://federicoogallo.github.io/Hackathon-MI/"
+                notify_run_summary(
+                    new_events=0,
+                    total_upcoming=total_upcoming,
+                    elapsed_seconds=elapsed,
+                    failed_collectors=[f.split(":")[0] for f in failed_collectors],
+                    page_url=page_url,
+                )
+            logger.info("=" * 60)
+            logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
+            logger.info("=" * 60)
+            return
 
     # 5b. Dedup semantica con LLM (rimuove duplicati con titoli/URL diversi)
     llm_confirmed = llm_dedup(llm_confirmed)
