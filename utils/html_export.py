@@ -111,142 +111,216 @@ def _source_style(source: str) -> tuple[str, str]:
 
 _CSS = (
     ":root{"
-    "--bg:#f5f4f1;--surface:#ffffff;--surface-2:#f8f6f1;"
-    "--border:#e2dfd6;--border-strong:#c9c3b6;"
-    "--accent:#1c3d5a;--accent-2:#c67a2b;--accent-soft:#eef2f6;"
-    "--text:#101418;--text-secondary:#4f5b66;--text-muted:#8a95a1;"
-    "--radius:18px;"
-    "--shadow-sm:0 1px 2px rgba(16,20,24,.06);"
-    "--shadow-lg:0 18px 40px rgba(16,20,24,.12)}"
+    "--bg:#f7f6f2;"
+    "--surface:#ffffff;"
+    "--surface-2:#f2f1ec;"
+    "--border:#e8e5de;"
+    "--border-strong:#d0ccc2;"
+    "--dark:#0b0f19;"
+    "--dark-2:#131929;"
+    "--dark-3:#1e2d42;"
+    "--accent:#2563eb;"
+    "--accent-hover:#1d4ed8;"
+    "--gold:#d97706;"
+    "--text:#0f1318;"
+    "--text-secondary:#52606d;"
+    "--text-muted:#9aa5b1;"
+    "--radius:16px;"
+    "--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);"
+    "--shadow-hover:0 8px 30px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.08);"
+    "--shadow-dark:0 24px 60px rgba(0,0,0,.3)}"
     "*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}"
-    "html{scroll-behavior:smooth}"
-    "body{background:"
-    "radial-gradient(1200px 400px at 80% -50%,rgba(198,122,43,.18),transparent 60%),"
-    "radial-gradient(800px 300px at -10% 20%,rgba(28,61,90,.16),transparent 60%),"
-    "var(--bg);"
-    "color:var(--text);"
-    "font-family:'Manrope','Helvetica Neue',Arial,sans-serif;"
-    "line-height:1.6;-webkit-font-smoothing:antialiased}"
-    ".container{max-width:960px;margin:0 auto;padding:0 1.5rem}"
-    # Hero
-    ".hero{position:relative;padding:2.75rem 0 3.25rem;overflow:hidden}"
-    ".hero::before{content:'';position:absolute;inset:-40% -10% auto -10%;height:320px;"
-    "background:linear-gradient(120deg,rgba(28,61,90,.12),rgba(198,122,43,.16));"
-    "filter:blur(10px);z-index:0}"
-    ".hero::after{content:'';position:absolute;right:-120px;top:-120px;width:320px;"
-    "height:320px;border-radius:50%;border:1px solid rgba(28,61,90,.2);"
-    "box-shadow:0 0 0 12px rgba(28,61,90,.04);z-index:0}"
+    "html{scroll-behavior:smooth;scrollbar-color:var(--border-strong) var(--bg);scrollbar-width:thin}"
+    "::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px}"
+    "::selection{background:#dbeafe;color:var(--accent)}"
+    "body{background:var(--bg);color:var(--text);"
+    "font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;"
+    "line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}"
+    ".container{max-width:1024px;margin:0 auto;padding:0 1.5rem}"
+    # Hero — dark section
+    ".hero{position:relative;background:var(--dark);overflow:hidden;"
+    "padding:0;border-bottom:1px solid rgba(255,255,255,.06)}"
+    ".hero-bg{position:absolute;inset:0;z-index:0;"
+    "background:"
+    "radial-gradient(ellipse 130% 120% at 100% -20%,rgba(37,99,235,.28),transparent 55%),"
+    "radial-gradient(ellipse 80% 80% at -10% 110%,rgba(217,119,6,.18),transparent 50%),"
+    "radial-gradient(ellipse 60% 60% at 50% 50%,rgba(30,45,66,.9),transparent 100%),"
+    "var(--dark)}"
+    ".hero-grid{position:absolute;inset:0;z-index:0;"
+    "background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);"
+    "background-size:60px 60px}"
     ".hero-content{position:relative;z-index:1}"
-    ".topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}"
-    ".brand{display:flex;align-items:center;gap:.65rem}"
-    ".brand-badge{width:40px;height:40px;border-radius:12px;"
-    "background:linear-gradient(135deg,#132536,#1c3d5a);"
-    "color:#fff;display:grid;place-items:center;font-weight:700;letter-spacing:.04em;font-size:.9rem}"
-    ".brand-title{font-family:'Playfair Display',Georgia,serif;font-size:1.1rem;letter-spacing:.02em}"
-    ".topbar-link{color:var(--accent);text-decoration:none;font-weight:600;font-size:.85rem;"
-    "padding:.55rem 1rem;border-radius:999px;border:1px solid var(--border-strong);"
-    "background:var(--surface);transition:transform .2s,box-shadow .2s,border-color .2s}"
-    ".topbar-link:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm);border-color:var(--accent)}"
-    ".hero h1{font-family:'Playfair Display',Georgia,serif;font-size:2.6rem;"
-    "letter-spacing:-.01em;line-height:1.1;margin-bottom:.75rem}"
-    ".hero-sub{color:var(--text-secondary);font-size:1rem;max-width:560px;margin-bottom:1.75rem}"
-    ".hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:0}"
-    ".hero-cta{display:inline-flex;align-items:center;gap:.5rem;"
+    ".topbar{display:flex;align-items:center;justify-content:space-between;"
+    "padding:1.25rem 0;border-bottom:1px solid rgba(255,255,255,.07)}"
+    ".brand{display:flex;align-items:center;gap:.75rem}"
+    ".brand-mark{width:36px;height:36px;border-radius:10px;"
+    "background:linear-gradient(135deg,var(--accent),#1d4ed8);"
+    "display:grid;place-items:center;flex-shrink:0}"
+    ".brand-mark svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}"
+    ".brand-name{font-size:.9rem;font-weight:600;color:#fff;letter-spacing:.01em}"
+    ".brand-city{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:-.1rem}"
+    ".topbar-link{display:inline-flex;align-items:center;gap:.4rem;color:rgba(255,255,255,.7);"
+    "text-decoration:none;font-weight:500;font-size:.82rem;"
+    "padding:.5rem .9rem;border-radius:999px;"
+    "border:1px solid rgba(255,255,255,.12);"
+    "background:rgba(255,255,255,.05);"
+    "transition:all .2s;backdrop-filter:blur(4px)}"
+    ".topbar-link svg{width:14px;height:14px;opacity:.7}"
+    ".topbar-link:hover{color:#fff;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.1)}"
+    ".hero-body{padding:4rem 0 4.5rem}"
+    ".hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;"
+    "font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;"
+    "color:var(--accent);margin-bottom:1.25rem}"
+    ".hero-eyebrow span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}"
+    "@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}"
+    ".hero h1{font-family:'DM Serif Display',Georgia,serif;font-size:3.25rem;"
+    "letter-spacing:-.025em;line-height:1.06;color:#fff;margin-bottom:1rem;"
+    "max-width:680px}"
+    ".hero h1 em{font-style:normal;color:transparent;"
+    "background:linear-gradient(90deg,#60a5fa,#a78bfa);"
+    "-webkit-background-clip:text;background-clip:text}"
+    ".hero-sub{font-size:1.05rem;color:rgba(255,255,255,.55);max-width:520px;"
+    "line-height:1.65;margin-bottom:2.25rem;font-weight:400}"
+    ".hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}"
+    ".btn-primary{display:inline-flex;align-items:center;gap:.5rem;"
     "background:var(--accent);color:#fff;text-decoration:none;font-weight:600;"
-    "padding:.75rem 1.35rem;border-radius:999px;box-shadow:var(--shadow-sm);"
-    "transition:transform .2s,box-shadow .2s;font-size:.95rem}"
-    ".hero-cta:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}"
-    ".hero-note{font-size:.85rem;color:var(--text-muted)}"
-    ".stats-row{display:flex;align-items:center;gap:1rem;margin-top:2rem;flex-wrap:wrap}"
-    ".stat{background:var(--surface);border:1px solid var(--border);"
-    "padding:.75rem 1rem;border-radius:12px;min-width:140px;box-shadow:var(--shadow-sm)}"
-    ".stat-num{font-size:1.4rem;font-weight:700;line-height:1.2;color:var(--accent)}"
-    ".stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted)}"
+    "padding:.8rem 1.5rem;border-radius:10px;"
+    "box-shadow:0 0 0 1px rgba(37,99,235,.5),0 4px 14px rgba(37,99,235,.4);"
+    "transition:transform .2s,box-shadow .2s;font-size:.9rem;letter-spacing:.01em}"
+    ".btn-primary:hover{transform:translateY(-1px);"
+    "box-shadow:0 0 0 1px rgba(37,99,235,.6),0 8px 24px rgba(37,99,235,.5)}"
+    ".btn-primary svg{width:16px;height:16px}"
+    ".hero-badge{display:inline-flex;align-items:center;gap:.4rem;"
+    "font-size:.8rem;color:rgba(255,255,255,.45);font-weight:400}"
+    ".hero-badge::before{content:'';display:inline-block;width:8px;height:8px;"
+    "border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.2)}"
+    ".stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));"
+    "gap:.75rem;margin-top:3rem;max-width:480px}"
+    ".stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);"
+    "padding:1rem 1.25rem;border-radius:12px;backdrop-filter:blur(8px)}"
+    ".stat-num{font-size:1.6rem;font-weight:700;line-height:1.1;color:#fff;"
+    "font-family:'DM Serif Display',Georgia,serif}"
+    ".stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;"
+    "color:rgba(255,255,255,.35);margin-top:.15rem}"
     # Toolbar
-    ".toolbar-wrap{background:rgba(255,255,255,.75);border-top:1px solid var(--border);"
-    "border-bottom:1px solid var(--border);backdrop-filter:blur(8px);"
-    "position:sticky;top:0;z-index:50}"
-    ".toolbar{display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}"
-    ".search-box{position:relative;flex:1;min-width:220px}"
-    ".search-icon{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);"
-    "width:16px;height:16px;color:var(--text-muted);pointer-events:none}"
-    ".search-box input{width:100%;padding:.65rem .9rem .65rem 2.4rem;"
-    "border:1px solid var(--border);border-radius:999px;font-family:inherit;"
-    "font-size:.9rem;background:var(--surface);color:var(--text);outline:none;"
-    "transition:border-color .15s,box-shadow .15s}"
+    ".toolbar-wrap{position:sticky;top:0;z-index:90;"
+    "background:rgba(247,246,242,.88);backdrop-filter:blur(16px) saturate(180%);"
+    "-webkit-backdrop-filter:blur(16px) saturate(180%);"
+    "border-bottom:1px solid var(--border)}"
+    ".toolbar{display:flex;align-items:center;gap:.875rem;padding:.75rem 0;flex-wrap:wrap}"
+    ".search-box{position:relative;flex:1;min-width:240px}"
+    ".search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);"
+    "width:15px;height:15px;color:var(--text-muted);pointer-events:none}"
+    ".search-box input{width:100%;padding:.62rem 1rem .62rem 2.5rem;"
+    "border:1.5px solid var(--border);border-radius:10px;font-family:inherit;"
+    "font-size:.875rem;background:var(--surface);color:var(--text);outline:none;"
+    "transition:border-color .15s,box-shadow .15s;font-weight:400}"
+    ".search-box input::placeholder{color:var(--text-muted)}"
     ".search-box input:focus{border-color:var(--accent);"
-    "box-shadow:0 0 0 3px rgba(28,61,90,.12)}"
-    ".filter-pills{display:flex;gap:.5rem;flex-wrap:wrap}"
-    ".pill{padding:.4rem 1rem;border-radius:999px;border:1px solid var(--border);"
-    "background:var(--surface);font-family:inherit;font-size:.8rem;"
-    "color:var(--text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap}"
-    ".pill:hover{border-color:var(--accent);color:var(--accent)}"
-    ".pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}"
+    "box-shadow:0 0 0 3.5px rgba(37,99,235,.12)}"
+    ".filter-pills{display:flex;gap:.4rem;flex-wrap:wrap}"
+    ".pill{padding:.38rem .9rem;border-radius:8px;"
+    "border:1.5px solid var(--border);"
+    "background:transparent;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;"
+    "color:var(--text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;"
+    "letter-spacing:.01em}"
+    ".pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,.04)}"
+    ".pill.active{background:var(--accent);color:#fff;border-color:var(--accent);"
+    "box-shadow:0 1px 4px rgba(37,99,235,.3)}"
     # Grid + Cards
-    ".grid{display:flex;flex-direction:column;gap:1rem;padding:2rem 0 2.5rem}"
-    ".card{display:flex;gap:1rem;background:var(--surface);"
-    "border:1px solid var(--border);border-radius:var(--radius);"
-    "padding:1.25rem 1.4rem;box-shadow:var(--shadow-sm);"
-    "transition:box-shadow .2s,border-color .2s,transform .2s}"
-    ".card:hover{box-shadow:var(--shadow-lg);border-color:var(--border-strong);transform:translateY(-2px)}"
+    ".section-header{display:flex;align-items:baseline;justify-content:space-between;"
+    "padding:2rem 0 1.25rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}"
+    ".section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;"
+    "font-weight:600;color:var(--text-muted)}"
+    ".section-count{font-size:.78rem;color:var(--text-muted);font-weight:400}"
+    ".grid{display:flex;flex-direction:column;gap:.75rem;padding-bottom:3rem}"
+    ".card{display:flex;gap:1.15rem;background:var(--surface);"
+    "border:1.5px solid var(--border);border-radius:var(--radius);"
+    "padding:1.3rem 1.5rem;box-shadow:var(--shadow);"
+    "transition:box-shadow .25s,border-color .25s,transform .25s;"
+    "opacity:0;animation:fadeUp .5s ease forwards;"
+    "position:relative;overflow:hidden}"
+    ".card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;"
+    "background:var(--accent);border-radius:99px 0 0 99px;"
+    "transform:scaleY(0);transform-origin:bottom;"
+    "transition:transform .25s cubic-bezier(.4,0,.2,1)}"
+    ".card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);transform:translateY(-2px)}"
+    ".card:hover::before{transform:scaleY(1)}"
+    "@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}"
     # Date badge
     ".date-badge{display:flex;flex-direction:column;align-items:center;"
-    "justify-content:center;min-width:60px;height:62px;"
-    "background:var(--accent-soft);border-radius:14px;flex-shrink:0;border:1px solid var(--border)}"
-    ".date-day{font-size:1.35rem;font-weight:700;color:var(--accent);line-height:1.2}"
-    ".date-month{font-size:.65rem;font-weight:700;text-transform:uppercase;"
-    "letter-spacing:.08em;color:var(--accent)}"
-    ".date-tbd{background:var(--surface-2)}"
-    ".date-tbd .date-day{color:var(--text-muted);font-size:.85rem}"
+    "justify-content:center;min-width:58px;height:64px;"
+    "background:var(--dark);border-radius:12px;flex-shrink:0;"
+    "box-shadow:0 2px 8px rgba(11,15,25,.35)}"
+    ".date-day{font-size:1.5rem;font-weight:700;color:#fff;line-height:1.1;"
+    "font-family:'DM Serif Display',Georgia,serif}"
+    ".date-month{font-size:.6rem;font-weight:600;text-transform:uppercase;"
+    "letter-spacing:.1em;color:rgba(255,255,255,.5);margin-top:.05rem}"
+    ".date-tbd{background:var(--surface-2);box-shadow:none;border:1.5px solid var(--border)}"
+    ".date-tbd .date-day{color:var(--text-muted);font-size:.82rem;font-family:inherit;font-weight:600}"
     # Card body
-    ".card-body{flex:1;min-width:0}"
-    ".card-title{font-size:1.05rem;font-weight:700;line-height:1.35;margin-bottom:.4rem}"
-    ".card-title a{color:var(--text);text-decoration:none;transition:color .15s}"
+    ".card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3rem}"
+    ".card-title{font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}"
+    ".card-title a{color:inherit;text-decoration:none;transition:color .15s}"
     ".card-title a:hover{color:var(--accent)}"
-    ".card-meta{display:flex;flex-wrap:wrap;gap:.15rem .85rem;margin-bottom:.5rem}"
-    ".meta-item{display:inline-flex;align-items:center;gap:.35rem;"
-    "font-size:.82rem;color:var(--text-secondary)}"
-    ".meta-item svg{width:14px;height:14px;flex-shrink:0;opacity:.6}"
-    ".card-desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;"
+    ".card-meta{display:flex;flex-wrap:wrap;gap:.1rem .7rem}"
+    ".meta-item{display:inline-flex;align-items:center;gap:.3rem;"
+    "font-size:.78rem;color:var(--text-muted);font-weight:400}"
+    ".meta-item svg{width:13px;height:13px;flex-shrink:0;opacity:.7}"
+    ".card-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.6;"
     "display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"
-    "overflow:hidden;margin-bottom:.6rem}"
+    "overflow:hidden;margin-top:.1rem}"
     ".card-footer{display:flex;align-items:center;justify-content:space-between;"
-    "gap:.5rem;margin-top:.35rem}"
-    ".source-tag{display:inline-block;padding:.2rem .7rem;border-radius:999px;"
-    "font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}"
-    ".card-link{font-size:.85rem;font-weight:600;color:var(--accent);"
-    "text-decoration:none;transition:opacity .15s}"
-    ".card-link:hover{opacity:.75}"
-    # Empty + footer
-    ".empty-state,.no-results{text-align:center;padding:4rem 1rem;color:var(--text-secondary)}"
-    ".empty-icon{font-size:3rem;margin-bottom:1rem}"
-    ".empty-state h3{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.6rem}"
-    ".empty-state p{font-size:.95rem;line-height:1.6}"
-    ".no-results{font-size:.95rem}"
-    "footer{padding:1.75rem 0 2.5rem;border-top:1px solid var(--border)}"
-    ".footer-inner{display:flex;align-items:center;justify-content:center;"
-    "flex-wrap:wrap;gap:.6rem;font-size:.78rem;color:var(--text-muted)}"
-    ".footer-inner a{color:var(--accent);text-decoration:none;font-weight:600}"
-    ".footer-inner a:hover{text-decoration:underline}"
-    ".sep{opacity:.4}"
-    "@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}"
-    ".card{animation:fadeUp .45s ease both}"
+    "gap:.5rem;margin-top:.5rem;padding-top:.6rem;border-top:1px solid var(--border)}"
+    ".source-dot{display:inline-flex;align-items:center;gap:.4rem;"
+    "font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;"
+    "color:var(--text-muted)}"
+    ".source-dot::before{content:'';display:inline-block;width:6px;height:6px;"
+    "border-radius:50%;background:currentColor;opacity:.7}"
+    ".card-link{display:inline-flex;align-items:center;gap:.3rem;"
+    "font-size:.8rem;font-weight:600;color:var(--accent);"
+    "text-decoration:none;transition:gap .15s,opacity .15s}"
+    ".card-link svg{width:14px;height:14px;transition:transform .15s}"
+    ".card-link:hover svg{transform:translateX(2px)}"
+    ".card-link:hover{opacity:.8}"
+    # Empty state + no-results
+    ".empty-state{text-align:center;padding:5rem 1rem;color:var(--text-secondary)}"
+    ".empty-icon{font-size:2.5rem;margin-bottom:1.25rem;opacity:.4}"
+    ".empty-state h3{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:.5rem}"
+    ".empty-state p{font-size:.9rem;line-height:1.65;max-width:340px;margin:0 auto}"
+    ".no-results{text-align:center;padding:3rem 1rem;font-size:.9rem;color:var(--text-muted)}"
+    # Footer
+    "footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);"
+    "padding:2.5rem 0}"
+    ".footer-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;"
+    "gap:1.5rem}"
+    ".footer-brand{display:flex;flex-direction:column;gap:.25rem}"
+    ".footer-brand-name{color:#fff;font-weight:600;font-size:.9rem}"
+    ".footer-brand-desc{color:rgba(255,255,255,.3);font-size:.75rem}"
+    ".footer-center{text-align:center;font-size:.75rem;color:rgba(255,255,255,.2)}"
+    ".footer-links{display:flex;justify-content:flex-end;align-items:center;gap:1.25rem}"
+    ".footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.78rem;"
+    "font-weight:500;transition:color .15s}"
+    ".footer-links a:hover{color:rgba(255,255,255,.8)}"
     # Responsive
-    "@media(max-width:700px){"
+    "@media(max-width:720px){"
     ".container{padding:0 1.1rem}"
-    ".hero{padding:2.25rem 0 2.75rem}"
-    ".topbar{flex-direction:column;align-items:flex-start;gap:1rem}"
-    ".hero h1{font-size:2rem}"
+    ".topbar{padding:1rem 0}"
+    ".hero-body{padding:2.75rem 0 3.25rem}"
+    ".hero h1{font-size:2.2rem}"
     ".hero-sub{font-size:.95rem}"
-    ".stats-row{gap:.6rem}"
-    ".stat{min-width:120px}"
+    ".stats-row{grid-template-columns:repeat(3,1fr);max-width:100%}"
+    ".stat-num{font-size:1.3rem}"
     ".toolbar{gap:.6rem}"
     ".filter-pills{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none}"
     ".filter-pills::-webkit-scrollbar{display:none}"
-    ".card{padding:1.05rem;gap:.8rem}"
-    ".date-badge{min-width:50px;height:54px}"
-    ".date-day{font-size:1.1rem}"
-    ".card-title{font-size:.95rem}}"
+    ".card{padding:1.1rem 1.15rem;gap:.85rem}"
+    ".date-badge{min-width:50px;height:56px}"
+    ".date-day{font-size:1.25rem}"
+    ".card-title{font-size:.95rem}"
+    ".footer-inner{grid-template-columns:1fr;text-align:center;gap:.75rem}"
+    ".footer-links{justify-content:center}"
+    ".footer-center{display:none}}"
 )
 
 # ---- JS ----
@@ -258,6 +332,7 @@ _JS = (
     "var cards=Array.from(grid.querySelectorAll('.card'));"
     "var pills=document.querySelectorAll('.pill');"
     "var noResults=document.getElementById('no-results');"
+    "var countLabel=document.getElementById('count-label');"
     "var activeFilter='all';"
     "function filterDate(f,ds){"
     "if(!ds)return f==='all';"
@@ -278,6 +353,7 @@ _JS = (
     "if(show&&activeFilter!=='all')show=filterDate(activeFilter,ds);"
     "card.style.display=show?'':'none';"
     "if(show)visible++});"
+    "if(countLabel)countLabel.textContent=visible+' event'+(visible===1?'o':'i');"
     "noResults.style.display=(visible===0&&cards.length>0)?'':'none'}"
     "input.addEventListener('input',applyFilters);"
     "pills.forEach(function(pill){"
@@ -323,33 +399,50 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
         '<title>Hackathon Milano</title>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">\n'
+        '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">\n'
         f'<style>{_CSS}</style>\n'
         '</head>\n<body>\n\n'
         # Hero
-        '<header class="hero"><div class="container"><div class="hero-content">\n'
-        '  <div class="topbar">\n'
+        '<header class="hero">\n'
+        '<div class="hero-bg"></div><div class="hero-grid"></div>\n'
+        '<div class="hero-content">\n'
+        '<div class="container">\n'
+        '  <nav class="topbar">\n'
         '    <div class="brand">\n'
-        '      <div class="brand-badge">HM</div>\n'
-        '      <div class="brand-title">Hackathon Milano</div>\n'
+        '      <div class="brand-mark">'
+        '<svg viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5z"/><path d="M2 13l8 5 8-5"/><path d="M2 10l8 5 8-5"/></svg>'
+        '</div>\n'
+        '      <div>\n'
+        '        <div class="brand-name">Hackathon Milano</div>\n'
+        '        <div class="brand-city">Milano &amp; dintorni</div>\n'
+        '      </div>\n'
         '    </div>\n'
-        '    <a class="topbar-link" href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">Segui su GitHub</a>\n'
+        '    <a class="topbar-link" href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">'
+        '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>'
+        'GitHub</a>\n'
+        '  </nav>\n'
+        '  <div class="hero-body">\n'
+        '    <div class="hero-eyebrow"><span></span>Milano &middot; Aggiornato ogni 24h</div>\n'
+        '    <h1>Il calendario degli <em>hackathon</em> milanesi.</h1>\n'
+        '    <p class="hero-sub">Ogni giorno raccogliamo e verifichiamo con AI tutti gli hackathon, coding challenge e competizioni tech a Milano.</p>\n'
+        '    <div class="hero-actions">\n'
+        '      <a class="btn-primary" href="#events">'
+        '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l-5 5-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        'Esplora gli eventi</a>\n'
+        '      <span class="hero-badge">Dati in tempo reale</span>\n'
+        '    </div>\n'
+        '    <div class="stats-row">\n'
+        f'      <div class="stat"><div class="stat-num">{event_count}</div><div class="stat-label">{evt_word}</div></div>\n'
+        f'      <div class="stat"><div class="stat-num">{mon_count}</div><div class="stat-label">{mon_word}</div></div>\n'
+        '      <div class="stat"><div class="stat-num">24h</div><div class="stat-label">refresh</div></div>\n'
+        '    </div>\n'
         '  </div>\n'
-        '  <h1>Il calendario degli hackathon milanesi, curato ogni giorno.</h1>\n'
-        '  <p class="hero-sub">Un hub essenziale con gli eventi reali a Milano. Aggiornato automaticamente e filtrato con AI per eliminare il rumore.</p>\n'
-        '  <div class="hero-actions">\n'
-        '    <a class="hero-cta" href="#grid">Scopri gli eventi</a>\n'
-        '    <span class="hero-note">Ultimi aggiornamenti ogni 24 ore</span>\n'
-        '  </div>\n'
-        '  <div class="stats-row">\n'
-        f'    <div class="stat"><span class="stat-num">{event_count}</span><span class="stat-label">{evt_word}</span></div>\n'
-        f'    <div class="stat"><span class="stat-num">{mon_count}</span><span class="stat-label">{mon_word}</span></div>\n'
-        '    <div class="stat"><span class="stat-num">24h</span><span class="stat-label">refresh</span></div>\n'
-        '  </div>\n'
-        '</div></div></header>\n\n'
+        '</div>\n'
+        '</div>\n'
+        '</header>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
-        f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca hackathon..." autocomplete="off"></div>\n'
+        f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off"></div>\n'
         '  <div class="filter-pills" id="filters">\n'
         '    <button class="pill active" data-filter="all">Tutti</button>\n'
         '    <button class="pill" data-filter="week">Questa settimana</button>\n'
@@ -358,19 +451,27 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
         '  </div>\n'
         '</div></section>\n\n'
         # Main
-        '<main class="container"><div class="grid" id="grid">\n'
+        f'<main class="container" id="events"><div class="section-header">\n'
+        f'  <span class="section-title">Prossimi eventi</span>\n'
+        f'  <span class="section-count" id="count-label">{event_count} eventi</span>\n'
+        '</div>\n'
+        '<div class="grid" id="grid">\n'
         f'{cards_html}\n'
         '</div>\n'
-        '<p class="no-results" id="no-results" style="display:none">Nessun risultato per questa ricerca.</p>\n'
+        '<p class="no-results" id="no-results" style="display:none">Nessun risultato trovato.</p>\n'
         '</main>\n\n'
         # Footer
-        '<footer class="container"><div class="footer-inner">\n'
-        f'  <span>Ultimo aggiornamento: {_escape(last_scan)}</span>\n'
-        '  <span class="sep">&middot;</span>\n'
-        '  <a href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">GitHub</a>\n'
-        '  <span class="sep">&middot;</span>\n'
-        '  <span>Dati raccolti automaticamente e verificati con AI</span>\n'
-        '</div></footer>\n\n'
+        '<footer>\n<div class="container"><div class="footer-inner">\n'
+        '  <div class="footer-brand">\n'
+        '    <div class="footer-brand-name">Hackathon Milano</div>\n'
+        '    <div class="footer-brand-desc">Dati raccolti automaticamente con AI</div>\n'
+        '  </div>\n'
+        f'  <div class="footer-center">Aggiornato: {_escape(last_scan)}</div>\n'
+        '  <div class="footer-links">\n'
+        '    <a href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">GitHub</a>\n'
+        '  </div>\n'
+        '</div></div>\n'
+        '</footer>\n\n'
         f'<script>{_JS}</script>\n'
         '</body>\n</html>'
     )
@@ -379,7 +480,12 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
 
 def _build_cards(events: list[dict]) -> str:
     parts: list[str] = []
-    for e in events:
+    arrow = (
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor"'
+        ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M3 8h10M9 4l4 4-4 4"/></svg>'
+    )
+    for idx, e in enumerate(events):
         title = _escape((e.get("title") or "Senza titolo").strip())
         url = _escape(e.get("url") or "#")
         location = _escape((e.get("location") or "Milano").strip())
@@ -402,13 +508,17 @@ def _build_cards(events: list[dict]) -> str:
             desc_raw = desc_raw[:200].rsplit(" ", 1)[0] + "..."
         desc = _escape(desc_raw)
 
-        bg, fg = _source_style(source)
         source_esc = _escape(source)
 
         if day and month:
-            badge = f'<div class="date-badge"><span class="date-day">{day}</span><span class="date-month">{month}</span></div>'
+            badge = (
+                f'<div class="date-badge">'
+                f'<span class="date-day">{day}</span>'
+                f'<span class="date-month">{month}</span>'
+                f'</div>'
+            )
         else:
-            badge = '<div class="date-badge date-tbd"><span class="date-day">TBD</span><span class="date-month">&nbsp;</span></div>'
+            badge = '<div class="date-badge date-tbd"><span class="date-day">TBD</span></div>'
 
         meta = []
         if location:
@@ -419,17 +529,18 @@ def _build_cards(events: list[dict]) -> str:
 
         desc_html = f'<p class="card-desc">{desc}</p>' if desc else ""
         search_blob = _escape(f"{title} {desc} {location} {source_esc}".lower())
+        delay = f"animation-delay:{idx * 0.06:.2f}s"
 
         parts.append(
-            f'<article class="card" data-date="{date_iso}" data-search="{search_blob}">'
+            f'<article class="card" data-date="{date_iso}" data-search="{search_blob}" style="{delay}">'
             f'<div class="card-left">{badge}</div>'
             f'<div class="card-body">'
             f'<h2 class="card-title"><a href="{url}" target="_blank" rel="noopener">{title}</a></h2>'
             f'<div class="card-meta">{meta_html}</div>'
             f'{desc_html}'
             f'<div class="card-footer">'
-            f'<span class="source-tag" style="background:{bg};color:{fg}">{source_esc}</span>'
-            f'<a href="{url}" class="card-link" target="_blank" rel="noopener">Dettagli \u2192</a>'
+            f'<span class="source-dot">{source_esc}</span>'
+            f'<a href="{url}" class="card-link" target="_blank" rel="noopener">Vedi evento{arrow}</a>'
             f'</div></div></article>'
         )
     return "\n".join(parts)
@@ -438,10 +549,10 @@ def _build_cards(events: list[dict]) -> str:
 def _build_empty() -> str:
     return (
         '<div class="empty-state">'
-        '<div class="empty-icon">\U0001f50d</div>'
+        '<div class="empty-icon">\U0001f4c5</div>'
         '<h3>Nessun hackathon in programma</h3>'
         '<p>Non ci sono hackathon futuri confermati a Milano al momento.<br>'
-        'La lista si aggiorna automaticamente ogni giorno alle 12:00.</p>'
+        'La lista si aggiorna ogni giorno automaticamente.</p>'
         '</div>'
     )
 
