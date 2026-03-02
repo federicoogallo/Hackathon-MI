@@ -8,6 +8,7 @@ Query focalizzate e filtro URL per ridurre il rumore.
 
 import logging
 import re
+import time
 
 import config
 from models import BaseCollector, HackathonEvent
@@ -19,18 +20,23 @@ SEARCH_QUERIES = [
     # ── Query generiche ──
     "hackathon Milano 2026",
     "hackathon Milan Italy 2026",
+    "hackathon Milano 2025 2026",
     # ── Varianti formato ──
     "makeathon OR datathon OR ideathon Milano 2026",
     "startup weekend Milano 2026",
     "game jam Milano 2026",
+    "coding challenge Milano 2026",
+    "CTF cybersecurity Milano 2026",
     # ── Piattaforme evento ──
     "site:eventbrite.it hackathon Milano",
+    "site:eventbrite.com hackathon Milan",
     "site:lu.ma hackathon Milan",
-    "site:devpost.com hackathon Milan",
+    "site:devpost.com hackathon Milan Italy",
     "site:meetup.com hackathon Milano",
     # ── Hub innovazione ──
     "site:polihub.it hackathon",
     "site:cariplofactory.it hackathon",
+    "site:fondazionetriulza.org hackathon",
 ]
 
 # URL che NON sono pagine evento (listing, profili, post social, ...)
@@ -83,7 +89,9 @@ class WebSearchCollector(BaseCollector):
         all_events: list[HackathonEvent] = []
         seen_urls: set[str] = set()
 
-        for query in SEARCH_QUERIES:
+        for i, query in enumerate(SEARCH_QUERIES):
+            if i > 0:
+                time.sleep(2)  # Pausa tra query per evitare rate limit
             events = self._search(query, seen_urls)
             all_events.extend(events)
 
@@ -99,7 +107,7 @@ class WebSearchCollector(BaseCollector):
             results = list(ddgs.text(
                 query,
                 region="it-it",
-                max_results=10,
+                max_results=20,
             ))
         except Exception as e:
             logger.warning("Errore DuckDuckGo per query '%s': %s", query, e)

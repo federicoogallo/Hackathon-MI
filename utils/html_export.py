@@ -206,18 +206,6 @@ _CSS = (
     ".footer-inner a{color:var(--accent);text-decoration:none;font-weight:500}"
     ".footer-inner a:hover{text-decoration:underline}"
     ".sep{opacity:.4}"
-    # Trust bar
-    ".trust-bar{background:var(--surface);border-bottom:1px solid var(--border);"
-    "padding:.6rem 0}"
-    ".trust-inner{display:flex;align-items:center;justify-content:center;"
-    "gap:1.5rem;flex-wrap:wrap;font-size:.78rem;color:var(--text-muted)}"
-    ".trust-item{display:inline-flex;align-items:center;gap:.35rem;"
-    "white-space:nowrap}"
-    ".trust-icon{font-size:.85rem;opacity:.7}"
-    ".trust-num{font-weight:600;color:var(--text-secondary)}"
-    ".trust-item a{color:var(--text-secondary);text-decoration:none;"
-    "transition:color .15s}"
-    ".trust-item a:hover{color:var(--accent)}"
     # Responsive
     "@media(max-width:600px){"
     ".hero{padding:2.5rem 0 2rem}"
@@ -272,12 +260,6 @@ _JS = (
     "pill.classList.add('active');"
     "activeFilter=pill.dataset.filter;"
     "applyFilters()})});"
-    # GitHub stars fetch
-    "var se=document.getElementById('gh-stars');"
-    "if(se){fetch('https://api.github.com/repos/federicoogallo/Hackathon-MI')"
-    ".then(function(r){return r.json()})"
-    ".then(function(d){if(d.stargazers_count!==undefined)se.textContent=d.stargazers_count})"
-    ".catch(function(){})}"
     "})();"
 )
 
@@ -291,8 +273,7 @@ _SVG_CAL = '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenod
 
 # ---- HTML builder ----
 
-def _build_html(upcoming: list[dict], last_scan: str,
-                total_analyzed: int = 0, total_confirmed: int = 0) -> str:
+def _build_html(upcoming: list[dict], last_scan: str) -> str:
     event_count = len(upcoming)
     months_set: set[str] = set()
     for e in upcoming:
@@ -332,13 +313,6 @@ def _build_html(upcoming: list[dict], last_scan: str,
         '    <div class="stat"><span class="stat-num">24h</span><span class="stat-label">aggiornamento</span></div>\n'
         '  </div>\n'
         '</div></div></header>\n\n'
-        # Trust bar
-        '<div class="trust-bar"><div class="container trust-inner">\n'
-        f'  <span class="trust-item"><span class="trust-icon">\U0001f4ca</span><span class="trust-num">{total_analyzed}</span> eventi analizzati</span>\n'
-        f'  <span class="trust-item"><span class="trust-icon">\u2705</span><span class="trust-num">{total_confirmed}</span> hackathon confermati</span>\n'
-        '  <span class="trust-item"><a href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">'
-        '<span class="trust-icon">\u2b50</span><span class="trust-num" id="gh-stars">\u2014</span> su GitHub</a></span>\n'
-        '</div></div>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
         f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca hackathon..." autocomplete="off"></div>\n'
@@ -456,9 +430,7 @@ def generate_html(events_path=None, output_path=None):
         except Exception as exc:
             logger.warning("Impossibile leggere events.json per HTML: %s", exc)
 
-    total_analyzed = len(all_events)
     confirmed = [e for e in all_events if e.get("is_hackathon")]
-    total_confirmed = len(confirmed)
     upcoming = [e for e in confirmed if _is_upcoming(e)]
     upcoming.sort(key=_sort_key)
 
@@ -471,7 +443,7 @@ def generate_html(events_path=None, output_path=None):
         except Exception:
             pass
 
-    html = _build_html(upcoming, last_scan, total_analyzed, total_confirmed)
+    html = _build_html(upcoming, last_scan)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")
     logger.info("HTML generato: %s (%d eventi)", output_path, len(upcoming))

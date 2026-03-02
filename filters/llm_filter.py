@@ -265,6 +265,15 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
                 )
                 time.sleep(delay)
                 continue
+            # Retry anche per errori di connessione / transient errors
+            if any(kw in error_str.lower() for kw in ("connection", "timeout", "502", "503", "reset")):
+                delay = config.LLM_RETRY_DELAY * (2 ** attempt)
+                logger.warning(
+                    "Errore connessione Groq (tentativo %d/%d) — attendo %ds: %s",
+                    attempt + 1, config.LLM_RETRY_MAX, delay, error_str[:100],
+                )
+                time.sleep(delay)
+                continue
             logger.error("Errore API Groq: %s", e)
             return ""
 
