@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-03-02T14:35:21.210828",
+  "last_check": "2026-03-02T13:59:51.652930",
   "events": [
     {
       "id": "d803c7d3d2d710738e680aaadd12f7370ed15849d4f9c7d4e2af6ef66f8e2424",
@@ -320,7 +320,10 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://www.linkedin.com/posts/lucadamonte_hsil-hackathon-2026-building-high-value-activity-7422593380397764608-iRfG",
-        "https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/"
+        "https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
+        "https://humantechnopole.it/it/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
+        "https://it.linkedin.com/posts/unimi-innova_hsil-hackathon-2026-building-high-value-activity-7417490863045459969-wQjk",
+        "https://it.linkedin.com/posts/principiaspa_hsil-hackathon-2026-building-high-value-activity-7426912957479120896-2tRa"
       ],
       "discovered_at": "2026-03-02T14:34:00.456160"
     },
@@ -533,7 +536,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.eventbrite.it/e/biglietti-milan-global-game-jam-2026-igda-milan-sae-institute-1980094956317"
+      ],
       "discovered_at": "2026-03-02T14:35:38.596303"
     },
     {
