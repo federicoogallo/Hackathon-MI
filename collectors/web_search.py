@@ -3,49 +3,68 @@
 Cerca "hackathon Milano" e varianti, completamente gratuito
 e senza bisogno di API key. Sostituisce il Google CSE.
 
-Usa ~6 query per run, nessun limite giornaliero rigido.
+Query focalizzate e filtro URL per ridurre il rumore.
 """
 
 import logging
+import re
 
 import config
 from models import BaseCollector, HackathonEvent
 
 logger = logging.getLogger(__name__)
 
-# Query di ricerca — varianti per massimizzare la copertura
+# Query di ricerca — focalizzate su eventi reali e pagine evento
 SEARCH_QUERIES = [
-    # ── Query generiche IT / EN ──
-    "hackathon Milano 2026 evento",
-    "hackathon Milan Italy 2026 event",
-    "coding challenge hackathon Milano iscrizione",
-    "hackathon Politecnico Milano OR Bocconi 2026",
-    # ── Varianti di formato ──
+    # ── Query generiche ──
+    "hackathon Milano 2026",
+    "hackathon Milan Italy 2026",
+    # ── Varianti formato ──
     "makeathon OR datathon OR ideathon Milano 2026",
     "startup weekend Milano 2026",
     "game jam Milano 2026",
-    "innovation challenge tech challenge Milano 2026",
-    # ── Piattaforme specifiche ──
+    # ── Piattaforme evento ──
     "site:eventbrite.it hackathon Milano",
     "site:lu.ma hackathon Milan",
     "site:devpost.com hackathon Milan",
     "site:meetup.com hackathon Milano",
-    # ── Hackathon.com e piattaforme challenge ──
-    "site:hackathon.com Milano Italy",
-    "site:taikai.network hackathon Milano",
-    "site:codemotion.com hackathon Milano",
-    "site:agorize.com hackathon Milano",
-    "site:bemyapp.com hackathon Milano",
-    # ── Hub e spazi innovazione Milano ──
-    "site:talentgarden.it hackathon Milano",
+    # ── Hub innovazione ──
+    "site:polihub.it hackathon",
     "site:cariplofactory.it hackathon",
-    "site:levillagebyca.com hackathon Milano",
-    "site:fintechdistrict.com hackathon Milano",
-    "site:openinnovation.regione.lombardia.it hackathon",
-    # ── LinkedIn ──
-    "site:linkedin.com hackathon Milano 2026",
-    "linkedin.com/posts hackathon Milano",
 ]
+
+# URL che NON sono pagine evento (listing, profili, post social, ...)
+_NOISE_URL_PATTERNS = [
+    re.compile(r"linkedin\.com/posts/", re.I),
+    re.compile(r"linkedin\.com/pulse/", re.I),
+    re.compile(r"facebook\.com/(photos|posts|watch|reel|story)", re.I),
+    re.compile(r"wiki.*/Main_Page", re.I),
+    re.compile(r"wiki.*/Pagina_principale", re.I),
+    re.compile(r"wikipedia\.org/wiki/", re.I),
+    re.compile(r"/wiki/.+/(zh|nl|es|fr|de|ja|ko|pt|ru|ar|hi|he|pl|sv|da|ca|fi|no|cs|sk|hu|ro|tr|uk|vi|id|th|bn|ms)$", re.I),
+    re.compile(r"/wiki/.+/Participants", re.I),
+    re.compile(r"wiki\.wikimedia\.it/wiki/(Diario|Wikimedia_news)", re.I),
+    re.compile(r"planet\.wikimedia\.org", re.I),
+    re.compile(r"businesspeople\.it/", re.I),
+    re.compile(r"instagram\.com/p/", re.I),
+    re.compile(r"twitter\.com/.+/status/", re.I),
+    re.compile(r"x\.com/.+/status/", re.I),
+    re.compile(r"/users?/[^/]+/?$", re.I),             # profile pages
+    re.compile(r"eventbrite\.[a-z]+/d/", re.I),          # listing/search pages
+    re.compile(r"allevents\.in/", re.I),                  # aggregatore rumoroso
+    re.compile(r"stayhappening\.com/", re.I),             # aggregatore rumoroso
+    re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
+    re.compile(r"youtube\.com/watch", re.I),
+    re.compile(r"codemotion\.com/magazine", re.I),         # articoli, non eventi
+    re.compile(r"ninjamarketing\.it/", re.I),             # articoli di blog
+    re.compile(r"uomoemanager\.it/", re.I),               # articoli di blog
+    re.compile(r"/news/", re.I),                          # pagine news/articoli generiche
+]
+
+
+def _is_noise_url(url: str) -> bool:
+    """Ritorna True se l'URL è probabilmente NON una pagina evento."""
+    return any(p.search(url) for p in _NOISE_URL_PATTERNS)
 
 
 class WebSearchCollector(BaseCollector):
@@ -92,6 +111,12 @@ class WebSearchCollector(BaseCollector):
             url = item.get("href", "").strip()
             if not url or url in seen_urls:
                 continue
+
+            # Filtra URL rumorosi (post social, listing, profili, articoli)
+            if _is_noise_url(url):
+                logger.debug("Scartato URL rumoroso: %s", url)
+                continue
+
             seen_urls.add(url)
 
             title = item.get("title", "").strip()
@@ -105,7 +130,7 @@ class WebSearchCollector(BaseCollector):
                 url=url,
                 source=self.name,
                 description=body,
-                location=config.SEARCH_LOCATION,
+                location="",  # Non sappiamo la location reale
             ))
 
         return events

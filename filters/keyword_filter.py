@@ -24,6 +24,50 @@ _positive_patterns = [re.compile(p, re.IGNORECASE) for p in config.POSITIVE_KEYW
 _negative_patterns = [re.compile(p, re.IGNORECASE) for p in config.NEGATIVE_KEYWORDS]
 _year_pattern = re.compile(r'\b(20[0-9]{2})\b')
 
+# URL che sicuramente NON sono pagine evento
+_JUNK_URL_PATTERNS = [
+    re.compile(r"linkedin\.com/posts/", re.I),
+    re.compile(r"linkedin\.com/pulse/", re.I),
+    re.compile(r"facebook\.com/(photos|posts|watch|reel|story)", re.I),
+    re.compile(r"instagram\.com/p/", re.I),
+    re.compile(r"twitter\.com/.+/status/", re.I),
+    re.compile(r"x\.com/.+/status/", re.I),
+    re.compile(r"/users?/[^/]+/?$", re.I),              # profile pages
+    re.compile(r"eventbrite\.[a-z]+/d/", re.I),           # listing/search
+    re.compile(r"allevents\.in/", re.I),
+    re.compile(r"stayhappening\.com/", re.I),
+    re.compile(r"youtube\.com/watch", re.I),
+    re.compile(r"\.(pdf|doc|docx|ppt|pptx)(\?|$)", re.I),
+    re.compile(r"codemotion\.com/magazine", re.I),
+    re.compile(r"ninjamarketing\.it/", re.I),
+    re.compile(r"uomoemanager\.it/", re.I),
+    # Wiki homepages / main pages
+    re.compile(r"wiki.*/Main_Page", re.I),
+    re.compile(r"wiki.*/Pagina_principale", re.I),
+    re.compile(r"wikipedia\.org/wiki/", re.I),
+    # Wiki subpages (traduzioni, partecipanti, diari, newsletter)
+    re.compile(r"/wiki/.+/(zh|nl|es|fr|de|ja|ko|pt|ru|ar|hi|he|pl|sv|da|ca|fi|no|cs|sk|hu|ro|tr|uk|vi|id|th|bn|ms)$", re.I),
+    re.compile(r"/wiki/.+/Participants", re.I),
+    re.compile(r"wiki\.wikimedia\.it/wiki/(Diario|Wikimedia_news)", re.I),
+    re.compile(r"planet\.wikimedia\.org", re.I),
+    # News articles / blog (non pagine evento)
+    re.compile(r"/news[_-]?it/", re.I),
+    re.compile(r"/blog/", re.I),
+    re.compile(r"/magazine/", re.I),
+    re.compile(r"/articoli?/", re.I),
+    re.compile(r"businesspeople\.it/", re.I),
+    re.compile(r"startupbusiness\.it/", re.I),
+    re.compile(r"wired\.it/", re.I),
+    re.compile(r"ilsole24ore\.com/", re.I),
+    re.compile(r"corriere\.it/", re.I),
+    re.compile(r"repubblica\.it/", re.I),
+]
+
+
+def _is_junk_url(url: str) -> bool:
+    """URL chiaramente non una pagina evento."""
+    return any(p.search(url) for p in _JUNK_URL_PATTERNS)
+
 
 def _is_past_event(text: str) -> bool:
     """Verifica se l'evento è chiaramente nel passato.
@@ -55,6 +99,11 @@ def keyword_filter(event: HackathonEvent) -> bool:
         False → l'evento è sicuramente NON un hackathon (keyword negativa matchata).
     """
     text = f"{event.title} {event.description}".strip()
+
+    # Step 0: URL rumorosi → scarta subito
+    if event.url and _is_junk_url(event.url):
+        logger.info("Scartato per URL non-evento: %s — %s", event.title[:60], event.url[:80])
+        return False
 
     # Step 1: keyword negative → scarta con certezza
     for pattern in _negative_patterns:

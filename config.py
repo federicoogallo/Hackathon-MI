@@ -140,7 +140,7 @@ LLM_RETRY_MAX = 3
 LLM_RETRY_DELAY = 5  # secondi base per exponential backoff (Groq è veloce)
 
 # ─── Dedup ──────────────────────────────────────────────────────────────────
-FUZZY_DEDUP_THRESHOLD = 0.85  # SequenceMatcher ratio minimo per match
+FUZZY_DEDUP_THRESHOLD = 0.75  # SequenceMatcher ratio minimo per match
 
 # ─── Parallelismo ──────────────────────────────────────────────────────────
 MAX_COLLECTOR_WORKERS = 5

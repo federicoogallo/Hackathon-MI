@@ -21,31 +21,43 @@ from models import HackathonEvent
 logger = logging.getLogger(__name__)
 
 
-_SYSTEM_PROMPT_TEMPLATE = """Sei un classificatore di eventi. Dati il titolo e la descrizione di un evento, determina se è un HACKATHON (o evento assimilabile) FUTURO accessibile da MILANO.
+_SYSTEM_PROMPT_TEMPLATE = """Sei un classificatore RIGOROSO di eventi. Dati titolo, URL, location e descrizione, determina se è un HACKATHON REALE, FUTURO e FISICAMENTE A MILANO.
 
 DATA ODIERNA: {current_date}
 
-CRITERI (TUTTI e 3 devono essere soddisfatti):
-1. TIPO: L'evento deve essere una competizione/sfida a tempo limitato dove si costruisce/programma qualcosa. Include: hackathon, hack day/week/fest, appathon/codathon/buildathon/makeathon/datathon e simili, code jam, game jam, coding challenge/competition/contest, programming competition/contest, startup weekend, codefest, innovation challenge (con componente di building/coding), CTF (Capture The Flag), open innovation con prototipazione. NON include: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, aperitivi tech, networking puro, pitch competition SENZA coding, bootcamp PURAMENTE formativi (senza gara/premi).
-2. LOCATION: L'evento DEVE svolgersi FISICAMENTE a Milano o nell'area metropolitana milanese/Lombardia. Eventi online, remoti o virtuali → is_hackathon: false. Se l'evento è in un'altra città italiana (Roma, Torino, Napoli, Bari, ecc.) o all'estero → is_hackathon: false.
-3. TEMPO: L'evento DEVE essere futuro o in corso (data >= oggi). Se l'evento è chiaramente nel passato (es. "Hackathon 2024", date già trascorse) → is_hackathon: false. Se la data non è specificata ma non ci sono indicazioni che sia passato → lascia passare. Se un evento è ricorrente (es. "Global Game Jam"), consideralo solo se l'edizione è del {current_year} o futura.
+ATTENZIONE — Sii MOLTO SEVERO. È meglio scartare un evento dubbio che approvare un falso positivo.
+
+CRITERI (TUTTI E 4 devono essere soddisfatti):
+
+1. TIPO — L'evento deve essere una COMPETIZIONE/SFIDA A TEMPO LIMITATO dove si COSTRUISCE/PROGRAMMA qualcosa.
+   SÌ: hackathon, code jam, game jam, coding challenge/contest, startup weekend, makeathon, datathon, CTF, innovation challenge CON building.
+   NO: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, networking, pitch senza coding, bootcamp formativi, articoli/blog/notizie, pagine di listing/ricerca, profili utente.
+
+2. PAGINA EVENTO — L'URL DEVE essere una PAGINA EVENTO SPECIFICA (es. lu.ma/xxx, eventbrite.it/e/xxx, devpost.com/hackathons/xxx).
+   NO: post LinkedIn/Facebook/Instagram/Twitter, articoli di blog, pagine di ricerca/listing (eventbrite.it/d/...), pagine di profilo, pagine di notizie generiche, homepage di organizzazioni.
+
+3. LOCATION — L'evento DEVE svolgersi FISICAMENTE a Milano o area metropolitana milanese.
+   NO: eventi online/remoti/virtuali, eventi in altre città (Roma, Torino, Napoli...) o all'estero.
+   ATTENZIONE: La location DEVE contenere esplicitamente "Milano", "Milan", "Politecnico", "Bocconi", "Bicocca" o un indirizzo/luogo noto milanese.
+   Se la location è vuota/non specificata e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
+   Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel testo.
+
+4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}) o senza data ma con indicazioni di essere nel {current_year} o futuro.
+   NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti. Se l'URL/titolo menziona solo anni < {current_year} → false.
 
 ESEMPI:
-1. "PoliHack 2026 — 24h coding marathon" (Milano) → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon competitivo 24h a Milano, futuro"}}
-2. "AI Coding Challenge Milano 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Competizione coding con tema AI a Milano"}}
-3. "CASSINI Hackathon - Space for Water" (Online, remoto) → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online/remoto, non fisicamente a Milano"}}
-4. "Hackathon Milano 2024 — recap" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento passato (2024)"}}
-5. "Hackathon Taranto 2026" (solo in presenza Taranto) → {{"is_hackathon": false, "confidence": 0.90, "reason": "Hackathon fisico non a Milano"}}
-6. "Corso full-stack bootcamp Milano" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Bootcamp formativo, non gara"}}
-7. "HackerX Milan — Job Fair 2026" → {{"is_hackathon": false, "confidence": 0.88, "reason": "Evento recruiting, non competizione"}}
+1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento"}}
+2. Titolo: "Hackathon LinkedIn post" | URL: linkedin.com/posts/... | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Post social, non pagina evento"}}
+3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico"}}
+4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)"}}
+5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano"}}
+6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro"}}
+7. Titolo: "Página Principal - Meta-Wiki" | URL: meta.wikimedia.org/wiki/Main_Page/pt | Loc: "" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Homepage wiki, non pagina evento"}}
+8. Titolo: "AssoSoftware organizza il primo Hackathon..." | URL: polihub.it/news-it/hackathon-assosoftware | Loc: "" → {{"is_hackathon": false, "confidence": 0.85, "reason": "Articolo/news su hackathon, non pagina evento diretta"}}
 
-Rispondi SOLO con un oggetto JSON con chiave "results" contenente un array. Per ogni evento nell'input, restituisci un oggetto con:
-- "index": indice dell'evento (partendo da 0)
-- "is_hackathon": bool
-- "confidence": float 0-1
-- "reason": stringa breve (max 50 parole)
+NEL DUBBIO → is_hackathon: false.
 
-Formato: {{"results": [{{"index": 0, "is_hackathon": true, "confidence": 0.95, "reason": "..."}}]}}"""
+Rispondi SOLO con JSON: {{"results": [{{"index": 0, "is_hackathon": bool, "confidence": float, "reason": "stringa breve"}}]}}"""
 
 
 def _get_system_prompt() -> str:
@@ -70,7 +82,13 @@ def _build_user_prompt(events: list[HackathonEvent]) -> str:
     items = []
     for i, event in enumerate(events):
         desc = event.description[:config.LLM_MAX_DESCRIPTION_LENGTH]
-        items.append(f"{i}. Titolo: \"{event.title}\"\n   Descrizione: \"{desc}\"")
+        loc = event.location or "(non specificata)"
+        items.append(
+            f"{i}. Titolo: \"{event.title}\""
+            f"\n   URL: {event.url}"
+            f"\n   Location: \"{loc}\""
+            f"\n   Descrizione: \"{desc}\""
+        )
     return "Classifica questi eventi:\n\n" + "\n\n".join(items)
 
 
@@ -137,7 +155,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
         ritorna risultati "passanti" di default (meglio un falso positivo
         che perdere un hackathon vero).
     """
-    default = [LLMResult(is_hackathon=True, confidence=0.5, reason="LLM parse error") for _ in range(count)]
+    default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error") for _ in range(count)]
 
     # Step 1: Pulisci markdown code blocks
     cleaned = content.strip()
@@ -174,7 +192,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     len(results), count,
                 )
                 while len(results) < count:
-                    results.append(LLMResult(is_hackathon=True, confidence=0.5, reason="missing from LLM"))
+                    results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from LLM"))
             return results[:count]
     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
         pass  # Prova il fallback
@@ -202,8 +220,8 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     reason=str(item.get("reason", "")),
                 ))
             else:
-                # Evento mancante — lascia passare per sicurezza
-                results.append(LLMResult(is_hackathon=True, confidence=0.5, reason="missing from truncated LLM response"))
+                # Evento mancante — scarta per sicurezza
+                results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from truncated LLM response"))
         return results
 
     # Step 4: Nessun oggetto estratto — usa default
@@ -264,14 +282,14 @@ def classify_batch(events: list[HackathonEvent]) -> list[LLMResult]:
         Lista di LLMResult, uno per evento.
     """
     if not config.GROQ_API_KEY:
-        logger.warning("GROQ_API_KEY non configurata — skip filtro LLM")
-        return [LLMResult(is_hackathon=True, confidence=0.5, reason="LLM disabled") for _ in events]
+        logger.warning("GROQ_API_KEY non configurata — skip filtro LLM (scarto tutto)")
+        return [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM disabled") for _ in events]
 
     user_prompt = _build_user_prompt(events)
     content = _call_llm(_get_system_prompt(), user_prompt)
 
     if not content:
-        return [LLMResult(is_hackathon=True, confidence=0.5, reason="API error") for _ in events]
+        return [LLMResult(is_hackathon=False, confidence=0.0, reason="API error") for _ in events]
 
     return _parse_llm_response(content, len(events))
 
