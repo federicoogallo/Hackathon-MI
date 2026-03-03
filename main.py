@@ -173,7 +173,14 @@ def _event_is_upcoming_dict(e: dict) -> bool:
 def deduplicate_against_store(
     events: list[HackathonEvent], store: EventStore
 ) -> list[HackathonEvent]:
-    """Rimuove eventi già nello storico (dedup livello 1 + 2)."""
+    """Rimuove eventi già nello storico (dedup livello 1 + 2 + 3).
+
+    Include anche dedup intra-batch: eventi nuovi nella stessa run
+    vengono confrontati tra loro con fuzzy title matching.
+    """
+    from difflib import SequenceMatcher
+    from models import _normalize_title
+
     new_events: list[HackathonEvent] = []
     seen_in_batch: set[str] = set()
 
@@ -183,8 +190,26 @@ def deduplicate_against_store(
             continue
         seen_in_batch.add(event.id)
 
-        # Dedup vs storico (livello 1: URL esatto + livello 2: fuzzy titolo)
+        # Dedup vs storico (livello 1: URL esatto + livello 2: fuzzy + livello 3: date+keyword)
         if store.is_duplicate(event):
+            continue
+
+        # Dedup intra-batch fuzzy (titoli simili nella stessa run)
+        is_intra_dup = False
+        for existing in new_events:
+            ratio = SequenceMatcher(
+                None, event.title_normalized, existing.title_normalized
+            ).ratio()
+            if ratio >= config.FUZZY_DEDUP_THRESHOLD:
+                if event.url not in existing.alternate_urls:
+                    existing.alternate_urls.append(event.url)
+                    logger.info(
+                        "Intra-batch fuzzy: '%s' ≈ '%s'",
+                        event.title, existing.title,
+                    )
+                is_intra_dup = True
+                break
+        if is_intra_dup:
             continue
 
         new_events.append(event)

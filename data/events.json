@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-03-03T15:39:01.210436",
+  "last_check": "2026-03-03T16:09:53.859607",
   "events": [
     {
       "id": "350c1e531eb13fe9c5bd3446c99eaaadd757018f8b7e31acf12be8564c62871b",
@@ -76,20 +76,6 @@
       "discovered_at": "2026-03-02T21:09:49.760878"
     },
     {
-      "id": "f9d243f392bcff8c85ff23e71238756b4bd4aedfd8ce3f5e423841714f35cbae",
-      "title": "Harvard HSIL Hackathon 2026 - POLIMI GSoM",
-      "url": "https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/",
-      "source": "web_search",
-      "description": "Join the HSIL Hackathon 2026 in Milan and co-create AI solutions for future healthcare systems in an international innovation hub.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-02T21:09:49.760886"
-    },
-    {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
       "title": "The New Human - ART+TECH Festival 2026 DAY 1  — THE IGNITION",
       "url": "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688",
@@ -114,7 +100,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.issapulire.com/it/eventi/hackathon.html"
+      ],
       "discovered_at": "2026-03-03T15:34:35.906415"
     },
     {
@@ -145,23 +133,12 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://hsph.harvard.edu/research/health-systems-innovation-lab/work/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/"
+        "https://hsph.harvard.edu/research/health-systems-innovation-lab/work/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
+        "https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/",
+        "https://www.unimi.it/it/terza-missione/innovazione-ricerca-e-imprese/progetti-e-iniziative-di-open-innovation",
+        "https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT"
       ],
       "discovered_at": "2026-03-03T15:34:32.208612"
-    },
-    {
-      "id": "7534d5c48b8333fafd6eec03e4ac8839ca4cc5ebc1427972418a9a2db5cc232e",
-      "title": "Progetti e iniziative di Open Innovation | Università degli Studi di Milano Statale",
-      "url": "https://www.unimi.it/it/terza-missione/innovazione-ricerca-e-imprese/progetti-e-iniziative-di-open-innovation",
-      "source": "web_search",
-      "description": "Nelle giornate del 10 ed 11 aprile 2026 , Milano sarà una delle sedi ufficiali dell’evento grazie ad una collaborazione d’eccellenza tra Università degli Studi di Milano, Politecnico di Milano, Federated Innovation @MIND, Human Technopole e Società Italiana Intelligenza Artificiale in ...",
-      "date_str": "2026-04-10",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:32.208700"
     },
     {
       "id": "c83a76b7a8c339cefebfde40c12c8f8ce250f87e408788bf712ddc26d13e7897",
@@ -204,20 +181,6 @@
       "confidence": 0.8,
       "alternate_urls": [],
       "discovered_at": "2026-03-03T15:34:32.208856"
-    },
-    {
-      "id": "41e1703e643f359b58adc275103cb06ff8749b397b82ca39cb29a75d55f84743",
-      "title": "HSIL Hackathon 2026 – Building High-Value Health Systems ...",
-      "url": "https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT",
-      "source": "web_search",
-      "description": "📣 Last day to register: ready to shape the future of health systems with AI? 🤖 Join the Global Hackathon on AI in Medicine from 10 to 11 April 2026 , hosted at Fondazione Triulza in MIND ...",
-      "date_str": "2026-04-10",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:32.208944"
     },
     {
       "id": "738a403666d4a27dc87d7f2bbb057deb60d527048cf988ef3f82aa74ab3a2f61",
