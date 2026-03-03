@@ -355,8 +355,7 @@ Contributions are warmly welcome!
 
 <div align="center">
 
-<sub>🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.
-
+<sub>🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.<br>
 The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.</sub>
 
 </div>
