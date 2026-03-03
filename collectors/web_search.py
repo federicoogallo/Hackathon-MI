@@ -27,6 +27,10 @@ SEARCH_QUERIES = [
     "game jam Milano 2026",
     "coding challenge Milano 2026",
     "CTF cybersecurity Milano 2026",
+    # ── Italian multi-lingua ──
+    "maratona di programmazione Milano 2026",
+    "sfida digitale innovazione Milano 2026",
+    "competizione coding Milano OR Lombardia 2026",
     # ── Piattaforme evento ──
     "site:eventbrite.it hackathon Milano",
     "site:eventbrite.com hackathon Milan",

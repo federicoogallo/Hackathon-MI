@@ -25,12 +25,18 @@ CSE_API_URL = "https://www.googleapis.com/customsearch/v1"
 # Query di ricerca — ogni query costa 1 "uso" (100 gratis/giorno)
 # Non serve site: perché il CSE è già limitato ai siti configurati
 SEARCH_QUERIES = [
+    # ── English ──
     "hackathon Milano 2026",
     "hackathon Milan Italy",
     "coding challenge Milano",
     "hackathon Politecnico Milano OR Bocconi",
     "appathon OR codathon OR buildathon Milano",
     "hackathon startup innovation Milano",
+    # ── Italian multi-lingua ──
+    "maratona di programmazione Milano",
+    "sfida digitale innovazione Milano 2026",
+    "competizione coding Milano OR Lombardia",
+    "innovation sprint hackathon Milano",
 ]
 
 

@@ -30,6 +30,7 @@ REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+MEETUP_API_KEY = os.getenv("MEETUP_API_KEY", "")  # opzionale — migliora Meetup collector
 
 # ─── Parametri ricerca ─────────────────────────────────────────────────────
 SEARCH_LOCATION = "Milano"
@@ -143,4 +144,4 @@ LLM_RETRY_DELAY = 10  # secondi base per exponential backoff
 FUZZY_DEDUP_THRESHOLD = 0.75  # SequenceMatcher ratio minimo per match
 
 # ─── Parallelismo ──────────────────────────────────────────────────────────
-MAX_COLLECTOR_WORKERS = 5
+MAX_COLLECTOR_WORKERS = 8
