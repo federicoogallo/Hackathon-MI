@@ -41,7 +41,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 ## Architecture
 
 ```
-Collectors (10 sources in parallel)
+Collectors (26 sources in parallel)
         │
         ▼
   Deduplication (SHA-256 URL + fuzzy title via SequenceMatcher > 0.85)
@@ -66,20 +66,54 @@ Collectors (10 sources in parallel)
 ```
 
 <details>
-<summary><strong>Registered Collectors</strong></summary>
+<summary><strong>Registered Collectors (26)</strong></summary>
+
+#### Tier 0 — Original Sources
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
 | 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
 | 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback without API key — works in CI |
-| 3 | **Google CSE** | Custom Search API | Meta-aggregator: indirectly covers LinkedIn, Meetup, Twitter. Requires `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
-| 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
-| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
-| 6 | **Devpost** | HTML scraping | Low coverage for Milan |
-| 7 | **PoliHub** | HTML scraping | Blocked by WAF (indirectly covered by Google CSE) |
-| 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca (independent parsers) |
-| 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
-| 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
+| 3 | **Google CSE** | Custom Search API | Meta-aggregator (10 queries, IT + EN). Requires `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
+| 4 | **Web Search (DDG)** | DuckDuckGo DDGS | Free meta-aggregator, 21 queries (IT + EN + site-specific) |
+| 5 | **InnovUp** | HTML scraping | innovup.net/eventi |
+| 6 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
+| 7 | **Devpost** | HTML scraping | Low coverage for Milan |
+| 8 | **PoliHub** | HTML scraping | Blocked by WAF (indirectly covered by Google CSE) |
+| 9 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
+| 10 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 11 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
+
+#### Tier 1 — High-Impact New Sources
+
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 12 | **Meetup** | GraphQL API + HTML fallback | Milan geo-search (30 km). Optional `MEETUP_API_KEY` |
+| 13 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
+| 14 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
+| 15 | **Codemotion** | HTML scraping | community.codemotion.com — largest Italian tech community |
+| 16 | **Talent Garden** | HTML scraping | TAG Milano campuses (Calabiana, Isola). IT + EN pages |
+| 17 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
+| 18 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
+
+#### Tier 2 — International Platforms
+
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 19 | **DoraHacks** | REST API | Web3/blockchain hackathons. Italy geo-filter |
+| 20 | **HackerEarth** | HTML scraping | hackerearth.com/challenges — online + onsite |
+| 21 | **Devfolio** | `__NEXT_DATA__` + HTML fallback | Growing EU platform. Italy geo-filter |
+| 22 | **ChallengeRocket** | HTML scraping | EU/CEE hackathons + challenges |
+| 23 | **Unstop** | HTML + Angular JSON | Ex-Dare2Compete. Italy geo-filter |
+| 24 | **Lablab.ai** | `__NEXT_DATA__` + HTML | AI hackathons — LLM filters for Milan relevance |
+
+#### Tier 3 — Institutional Sources
+
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 25 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
+| 26 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
+| 27 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
 
 </details>
 

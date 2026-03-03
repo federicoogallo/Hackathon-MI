@@ -35,6 +35,22 @@ from collectors.universities import UniversitiesCollector
 from collectors.reddit import RedditCollector
 from collectors.eventbrite_web import EventbriteWebCollector
 from collectors.taikai import TaikaiCollector
+from collectors.meetup import MeetupCollector
+from collectors.hackathon_com import HackathonComCollector
+from collectors.mlh import MLHCollector
+from collectors.codemotion import CodemotionCollector
+from collectors.talent_garden import TalentGardenCollector
+from collectors.cariplo_factory import CariploFactoryCollector
+from collectors.startup_italia import StartupItaliaCollector
+from collectors.dorahacks import DoraHacksCollector
+from collectors.hackerearth import HackerEarthCollector
+from collectors.devfolio import DevfolioCollector
+from collectors.challengerocket import ChallengeRocketCollector
+from collectors.unstop import UnstopCollector
+from collectors.lablab import LablabCollector
+from collectors.comune_milano import ComuneMilanoCollector
+from collectors.camera_commercio import CameraCommercioCollector
+from collectors.regione_lombardia import RegioneLombardiaCollector
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
@@ -57,6 +73,7 @@ logger = logging.getLogger("hackathon-monitor")
 def get_collectors() -> list[BaseCollector]:
     """Istanzia tutti i collector registrati."""
     return [
+        # ── Tier 0: Original collectors ──
         EventbriteCollector(),
         WebSearchCollector(),
         InnovUpCollector(),
@@ -67,6 +84,25 @@ def get_collectors() -> list[BaseCollector]:
         RedditCollector(),
         EventbriteWebCollector(),
         TaikaiCollector(),
+        # ── Tier 1: High-impact new sources ──
+        MeetupCollector(),
+        HackathonComCollector(),
+        MLHCollector(),
+        CodemotionCollector(),
+        TalentGardenCollector(),
+        CariploFactoryCollector(),
+        StartupItaliaCollector(),
+        # ── Tier 2: International platforms ──
+        DoraHacksCollector(),
+        HackerEarthCollector(),
+        DevfolioCollector(),
+        ChallengeRocketCollector(),
+        UnstopCollector(),
+        LablabCollector(),
+        # ── Tier 3: Institutional sources ──
+        ComuneMilanoCollector(),
+        CameraCommercioCollector(),
+        RegioneLombardiaCollector(),
     ]
 
 

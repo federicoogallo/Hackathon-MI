@@ -42,6 +42,7 @@ jobs:
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         run: python main.py
 
       - name: Commit updated data and page

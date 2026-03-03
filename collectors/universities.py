@@ -5,6 +5,9 @@ Copre:
 - Politecnico di Milano
 - Università Bocconi
 - Università Bicocca
+- Università Cattolica
+- IULM
+- Vita-Salute San Raffaele
 
 Ogni università ha un sotto-parser indipendente in try/except,
 così se un sito cambia struttura gli altri continuano a funzionare.
@@ -34,6 +37,9 @@ class UniversitiesCollector(BaseCollector):
             ("PoliMi", self._collect_polimi),
             ("Bocconi", self._collect_bocconi),
             ("Bicocca", self._collect_bicocca),
+            ("Cattolica", self._collect_cattolica),
+            ("IULM", self._collect_iulm),
+            ("San Raffaele", self._collect_san_raffaele),
         ]
 
         for name, parser_fn in parsers:
@@ -100,6 +106,64 @@ class UniversitiesCollector(BaseCollector):
                 continue
             events.extend(self._extract_events(
                 response.text, url, "unimib.it", "Università Bicocca", seen
+            ))
+
+        return events
+
+    # ─── Università Cattolica ────────────────────────────────────────────
+
+    def _collect_cattolica(self) -> list[HackathonEvent]:
+        urls = [
+            "https://www.unicatt.it/eventi",
+            "https://milano.unicatt.it/eventi",
+        ]
+        events: list[HackathonEvent] = []
+        seen: set[str] = set()
+
+        for url in urls:
+            response = safe_get(url)
+            if response is None:
+                continue
+            events.extend(self._extract_events(
+                response.text, url, "unicatt.it", "Università Cattolica", seen
+            ))
+
+        return events
+
+    # ─── IULM ───────────────────────────────────────────────────────────
+
+    def _collect_iulm(self) -> list[HackathonEvent]:
+        urls = [
+            "https://www.iulm.it/it/eventi",
+        ]
+        events: list[HackathonEvent] = []
+        seen: set[str] = set()
+
+        for url in urls:
+            response = safe_get(url)
+            if response is None:
+                continue
+            events.extend(self._extract_events(
+                response.text, url, "iulm.it", "IULM", seen
+            ))
+
+        return events
+
+    # ─── Vita-Salute San Raffaele ───────────────────────────────────────
+
+    def _collect_san_raffaele(self) -> list[HackathonEvent]:
+        urls = [
+            "https://www.unisr.it/eventi",
+        ]
+        events: list[HackathonEvent] = []
+        seen: set[str] = set()
+
+        for url in urls:
+            response = safe_get(url)
+            if response is None:
+                continue
+            events.extend(self._extract_events(
+                response.text, url, "unisr.it", "Uni Vita-Salute San Raffaele", seen
             ))
 
         return events
