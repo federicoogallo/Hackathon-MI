@@ -22,9 +22,9 @@ from models import HackathonEvent
 
 logger = logging.getLogger(__name__)
 
-_MONTHS_IT = [
-    "Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-    "Lug", "Ago", "Set", "Ott", "Nov", "Dic",
+_MONTHS_EN = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ]
 
 TABLE_START = "<!-- HACKATHON_TABLE_START -->"
@@ -39,7 +39,7 @@ def _fmt_date(date_str: str) -> str:
         ev = HackathonEvent(title="", url="", source="", date_str=date_str)
         d = ev.parsed_date()
         if d:
-            return f"{d.day} {_MONTHS_IT[d.month - 1]} {d.year}"
+            return f"{d.day} {_MONTHS_EN[d.month - 1]} {d.year}"
     except Exception:
         pass
     cleaned = date_str.strip()[:25]
@@ -83,11 +83,11 @@ def _build_table(upcoming: list[dict]) -> str:
     lines: list[str] = []
 
     # Header
-    lines.append("| Nome | Data | Luogo | Fonte |")
+    lines.append("| Name | Date | Location | Source |")
     lines.append("| --- | --- | --- | --- |")
 
     for e in upcoming:
-        title = _escape_md((e.get("title") or "Senza titolo").strip())
+        title = _escape_md((e.get("title") or "Untitled").strip())
         url = (e.get("url") or "").strip()
         date_str = _fmt_date(e.get("date_str", ""))
         location = _escape_md((e.get("location") or "Milano").strip())
@@ -127,14 +127,14 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
     upcoming.sort(key=_sort_key)
 
     # Costruisci tabella
-    now_str = datetime.now().strftime("%d/%m/%Y %H:%M")
-    table_section = _build_table(upcoming) if upcoming else "_Nessun hackathon in programma al momento._"
+    now_str = datetime.now().strftime("%b %d, %Y %H:%M")
+    table_section = _build_table(upcoming) if upcoming else "_No upcoming hackathons at this time._"
 
     new_content = f"""{TABLE_START}
 
-> **{len(upcoming)} hackathon** in programma a Milano e dintorni \u00b7 Aggiornato: {now_str}
+> **{len(upcoming)} hackathon{'s' if len(upcoming) != 1 else ''}** coming up in Milan \u00b7 Last updated: {now_str}
 >
-> \U0001f310 **[Vedi il sito completo](https://federicoogallo.github.io/Hackathon-MI/)** per ricerca, filtri e dettagli.
+> \U0001f310 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 {table_section}
 
@@ -155,12 +155,12 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
             # Marker non trovati: aggiungi dopo il primo heading
             updated = old_text + "\n\n" + new_content + "\n"
     else:
-        # Nessun README esistente: creane uno minimale
-        updated = f"""# \U0001f3c6 Hackathon Milano
+        # No existing README: create a minimal one
+        updated = f"""# \U0001f3c6 Hackathon Milan
 
-Hackathon, coding challenge e competizioni tech a Milano \u2014 aggiornato ogni giorno con AI.
+Hackathons, coding challenges & tech competitions in Milan \u2014 updated daily with AI.
 
-**Sito completo \u2192 [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
+**Full website \u2192 [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
 {new_content}
 """

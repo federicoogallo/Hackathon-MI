@@ -1,76 +1,90 @@
-# 🏆 Hackathon Milano Monitor
+# 🏆 Hackathon Milan Monitor
 
-**Sito pubblico → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
+**Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
-Aggregatore automatico di eventi hackathon a Milano da 10+ fonti eterogenee.  
-Filtra con LLM (Groq · Llama 3.3 70B, gratuito), notifica via Telegram Bot, genera una pagina web statica su GitHub Pages. Avviabile in locale o su GitHub Actions.
+Automated aggregator for hackathon events in Milan from 10+ heterogeneous sources.  
+Filters with LLM (Groq · Llama 3.3 70B, free tier), notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
+
+<br>
+
+<p align="center">
+  <img src="docs/banner.svg" alt="Upcoming Hackathons in Milan" width="100%">
+</p>
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathon** in programma a Milano e dintorni · Aggiornato: 03/03/2026 13:19
+> **6 hackathons** coming up in Milan · Last updated: Mar 03, 2026 14:21
 >
-> 🌐 **[Vedi il sito completo](https://federicoogallo.github.io/Hackathon-MI/)** per ricerca, filtri e dettagli.
+> 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
-| Nome | Data | Luogo | Fonte |
+| Name | Date | Location | Source |
 | --- | --- | --- | --- |
 | [The Ignition — Opening Gathering: Creative Hackathon - The New Human (Milan & Online)](https://lu.ma/jevwfttk) | 6 Mar 2026 | Google Porta Nuova Isola, Via Federico Confalonieri, 4, 20124 Milano MI, Italia | luma |
 | [AI Voice Agent Hackathon powered by ElevenLabs - Milan](https://lu.ma/rgtc75im) | 7 Mar 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
 | [The Making — Public Sharing: Creative Hackathon - The New Human (Milan)](https://lu.ma/g02myvsa) | 7 Mar 2026 | TrueLayer, Via Joe Colombo, 8, 20124 Milano MI, Italia | luma |
-| [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 13 Mag 2026 | Milano | web_search |
+| [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 13 May 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
 | [Harvard HSIL Hackathon 2026 - POLIMI GSoM](https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
+<br>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
+  <img src="https://img.shields.io/badge/AI--verified-Llama_3.3_70B-purple?style=for-the-badge" alt="AI Verified">
+  <img src="https://img.shields.io/badge/sources-10+-green?style=for-the-badge" alt="10+ Sources">
+</p>
+
 ---
 
-## Architettura
+## Architecture
 
 ```
-Collectors (10 fonti in parallelo)
+Collectors (10 sources in parallel)
         │
         ▼
-  Deduplicazione (SHA256 URL + fuzzy titolo SequenceMatcher > 0.85)
+  Deduplication (SHA-256 URL + fuzzy title via SequenceMatcher > 0.85)
         │
         ▼
-  Pre-filtro Keyword (62 pattern regex word-boundary: scarta "growth hacking", "biohacking"…)
+  Keyword Pre-filter (62 regex word-boundary patterns: discards "growth hacking", "biohacking", etc.)
         │
         ▼
-  Filtro LLM (Groq · Llama 3.3 70B, batch da 20, few-shot, threshold 0.7)
-        │  Solo eventi FISICAMENTE a Milano — online/remoti → scartati
+  LLM Filter (Groq · Llama 3.3 70B, batches of 20, few-shot, threshold 0.7)
+        │  Only events PHYSICALLY in Milan — online/remote → discarded
         ▼
-  Notifica Telegram (summary + link al sito)
+  Telegram Notification (summary + link to site)
         │
         ▼
-  Salvataggio storico (data/events.json)
+  Persistent Storage (data/events.json)
         │
         ▼
-  Generazione pagina HTML (docs/index.html → GitHub Pages)
+  HTML Page Generation (docs/index.html → GitHub Pages)
         │
         ▼
-  Aggiornamento tabella README.md
+  README Table Update
 ```
 
-### Collector registrati
+### Registered Collectors
 
-| # | Fonte | Metodo | Note |
-|---|-------|--------|------|
-| 1 | **Eventbrite** | REST API | Richiede `EVENTBRITE_API_KEY` |
-| 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback senza API key — funziona in CI |
-| 3 | **Google CSE** | Custom Search API | Meta-aggregatore: copre LinkedIn, Meetup, Twitter indirettamente. Richiede `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
+| 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback without API key — works in CI |
+| 3 | **Google CSE** | Custom Search API | Meta-aggregator: indirectly covers LinkedIn, Meetup, Twitter. Requires `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
 | 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
 | 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
-| 6 | **Devpost** | HTML scraping | Bassa copertura per Milano |
-| 7 | **PoliHub** | HTML scraping | Bloccato da WAF (coperto indirettamente da Google CSE) |
-| 8 | **Università** | HTML scraping | PoliMi, Bocconi, Bicocca (parser indipendenti) |
-| 9 | **Reddit** | PRAW (API ufficiale) | r/ItalyInformatica + r/italy. Richiede `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
-| 10 | **Taikai** | HTML scraping | taikai.network — hackathon tech internazionali |
+| 6 | **Devpost** | HTML scraping | Low coverage for Milan |
+| 7 | **PoliHub** | HTML scraping | Blocked by WAF (indirectly covered by Google CSE) |
+| 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca (independent parsers) |
+| 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
 
 ---
 
-## Setup locale
+## Local Setup
 
-### 1. Clona e crea il virtual environment
+### 1. Clone and create virtual environment
 
 ```bash
 git clone https://github.com/federicoogallo/Hackathon-MI.git
@@ -81,36 +95,36 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Configura le API key
+### 2. Configure API keys
 
 ```bash
 cp .env.example .env
 ```
 
-Edita `.env` con le tue chiavi. **Nessuna chiave è obbligatoria** — i collector senza chiave vengono silenziosamente saltati:
+Edit `.env` with your keys. **No key is mandatory** — collectors without a key are silently skipped:
 
-| Variabile | Come ottenerla |
-|-----------|---------------|
-| `EVENTBRITE_API_KEY` | [eventbrite.com/platform/api](https://www.eventbrite.com/platform/api) → crea un'app → copia il Private token |
-| `GOOGLE_CSE_API_KEY` | [console.cloud.google.com](https://console.cloud.google.com/) → APIs & Services → Credentials → Create API Key → abilita "Custom Search JSON API" |
-| `GOOGLE_CSE_CX` | [programmablesearchengine.google.com](https://programmablesearchengine.google.com/) → crea un motore di ricerca → copia l'ID (cx) |
-| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) → API Keys → Create (gratuito, nessuna carta richiesta) |
-| `REDDIT_CLIENT_ID` | [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) → crea "script" app → copia l'ID sotto il nome |
-| `REDDIT_CLIENT_SECRET` | Stessa pagina Reddit → copia il "secret" |
-| `TELEGRAM_BOT_TOKEN` | Parla con [@BotFather](https://t.me/BotFather) su Telegram → `/newbot` → copia il token |
-| `TELEGRAM_CHAT_ID` | Invia un messaggio al bot, poi visita `https://api.telegram.org/bot<TOKEN>/getUpdates` → prendi `chat.id` |
+| Variable | How to obtain |
+|----------|---------------|
+| `EVENTBRITE_API_KEY` | [eventbrite.com/platform/api](https://www.eventbrite.com/platform/api) → create an app → copy the Private token |
+| `GOOGLE_CSE_API_KEY` | [console.cloud.google.com](https://console.cloud.google.com/) → APIs & Services → Credentials → Create API Key → enable "Custom Search JSON API" |
+| `GOOGLE_CSE_CX` | [programmablesearchengine.google.com](https://programmablesearchengine.google.com/) → create a search engine → copy the ID (cx) |
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) → API Keys → Create (free, no credit card required) |
+| `REDDIT_CLIENT_ID` | [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) → create "script" app → copy the ID below the name |
+| `REDDIT_CLIENT_SECRET` | Same Reddit page → copy the "secret" |
+| `TELEGRAM_BOT_TOKEN` | Talk to [@BotFather](https://t.me/BotFather) on Telegram → `/newbot` → copy the token |
+| `TELEGRAM_CHAT_ID` | Send a message to the bot, then visit `https://api.telegram.org/bot<TOKEN>/getUpdates` → grab `chat.id` |
 
-### 3. Esegui
+### 3. Run
 
 ```bash
-# Dry-run (nessuna notifica, solo log)
+# Dry-run (no notifications, logs only)
 python main.py --dry-run
 
-# Run completo (con notifiche Telegram)
+# Full run (with Telegram notifications)
 python main.py
 ```
 
-### 4. Test
+### 4. Tests
 
 ```bash
 python -m pytest tests/ -v
@@ -118,73 +132,73 @@ python -m pytest tests/ -v
 
 ---
 
-## Deploy su GitHub Actions
+## Deploy on GitHub Actions
 
-### 1. Fork/push il repository
+### 1. Fork/push the repository
 
-### 2. Configura i Secrets
+### 2. Configure Secrets
 
-Vai su **Settings → Secrets and variables → Actions → New repository secret** e aggiungi tutte le chiavi dal `.env`.
+Go to **Settings → Secrets and variables → Actions → New repository secret** and add all keys from `.env`.
 
-### 3. Abilita GitHub Pages
+### 3. Enable GitHub Pages
 
-Vai su **Settings → Pages** e imposta:
+Go to **Settings → Pages** and set:
 - **Source**: `Deploy from a branch`
 - **Branch**: `main` · **Folder**: `/docs`
 
-Il sito sarà disponibile su `https://<username>.github.io/<repo>/`.
+The site will be available at `https://<username>.github.io/<repo>/`.
 
-### 4. Abilita il workflow
+### 4. Enable the workflow
 
-Il workflow si trova in `.github/workflows/check_hackathons.yml`:
-- **Cron**: ogni giorno alle 12:00 CET (`0 11 * * *` UTC)
-- **Manuale**: dal tab "Actions" → "Run workflow"
-- Auto-commit di `data/events.json` + `docs/index.html` ad ogni run
+The workflow is in `.github/workflows/check_hackathons.yml`:
+- **Cron**: daily at 12:00 CET (`0 11 * * *` UTC)
+- **Manual**: from the "Actions" tab → "Run workflow"
+- Auto-commits `data/events.json`, `docs/index.html`, and `README.md` on each run
 
 ---
 
-## Bot Telegram
+## Telegram Bot
 
-`bot.py` espone un bot in long-polling con i comandi:
+`bot.py` runs a long-polling bot with the following commands:
 
-| Comando | Descrizione |
+| Command | Description |
 |---------|-------------|
-| `/scan` | Avvia una scansione manuale |
-| `/help` | Lista comandi |
+| `/scan` | Trigger a manual scan |
+| `/help` | List commands |
 
-Il bot invia automaticamente un **sommario** dopo ogni scansione (numero di nuovi hackathon + link al sito).  
-I dettagli completi degli eventi sono consultabili sul sito GitHub Pages e nella tabella del README.
+The bot automatically sends a **summary** after each scan (number of new hackathons + link to site).  
+Full event details are available on the GitHub Pages site and in the README table above.
 
-Avvio locale (attiva `.venv` e lancia `python bot.py`):
+Local start (activate `.venv` and run `python bot.py`):
 
 ```bash
 ./scripts/start_bot.sh
 ```
 
-Avvio automatico all'accesso macOS (launchd):
+Auto-start on macOS login (launchd):
 
 ```bash
 ./scripts/install_launchd.sh
 ```
 
-Accessibile solo dal `TELEGRAM_CHAT_ID` configurato — tutti gli altri messaggi ricevono un rifiuto automatico.
+Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are automatically rejected.
 
 ---
 
-## Come aggiungere un nuovo collector
+## Adding a New Collector
 
-1. Crea `collectors/mio_collector.py`:
+1. Create `collectors/my_collector.py`:
 
 ```python
 from models import BaseCollector, HackathonEvent
 
-class MioCollector(BaseCollector):
+class MyCollector(BaseCollector):
     @property
     def name(self) -> str:
-        return "mio_collector"
+        return "my_collector"
 
     def collect(self) -> list[HackathonEvent]:
-        # Scraping/API qui
+        # Scraping/API logic here
         return [
             HackathonEvent(
                 title="...",
@@ -194,35 +208,35 @@ class MioCollector(BaseCollector):
         ]
 ```
 
-2. Registralo in `main.py` → `get_collectors()`:
+2. Register it in `main.py` → `get_collectors()`:
 
 ```python
-from collectors.mio_collector import MioCollector
+from collectors.my_collector import MyCollector
 
 def get_collectors():
     return [
-        # ... esistenti ...
-        MioCollector(),
+        # ... existing collectors ...
+        MyCollector(),
     ]
 ```
 
-3. Aggiungi un test in `tests/test_collectors.py`.
+3. Add a test in `tests/test_collectors.py`.
 
 ---
 
-## Struttura del progetto
+## Project Structure
 
 ```
 hackathon-monitor/
-├── main.py                  # Orchestratore pipeline
-├── config.py                # Configurazione centralizzata
+├── main.py                  # Pipeline orchestrator
+├── config.py                # Centralized configuration
 ├── models.py                # HackathonEvent, BaseCollector
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
 ├── collectors/
 │   ├── eventbrite.py
-│   ├── eventbrite_web.py    # Scraping HTML (no API key, CI-affidabile)
+│   ├── eventbrite_web.py    # HTML scraping (no API key, CI-friendly)
 │   ├── google_cse.py
 │   ├── innovup.py
 │   ├── luma.py
@@ -232,20 +246,20 @@ hackathon-monitor/
 │   ├── reddit.py
 │   └── taikai.py
 ├── filters/
-│   ├── keyword_filter.py    # Pre-filtro regex
+│   ├── keyword_filter.py    # Regex pre-filter
 │   └── llm_filter.py        # Groq · Llama 3.3 70B classifier
 ├── notifiers/
-│   └── telegram.py          # Bot Telegram
+│   └── telegram.py          # Telegram Bot
 ├── storage/
-│   └── json_store.py        # Persistenza + dedup 2 livelli
+│   └── json_store.py        # Persistence + 2-level dedup
 ├── utils/
-│   ├── http.py              # HTTP client con retry/backoff
-│   ├── html_export.py       # Generatore pagina GitHub Pages
-│   └── readme_export.py     # Generatore tabella README.md
+│   ├── http.py              # HTTP client with retry/backoff
+│   ├── html_export.py       # GitHub Pages generator
+│   └── readme_export.py     # README table generator
 ├── data/
-│   └── events.json          # Storico eventi (auto-generato)
+│   └── events.json          # Event history (auto-generated)
 ├── docs/
-│   └── index.html           # Pagina pubblica GitHub Pages (auto-generata)
+│   └── index.html           # GitHub Pages site (auto-generated)
 ├── tests/
 │   ├── test_models.py
 │   ├── test_storage.py
@@ -259,16 +273,23 @@ hackathon-monitor/
 
 ---
 
-## Limiti noti
+## Known Limitations
 
-- **PoliHub**: bloccato da WAF/Cloudflare (403). Coperto indirettamente da Google CSE.
-- **Twitter/X**: API Free Tier è write-only. Coperto indirettamente da Google CSE (`site:twitter.com`).
-- **LinkedIn**: nessuna API pubblica per eventi. Coperto da Google CSE (`site:linkedin.com/events`).
-- **Google CSE**: quota gratuita 100 query/giorno (sufficiente per 1 run/giorno con 8 query).
-- **Groq free tier**: 14.400 req/giorno, 30 RPM. Senza `GROQ_API_KEY` il filtro LLM viene saltato (solo keyword filter).
+- **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by Google CSE.
+- **Twitter/X**: Free Tier API is write-only. Indirectly covered by Google CSE (`site:twitter.com`).
+- **LinkedIn**: no public API for events. Covered by Google CSE (`site:linkedin.com/events`).
+- **Google CSE**: free quota of 100 queries/day (sufficient for 1 run/day with 8 queries).
+- **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY` the LLM filter is skipped (keyword filter only).
 
 ---
 
-## Licenza
+## License
 
 MIT
+
+---
+
+<p align="center">
+  <sub>🤖 This project is <strong>vibe coded</strong> — built with AI-assisted development to simplify the search for hackathons in Milan.<br>
+  The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.</sub>
+</p>
