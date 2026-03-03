@@ -146,9 +146,7 @@ _CSS = (
     "radial-gradient(ellipse 80% 80% at -10% 110%,rgba(217,119,6,.18),transparent 50%),"
     "radial-gradient(ellipse 60% 60% at 50% 50%,rgba(30,45,66,.9),transparent 100%),"
     "var(--dark)}"
-    ".hero-grid{position:absolute;inset:0;z-index:0;"
-    "background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);"
-    "background-size:60px 60px}"
+    ".hero-grid{display:none}"
     ".hero-content{position:relative;z-index:1}"
     ".topbar{display:flex;align-items:center;justify-content:space-between;"
     "padding:1.25rem 0;border-bottom:1px solid rgba(255,255,255,.07)}"
@@ -180,7 +178,7 @@ _CSS = (
     "background:linear-gradient(90deg,#60a5fa,#818cf8,#c4b5fd,#60a5fa);"
     "background-size:250% auto;"
     "-webkit-background-clip:text;background-clip:text;"
-    "animation:shimmer 4s linear infinite}"
+    "animation:wordReveal .7s cubic-bezier(.22,1,.36,1) .47s both,shimmer 4s linear .47s infinite}"
     ".hero-sub{font-size:1.05rem;color:rgba(255,255,255,.55);max-width:520px;"
     "line-height:1.65;margin-bottom:2.25rem;font-weight:400}"
     ".hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}"
@@ -449,7 +447,7 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
         '<span class="hw" style="animation-delay:.22s">Il</span> '
         '<span class="hw" style="animation-delay:.30s">calendario</span> '
         '<span class="hw" style="animation-delay:.38s">degli</span> '
-        '<em><span class="hw" style="animation-delay:.47s">hackathon</span></em> '
+        '<em>hackathon</em> '
         '<span class="hw" style="animation-delay:.56s">milanesi.</span>'
         '</h1>\n'
         '    <p class="hero-sub">Ogni giorno raccogliamo e verifichiamo con AI tutti gli hackathon, coding challenge e competizioni tech a Milano.</p>\n'
