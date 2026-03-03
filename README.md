@@ -2,7 +2,7 @@
 
 **Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
-Automated aggregator for hackathon events in Milan from 10+ heterogeneous sources.  
+Automated aggregator for hackathon events in Milan from 26 heterogeneous sources.  
 Filters with LLM, notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
 
 <br>
@@ -13,7 +13,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **18 hackathons** coming up in Milan · Last updated: Mar 03, 2026 16:16
+> **10 hackathons** coming up in Milan · Last updated: Mar 03, 2026 16:47
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -26,17 +26,9 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 | [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 20 Mar 2026 | Milano | web_search |
 | [HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole](https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/) | 10 Apr 2026 | Milano | web_search |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
-| [Wikimedia - Save the date! The 2026 edition of the Wikimedia Hackathon ...](https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/) | 1 May 2026 | Milano | web_search |
-| [Free & $21,000 Prize, Blockchain & Data 24hours Hackathon @Milan](https://www.hackathon.com/event/free-and-21000-prize-blockchain-and-data-24hours-hackathon-milan-52262112385) | 24 Nov 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [HackAthena'26](https://hackathena-26.devfolio.co/) | TBD | Milano | devfolio |
-| [HACKANOVA 5.O](https://hackanova-5-0.devfolio.co/) | TBD | Milano | devfolio |
-| [FastwebAI Hackathon a Milano \| Fastweb](https://www.fastweb.it/fastwebai-hackathon/) | TBD | Milano | web_search |
 | [Italian Hackathon League: Milano ospita l'ultima sfida sull'AI vocale](https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/) | TBD | Milano | web_search |
 | [Global legal Hackathon: tre giorni a Milano per sfidarsi a colpi di coding](https://blblex.it/rassegna_stampa.php?id=788&lang=en) | TBD | Milano | web_search |
-| [Hack2BRIDGE expands to Italy with a hackathon aimed at Mobility, Transport and Automotive \| European Cluster Collaboration Platform](https://www.clustercollaboration.eu/content/hack2bridge-expands-italy-hackathon-aimed-mobility-transport-and-automotive) | TBD | Milano | web_search |
-| [Platform \| LA CTF](https://platform.2026.lac.tf/) | TBD | Milano | web_search |
-| [Con FOSS4G-IT & OSMit 2026 i software e i dati geospaziali](https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -45,7 +37,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 <p align="center">
   <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
   <img src="https://img.shields.io/badge/AI--verified-Llama_3.3_70B-purple?style=for-the-badge" alt="AI Verified">
-  <img src="https://img.shields.io/badge/sources-10+-green?style=for-the-badge" alt="10+ Sources">
+  <img src="https://img.shields.io/badge/sources-26-green?style=for-the-badge" alt="26 Sources">
 </p>
 
 ---
@@ -56,13 +48,16 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 Collectors (26 sources in parallel)
         │
         ▼
-  Deduplication (SHA-256 URL + fuzzy title via SequenceMatcher > 0.85)
+  3-Level Deduplication
+    L1  SHA-256(URL) exact match + alternate_urls index
+    L2  Fuzzy title (SequenceMatcher ≥ 0.75)
+    L3  Same date + shared distinctive keywords
         │
         ▼
-  Keyword Pre-filter (62 regex word-boundary patterns: discards "growth hacking", "biohacking", etc.)
+  Keyword Pre-filter (62+ regex patterns, junk-URL blocklist, past-year check)
         │
         ▼
-  LLM Filter (Groq · Llama 3.3 70B, batches of 20, few-shot, threshold 0.7)
+  LLM Filter (Groq · Llama 3.3 70B, batches of 5, few-shot, threshold 0.7)
         │  Only events PHYSICALLY in Milan — online/remote → discarded
         ▼
   Telegram Notification (summary + link to site)
@@ -71,10 +66,7 @@ Collectors (26 sources in parallel)
   Persistent Storage (data/events.json)
         │
         ▼
-  HTML Page Generation (docs/index.html → GitHub Pages)
-        │
-        ▼
-  README Table Update
+  HTML Page (docs/index.html → GitHub Pages) + README Table
 ```
 
 <details>
@@ -86,46 +78,45 @@ Collectors (26 sources in parallel)
 |---|--------|--------|-------|
 | 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
 | 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback without API key — works in CI |
-| 3 | **Google CSE** | Custom Search API | Meta-aggregator (10 queries, IT + EN). Requires `GOOGLE_CSE_API_KEY` + `GOOGLE_CSE_CX` |
-| 4 | **Web Search (DDG)** | DuckDuckGo DDGS | Free meta-aggregator, 21 queries (IT + EN + site-specific) |
-| 5 | **InnovUp** | HTML scraping | innovup.net/eventi |
-| 6 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
-| 7 | **Devpost** | HTML scraping | Low coverage for Milan |
-| 8 | **PoliHub** | HTML scraping | Blocked by WAF (indirectly covered by Google CSE) |
-| 9 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
-| 10 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
-| 11 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
+| 3 | **Web Search (DDG)** | DuckDuckGo DDGS | Free meta-aggregator, 21 queries (IT + EN + site-specific) |
+| 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
+| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
+| 6 | **Devpost** | HTML scraping | Low coverage for Milan |
+| 7 | **PoliHub** | HTML scraping | Blocked by WAF (covered by DDG web search) |
+| 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
+| 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
 
 #### High-Impact New Sources
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 12 | **Meetup** | GraphQL API + HTML fallback | Milan geo-search (30 km). Optional `MEETUP_API_KEY` |
-| 13 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
-| 14 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
-| 15 | **Codemotion** | HTML scraping | community.codemotion.com — largest Italian tech community |
-| 16 | **Talent Garden** | HTML scraping | TAG Milano campuses (Calabiana, Isola). IT + EN pages |
-| 17 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
-| 18 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
+| 11 | **Meetup** | GraphQL API + HTML fallback | Milan geo-search (30 km). Optional `MEETUP_API_KEY` |
+| 12 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
+| 13 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
+| 14 | **Codemotion** | HTML scraping | community.codemotion.com — largest Italian tech community |
+| 15 | **Talent Garden** | HTML scraping | TAG Milano campuses (Calabiana, Isola). IT + EN pages |
+| 16 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
+| 17 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
 
 #### International Platforms
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 19 | **DoraHacks** | REST API | Web3/blockchain hackathons. Italy geo-filter |
-| 20 | **HackerEarth** | HTML scraping | hackerearth.com/challenges — online + onsite |
-| 21 | **Devfolio** | `__NEXT_DATA__` + HTML fallback | Growing EU platform. Italy geo-filter |
-| 22 | **ChallengeRocket** | HTML scraping | EU/CEE hackathons + challenges |
-| 23 | **Unstop** | HTML + Angular JSON | Ex-Dare2Compete. Italy geo-filter |
-| 24 | **Lablab.ai** | `__NEXT_DATA__` + HTML | AI hackathons — LLM filters for Milan relevance |
+| 18 | **DoraHacks** | REST API | Web3/blockchain hackathons. Italy geo-filter |
+| 19 | **HackerEarth** | HTML scraping | hackerearth.com/challenges — online + onsite |
+| 20 | **Devfolio** | `__NEXT_DATA__` + HTML fallback | Growing EU platform. Italy geo-filter |
+| 21 | **ChallengeRocket** | HTML scraping | EU/CEE hackathons + challenges |
+| 22 | **Unstop** | HTML + Angular JSON | Ex-Dare2Compete. Italy geo-filter |
+| 23 | **Lablab.ai** | `__NEXT_DATA__` + HTML | AI hackathons — LLM filters for Milan relevance |
 
 #### Institutional Sources
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 25 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
-| 26 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
-| 27 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
+| 24 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
+| 25 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
+| 26 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
 
 </details>
 
@@ -156,8 +147,6 @@ Edit `.env` with your keys. **No key is mandatory** — collectors without a key
 | Variable | How to obtain |
 |----------|---------------|
 | `EVENTBRITE_API_KEY` | [eventbrite.com/platform/api](https://www.eventbrite.com/platform/api) → create an app → copy the Private token |
-| `GOOGLE_CSE_API_KEY` | [console.cloud.google.com](https://console.cloud.google.com/) → APIs & Services → Credentials → Create API Key → enable "Custom Search JSON API" |
-| `GOOGLE_CSE_CX` | [programmablesearchengine.google.com](https://programmablesearchengine.google.com/) → create a search engine → copy the ID (cx) |
 | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) → API Keys → Create (free, no credit card required) |
 | `REDDIT_CLIENT_ID` | [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) → create "script" app → copy the ID below the name |
 | `REDDIT_CLIENT_SECRET` | Same Reddit page → copy the "secret" |
@@ -225,16 +214,11 @@ The workflow is in `.github/workflows/check_hackathons.yml`:
 The bot automatically sends a **summary** after each scan (number of new hackathons + link to site).  
 Full event details are available on the GitHub Pages site and in the README table above.
 
-Local start (activate `.venv` and run `python bot.py`):
+Local start:
 
 ```bash
-./scripts/start_bot.sh
-```
-
-Auto-start on macOS login (launchd):
-
-```bash
-./scripts/install_launchd.sh
+source .venv/bin/activate
+python bot.py
 ```
 
 Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are automatically rejected.
@@ -291,37 +275,40 @@ def get_collectors():
 ```
 hackathon-monitor/
 ├── main.py                  # Pipeline orchestrator
+├── bot.py                   # Telegram bot (long-polling)
 ├── config.py                # Centralized configuration
 ├── models.py                # HackathonEvent, BaseCollector
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── collectors/
-│   ├── eventbrite.py
+├── collectors/              # 26 source modules
+│   ├── eventbrite.py        # REST API
 │   ├── eventbrite_web.py    # HTML scraping (no API key, CI-friendly)
-│   ├── google_cse.py
-│   ├── innovup.py
-│   ├── luma.py
-│   ├── devpost.py
-│   ├── polihub.py
-│   ├── universities.py
-│   ├── reddit.py
-│   └── taikai.py
+│   ├── web_search.py        # DuckDuckGo meta-aggregator (21 queries)
+│   ├── luma.py              # __NEXT_DATA__ + HTML
+│   ├── meetup.py            # GraphQL API
+│   ├── ...                  # 20 more (see Registered Collectors above)
+│   └── regione_lombardia.py
 ├── filters/
-│   ├── keyword_filter.py    # Regex pre-filter
+│   ├── keyword_filter.py    # Regex pre-filter + junk-URL blocklist
 │   └── llm_filter.py        # Groq · Llama 3.3 70B classifier
 ├── notifiers/
-│   └── telegram.py          # Telegram Bot
+│   └── telegram.py          # Telegram notifications
 ├── storage/
-│   └── json_store.py        # Persistence + 2-level dedup
+│   └── json_store.py        # Persistence + 3-level dedup
 ├── utils/
 │   ├── http.py              # HTTP client with retry/backoff
 │   ├── html_export.py       # GitHub Pages generator
 │   └── readme_export.py     # README table generator
+├── scripts/
+│   ├── slow_classify.py     # Recovery: classify one-by-one with rate-limit safety
+│   ├── collect_only.py      # Debug: collect + keyword filter, save candidates
+│   └── extract_dates.py     # Backfill missing event dates via LLM
 ├── data/
 │   └── events.json          # Event history (auto-generated)
 ├── docs/
-│   └── index.html           # GitHub Pages site (auto-generated)
+│   ├── index.html           # GitHub Pages site (auto-generated)
+│   └── banner.svg           # Header banner
 ├── tests/
 │   ├── test_models.py
 │   ├── test_storage.py
@@ -340,11 +327,11 @@ hackathon-monitor/
 <details>
 <summary><strong>Known Limitations</strong></summary>
 
-- **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by Google CSE.
-- **Twitter/X**: Free Tier API is write-only. Indirectly covered by Google CSE (`site:twitter.com`).
-- **LinkedIn**: no public API for events. Covered by Google CSE (`site:linkedin.com/events`).
-- **Google CSE**: free quota of 100 queries/day (sufficient for 1 run/day with 8 queries).
+- **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by DDG web search.
+- **Twitter/X**: Free Tier API is write-only. Covered by DDG web search (`site:twitter.com`).
+- **LinkedIn**: no public API for events. Covered by DDG web search (`site:linkedin.com/events`).
 - **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY` the LLM filter is skipped (keyword filter only).
+- **Some collectors** may return 404/403 temporarily due to site changes — they fail gracefully and don't block the pipeline.
 
 </details>
 
