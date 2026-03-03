@@ -346,8 +346,6 @@ Contributions are warmly welcome!
 - 🧠 **Improve LLM filtering** — better prompts, fewer false positives
 - 📍 **Spot a missing hackathon?** — [let us know](../../issues/new?title=Missing+hackathon&template=missing_event.md)
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
-
 ---
 
 > [!WARNING]
@@ -356,14 +354,9 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
 ---
 
 <div align="center">
-<br>
 
-🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.
+<sub>🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.
 
-The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.
-
-<br>
-
-<sub>Made with ❤️ in Milan</sub>
+The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.</sub>
 
 </div>
