@@ -150,7 +150,8 @@ class EventStore:
 
         Per eventi con la stessa data (non vuota), controlla se keyword
         distintive del nuovo evento appaiono nel titolo+descrizione di
-        un evento nello storico (o viceversa). Serve overlap ≥ 2 keyword.
+        un evento nello storico (o viceversa).
+        Match se overlap ≥ 2 keyword, oppure 1 keyword molto lunga (≥8 char).
 
         Returns:
             Il dict dell'evento matchato, o None.
@@ -173,7 +174,10 @@ class EventStore:
             stored_kw = self._extract_distinctive_keywords(stored_text)
 
             overlap = event_kw & stored_kw
-            if len(overlap) >= 2:
+            # ≥2 keyword qualsiasi, OPPURE 1 keyword molto distintiva (≥8 char)
+            # es. "wikimedia" (9 char) è sufficiente da sola come segnale forte
+            has_strong_kw = any(len(kw) >= 8 for kw in overlap)
+            if len(overlap) >= 2 or (len(overlap) == 1 and has_strong_kw):
                 logger.debug(
                     "Date+keyword match: '%s' ≈ '%s' (date=%s, overlap=%s)",
                     event.title[:60], stored.get("title", "")[:60],

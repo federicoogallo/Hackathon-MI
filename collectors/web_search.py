@@ -60,6 +60,10 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"allevents\.in/", re.I),                  # aggregatore rumoroso
     re.compile(r"stayhappening\.com/", re.I),             # aggregatore rumoroso
     re.compile(r"hacktrack-eu\.vercel\.app", re.I),       # aggregatore EU hackathon listing
+    re.compile(r"hackathon\.com/event/", re.I),             # aggregatore con date stale
+    re.compile(r"devfolio\.co/", re.I),                     # quasi esclusivamente hackathon indiani
+    re.compile(r"\d{4}\.lac\.tf", re.I),                    # LA CTF (Los Angeles)
+    re.compile(r"foss\.events/", re.I),                     # conferenze FOSS
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
     re.compile(r"youtube\.com/watch", re.I),
 ]
