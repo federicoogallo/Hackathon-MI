@@ -82,6 +82,14 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"globalgamejam\.it/?$", re.I),                     # homepage IGDA Italy
     re.compile(r"meetup\.com/topics/", re.I),                      # topic listing
     re.compile(r"pretix\.eu/", re.I),                              # ticketing (non pagina evento)
+    # Aggregatori / piattaforme con dati inaffidabili
+    re.compile(r"hackathon\.com/event/", re.I),                    # aggregatore con date sbagliate/stale
+    re.compile(r"devfolio\.co/", re.I),                             # quasi esclusivamente hackathon indiani
+    re.compile(r"devpost\.com/[A-Za-z0-9_-]+/?$", re.I),           # profili utente devpost
+    # CTF / competizioni non milanesi
+    re.compile(r"\d{4}\.lac\.tf", re.I),                            # LA CTF (Los Angeles)
+    re.compile(r"platform\..*\.lac\.tf", re.I),                     # piattaforma LA CTF
+    re.compile(r"foss\.events/", re.I),                             # conferenze FOSS (non hackathon)
 ]
 
 

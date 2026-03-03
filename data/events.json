@@ -90,38 +90,6 @@
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
     {
-      "id": "1f1e58ce177576bf6c4eb981b4d4ebf820aee516e09ae0d9e366c889fc9e6430",
-      "title": "HackAthena'26",
-      "url": "https://hackathena-26.devfolio.co/",
-      "source": "devfolio",
-      "description": "",
-      "date_str": "",
-      "location": "Milano",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [
-        "https://www.issapulire.com/it/eventi/hackathon.html"
-      ],
-      "discovered_at": "2026-03-03T15:34:35.906415"
-    },
-    {
-      "id": "4105caec38d6533ff5146bee99b9a8847f01e381dddd05f023891f8a99cb1a40",
-      "title": "HACKANOVA 5.O",
-      "url": "https://hackanova-5-0.devfolio.co/",
-      "source": "devfolio",
-      "description": "",
-      "date_str": "",
-      "location": "Milano",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [
-        "https://hacknova-3.devfolio.co/"
-      ],
-      "discovered_at": "2026-03-03T15:34:35.906494"
-    },
-    {
       "id": "45d6f1df9a21ce406d296924b09010341382dee0c5182b6a25761013cc9e6a8f",
       "title": "HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole",
       "url": "https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
@@ -139,20 +107,6 @@
         "https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT"
       ],
       "discovered_at": "2026-03-03T15:34:32.208612"
-    },
-    {
-      "id": "c83a76b7a8c339cefebfde40c12c8f8ce250f87e408788bf712ddc26d13e7897",
-      "title": "FastwebAI Hackathon a Milano | Fastweb",
-      "url": "https://www.fastweb.it/fastwebai-hackathon/",
-      "source": "web_search",
-      "description": "Unisciti a noi per il primo FastwebAI Hackathon , un'opportunità unica per giovani talenti come te, motivati e desiderosi di progettare soluzioni all'avanguardia! Crediamo fermamente nei valori di sostenibilità e innovazione, pilastri su cui ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.85,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:32.208759"
     },
     {
       "id": "cbaaf8d84db56092942a4332630dbc330b98a4cb341bcc124eb7c24d4dbd9455",
@@ -193,78 +147,10 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/"
+      ],
       "discovered_at": "2026-03-03T15:34:35.836652"
-    },
-    {
-      "id": "862eee508d9824b3ad22f1cdb5914556cfd6ea880c9cedd4a04eef2b76061bad",
-      "title": "Hack2BRIDGE expands to Italy with a hackathon aimed at Mobility, Transport and Automotive | European Cluster Collaboration Platform",
-      "url": "https://www.clustercollaboration.eu/content/hack2bridge-expands-italy-hackathon-aimed-mobility-transport-and-automotive",
-      "source": "web_search",
-      "description": "The third hackathon in the Hack2BRIDGE series will take place in Milan, Italy, focusing on innovation within the Mobility, Transport and Automotive (MTA) ecosystem . Organised under the BRIDGESMEs project, this edition is designed to connect SMEs, startups, scaleups, research teams and freelancers ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.85,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:35.836723"
-    },
-    {
-      "id": "89270477a227f5febb72f14af921f3ce40f2c74e047618d8708fab2668acd6f7",
-      "title": "Free & $21,000 Prize, Blockchain & Data 24hours Hackathon @Milan",
-      "url": "https://www.hackathon.com/event/free-and-21000-prize-blockchain-and-data-24hours-hackathon-milan-52262112385",
-      "source": "web_search",
-      "description": "2026 · 2025 · 2024 · 2023 · 2022 · 2021 · 2020 · 2019 · 2018 · 2017 · 2016 · 2015 · See event website · Description · Dear Hackers @ Milan · Join the Hackathon Nov 24th-25th and feel like winning prizes by solving actual Blockchain ...",
-      "date_str": "2026-11-24",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:35.836750"
-    },
-    {
-      "id": "4e6f1ecfadd3dd999f1c73b284cedae08682c6feacbc5d1c182507319dbf1d94",
-      "title": "Platform | LA CTF",
-      "url": "https://platform.2026.lac.tf/",
-      "source": "web_search",
-      "description": "LA CTF is a jeopardy-style capture-the-flag (CTF) cybersecurity competition hosted by ACM Cyber at UCLA & Psi Beta Rho !",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:34:57.963941"
-    },
-    {
-      "id": "68e302dc723def3fcd1e8fb9ecc81ac24ea21b32ec82a93a47dc799852595759",
-      "title": "Con FOSS4G-IT & OSMit 2026 i software e i dati geospaziali",
-      "url": "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/",
-      "source": "web_search",
-      "description": "Il Wikimedia Hackathon 2026 arriva a Milano ... Corri per la conoscenza libera: Wikimedia Italia alla Milano Marathon 2026",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:39:03.573764"
-    },
-    {
-      "id": "67a2414994ca39f67459ca9c67b2db546b4e5ed1d35249b94d4e07cc800a435c",
-      "title": "Wikimedia - Save the date! The 2026 edition of the Wikimedia Hackathon ...",
-      "url": "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/",
-      "source": "web_search",
-      "description": "The 2026 edition of the Wikimedia Hackathon is set to take place from 1 to 3 May in Milan , Italy . This annual event brings together the global technical community.",
-      "date_str": "2026-05-01",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:39:06.653930"
     }
   ]
 }

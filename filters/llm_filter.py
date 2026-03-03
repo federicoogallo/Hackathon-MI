@@ -43,9 +43,11 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
    ATTENZIONE: La location DEVE contenere esplicitamente "Milano", "Milan", "Politecnico", "Bocconi", "Bicocca", "MIND" o un indirizzo/luogo noto milanese.
    Se la location è vuota/non specificata e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
    Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel testo.
+   ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin — è quasi certamente NON a Milano → false.
 
 4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}) o senza data ma con indicazioni di essere nel {current_year} o futuro.
    NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti. Se l'URL/titolo menziona solo anni < {current_year} → false.
+   ATTENZIONE: Non fidarti ciecamente del dominio/URL per la data. Verifica che il CONTENUTO (titolo, descrizione) confermi date future. Aggregatori come hackathon.com possono mostrare eventi vecchi con URL fuorvianti.
 
 ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la data di inizio nel campo "event_date" in formato YYYY-MM-DD.
 - Cerca la data nel titolo, descrizione, URL (es. "10-11 April 2026" → "2026-04-10")
