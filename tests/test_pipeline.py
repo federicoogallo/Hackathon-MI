@@ -12,8 +12,6 @@ from models import HackathonEvent
 from notifiers.telegram import (
     _escape_html,
     _send_message,
-    notify_new_hackathon,
-    notify_collector_error,
 )
 from storage.json_store import EventStore
 
@@ -72,52 +70,18 @@ class TestSendMessage:
 
 
 # =============================================================================
-#  Telegram — Notify Hackathon
-# =============================================================================
-
-class TestNotifyHackathon:
-    @patch("notifiers.telegram._send_message")
-    def test_formats_correctly(self, mock_send):
-        mock_send.return_value = True
-        event = HackathonEvent(
-            title="PoliHack <2026>",
-            url="https://x.com/pol",
-            source="test",
-            description="A & B hackathon",
-            date_str="2026-03-15",
-            organizer="PoliMi",
-            confidence=0.95,
-        )
-        result = notify_new_hackathon(event)
-        assert result is True
-        # Verifica che sia stato chiamato con HTML escaped
-        call_text = mock_send.call_args[0][0]
-        assert "&lt;2026&gt;" in call_text
-        assert "A &amp; B" in call_text
-        assert "Vai all" in call_text
-
-
-# =============================================================================
-#  Telegram — Daily Report
-# =============================================================================
-
-
-
-
-# =============================================================================
 #  Pipeline — Test integrazione
 # =============================================================================
 
 class TestPipelineIntegration:
     """Test del flusso pipeline con collector e filtri mockati."""
 
-    @patch("main.notify_new_hackathon")
     @patch("main.llm_filter")
     @patch("main.keyword_filter_batch")
     @patch("main.run_collectors")
     @patch("main.EventStore")
     def test_dry_run_pipeline(
-        self, MockStore, mock_run_coll, mock_kw, mock_llm, mock_notify
+        self, MockStore, mock_run_coll, mock_kw, mock_llm
     ):
         """Pipeline dry-run: nessuna notifica reale."""
         from main import run_pipeline
@@ -137,9 +101,6 @@ class TestPipelineIntegration:
         mock_llm.return_value = (events, 0)
 
         run_pipeline(dry_run=True)
-
-        # Con dry-run le notifiche reali NON vengono inviate
-        mock_notify.assert_not_called()
 
     def test_dedup_intra_batch(self):
         """Dedup intra-batch: stesso URL da collector diversi → uno solo."""

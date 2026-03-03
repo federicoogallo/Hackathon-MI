@@ -5,6 +5,23 @@
 Aggregatore automatico di eventi hackathon a Milano da 10+ fonti eterogenee.  
 Filtra con LLM (Groq · Llama 3.3 70B, gratuito), notifica via Telegram Bot, genera una pagina web statica su GitHub Pages. Avviabile in locale o su GitHub Actions.
 
+<!-- HACKATHON_TABLE_START -->
+
+> **6 hackathon** in programma a Milano e dintorni · Aggiornato: 03/03/2026 13:19
+>
+> 🌐 **[Vedi il sito completo](https://federicoogallo.github.io/Hackathon-MI/)** per ricerca, filtri e dettagli.
+
+| Nome | Data | Luogo | Fonte |
+| --- | --- | --- | --- |
+| [The Ignition — Opening Gathering: Creative Hackathon - The New Human (Milan & Online)](https://lu.ma/jevwfttk) | 6 Mar 2026 | Google Porta Nuova Isola, Via Federico Confalonieri, 4, 20124 Milano MI, Italia | luma |
+| [AI Voice Agent Hackathon powered by ElevenLabs - Milan](https://lu.ma/rgtc75im) | 7 Mar 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
+| [The Making — Public Sharing: Creative Hackathon - The New Human (Milan)](https://lu.ma/g02myvsa) | 7 Mar 2026 | TrueLayer, Via Joe Colombo, 8, 20124 Milano MI, Italia | luma |
+| [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 13 Mag 2026 | Milano | web_search |
+| [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
+| [Harvard HSIL Hackathon 2026 - POLIMI GSoM](https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/) | TBD | Milano | web_search |
+
+<!-- HACKATHON_TABLE_END -->
+
 ---
 
 ## Architettura
@@ -22,13 +39,16 @@ Collectors (10 fonti in parallelo)
   Filtro LLM (Groq · Llama 3.3 70B, batch da 20, few-shot, threshold 0.7)
         │  Solo eventi FISICAMENTE a Milano — online/remoti → scartati
         ▼
-  Notifica Telegram (nuovo hackathon + report giornaliero)
+  Notifica Telegram (summary + link al sito)
         │
         ▼
   Salvataggio storico (data/events.json)
         │
         ▼
   Generazione pagina HTML (docs/index.html → GitHub Pages)
+        │
+        ▼
+  Aggiornamento tabella README.md
 ```
 
 ### Collector registrati
@@ -130,11 +150,10 @@ Il workflow si trova in `.github/workflows/check_hackathons.yml`:
 | Comando | Descrizione |
 |---------|-------------|
 | `/scan` | Avvia una scansione manuale |
-| `/eventi` | Hackathon futuri confermati, ordinati per data |
-| `/report` | Dettaglio ultima scansione (pipeline + contatori) |
-| `/status` | Statistiche dello storico |
-| `/fonti` | Sorgenti monitorate |
 | `/help` | Lista comandi |
+
+Il bot invia automaticamente un **sommario** dopo ogni scansione (numero di nuovi hackathon + link al sito).  
+I dettagli completi degli eventi sono consultabili sul sito GitHub Pages e nella tabella del README.
 
 Avvio locale (attiva `.venv` e lancia `python bot.py`):
 
@@ -221,7 +240,8 @@ hackathon-monitor/
 │   └── json_store.py        # Persistenza + dedup 2 livelli
 ├── utils/
 │   ├── http.py              # HTTP client con retry/backoff
-│   └── html_export.py       # Generatore pagina GitHub Pages
+│   ├── html_export.py       # Generatore pagina GitHub Pages
+│   └── readme_export.py     # Generatore tabella README.md
 ├── data/
 │   └── events.json          # Storico eventi (auto-generato)
 ├── docs/

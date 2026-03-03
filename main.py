@@ -38,11 +38,9 @@ from collectors.taikai import TaikaiCollector
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
-from notifiers.telegram import (
-    notify_new_hackathon,
-    notify_run_summary,
-)
+from notifiers.telegram import notify_run_summary
 from utils.html_export import generate_html
+from utils.readme_export import generate_readme_table
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -259,24 +257,12 @@ def run_pipeline(dry_run: bool = False) -> None:
             pre_date_filter2, post_date_filter2, pre_date_filter2 - post_date_filter2,
         )
 
-    # 6. Notifica nuovi hackathon
-    notified_count = 0
+    # 6. Salva nuovi hackathon nello storico
+    notified_count = len(llm_confirmed)
     for event in llm_confirmed:
         event.is_hackathon = True
-
-        if not dry_run:
-            success = notify_new_hackathon(event)
-            if success:
-                notified_count += 1
-                logger.info("Notifica inviata: %s", event.title)
-            else:
-                logger.warning("Notifica fallita per: %s", event.title)
-        else:
-            notified_count += 1
-            logger.info("[DRY RUN] Nuovo hackathon: %s — %s", event.title, event.url)
-
-        # Aggiungi allo storico
         store.add_event(event)
+        logger.info("%sNuovo hackathon: %s", "[DRY RUN] " if dry_run else "", event.title)
 
     # 7. Salva report su file (accessibile via /report dal bot)
     report = {
@@ -309,6 +295,13 @@ def run_pipeline(dry_run: bool = False) -> None:
         logger.info("HTML page generata: docs/index.html")
     except Exception as e:
         logger.warning("Impossibile generare HTML page: %s", e)
+
+    # 9b. Aggiorna tabella hackathon nel README.md
+    try:
+        generate_readme_table()
+        logger.info("README.md aggiornato con tabella hackathon")
+    except Exception as e:
+        logger.warning("Impossibile aggiornare README.md: %s", e)
 
     # 10. Conta hackathon futuri confermati nello storico (per summary)
     total_upcoming = sum(
