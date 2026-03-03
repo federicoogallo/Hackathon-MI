@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-03-02T21:35:50.248189",
+  "last_check": "2026-03-03T15:39:01.210436",
   "events": [
     {
       "id": "350c1e531eb13fe9c5bd3446c99eaaadd757018f8b7e31acf12be8564c62871b",
@@ -12,7 +12,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://luma.com/jevwfttk"
+      ],
       "discovered_at": "2026-03-02T21:09:49.760923"
     },
     {
@@ -26,7 +28,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://luma.com/rgtc75im"
+      ],
       "discovered_at": "2026-03-02T21:09:49.760925"
     },
     {
@@ -49,7 +53,7 @@
       "url": "https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/",
       "source": "web_search",
       "description": "I team vincitori accederanno alla finale internazionale , che si svolgerà il 13 e 14 maggio 2026 a Milano , nell’ambito della MIND Innovation Week ...",
-      "date_str": "2026-05-13",
+      "date_str": "2026-03-20",
       "location": "",
       "organizer": "",
       "is_hackathon": true,
@@ -84,6 +88,234 @@
       "confidence": 0.95,
       "alternate_urls": [],
       "discovered_at": "2026-03-02T21:09:49.760886"
+    },
+    {
+      "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
+      "title": "The New Human - ART+TECH Festival 2026 DAY 1  — THE IGNITION",
+      "url": "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688",
+      "source": "eventbrite_web",
+      "description": "Imagining The New Human in ten years (2036)A call to hackers, mentors, volunteers, or explorers... join our creative community.",
+      "date_str": "2026-03-06",
+      "location": "4 Via Federico Confalonieri, Milano",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.252417"
+    },
+    {
+      "id": "1f1e58ce177576bf6c4eb981b4d4ebf820aee516e09ae0d9e366c889fc9e6430",
+      "title": "HackAthena'26",
+      "url": "https://hackathena-26.devfolio.co/",
+      "source": "devfolio",
+      "description": "",
+      "date_str": "",
+      "location": "Milano",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:35.906415"
+    },
+    {
+      "id": "4105caec38d6533ff5146bee99b9a8847f01e381dddd05f023891f8a99cb1a40",
+      "title": "HACKANOVA 5.O",
+      "url": "https://hackanova-5-0.devfolio.co/",
+      "source": "devfolio",
+      "description": "",
+      "date_str": "",
+      "location": "Milano",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [
+        "https://hacknova-3.devfolio.co/"
+      ],
+      "discovered_at": "2026-03-03T15:34:35.906494"
+    },
+    {
+      "id": "45d6f1df9a21ce406d296924b09010341382dee0c5182b6a25761013cc9e6a8f",
+      "title": "HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole",
+      "url": "https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
+      "source": "web_search",
+      "description": "January 26, 2026 - HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI · Category: Course / Workshop · Location: Fondazione Triulza, MIND - Milano Innovation District - In presence · Registration Deadline: 28/02/2026 · Date: 10/04/2026 ...",
+      "date_str": "2026-04-10",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [
+        "https://hsph.harvard.edu/research/health-systems-innovation-lab/work/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/"
+      ],
+      "discovered_at": "2026-03-03T15:34:32.208612"
+    },
+    {
+      "id": "7534d5c48b8333fafd6eec03e4ac8839ca4cc5ebc1427972418a9a2db5cc232e",
+      "title": "Progetti e iniziative di Open Innovation | Università degli Studi di Milano Statale",
+      "url": "https://www.unimi.it/it/terza-missione/innovazione-ricerca-e-imprese/progetti-e-iniziative-di-open-innovation",
+      "source": "web_search",
+      "description": "Nelle giornate del 10 ed 11 aprile 2026 , Milano sarà una delle sedi ufficiali dell’evento grazie ad una collaborazione d’eccellenza tra Università degli Studi di Milano, Politecnico di Milano, Federated Innovation @MIND, Human Technopole e Società Italiana Intelligenza Artificiale in ...",
+      "date_str": "2026-04-10",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.208700"
+    },
+    {
+      "id": "c83a76b7a8c339cefebfde40c12c8f8ce250f87e408788bf712ddc26d13e7897",
+      "title": "FastwebAI Hackathon a Milano | Fastweb",
+      "url": "https://www.fastweb.it/fastwebai-hackathon/",
+      "source": "web_search",
+      "description": "Unisciti a noi per il primo FastwebAI Hackathon , un'opportunità unica per giovani talenti come te, motivati e desiderosi di progettare soluzioni all'avanguardia! Crediamo fermamente nei valori di sostenibilità e innovazione, pilastri su cui ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.208759"
+    },
+    {
+      "id": "cbaaf8d84db56092942a4332630dbc330b98a4cb341bcc124eb7c24d4dbd9455",
+      "title": "Italian Hackathon League: Milano ospita l'ultima sfida sull'AI vocale",
+      "url": "https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/",
+      "source": "web_search",
+      "description": "January 30, 2026 - L’AI Voice Agent Hackathon, che segna l’ultima sfida prima della finale nazionale prevista per ottobre 2026 , si preannuncia come una delle competizioni più emozionanti dell’anno.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.8,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.208810"
+    },
+    {
+      "id": "c9c313dbf474cff201668a9200408584db00e27117da175b2ed0a2f4702c3734",
+      "title": "Global legal Hackathon: tre giorni a Milano per sfidarsi a colpi di coding",
+      "url": "https://blblex.it/rassegna_stampa.php?id=788&lang=en",
+      "source": "web_search",
+      "description": "L’hackathon global si svolge ... tappa italiana potranno andare avanti e partecipare alla semifinale. Il Talent Garden Calabiana Milano si trova in via Arcivescovo Calabiana (zona Porta Romana). ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.8,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.208856"
+    },
+    {
+      "id": "41e1703e643f359b58adc275103cb06ff8749b397b82ca39cb29a75d55f84743",
+      "title": "HSIL Hackathon 2026 – Building High-Value Health Systems ...",
+      "url": "https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT",
+      "source": "web_search",
+      "description": "📣 Last day to register: ready to shape the future of health systems with AI? 🤖 Join the Global Hackathon on AI in Medicine from 10 to 11 April 2026 , hosted at Fondazione Triulza in MIND ...",
+      "date_str": "2026-04-10",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:32.208944"
+    },
+    {
+      "id": "738a403666d4a27dc87d7f2bbb057deb60d527048cf988ef3f82aa74ab3a2f61",
+      "title": "Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia",
+      "url": "https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/",
+      "source": "web_search",
+      "description": "Feb 3, 2026 · L' Italia sarà il Paese che ospiterà il prossimo Wikimedia Hackathon , che si terrà a Milano dal 1° al 3 maggio 2026 .",
+      "date_str": "2026-05-01",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:35.836652"
+    },
+    {
+      "id": "862eee508d9824b3ad22f1cdb5914556cfd6ea880c9cedd4a04eef2b76061bad",
+      "title": "Hack2BRIDGE expands to Italy with a hackathon aimed at Mobility, Transport and Automotive | European Cluster Collaboration Platform",
+      "url": "https://www.clustercollaboration.eu/content/hack2bridge-expands-italy-hackathon-aimed-mobility-transport-and-automotive",
+      "source": "web_search",
+      "description": "The third hackathon in the Hack2BRIDGE series will take place in Milan, Italy, focusing on innovation within the Mobility, Transport and Automotive (MTA) ecosystem . Organised under the BRIDGESMEs project, this edition is designed to connect SMEs, startups, scaleups, research teams and freelancers ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:35.836723"
+    },
+    {
+      "id": "89270477a227f5febb72f14af921f3ce40f2c74e047618d8708fab2668acd6f7",
+      "title": "Free & $21,000 Prize, Blockchain & Data 24hours Hackathon @Milan",
+      "url": "https://www.hackathon.com/event/free-and-21000-prize-blockchain-and-data-24hours-hackathon-milan-52262112385",
+      "source": "web_search",
+      "description": "2026 · 2025 · 2024 · 2023 · 2022 · 2021 · 2020 · 2019 · 2018 · 2017 · 2016 · 2015 · See event website · Description · Dear Hackers @ Milan · Join the Hackathon Nov 24th-25th and feel like winning prizes by solving actual Blockchain ...",
+      "date_str": "2026-11-24",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:35.836750"
+    },
+    {
+      "id": "4e6f1ecfadd3dd999f1c73b284cedae08682c6feacbc5d1c182507319dbf1d94",
+      "title": "Platform | LA CTF",
+      "url": "https://platform.2026.lac.tf/",
+      "source": "web_search",
+      "description": "LA CTF is a jeopardy-style capture-the-flag (CTF) cybersecurity competition hosted by ACM Cyber at UCLA & Psi Beta Rho !",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:34:57.963941"
+    },
+    {
+      "id": "68e302dc723def3fcd1e8fb9ecc81ac24ea21b32ec82a93a47dc799852595759",
+      "title": "Con FOSS4G-IT & OSMit 2026 i software e i dati geospaziali",
+      "url": "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/",
+      "source": "web_search",
+      "description": "Il Wikimedia Hackathon 2026 arriva a Milano ... Corri per la conoscenza libera: Wikimedia Italia alla Milano Marathon 2026",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:39:03.573764"
+    },
+    {
+      "id": "67a2414994ca39f67459ca9c67b2db546b4e5ed1d35249b94d4e07cc800a435c",
+      "title": "Wikimedia - Save the date! The 2026 edition of the Wikimedia Hackathon ...",
+      "url": "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/",
+      "source": "web_search",
+      "description": "The 2026 edition of the Wikimedia Hackathon is set to take place from 1 to 3 May in Milan , Italy . This annual event brings together the global technical community.",
+      "date_str": "2026-05-01",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:39:06.653930"
+    },
+    {
+      "id": "7ac9484887ea5b2f0bbb376aab79e209f8055871ad6b20a9d006c1e8d76118e8",
+      "title": "HackTrack EU - Discover European Hackathons",
+      "url": "https://hacktrack-eu.vercel.app/",
+      "source": "web_search",
+      "description": "ART+TECH Festival ( 2026 ) - The New Human - Hackathon ( Milan , San Francisco & Online) 5-7 Mar 2026 Milano, Italy 🇮🇹 Join",
+      "date_str": "2026-03-05",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-03T15:39:06.653941"
     }
   ]
 }

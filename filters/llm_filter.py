@@ -50,6 +50,7 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
 ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la data di inizio nel campo "event_date" in formato YYYY-MM-DD.
 - Cerca la data nel titolo, descrizione, URL (es. "10-11 April 2026" → "2026-04-10")
 - Se ci sono più giorni (es. "26-27 febbraio 2026"), usa il PRIMO giorno
+- Se l'evento ha più fasi/tappe (es. hackathon nazionali + finale internazionale), usa la data della PRIMA fase futura che si svolge A MILANO — non la finale o altre tappe
 - Se trovi solo mese/anno ma non il giorno, usa il primo del mese (es. "maggio 2026" → "2026-05-01")
 - Se non riesci a determinare la data → event_date: null
 - Per eventi scartati (is_hackathon: false) → event_date: null
