@@ -174,7 +174,7 @@ _CSS = (
     ".hero h1{font-family:'DM Serif Display',Georgia,serif;font-size:3.25rem;"
     "letter-spacing:-.025em;line-height:1.06;color:#fff;margin-bottom:1rem;"
     "max-width:680px}"
-    ".hero h1 em{font-style:normal;color:transparent;"
+    ".hero h1 em{font-style:normal;display:inline-block;color:transparent;"
     "background:linear-gradient(90deg,#60a5fa,#818cf8,#c4b5fd,#60a5fa);"
     "background-size:250% auto;"
     "-webkit-background-clip:text;background-clip:text;"
