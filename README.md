@@ -13,26 +13,22 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **22 hackathons** coming up in Milan · Last updated: Mar 03, 2026 15:50
+> **18 hackathons** coming up in Milan · Last updated: Mar 03, 2026 16:16
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [HackTrack EU - Discover European Hackathons](https://hacktrack-eu.vercel.app/) | 5 Mar 2026 | Milano | web_search |
 | [The Ignition — Opening Gathering: Creative Hackathon - The New Human (Milan & Online)](https://lu.ma/jevwfttk) | 6 Mar 2026 | Google Porta Nuova Isola, Via Federico Confalonieri, 4, 20124 Milano MI, Italia | luma |
 | [The New Human - ART+TECH Festival 2026 DAY 1  — THE IGNITION](https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688) | 6 Mar 2026 | 4 Via Federico Confalonieri, Milano | eventbrite_web |
 | [AI Voice Agent Hackathon powered by ElevenLabs - Milan](https://lu.ma/rgtc75im) | 7 Mar 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
 | [The Making — Public Sharing: Creative Hackathon - The New Human (Milan)](https://lu.ma/g02myvsa) | 7 Mar 2026 | TrueLayer, Via Joe Colombo, 8, 20124 Milano MI, Italia | luma |
+| [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 20 Mar 2026 | Milano | web_search |
 | [HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole](https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/) | 10 Apr 2026 | Milano | web_search |
-| [Progetti e iniziative di Open Innovation \| Università degli Studi di Milano Statale](https://www.unimi.it/it/terza-missione/innovazione-ricerca-e-imprese/progetti-e-iniziative-di-open-innovation) | 10 Apr 2026 | Milano | web_search |
-| [HSIL Hackathon 2026 – Building High-Value Health Systems ...](https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT) | 10 Apr 2026 | Milano | web_search |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
 | [Wikimedia - Save the date! The 2026 edition of the Wikimedia Hackathon ...](https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/) | 1 May 2026 | Milano | web_search |
-| [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 13 May 2026 | Milano | web_search |
 | [Free & $21,000 Prize, Blockchain & Data 24hours Hackathon @Milan](https://www.hackathon.com/event/free-and-21000-prize-blockchain-and-data-24hours-hackathon-milan-52262112385) | 24 Nov 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [Harvard HSIL Hackathon 2026 - POLIMI GSoM](https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/) | TBD | Milano | web_search |
 | [HackAthena'26](https://hackathena-26.devfolio.co/) | TBD | Milano | devfolio |
 | [HACKANOVA 5.O](https://hackanova-5-0.devfolio.co/) | TBD | Milano | devfolio |
 | [FastwebAI Hackathon a Milano \| Fastweb](https://www.fastweb.it/fastwebai-hackathon/) | TBD | Milano | web_search |
