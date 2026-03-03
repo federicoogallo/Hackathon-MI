@@ -344,7 +344,7 @@ Contributions are warmly welcome!
 - 🔌 **Add a new source** — write a collector and open a PR
 - 🐛 **Report a wrong entry** — open an issue with the event link
 - 🧠 **Improve LLM filtering** — better prompts, fewer false positives
-- 📍 **Spot a missing hackathon?** — [let us know](../../issues/new?title=Missing+hackathon&template=missing_event.md)
+- 📍 **Spot a missing hackathon?** — [open an issue](https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Missing+hackathon)
 
 ---
 
