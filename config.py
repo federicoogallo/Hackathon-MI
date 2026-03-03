@@ -23,8 +23,6 @@ EVENTS_FILE = DATA_DIR / "events.json"
 
 # ─── API Keys ──────────────────────────────────────────────────────────────
 EVENTBRITE_API_KEY = os.getenv("EVENTBRITE_API_KEY", "")
-GOOGLE_CSE_API_KEY = os.getenv("GOOGLE_CSE_API_KEY", "")
-GOOGLE_CSE_CX = os.getenv("GOOGLE_CSE_CX", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")

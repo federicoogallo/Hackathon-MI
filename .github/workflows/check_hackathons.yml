@@ -35,8 +35,6 @@ jobs:
       - name: Run Hackathon Monitor
         env:
           EVENTBRITE_API_KEY: ${{ secrets.EVENTBRITE_API_KEY }}
-          GOOGLE_CSE_API_KEY: ${{ secrets.GOOGLE_CSE_API_KEY }}
-          GOOGLE_CSE_CX: ${{ secrets.GOOGLE_CSE_CX }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
