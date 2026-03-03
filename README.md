@@ -339,13 +339,31 @@ hackathon-monitor/
 
 ## Contributing
 
-Contributions are warmly welcome! Whether it's adding a new source, fixing a bug, improving the LLM filtering, or simply reporting a wrong entry — every bit helps get closer to full coverage. Feel free to open an issue or submit a pull request.
+Contributions are warmly welcome!
 
-⚠️ **Disclaimer** — This project is currently in early development. The dataset may contain inaccuracies — including past events, duplicates, events outside Milan, or missing hackathons. Data is scraped and filtered automatically; false positives and false negatives are expected. Always verify event details at the original source before making plans.
+- 🔌 **Add a new source** — write a collector and open a PR
+- 🐛 **Report a wrong entry** — open an issue with the event link
+- 🧠 **Improve LLM filtering** — better prompts, fewer false positives
+- 📍 **Spot a missing hackathon?** — [let us know](../../issues/new?title=Missing+hackathon&template=missing_event.md)
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
 
 ---
 
-<p align="center">
-  <sub>🤖 This project is <strong>vibe coded</strong> — built with AI-assisted development to simplify the search for hackathons in Milan.<br>
-  The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.</sub>
-</p>
+> [!WARNING]
+> **Early-stage project.** The dataset may contain inaccuracies — past events, duplicates, events outside Milan, or missing hackathons. Data is scraped and filtered automatically; false positives and false negatives are expected. Always verify details at the original source before making plans.
+
+---
+
+<div align="center">
+<br>
+
+🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.
+
+The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.
+
+<br>
+
+<sub>Made with ❤️ in Milan</sub>
+
+</div>
