@@ -59,6 +59,7 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"eventbrite\.[a-z]+/d/", re.I),          # listing/search pages
     re.compile(r"allevents\.in/", re.I),                  # aggregatore rumoroso
     re.compile(r"stayhappening\.com/", re.I),             # aggregatore rumoroso
+    re.compile(r"hacktrack-eu\.vercel\.app", re.I),       # aggregatore EU hackathon listing
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
     re.compile(r"youtube\.com/watch", re.I),
 ]
