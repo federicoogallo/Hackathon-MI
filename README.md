@@ -65,7 +65,8 @@ Collectors (10 sources in parallel)
   README Table Update
 ```
 
-### Registered Collectors
+<details>
+<summary><strong>Registered Collectors</strong></summary>
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
@@ -80,9 +81,12 @@ Collectors (10 sources in parallel)
 | 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
 | 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
 
+</details>
+
 ---
 
-## Local Setup
+<details>
+<summary><strong>Local Setup</strong></summary>
 
 ### 1. Clone and create virtual environment
 
@@ -130,9 +134,12 @@ python main.py
 python -m pytest tests/ -v
 ```
 
+</details>
+
 ---
 
-## Deploy on GitHub Actions
+<details>
+<summary><strong>Deploy on GitHub Actions</strong></summary>
 
 ### 1. Fork/push the repository
 
@@ -155,9 +162,12 @@ The workflow is in `.github/workflows/check_hackathons.yml`:
 - **Manual**: from the "Actions" tab → "Run workflow"
 - Auto-commits `data/events.json`, `docs/index.html`, and `README.md` on each run
 
+</details>
+
 ---
 
-## Telegram Bot
+<details>
+<summary><strong>Telegram Bot</strong></summary>
 
 `bot.py` runs a long-polling bot with the following commands:
 
@@ -183,9 +193,12 @@ Auto-start on macOS login (launchd):
 
 Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are automatically rejected.
 
+</details>
+
 ---
 
-## Adding a New Collector
+<details>
+<summary><strong>Adding a New Collector</strong></summary>
 
 1. Create `collectors/my_collector.py`:
 
@@ -222,9 +235,12 @@ def get_collectors():
 
 3. Add a test in `tests/test_collectors.py`.
 
+</details>
+
 ---
 
-## Project Structure
+<details>
+<summary><strong>Project Structure</strong></summary>
 
 ```
 hackathon-monitor/
@@ -271,9 +287,12 @@ hackathon-monitor/
         └── check_hackathons.yml
 ```
 
+</details>
+
 ---
 
-## Known Limitations
+<details>
+<summary><strong>Known Limitations</strong></summary>
 
 - **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by Google CSE.
 - **Twitter/X**: Free Tier API is write-only. Indirectly covered by Google CSE (`site:twitter.com`).
@@ -281,11 +300,7 @@ hackathon-monitor/
 - **Google CSE**: free quota of 100 queries/day (sufficient for 1 run/day with 8 queries).
 - **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY` the LLM filter is skipped (keyword filter only).
 
----
-
-## License
-
-MIT
+</details>
 
 ---
 
