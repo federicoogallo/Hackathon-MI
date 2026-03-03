@@ -302,20 +302,6 @@
       "confidence": 0.95,
       "alternate_urls": [],
       "discovered_at": "2026-03-03T15:39:06.653930"
-    },
-    {
-      "id": "7ac9484887ea5b2f0bbb376aab79e209f8055871ad6b20a9d006c1e8d76118e8",
-      "title": "HackTrack EU - Discover European Hackathons",
-      "url": "https://hacktrack-eu.vercel.app/",
-      "source": "web_search",
-      "description": "ART+TECH Festival ( 2026 ) - The New Human - Hackathon ( Milan , San Francisco & Online) 5-7 Mar 2026 Milano, Italy 🇮🇹 Join",
-      "date_str": "2026-03-05",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-03T15:39:06.653941"
     }
   ]
 }
