@@ -3,7 +3,7 @@
 **Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
 Automated aggregator for hackathon events in Milan from 10+ heterogeneous sources.  
-Filters with LLM (Groq · Llama 3.3 70B, free tier), notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
+Filters with LLM, notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
 
 <br>
 
