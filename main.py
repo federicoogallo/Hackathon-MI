@@ -277,9 +277,23 @@ def run_pipeline(dry_run: bool = False) -> None:
         if api_error_count == post_keyword_count:
             logger.warning(
                 "⚠️  LLM ha fallito su tutti i %d candidati (probabili errori API) — "
-                "storico e HTML NON sovrascritti per preservare i dati precedenti.",
+                "storico NON sovrascritto per preservare i dati precedenti.",
                 post_keyword_count,
             )
+
+            # Rigenera comunque HTML e README (con dati dello storico esistente)
+            # per aggiornare il timestamp "Last updated" nel banner.
+            try:
+                generate_html()
+                logger.info("HTML page rigenerata (storico preservato)")
+            except Exception as e:
+                logger.warning("Impossibile rigenerare HTML page: %s", e)
+            try:
+                generate_readme_table()
+                logger.info("README.md aggiornato (storico preservato)")
+            except Exception as e:
+                logger.warning("Impossibile aggiornare README.md: %s", e)
+
             elapsed = (datetime.now() - start_time).total_seconds()
             if not dry_run:
                 total_upcoming = sum(
