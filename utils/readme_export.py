@@ -14,8 +14,9 @@ from __future__ import annotations
 import json
 import logging
 import re
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import config
 from models import HackathonEvent
@@ -127,7 +128,7 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
     upcoming.sort(key=_sort_key)
 
     # Costruisci tabella
-    now_str = datetime.now().strftime("%b %d, %Y %H:%M")
+    now_str = datetime.now(ZoneInfo("Europe/Rome")).strftime("%b %d, %Y %H:%M")
     table_section = _build_table(upcoming) if upcoming else "_No upcoming hackathons at this time._"
 
     new_content = f"""{TABLE_START}

@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import config
 from models import HackathonEvent
@@ -605,7 +606,7 @@ def generate_html(events_path=None, output_path=None):
     upcoming = [e for e in confirmed if _is_upcoming(e)]
     upcoming.sort(key=_sort_key)
 
-    now_str = datetime.now().strftime("%d %b %Y, %H:%M")
+    now_str = datetime.now(ZoneInfo("Europe/Rome")).strftime("%d %b %Y, %H:%M")
     last_scan = now_str
     if last_check:
         try:
