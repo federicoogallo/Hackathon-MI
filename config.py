@@ -44,7 +44,7 @@ POSITIVE_KEYWORDS = [
     r"\bhack\s*day\b",
     r"\bhack\s*fest\b",
     r"\bhack\s*week\b",
-    r"\bhacker\w*\b",                   # HackerX, HackerSpace event, ...
+    r"\bhack\s*night\b",
     # ── *-athon varianti ──
     r"\bcodathon\b",
     r"\bcodeathon\b",
@@ -57,12 +57,18 @@ POSITIVE_KEYWORDS = [
     r"\bhealthathon\b",
     r"\bethathon\b",
     r"\bdesignathon\b",
+    r"\bcreathon\b",
+    r"\binnovathon\b",
+    r"\bclimathon\b",
+    # ── *-thon catchall (escluse maratona/telethon/walkathon/python) ──
+    r"\b(?!mara|tele|walk|py)\w+a?thon\b",
     # ── Jam / Sprint / Marathon ──
     r"\bcode\s*jam\b",
     r"\bgame\s+jam\b",
     r"\bdev\s*jam\b",
     r"\bcode\s*sprint\b",
     r"\bdev\s*sprint\b",
+    r"\binnovation\s+sprint\b",
     r"\bcoding\s+marathon\b",
     r"\bprogramming\s+marathon\b",
     # ── Challenge / Contest / Competition (EN) ──
@@ -76,18 +82,32 @@ POSITIVE_KEYWORDS = [
     r"\binnovation\s+competition\b",
     r"\btech\s+challenge\b",
     r"\btech\s+competition\b",
+    r"\btech\s+contest\b",
     r"\bai\s+challenge\b",
     r"\bai\s+competition\b",
     r"\bdata\s+challenge\b",
     r"\bdata\s+competition\b",
+    r"\bdigital\s+challenge\b",
+    r"\bdigital\s+competition\b",
     r"\bstartup\s+competition\b",
     r"\bstartup\s+contest\b",
     r"\bpitch\s+competition\b",
     r"\bpitch\s+contest\b",
     r"\bopen\s+innovation\b",
     r"\bbuild\s+challenge\b",
-    r"\bctf\b",                          # Capture The Flag
+    r"\bsmart\s+city\s+challenge\b",
+    r"\bsocial\s+innovation\s+(?:challenge|competition)\b",
+    # ── CTF (con contesto per evitare writeup/blog) ──
+    r"\bctf\s+(?:competition|event|challenge|20\d{2})\b",
     r"\bcapture\s+the\s+flag\b",
+    # ── Hack + contesto specifico ──
+    r"\bhack\s+for\s+\w+\b",             # "Hack for Good", "Hack for Climate"
+    r"\b\w+\s+hack\s+20\d{2}\b",        # "Climate Hack 2026"
+    r"\b\w+hack\s+20\d{2}\b",           # "PoliHack 2026" (parola composta)
+    r"\burban\s+hack\w*\b",
+    r"\bcivic\s+hack\w*\b",
+    r"\bweb3?\s*(?:hackathon|hack)\b",
+    r"\bdefi\s+hack\w*\b",
     # ── Termini italiani ──
     r"\bcompetizione\s+(?:di\s+)?(?:coding|programmazione|tech|software|ai)\b",
     r"\bgara\s+(?:di\s+)?(?:coding|programmazione|informatica)\b",
@@ -106,17 +126,55 @@ POSITIVE_KEYWORDS = [
     # ── Format specifici ──
     r"\bcodefest\b",
     r"\bstartup\s+weekend\b",
-    r"\bthon\b",                         # catchall per varianti non previste (buildthon, etc.)
+    r"\bhacknight\b",
 ]
 
 NEGATIVE_KEYWORDS = [
+    # ── "Hack" non-tech ──
     r"\blife\s*hack\w*\b",
     r"\bgrowth\s*hack\w*\b",
     r"\bikea\s*hack\w*\b",
     r"\bbiohack\w*\b",
-    # Escludi competizioni sportive/culturali non tech
+    r"\btravel\s*hack\w*\b",
+    r"\bfood\s*hack\w*\b",
+    r"\bcareer\s*hack\w*\b",
+    r"\bbody\s*hack\w*\b",
+    r"\bmind\s*hack\w*\b",
+    r"\bproductivity\s*hack\w*\b",
+    r"\bmoney\s*hack\w*\b",
+    r"\bparent\w*\s*hack\w*\b",
+    r"\bhack\s+your\s+(?:life|routine|diet|morning|career|body)\b",
+    r"\bsocial\s+hack(?!athon)\w*\b",
+    # ── Media/piattaforme (non eventi) ──
+    r"\bhackernoon\b",
+    r"\bhacker\s*news\b",
+    r"\bhackernews\b",
+    r"\bhackaday\.com\b",
+    # ── Competizioni sportive/culturali non tech ──
     r"\bconcorso\s+(?:musicale|canoro|fotografico|letterario|pittori|artistic\w+)\b",
     r"\bgara\s+(?:sportiva|ciclistica|automobilistica|calcio|nuoto|atletica)\b",
+    # ── Formazione/corsi (non competizioni) ──
+    r"\bcorso\s+(?:di\s+)?(?:formazione|aggiornamento|laurea|master)\b",
+    r"\blezione\s+(?:di|aperta)\b",
+    r"\bworkshop\s+(?:gratuito|formativo|introduttivo)\b",
+    # ── Recruiting/job ──
+    r"\bjob\s+fair\b",
+    r"\bcareer\s+(?:fair|day|expo)\b",
+    r"\brecruiting\s+(?:day|event)\b",
+    r"\bassunzion[ei]\b",
+    r"\boffert[ae]\s+(?:di\s+)?lavoro\b",
+    # ── Recap/passato (pattern linguistici) ──
+    r"\brecap\s+(?:of|del|della|dell['’]|from|20\d{2})\b",
+    r"\bhighlights?\s+(?:from|of|del)\b",
+    r"\bwhat\s+(?:we|I)\s+(?:learned|built)\b",
+    r"\bwinners?\s+announced\b",
+    r"\bvincitor[ei]\b",
+    r"\brisultat[ei]\s+(?:del|della|dell)\b",
+    # ── Contenuti editoriali (non annunci) ──
+    r"\b(?:top|best|ultimate)\s+\d+\s+(?:hackathon|hack)\b",
+    r"\bguide?\s+(?:to|for|per)\s+(?:hackathon|winning)\b",
+    r"\bhow\s+to\s+(?:win|prepare|organize)\b",
+    r"\btips?\s+(?:for|to|per)\s+(?:hackathon|winning|coding|your)\b",
 ]
 
 # ─── HTTP ───────────────────────────────────────────────────────────────────

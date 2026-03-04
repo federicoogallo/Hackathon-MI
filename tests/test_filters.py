@@ -165,9 +165,11 @@ class TestLLMParsing:
         results = _parse_llm_response(content, 3)
         assert len(results) == 3
         assert results[0].confidence == 0.9
-        # Padded results
-        assert results[1].confidence == 0.5
-        assert results[2].confidence == 0.5
+        # Padded results — default scarta per sicurezza
+        assert results[1].is_hackathon is False
+        assert results[1].confidence == 0.0
+        assert results[2].is_hackathon is False
+        assert results[2].confidence == 0.0
 
     def test_parse_truncates_extra_results(self):
         content = json.dumps([
@@ -180,14 +182,15 @@ class TestLLMParsing:
     def test_parse_invalid_json_returns_default(self):
         results = _parse_llm_response("not valid json at all", 2)
         assert len(results) == 2
-        assert all(r.is_hackathon is True for r in results)  # Default: passa
-        assert all(r.confidence == 0.5 for r in results)
+        assert all(r.is_hackathon is False for r in results)  # Default: scarta per sicurezza
+        assert all(r.confidence == 0.0 for r in results)
 
     def test_parse_non_list_response(self):
         content = json.dumps({"some": "other structure"})
         results = _parse_llm_response(content, 1)
         assert len(results) == 1
-        assert results[0].confidence == 0.5  # Default
+        assert results[0].is_hackathon is False
+        assert results[0].confidence == 0.0  # Default: scarta
 
     def test_parse_truncated_json_extracts_partial(self):
         """JSON troncato a metà: deve estrarre gli oggetti completi."""
@@ -203,8 +206,9 @@ class TestLLMParsing:
         assert results[0].confidence == 0.99
         assert results[1].is_hackathon is False
         assert results[1].confidence == 0.95
-        # Il terzo è mancante — deve avere confidence 0.5
-        assert results[2].confidence == 0.5
+        # Il terzo è mancante — default scarta per sicurezza
+        assert results[2].is_hackathon is False
+        assert results[2].confidence == 0.0
 
 
 # =============================================================================
@@ -214,13 +218,13 @@ class TestLLMParsing:
 class TestLLMGracefulDegradation:
     @patch("filters.llm_filter.config")
     def test_no_api_key_returns_pass_with_low_confidence(self, mock_config):
-        """Senza GROQ_API_KEY, tutti passano con confidence 0.5."""
+        """Senza GROQ_API_KEY, tutti vengono scartati."""
         mock_config.GROQ_API_KEY = ""
         events = [_make_event("Hackathon Test")]
         results = classify_batch(events)
         assert len(results) == 1
-        assert results[0].is_hackathon is True
-        assert results[0].confidence == 0.5
+        assert results[0].is_hackathon is False
+        assert results[0].confidence == 0.0
 
     @patch("filters.llm_filter.config")
     def test_no_api_key_llm_filter_rejects_all(self, mock_config):
@@ -272,7 +276,7 @@ class TestLLMWithMockAPI:
     @patch("filters.llm_filter.config")
     @patch("filters.llm_filter._get_groq_client")
     def test_api_error_returns_default(self, mock_get_client, mock_config):
-        """Se l'API va in errore, tutti passano con confidence 0.5."""
+        """Se l'API va in errore, tutti vengono scartati per sicurezza."""
         mock_config.GROQ_API_KEY = "test-key"
         mock_config.LLM_MODEL = "llama-3.3-70b-versatile"
         mock_config.LLM_MAX_DESCRIPTION_LENGTH = 500
@@ -288,8 +292,8 @@ class TestLLMWithMockAPI:
         results = classify_batch(events)
 
         assert len(results) == 1
-        assert results[0].is_hackathon is True
-        assert results[0].confidence == 0.5
+        assert results[0].is_hackathon is False
+        assert results[0].confidence == 0.0
 
     def test_parse_markdown_wrapped_json(self):
         """LLM a volte wrappa JSON in ```json ... ``` — deve essere gestito."""

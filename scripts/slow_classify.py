@@ -265,9 +265,19 @@ def main():
     logger.info("6. Salvataggio...")
     store = EventStore()
 
+    added = 0
+    skipped_dup = 0
     for event in confirmed:
         event.is_hackathon = True
-        store.add_event(event)
+        if store.is_duplicate(event):
+            logger.info("Scartato duplicato nello storico: '%s'", event.title[:60])
+            skipped_dup += 1
+        else:
+            store.add_event(event)
+            added += 1
+
+    if skipped_dup:
+        logger.info("Rimossi %d duplicati vs storico, aggiunti %d nuovi", skipped_dup, added)
 
     store.save_with_timestamp(start.isoformat())
     logger.info("Salvati %d eventi totali in events.json", store.count)
