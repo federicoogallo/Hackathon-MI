@@ -187,6 +187,77 @@ class EventStore:
 
         return None
 
+    # ─── Livello 4: cross-reference (descrizione menziona titolo) ───────
+
+    _TITLE_STOPWORDS = frozenset({
+        # Parole generiche che compaiono in quasi tutti i titoli di hackathon
+        "hackathon", "hack", "challenge", "competition", "contest", "event",
+        "evento", "eventi", "league", "weekend", "day", "days", "jam",
+        "milano", "milan", "italy", "italia", "rome", "torino", "roma",
+        "powered", "the", "for", "and", "with", "from", "that",
+        "this", "will", "have", "are", "was", "del", "dei", "delle",
+        "per", "con", "una", "uno", "alla", "alle", "che", "nel", "nella",
+        "tre", "giorni", "sfida", "colpi", "coding", "ospita",
+        "2024", "2025", "2026", "2027", "2028",
+    })
+
+    @staticmethod
+    def _extract_title_core_words(title: str) -> list[str]:
+        """Estrae le parole significative dal titolo (non stopword, ≥2 char)."""
+        cleaned = re.sub(r"[^\w\s]", " ", title.lower())
+        words = cleaned.split()
+        return [w for w in words if w not in EventStore._TITLE_STOPWORDS and len(w) >= 2]
+
+    def find_cross_reference_match(self, event: HackathonEvent) -> dict | None:
+        """Livello 4: cross-reference — la descrizione di un evento cita un evento noto.
+
+        Controlla se ≥3 parole significative consecutive del titolo di un evento
+        nello storico compaiono TUTTE nel testo (titolo+descrizione) del nuovo evento,
+        o viceversa. Cattura articoli/news che parlano di hackathon già nel DB,
+        anche se con titolo e URL completamente diversi.
+
+        Returns:
+            Il dict dell'evento matchato, o None.
+        """
+        event_text_words = set(
+            re.sub(r"[^\w\s]", " ", f"{event.title} {event.description}".lower()).split()
+        )
+        new_core = self._extract_title_core_words(event.title)
+
+        min_consecutive = 3  # serve overlap di almeno 3 parole consecutive dal titolo
+
+        for stored in self._events.values():
+            stored_title = stored.get("title", "")
+            stored_core = self._extract_title_core_words(stored_title)
+
+            # Check A: parole del titolo stored nel testo del nuovo evento
+            if len(stored_core) >= min_consecutive:
+                for i in range(len(stored_core) - min_consecutive + 1):
+                    phrase = stored_core[i:i + min_consecutive]
+                    if all(w in event_text_words for w in phrase):
+                        logger.info(
+                            "Cross-reference match: '%s' cita '%s' (phrase=%s)",
+                            event.title[:60], stored_title[:60], phrase,
+                        )
+                        return stored
+
+            # Check B: parole del titolo nuovo nel testo dello stored
+            if len(new_core) >= min_consecutive:
+                stored_text_words = set(
+                    re.sub(r"[^\w\s]", " ",
+                           f"{stored_title} {stored.get('description', '')}".lower()).split()
+                )
+                for i in range(len(new_core) - min_consecutive + 1):
+                    phrase = new_core[i:i + min_consecutive]
+                    if all(w in stored_text_words for w in phrase):
+                        logger.info(
+                            "Cross-reference match: '%s' citato in '%s' (phrase=%s)",
+                            event.title[:60], stored_title[:60], phrase,
+                        )
+                        return stored
+
+        return None
+
     def is_duplicate(self, event: HackathonEvent) -> bool:
         """Verifica se un evento è duplicato (livello 1 + 2 + 3).
 
@@ -214,6 +285,12 @@ class EventStore:
         match = self.find_same_event_by_date_keywords(event)
         if match is not None:
             self._add_alternate_url(match, event, "Date+keyword match")
+            return True
+
+        # Livello 4: cross-reference (descrizione cita titolo di evento noto)
+        match = self.find_cross_reference_match(event)
+        if match is not None:
+            self._add_alternate_url(match, event, "Cross-reference match")
             return True
 
         return False

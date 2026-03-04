@@ -90,6 +90,10 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"\d{4}\.lac\.tf", re.I),                            # LA CTF (Los Angeles)
     re.compile(r"platform\..*\.lac\.tf", re.I),                     # piattaforma LA CTF
     re.compile(r"foss\.events/", re.I),                             # conferenze FOSS (non hackathon)
+    # Aggregatori indiani — generano molti falsi positivi
+    re.compile(r"10times\.com/", re.I),                              # aggregatore indiano conferenze/hackathon
+    re.compile(r"townscript\.com/", re.I),                           # ticketing/eventi indiani
+    re.compile(r"konfhub\.com/", re.I),                              # piattaforma eventi tech India
 ]
 
 

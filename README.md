@@ -13,7 +13,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **10 hackathons** coming up in Milan · Last updated: Mar 03, 2026 16:47
+> **8 hackathons** coming up in Milan · Last updated: Mar 04, 2026 02:15
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -27,8 +27,6 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 | [HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole](https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/) | 10 Apr 2026 | Milano | web_search |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [Italian Hackathon League: Milano ospita l'ultima sfida sull'AI vocale](https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/) | TBD | Milano | web_search |
-| [Global legal Hackathon: tre giorni a Milano per sfidarsi a colpi di coding](https://blblex.it/rassegna_stampa.php?id=788&lang=en) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -48,13 +46,14 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 Collectors (26 sources in parallel)
         │
         ▼
-  3-Level Deduplication
+  4-Level Deduplication
     L1  SHA-256(URL) exact match + alternate_urls index
     L2  Fuzzy title (SequenceMatcher ≥ 0.75)
     L3  Same date + shared distinctive keywords
+    L4  Cross-reference (title words found in other event's text)
         │
         ▼
-  Keyword Pre-filter (62+ regex patterns, junk-URL blocklist, past-year check)
+  Keyword Pre-filter (117+ regex patterns, junk-URL blocklist, past-year check)
         │
         ▼
   LLM Filter (Groq · Llama 3.3 70B, batches of 5, few-shot, threshold 0.7)
@@ -295,7 +294,7 @@ hackathon-monitor/
 ├── notifiers/
 │   └── telegram.py          # Telegram notifications
 ├── storage/
-│   └── json_store.py        # Persistence + 3-level dedup
+│   └── json_store.py        # Persistence + 4-level dedup
 ├── utils/
 │   ├── http.py              # HTTP client with retry/backoff
 │   ├── html_export.py       # GitHub Pages generator

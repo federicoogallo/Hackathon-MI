@@ -40,14 +40,19 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
 
 3. LOCATION — L'evento DEVE svolgersi FISICAMENTE a Milano o area metropolitana milanese.
    NO: eventi online/remoti/virtuali, eventi in altre città (Roma, Torino, Napoli...) o all'estero.
-   ATTENZIONE: La location DEVE contenere esplicitamente "Milano", "Milan", "Politecnico", "Bocconi", "Bicocca", "MIND" o un indirizzo/luogo noto milanese.
-   Se la location è vuota/non specificata e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
-   Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel testo.
+   IMPORTANTE: Il campo "Location" fornito nei dati è AFFIDABILE — viene dal collector che ha estratto l'indirizzo dalla pagina evento. Se il campo Location contiene un indirizzo milanese (es. "Via Confalonieri 4, 20124 Milano", CAP 201xx, ecc.), considera l'evento come milanese anche se titolo/descrizione/URL non menzionano esplicitamente Milano.
+   Se invece la location è vuota/"(non specificata)" e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
+   Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel campo Location o nel testo.
    ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin — è quasi certamente NON a Milano → false.
 
-4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}) o senza data ma con indicazioni di essere nel {current_year} o futuro.
-   NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti. Se l'URL/titolo menziona solo anni < {current_year} → false.
-   ATTENZIONE: Non fidarti ciecamente del dominio/URL per la data. Verifica che il CONTENUTO (titolo, descrizione) confermi date future. Aggregatori come hackathon.com possono mostrare eventi vecchi con URL fuorvianti.
+4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}).
+   - Se trovi una data esplicita nel testo (giorno/mese/anno o mese/anno) e la data è >= {current_date} → OK.
+   - Se NON trovi nessuna data esplicita ma il testo è una PAGINA EVENTO diretta (lu.ma, eventbrite, sito ufficiale con form di registrazione) → OK (la data potrebbe non essere nel testo scraping).
+   - Se NON trovi nessuna data esplicita E il testo è un ARTICOLO, NEWS, BLOG o RASSEGNA STAMPA → is_hackathon: false. Un articolo senza data futura esplicita è quasi certamente su un evento passato.
+   - Se le uniche date trovate sono < {current_date} → is_hackathon: false.
+   - Se l'URL contiene anni passati (es. /2019/, /2020/, /2023/) e nessuna data futura nel testo → is_hackathon: false.
+   NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti.
+   ATTENZIONE: Non fidarti ciecamente del dominio/URL per la data. Aggregatori come hackathon.com possono mostrare eventi vecchi con URL fuorvianti.
 
 ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la data di inizio nel campo "event_date" in formato YYYY-MM-DD.
 - Cerca la data nel titolo, descrizione, URL (es. "10-11 April 2026" → "2026-04-10")
@@ -165,8 +170,8 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
 
     Returns:
         Lista di LLMResult, uno per evento. Se il parsing fallisce,
-        ritorna risultati "passanti" di default (meglio un falso positivo
-        che perdere un hackathon vero).
+        ritorna risultati di default con is_hackathon=False (scarta per
+        sicurezza — meglio perdere un evento dubbio che approvare rumore).
     """
     default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error", event_date="") for _ in range(count)]
 
@@ -377,11 +382,18 @@ DEDUP_SYSTEM_PROMPT = """Sei un deduplicatore di eventi. Ti viene data una lista
 Alcuni potrebbero riferirsi allo STESSO EVENTO anche se hanno titoli o URL leggermente diversi
 (es. pagine in lingue diverse, fonti diverse, o varianti del nome).
 
+ATTENZIONE ARTICOLI: Un articolo di giornale, blog o news che PARLA di un hackathon è lo STESSO evento
+della pagina diretta dell'hackathon (lu.ma, eventbrite, sito ufficiale). Raggruppali SEMPRE insieme.
+Leggi attentamente titoli E DESCRIZIONI: se la descrizione di un articolo menziona esplicitamente
+il nome di un altro hackathon nella lista, sono lo STESSO evento.
+Esempio: un articolo intitolato "Milano ospita la sfida dell'AI vocale" la cui descrizione parla
+di un "AI Voice Agent Hackathon" va raggruppato con l'evento "AI Voice Agent Hackathon".
+
 Raggruppali: restituisci un array JSON dove ogni elemento rappresenta UN evento unico.
 Ogni elemento ha:
 - "group": lista di indici (0-based) degli eventi che sono lo stesso evento
-- "best_title": il titolo migliore/piu' completo da usare
-- "best_url": l'URL piu' utile (preferisci eventbrite, lu.ma, siti ufficiali)
+- "best_title": il titolo migliore/piu' completo da usare (preferisci il NOME dell'hackathon, non il titolo dell'articolo)
+- "best_url": l'URL piu' utile (preferisci lu.ma, eventbrite, siti ufficiali DELL'EVENTO, non articoli di giornale)
 
 Se un evento e' unico, il group conterra' solo il suo indice.
 Rispondi SOLO con l'array JSON."""
@@ -403,7 +415,10 @@ def llm_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
     # Costruisci prompt
     items = []
     for i, ev in enumerate(events):
-        items.append(f"{i}. Titolo: \"{ev.title}\"\n   URL: {ev.url}\n   Fonte: {ev.source}")
+        desc = ev.description[:350].strip() if ev.description else "(nessuna)"
+        items.append(
+            f"{i}. Titolo: \"{ev.title}\"\n   URL: {ev.url}\n   Fonte: {ev.source}\n   Descrizione: \"{desc}\""
+        )
     user_prompt = "Raggruppa questi hackathon (rimuovi duplicati):\n\n" + "\n\n".join(items)
 
     content = _call_llm(DEDUP_SYSTEM_PROMPT, user_prompt)
