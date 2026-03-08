@@ -39,7 +39,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 ## Architecture
 
 ```
-Collectors (26 sources in parallel)
+Collectors (27 sources in parallel)
         │
         ▼
   4-Level Deduplication
@@ -282,7 +282,7 @@ hackathon-monitor/
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── collectors/              # 26 source modules
+├── collectors/              # 27 source modules
 │   ├── eventbrite.py        # REST API
 │   ├── eventbrite_web.py    # HTML scraping (no API key, CI-friendly)
 │   ├── web_search.py        # DuckDuckGo meta-aggregator (21 queries)
