@@ -13,14 +13,12 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Mar 07, 2026 12:23
+> **4 hackathons** coming up in Milan · Last updated: Mar 08, 2026 12:24
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [AI Voice Agent Hackathon powered by ElevenLabs - Milan](https://lu.ma/rgtc75im) | 7 Mar 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
-| [The Making — Public Sharing: Creative Hackathon - The New Human (Milan)](https://lu.ma/g02myvsa) | 7 Mar 2026 | TrueLayer, Via Joe Colombo, 8, 20124 Milano MI, Italia | luma |
 | [EuroGenAI Hackathon League For Social Good: dai giovani,](https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/) | 20 Mar 2026 | Milano | web_search |
 | [HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole](https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/) | 10 Apr 2026 | Milano | web_search |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
