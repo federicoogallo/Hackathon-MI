@@ -2,7 +2,7 @@
 
 **Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
-Automated aggregator for hackathon events in Milan from 26 heterogeneous sources.  
+Automated aggregator for hackathon events in Milan from 27 heterogeneous sources.  
 Filters with LLM, notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
 
 <br>
@@ -31,7 +31,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 <p align="center">
   <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
   <img src="https://img.shields.io/badge/AI--verified-Llama_3.3_70B-purple?style=for-the-badge" alt="AI Verified">
-  <img src="https://img.shields.io/badge/sources-26-green?style=for-the-badge" alt="26 Sources">
+  <img src="https://img.shields.io/badge/sources-27-green?style=for-the-badge" alt="27 Sources">
 </p>
 
 ---
@@ -112,6 +112,12 @@ Collectors (26 sources in parallel)
 | 24 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
 | 25 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
 | 26 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
+
+#### Community Platforms
+
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 27 | **GDG Community** | HTML scraping + JSON-LD | gdg.community.dev — Google Developer Groups Milan chapters |
 
 </details>
 

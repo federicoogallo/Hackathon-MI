@@ -51,6 +51,7 @@ from collectors.lablab import LablabCollector
 from collectors.comune_milano import ComuneMilanoCollector
 from collectors.camera_commercio import CameraCommercioCollector
 from collectors.regione_lombardia import RegioneLombardiaCollector
+from collectors.gdg import GDGCollector
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
@@ -103,6 +104,8 @@ def get_collectors() -> list[BaseCollector]:
         ComuneMilanoCollector(),
         CameraCommercioCollector(),
         RegioneLombardiaCollector(),
+        # ── Tier 4: Community platforms ──
+        GDGCollector(),
     ]
 
 
