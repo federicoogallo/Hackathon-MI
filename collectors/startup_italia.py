@@ -7,13 +7,17 @@ hackathon, competition e challenge.
 """
 
 import logging
+import re
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 
 import config
 from models import BaseCollector, HackathonEvent
 from utils.http import safe_get
+
+_YEAR_RE = re.compile(r'\b(20[0-9]{2})\b')
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +83,14 @@ class StartupItaliaCollector(BaseCollector):
                 if not any(kw in text_to_check for kw in hackathon_keywords):
                     continue
 
+                # Scarta articoli pubblicati in anni passati
+                if pub_date:
+                    current_year = datetime.now().year
+                    years = [int(y) for y in _YEAR_RE.findall(pub_date)]
+                    if years and all(y < current_year for y in years):
+                        logger.debug("RSS skip articolo vecchio (%s): %s", pub_date, title[:60])
+                        continue
+
                 seen_urls.add(link)
                 events.append(HackathonEvent(
                     title=title,
@@ -86,7 +98,7 @@ class StartupItaliaCollector(BaseCollector):
                     source=self.name,
                     description=BeautifulSoup(desc, "lxml").get_text(strip=True)[:500] if desc else "",
                     date_str=pub_date,
-                    location="Milano",
+                    location="",
                     organizer="Startup Italia",
                 ))
         except ET.ParseError as e:
@@ -137,6 +149,14 @@ class StartupItaliaCollector(BaseCollector):
             if date_el:
                 date_str = date_el.get("datetime", "") or date_el.get_text(strip=True)
 
+            # Scarta card con data di pubblicazione in anni passati
+            if date_str:
+                current_year = datetime.now().year
+                years = [int(y) for y in _YEAR_RE.findall(date_str)]
+                if years and all(y < current_year for y in years):
+                    logger.debug("HTML skip articolo vecchio (%s): %s", date_str, title[:60])
+                    return None
+
             # Description
             desc_el = card.find(class_=lambda c: c and ("excerpt" in str(c).lower() or "desc" in str(c).lower() or "summary" in str(c).lower()))
             description = desc_el.get_text(strip=True)[:500] if desc_el else ""
@@ -147,7 +167,7 @@ class StartupItaliaCollector(BaseCollector):
                 source=self.name,
                 description=description,
                 date_str=date_str,
-                location="Milano",
+                location="",
                 organizer="Startup Italia",
             )
         except Exception as e:

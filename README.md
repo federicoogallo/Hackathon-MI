@@ -13,7 +13,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Mar 09, 2026 12:52
+> **5 hackathons** coming up in Milan · Last updated: Mar 09, 2026 13:35
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -24,7 +24,6 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
 | [GDG AI HACK - 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | 9 May 2026 | Randstad Box, 5 Via San Vigilio | gdg_community |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [STEM, al via la seconda edizione dell’hackathon Women Shape the Future. Tutti i dettagli per candidarsi](https://startupitalia.eu/startup/women-shape-the-future-stem/) | TBD | Milano | startup_italia |
 
 <!-- HACKATHON_TABLE_END -->
 
