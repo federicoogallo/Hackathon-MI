@@ -13,7 +13,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: Mar 08, 2026 12:24
+> **4 hackathons** coming up in Milan · Last updated: Mar 09, 2026 12:38
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
