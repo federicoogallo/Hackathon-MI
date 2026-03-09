@@ -145,7 +145,9 @@ def keyword_filter(event: HackathonEvent) -> bool:
             return False
 
     # Step 2: anno passato → scarta (es. "Hackathon Milano 2024" a febbraio 2026)
-    if _is_past_event(text):
+    # Controlla anche date_str (es. pubDate RSS con anno vecchio)
+    text_with_date = f"{text} {event.date_str}" if event.date_str else text
+    if _is_past_event(text_with_date):
         logger.info("Scartato evento passato: %s", event.title)
         return False
 
