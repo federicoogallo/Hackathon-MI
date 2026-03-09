@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-03-03T16:09:53.859607",
+  "last_check": "2026-03-09T12:48:54.472757",
   "events": [
     {
       "id": "350c1e531eb13fe9c5bd3446c99eaaadd757018f8b7e31acf12be8564c62871b",
@@ -13,7 +13,8 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://luma.com/jevwfttk"
+        "https://luma.com/jevwfttk",
+        "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch"
       ],
       "discovered_at": "2026-03-02T21:09:49.760923"
     },
@@ -29,7 +30,8 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://luma.com/rgtc75im"
+        "https://luma.com/rgtc75im",
+        "https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760925"
     },
@@ -120,9 +122,38 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/"
+        "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/",
+        "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/"
       ],
       "discovered_at": "2026-03-03T15:34:35.836652"
+    },
+    {
+      "id": "b441cdf6c2e2dbb928720bd9949d3d85493be3dc9d0115a9f34ec45bbaa70486",
+      "title": "STEM, al via la seconda edizione dell’hackathon Women Shape the Future. Tutti i dettagli per candidarsi",
+      "url": "https://startupitalia.eu/startup/women-shape-the-future-stem/",
+      "source": "startup_italia",
+      "description": "La call si rivolge alle studentesse STEM delle Università delle Regioni Campania, Puglia, Basilicata, Calabria, Sicilia e Sardegna",
+      "date_str": "",
+      "location": "Milano",
+      "organizer": "Startup Italia",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-09T12:49:04.944208"
+    },
+    {
+      "id": "0c9c1f86b6aa1686d1513574c8cc73b32a4eac862d1d664ee410ca17433bcff5",
+      "title": "GDG AI HACK - 2026",
+      "url": "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/",
+      "source": "gdg_community",
+      "description": "160 builders. 40 teams. 3 days. €15K+ in prizes.GDG AI HACK is back for its third edition — a free 3-day AI hackathon at...",
+      "date_str": "09 May 2026",
+      "location": "Randstad Box, 5 Via San Vigilio",
+      "organizer": "Google Developer Groups",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-09T12:49:12.140572"
     }
   ]
 }
