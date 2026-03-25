@@ -13,7 +13,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: Mar 25, 2026 12:45
+> **9 hackathons** coming up in Milan · Last updated: Mar 25, 2026 15:02
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -21,8 +21,13 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 | --- | --- | --- | --- |
 | [HSIL Hackathon 2026 – Building High-Value Health Systems: Leveraging AI - Human Technopole](https://humantechnopole.it/en/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/) | 10 Apr 2026 | Milano | web_search |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
+| [[Wikitech-l] Reminder: Registration for the 2026 Wikimedia ...](https://lists.wikimedia.org/hyperkitty/list/wikitech-l@lists.wikimedia.org/message/O73CGQGL2MGAFUPZGL3GHFZWWJFKJAEL/) | 1 May 2026 | Milano | web_search |
 | [GDG AI HACK - 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | 9 May 2026 | Randstad Box, 5 Via San Vigilio | gdg_community |
+| [Hackathon Leonardo - Space Edition - telespazio.com](https://www.telespazio.com/en/careers/hackathon-space-edition) | 9 May 2026 | Milano | web_search |
+| [Hackaday Europe 2026](https://www.eventbrite.com/e/hackaday-europe-2026-tickets-1985449808825) | 16 May 2026 | 1/c Via Gaetano Previati, Lecco | eventbrite_web |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
+| [Hack the agriculture! \| [hackathon] Biglietti, giovedì, mar ...](https://www.eventbrite.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274) | TBD | Milano | web_search |
+| [AssoSoftware organizza il primo Hackathon dedicato all’IA nei](https://polihub.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale-dedicato-allia-nei-software-gestionali/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 

@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-03-09T12:48:54.472757",
+  "last_check": "2026-03-25T14:59:28.692051",
   "events": [
     {
       "id": "350c1e531eb13fe9c5bd3446c99eaaadd757018f8b7e31acf12be8564c62871b",
@@ -14,7 +14,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://luma.com/jevwfttk",
-        "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch"
+        "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch",
+        "https://www.codame.com/p/the-new-human-creative-hackathon"
       ],
       "discovered_at": "2026-03-02T21:09:49.760923"
     },
@@ -46,7 +47,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.codame.com/p/arttech-festival-2026"
+      ],
       "discovered_at": "2026-03-02T21:17:25.795930"
     },
     {
@@ -60,7 +63,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://fondazionetriulza.org/il-social-innovation-campus-torna-a-mind-il-25-26-e-27-febbraio/"
+      ],
       "discovered_at": "2026-03-02T21:09:49.760873"
     },
     {
@@ -88,7 +93,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.9,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://polihub.it/en/programs/"
+      ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
     {
@@ -123,7 +130,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/",
-        "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/"
+        "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/",
+        "https://www.wikimedia.it/news/il-programma-di-foss4g-it-osmit-2024-e-online/"
       ],
       "discovered_at": "2026-03-03T15:34:35.836652"
     },
@@ -138,8 +146,85 @@
       "organizer": "Google Developer Groups",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
+        "https://allhackathons.com/hackathon/gdg-ai-hack-2026/"
+      ],
       "discovered_at": "2026-03-09T12:49:12.140572"
+    },
+    {
+      "id": "dab049486e73f6c561771c2cf7c5b10a2a4ad52049ee269076953bdee983879d",
+      "title": "[Wikitech-l] Reminder: Registration for the 2026 Wikimedia ...",
+      "url": "https://lists.wikimedia.org/hyperkitty/list/wikitech-l@lists.wikimedia.org/message/O73CGQGL2MGAFUPZGL3GHFZWWJFKJAEL/",
+      "source": "web_search",
+      "description": "The 2026 Wikimedia Hackathon will be taking place in Milan , Italy on May 1-3, 2026 . At present, there are five (5) spots remaining for anyone interested in attending, so please register quickly if you’d like to join.",
+      "date_str": "2026-05-01",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-25T14:40:48.637131"
+    },
+    {
+      "id": "93c504e8113ddaba1424a4d080ea0f1fb65a37f8ea70af3cc3d3410edd42ac56",
+      "title": "Hackathon Leonardo - Space Edition - telespazio.com",
+      "url": "https://www.telespazio.com/en/careers/hackathon-space-edition",
+      "source": "web_search",
+      "description": "On 18-19 April 2026 in Rome and 9-10 May 2026 in Milan , two new hackathons organised by Leonardo, in collaboration with Talent Garden, will be held, open to undergraduates, recent graduates and young professionals in the STEM sector.",
+      "date_str": "2026-05-09",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-25T14:42:03.099504"
+    },
+    {
+      "id": "9243cf163134f2f7bd339340fa6d45ed93ee2e3fb57e1bc07bc14c4d2e3cb4ee",
+      "title": "Hackaday Europe 2026",
+      "url": "https://www.eventbrite.com/e/hackaday-europe-2026-tickets-1985449808825",
+      "source": "eventbrite_web",
+      "description": "Join us for Hackaday Europe 2026! A weekend of hardware talks, badge-hacking, and celebrations!",
+      "date_str": "2026-05-16 — 2026-05-17",
+      "location": "1/c Via Gaetano Previati, Lecco",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-25T14:55:28.895324"
+    },
+    {
+      "id": "f4312a1538c2f111755779dec34197285df643f8824554df48183aaf2bf76a8a",
+      "title": "Hack the agriculture! | [hackathon] Biglietti, giovedì, mar ...",
+      "url": "https://www.eventbrite.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274",
+      "source": "web_search",
+      "description": "In questo scenario nasce l’ Hackathon “Creare soluzioni per l’agricoltura del futuro”, un’iniziativa pensata per stimolare idee e strumenti innovativi a supporto del settore agricolo e della gestione del rischio e supportata da Agriduemila Hub Innovation, Agrilogia e Diagram.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [],
+      "discovered_at": "2026-03-25T14:56:16.633206"
+    },
+    {
+      "id": "0e9aa6751b5861259e6bac1e9bf7486af558760b3e593903e0b94be6b28f2354",
+      "title": "AssoSoftware organizza il primo Hackathon dedicato all’IA nei",
+      "url": "https://polihub.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale-dedicato-allia-nei-software-gestionali/",
+      "source": "web_search",
+      "description": "Un Hackathon di due giorni organizzato alle due estremità d’Italia a Milano e a Bari, allo scopo di unire la penisola in un unico evento ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "alternate_urls": [
+        "https://polihub.it/tag/hackaton/",
+        "https://polihub.it/tag/ai/",
+        "https://polihub.it/category/news-it/page/4/"
+      ],
+      "discovered_at": "2026-03-25T14:56:39.003460"
     }
   ]
 }
