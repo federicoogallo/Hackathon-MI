@@ -130,3 +130,75 @@ class TestPipelineIntegration:
         result = deduplicate_against_store(events, store)
         assert len(result) == 1
         assert result[0].title == "New"
+
+
+class TestPipelineQualityGate:
+    def test_rejects_non_milan_event_with_explicit_location(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="Hackaday Europe 2026",
+            url="https://www.eventbrite.com/e/hackaday-europe-2026",
+            source="eventbrite_web",
+            location="1/c Via Gaetano Previati, Lecco",
+            description="Hardware event in Lecco",
+        )
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "Milano" in reason or "non a Milano" in reason
+
+    def test_rejects_clearly_past_event(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="AssoSoftware organizza il primo Hackathon dedicato all'IA",
+            url="https://polihub.it/news-it/assosoftware-hackathon-2024/",
+            source="web_search",
+            description="Evento del 2024",
+        )
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "passato" in reason
+
+    def test_fallback_semantic_dedup_removes_wikimedia_duplicate(self):
+        from main import _deterministic_semantic_dedup
+
+        a = HackathonEvent(
+            title="Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia",
+            url="https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/",
+            source="web_search",
+            description="Wikimedia Hackathon a Milano dal 1 al 3 maggio 2026",
+            date_str="2026-05-01",
+            location="Milano",
+        )
+        b = HackathonEvent(
+            title="[Wikitech-l] Reminder: Registration for the 2026 Wikimedia ...",
+            url="https://lists.wikimedia.org/hyperkitty/list/wikitech-l@example/message/abc/",
+            source="web_search",
+            description="The 2026 Wikimedia Hackathon will be taking place in Milan on May 1-3, 2026",
+            date_str="2026-05-01",
+            location="Milano",
+        )
+
+        out = _deterministic_semantic_dedup([a, b])
+        assert len(out) == 1
+        assert "wikimedia.it" in out[0].url
+
+    def test_rejects_known_false_positive_urls(self):
+        from main import _passes_quality_gate
+
+        ev1 = HackathonEvent(
+            title="Hack the agriculture! | [hackathon]",
+            url="https://www.eventbrite.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274",
+            source="web_search",
+        )
+        ev2 = HackathonEvent(
+            title="AssoSoftware organizza il primo Hackathon dedicato all'IA nei",
+            url="https://polihub.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale-dedicato-allia-nei-software-gestionali/",
+            source="web_search",
+        )
+
+        ok1, _ = _passes_quality_gate(ev1)
+        ok2, _ = _passes_quality_gate(ev2)
+        assert ok1 is False
+        assert ok2 is False

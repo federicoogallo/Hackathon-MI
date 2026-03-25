@@ -313,6 +313,18 @@ class EventStore:
         """Aggiunge un evento allo storico (senza controllo duplicati)."""
         self._events[event.id] = event.to_dict()
 
+    def replace_events(self, events: list[dict]) -> None:
+        """Sostituisce completamente lo storico con una lista di eventi."""
+        self._events = {}
+        self._alt_url_index = {}
+        for item in events:
+            eid = item.get("id")
+            if not eid:
+                continue
+            self._events[eid] = item
+            for alt_url in item.get("alternate_urls", []):
+                self._alt_url_index[alt_url] = eid
+
     def set_last_check(self, timestamp: str) -> None:
         """Imposta il timestamp dell'ultimo check (usato al salvataggio)."""
         # Salvato nel prossimo save()
