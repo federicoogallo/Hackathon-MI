@@ -18,6 +18,7 @@ Usage:
 import argparse
 import json
 import logging
+import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -68,6 +69,170 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("hackathon-monitor")
+
+_YEAR_RE = re.compile(r"\b(20\d{2})\b")
+_MILAN_RE = re.compile(r"\bmilan(?:o)?\b", re.I)
+_NON_MILAN_CITY_RE = re.compile(
+    r"\b("
+    r"lecco|trento|trentino|bari|roma|rome|torino|napoli|genova|venezia|bologna|"
+    r"firenze|bergamo|brescia|udine|padova|verona|palermo|catania|parma|pisa|"
+    r"barcelona|madrid|paris|berlin|london|new\s+york|san\s+francisco|los\s+angeles"
+    r")\b",
+    re.I,
+)
+_KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
+    r"(eventbrite\.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274|"
+    r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale)",
+    re.I,
+)
+
+
+def _text_has_milan(text: str) -> bool:
+    return bool(_MILAN_RE.search(text or ""))
+
+
+def _extract_years(*parts: str) -> list[int]:
+    years: list[int] = []
+    for p in parts:
+        if not p:
+            continue
+        years.extend(int(y) for y in _YEAR_RE.findall(p))
+    return years
+
+
+def _is_clearly_past(event: HackathonEvent) -> bool:
+    """Regola deterministica anti-falsi positivi su eventi vecchi."""
+    current_year = datetime.now().year
+    years = _extract_years(event.title, event.description, event.date_str, event.url)
+    if not years:
+        return False
+    return all(y < current_year for y in years)
+
+
+def _is_clearly_non_milan(event: HackathonEvent) -> bool:
+    """Regola deterministica anti-falsi positivi fuori Milano."""
+    full_text = f"{event.title} {event.description} {event.url}"
+    location = event.location or ""
+
+    # Se troviamo Milano esplicitamente, non scartiamo.
+    if _text_has_milan(full_text) or _text_has_milan(location):
+        return False
+
+    # Se non c'è Milano ma compare una città non milanese, scarta.
+    if _NON_MILAN_CITY_RE.search(location) or _NON_MILAN_CITY_RE.search(full_text):
+        return True
+
+    return False
+
+
+def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
+    """Vincoli hard prima del salvataggio finale."""
+    if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
+        return False, "false positive noto"
+    if _is_clearly_past(event):
+        return False, "evento chiaramente passato"
+    if _is_clearly_non_milan(event):
+        return False, "evento chiaramente non a Milano"
+    return True, "ok"
+
+
+def _event_rank_for_dedup(event: HackathonEvent) -> int:
+    """Punteggio per scegliere il record migliore quando due eventi coincidono."""
+    score = 0
+    url_l = (event.url or "").lower()
+    if "lists." in url_l or "hyperkitty" in url_l:
+        score -= 2
+    if event.location and _text_has_milan(event.location):
+        score += 1
+    if len(event.description or "") >= 120:
+        score += 1
+    if event.source != "web_search":
+        score += 1
+    return score
+
+
+def _deterministic_semantic_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
+    """Dedup di fallback (deterministico) per stessa data + keyword forti condivise."""
+    deduped: list[HackathonEvent] = []
+
+    for event in events:
+        event_date = (event.parsed_date().isoformat() if event.parsed_date() else "")
+        event_kw = EventStore._extract_distinctive_keywords(f"{event.title} {event.description}")
+
+        duplicate_idx: int | None = None
+        for i, kept in enumerate(deduped):
+            kept_date = kept.parsed_date().isoformat() if kept.parsed_date() else ""
+            if not event_date or event_date != kept_date:
+                continue
+
+            kept_kw = EventStore._extract_distinctive_keywords(f"{kept.title} {kept.description}")
+            overlap = event_kw & kept_kw
+            strong_overlap = any(len(k) >= 8 for k in overlap)
+            if len(overlap) >= 2 or (len(overlap) == 1 and strong_overlap):
+                duplicate_idx = i
+                break
+
+        if duplicate_idx is None:
+            deduped.append(event)
+            continue
+
+        kept = deduped[duplicate_idx]
+        if _event_rank_for_dedup(event) > _event_rank_for_dedup(kept):
+            logger.info("Dedup fallback: sostituito '%s' con '%s'", kept.title[:60], event.title[:60])
+            deduped[duplicate_idx] = event
+        else:
+            logger.info("Dedup fallback: scartato duplicato '%s'", event.title[:60])
+
+    return deduped
+
+
+def _deterministic_semantic_dedup_dicts(events: list[dict]) -> list[dict]:
+    """Versione dict-preserving della dedup semantica per cleanup dello storico."""
+    deduped: list[dict] = []
+
+    def _as_event(item: dict) -> HackathonEvent:
+        return HackathonEvent(
+            title=item.get("title", ""),
+            url=item.get("url", ""),
+            source=item.get("source", ""),
+            description=item.get("description", ""),
+            date_str=item.get("date_str", ""),
+            location=item.get("location", ""),
+            organizer=item.get("organizer", ""),
+        )
+
+    for item in events:
+        event = _as_event(item)
+        event_date = event.parsed_date().isoformat() if event.parsed_date() else ""
+        event_kw = EventStore._extract_distinctive_keywords(f"{event.title} {event.description}")
+
+        duplicate_idx: int | None = None
+        for i, kept_item in enumerate(deduped):
+            kept = _as_event(kept_item)
+            kept_date = kept.parsed_date().isoformat() if kept.parsed_date() else ""
+            if not event_date or event_date != kept_date:
+                continue
+
+            kept_kw = EventStore._extract_distinctive_keywords(f"{kept.title} {kept.description}")
+            overlap = event_kw & kept_kw
+            strong_overlap = any(len(k) >= 8 for k in overlap)
+            if len(overlap) >= 2 or (len(overlap) == 1 and strong_overlap):
+                duplicate_idx = i
+                break
+
+        if duplicate_idx is None:
+            deduped.append(item)
+            continue
+
+        kept_item = deduped[duplicate_idx]
+        kept = _as_event(kept_item)
+        if _event_rank_for_dedup(event) > _event_rank_for_dedup(kept):
+            logger.info("Dedup fallback: sostituito '%s' con '%s'", kept.title[:60], event.title[:60])
+            deduped[duplicate_idx] = item
+        else:
+            logger.info("Dedup fallback: scartato duplicato '%s'", event.title[:60])
+
+    return deduped
 
 
 # ─── Collector registry ────────────────────────────────────────────────────
@@ -232,6 +397,25 @@ def run_pipeline(dry_run: bool = False) -> None:
 
     # 1. Carica storico
     store = EventStore()
+    # Cleanup deterministico dello storico per rimuovere duplicati/falsi positivi legacy
+    existing_events: list[dict] = []
+    for item in store.all_events():
+        ev = HackathonEvent(
+            title=item.get("title", ""),
+            url=item.get("url", ""),
+            source=item.get("source", ""),
+            description=item.get("description", ""),
+            date_str=item.get("date_str", ""),
+            location=item.get("location", ""),
+            organizer=item.get("organizer", ""),
+        )
+        ok, reason = _passes_quality_gate(ev)
+        if ok:
+            existing_events.append(item)
+        else:
+            logger.info("Cleanup storico: rimosso '%s' (%s)", ev.title[:70], reason)
+    existing_events = _deterministic_semantic_dedup_dicts(existing_events)
+    store.replace_events(existing_events)
     logger.info("Storico caricato: %d eventi", store.count)
 
     # 2. Esegui collector
@@ -336,6 +520,26 @@ def run_pipeline(dry_run: bool = False) -> None:
         logger.info(
             "Post LLM date filter: %d → %d (rimossi %d eventi passati grazie a date LLM)",
             pre_date_filter2, post_date_filter2, pre_date_filter2 - post_date_filter2,
+        )
+
+    # 5d. Quality gate deterministico (non-Milano / chiaramente passato)
+    quality_passed: list[HackathonEvent] = []
+    for event in llm_confirmed:
+        ok, reason = _passes_quality_gate(event)
+        if ok:
+            quality_passed.append(event)
+        else:
+            logger.info("Quality gate: scartato '%s' (%s)", event.title[:70], reason)
+    llm_confirmed = quality_passed
+
+    # 5e. Dedup fallback deterministico (anche se llm_dedup fallisce parsing)
+    pre_fallback_dedup = len(llm_confirmed)
+    llm_confirmed = _deterministic_semantic_dedup(llm_confirmed)
+    if len(llm_confirmed) < pre_fallback_dedup:
+        logger.info(
+            "Post fallback dedup: %d -> %d unici",
+            pre_fallback_dedup,
+            len(llm_confirmed),
         )
 
     # 6. Salva nuovi hackathon nello storico

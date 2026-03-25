@@ -116,6 +116,9 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"10times\.com/", re.I),                              # aggregatore indiano conferenze/hackathon
     re.compile(r"townscript\.com/", re.I),                           # ticketing/eventi indiani
     re.compile(r"konfhub\.com/", re.I),                              # piattaforma eventi tech India
+    # False positive noti (verificati manualmente)
+    re.compile(r"eventbrite\.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274", re.I),
+    re.compile(r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale", re.I),
 ]
 
 
