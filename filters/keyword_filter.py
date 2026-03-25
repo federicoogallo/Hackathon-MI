@@ -24,6 +24,28 @@ _positive_patterns = [re.compile(p, re.IGNORECASE) for p in config.POSITIVE_KEYW
 _negative_patterns = [re.compile(p, re.IGNORECASE) for p in config.NEGATIVE_KEYWORDS]
 _year_pattern = re.compile(r'\b(20[0-9]{2})\b')
 
+# Segnali linguistici di annuncio evento (IT/EN).
+_announcement_patterns = [
+    re.compile(r"\bsi\s+svolger\w*\b", re.I),
+    re.compile(r"\bsi\s+terr\w*\b", re.I),
+    re.compile(r"\bin\s+programma\b", re.I),
+    re.compile(r"\bavra\s+luogo\b", re.I),
+    re.compile(r"\b(?:will|is\s+going\s+to)\s+(?:take\s+place|be\s+held)\b", re.I),
+]
+
+# Date in forma naturale usate spesso nei teaser/news (es. "9-10 maggio 2026").
+_month_names = (
+    "gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|"
+    "settembre|ottobre|novembre|dicembre|"
+    "january|february|march|april|may|june|july|august|september|"
+    "october|november|december"
+)
+_natural_date_pattern = re.compile(
+    rf"\b\d{{1,2}}(?:\s*[-/]\s*\d{{1,2}})?\s+(?:{_month_names})\s+20\d{{2}}\b",
+    re.I,
+)
+_milan_pattern = re.compile(r"\bmilan(?:o)?\b", re.I)
+
 # URL che sicuramente NON sono pagine evento
 _JUNK_URL_PATTERNS = [
     # Profili utente (Devpost, GitHub, ecc.)
@@ -124,6 +146,26 @@ def _is_past_event(text: str) -> bool:
     return True
 
 
+def _is_event_announcement_teaser(text: str) -> bool:
+    """Rileva teaser/news di annuncio evento con data futura e Milano.
+
+    Serve a non scartare subito articoli brevi senza keyword esplicite
+    (es. "il 9-10 maggio 2026 a Milano si svolgeranno...").
+    """
+    if not text:
+        return False
+
+    has_announcement = any(p.search(text) for p in _announcement_patterns)
+    has_natural_date = bool(_natural_date_pattern.search(text))
+    has_milan = bool(_milan_pattern.search(text))
+
+    if not (has_announcement and has_natural_date and has_milan):
+        return False
+
+    # Evita teaser chiaramente su eventi passati.
+    return not _is_past_event(text)
+
+
 def keyword_filter(event: HackathonEvent) -> bool:
     """Applica il pre-filtro keyword a un evento.
 
@@ -156,6 +198,12 @@ def keyword_filter(event: HackathonEvent) -> bool:
         if pattern.search(text):
             logger.debug("Keyword positiva matchata per: %s", event.title)
             return True
+
+    # Step 3b: teaser annuncio con data futura + Milano → passa al LLM
+    # (il LLM deciderà se è davvero un hackathon)
+    if _is_event_announcement_teaser(text_with_date):
+        logger.debug("Teaser evento matchato per: %s", event.title)
+        return True
 
     # Step 4: nessun match → SCARTA
     logger.debug("Nessuna keyword matchata per: %s (scartato)", event.title)
