@@ -84,6 +84,14 @@ class TestKeywordFilterAmbiguous:
         """'coding marathon' è una keyword positiva e deve passare."""
         assert keyword_filter(_make_event("48h coding marathon — build something amazing")) is True
 
+    def test_announcement_teaser_with_future_date_and_milan_passes(self):
+        title = "Il 9-10 maggio 2026 a Milano si svolgeranno due giornate dedicate allo spazio"
+        assert keyword_filter(_make_event(title, "Fonte: telespazio.com")) is True
+
+    def test_announcement_teaser_with_past_date_is_rejected(self):
+        title = "Il 9-10 maggio 2024 a Milano si svolgeranno incontri tech"
+        assert keyword_filter(_make_event(title, "Fonte: telespazio.com")) is False
+
 
 class TestPastEventFilter:
     """Eventi con anno passato vengono scartati dal pre-filtro."""

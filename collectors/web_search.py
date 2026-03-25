@@ -41,6 +41,7 @@ SEARCH_QUERIES = [
     "site:polihub.it hackathon",
     "site:cariplofactory.it hackathon",
     "site:fondazionetriulza.org hackathon",
+    "site:telespazio.com hackathon Milano 2026",
 ]
 
 # URL che NON sono pagine evento (listing, profili, wiki, ...)

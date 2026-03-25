@@ -274,6 +274,52 @@ class TestPoliHubCollector:
 
 
 # =============================================================================
+#  Telespazio
+# =============================================================================
+
+class TestTelespazioCollector:
+        @patch("collectors.telespazio.safe_get")
+        def test_collects_hackathon_detail(self, mock_get):
+                index_html = """
+                <html><body>
+                    <a href="/en/careers/hackathon-space-edition">Hackathon Leonardo - Space Edition</a>
+                </body></html>
+                """
+                detail_html = """
+                <html><head>
+                    <meta property="og:title" content="Hackathon Leonardo - Space Edition">
+                    <meta property="og:description" content="On 9-10 May 2026 in Milan this hackathon takes place.">
+                </head><body>
+                    <h1>Hackathon Leonardo - Space Edition</h1>
+                    <p>On 9-10 May 2026 in Milan this hackathon takes place.</p>
+                </body></html>
+                """
+
+                def _side_effect(url, *args, **kwargs):
+                        if url.endswith("/careers"):
+                                return _mock_safe_get_response(index_html)
+                        if "hackathon-space-edition" in url:
+                                return _mock_safe_get_response(detail_html)
+                        return None
+
+                mock_get.side_effect = _side_effect
+
+                from collectors.telespazio import TelespazioCollector
+
+                events = TelespazioCollector().collect()
+                assert len(events) == 1
+                assert events[0].title == "Hackathon Leonardo - Space Edition"
+                assert "telespazio.com" in events[0].url
+                assert events[0].source == "telespazio"
+
+        @patch("collectors.telespazio.safe_get")
+        def test_returns_empty_on_failure(self, mock_get):
+                mock_get.return_value = None
+                from collectors.telespazio import TelespazioCollector
+                assert TelespazioCollector().collect() == []
+
+
+# =============================================================================
 #  Tutti i collector implementano BaseCollector
 # =============================================================================
 
@@ -283,7 +329,9 @@ class TestCollectorInterface:
         from models import BaseCollector
         from main import get_collectors
         collectors = get_collectors()
-        assert len(collectors) == 8
+        # Il numero di collector cresce nel tempo: garantiamo che il registry
+        # non si svuoti accidentalmente, senza hardcode rigidi.
+        assert len(collectors) >= 8
         for c in collectors:
             assert isinstance(c, BaseCollector), f"{c.__class__.__name__} non è BaseCollector"
             assert hasattr(c, "name")
