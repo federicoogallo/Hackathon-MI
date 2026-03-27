@@ -43,6 +43,9 @@ jobs:
           MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         run: python main.py
 
+      - name: Pre-render static site (SSG)
+        run: python scripts/build_static_site.py
+
       - name: Commit updated data and page
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

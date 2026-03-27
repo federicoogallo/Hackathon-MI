@@ -171,6 +171,16 @@ python main.py
 python -m pytest tests/ -v
 ```
 
+### 5. Pre-render static site (SSG)
+
+```bash
+python scripts/build_static_site.py
+```
+
+This generates `docs/index.html` with event cards already embedded in HTML
+and updates the README table from `data/events.json`, so content is visible
+before any JavaScript runs.
+
 </details>
 
 ---
