@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-04-14T13:20:44.175196",
+  "last_check": "2026-04-14T13:38:46.639797",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -168,34 +168,6 @@
         "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053598777?aff=ebdssbdestsearch"
       ],
       "discovered_at": "2026-04-14T13:20:47.233619"
-    },
-    {
-      "id": "3fa98d5eaad663a1cf844642923bd54c6544074e4430476b47af56257073baf4",
-      "title": "Hacking the City",
-      "url": "https://hackingthecity.today/",
-      "source": "web_search",
-      "description": "L’Hackathon è stato pensato per far nascere e concretizzare progettualità che favoriscano l’implementazione dell’Economia Circolare nelle città, coinvolgendo studenti, neolaureati e dottorandi in un processo di ridisegno e riprogettazione delle città. L’evento, che sarà ibrido con sede fisica a Milano, Torino e Vicenza ed avrà portata nazionale, vuole condurre alla nascita di attività innovative ed imprenditoriali in diverse macro-aree tematiche, all’interno delle quali si sono definite delle challenge, grazie al coinvolgimento di partner industriali per ognuna delle macro-aree tematiche.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.85,
-      "alternate_urls": [],
-      "discovered_at": "2026-04-14T13:20:45.203299"
-    },
-    {
-      "id": "7538591d0a99085bb15a29c1d4b32020cea0afcdd525c2ad45b02397eccdd24f",
-      "title": "2026 Wikimedia Hackathon",
-      "url": "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/",
-      "source": "web_search",
-      "description": "The Hackathon will be taking place in person from May 1 - 3, 2026 in Milan , Italy . The Wikimedia Hackathon is an annual event that brings together the global technical community to connect, hack, and explore new ideas.",
-      "date_str": "2026-05-01",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "alternate_urls": [],
-      "discovered_at": "2026-04-14T13:20:49.478563"
     },
     {
       "id": "2bcc0e0847d865952ccd56907f1f8a75b55cc6f8dd212554c608dfae66abf71b",

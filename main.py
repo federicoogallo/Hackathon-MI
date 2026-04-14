@@ -23,6 +23,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 import config
 from models import BaseCollector, HackathonEvent
@@ -85,6 +86,16 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale)",
     re.I,
 )
+_KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(
+    r"hackingthecity\.today/?$",
+    re.I,
+)
+_PAST_TENSE_HINT_RE = re.compile(
+    r"(\b(?:e'|è)\s+stato\b|\bsi\s+e'\s+svolt[oa]\b|\bsi\s+è\s+svolt[oa]\b|"
+    r"\bsi\s+e'\s+tenut[oa]\b|\bsi\s+è\s+tenut[oa]\b|\bwas\s+held\b|"
+    r"\btook\s+place\b|\bhas\s+ended\b|\bended\b)",
+    re.I,
+)
 
 
 def _text_has_milan(text: str) -> bool:
@@ -125,12 +136,39 @@ def _is_clearly_non_milan(event: HackathonEvent) -> bool:
     return False
 
 
+def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
+    """Scarta risultati web_search senza data che hanno forti segnali di evento passato."""
+    if event.source != "web_search":
+        return False
+    if event.parsed_date() is not None:
+        return False
+
+    url = event.url or ""
+    if _KNOWN_UNDATED_STALE_WEB_RESULT_RE.search(url):
+        return True
+
+    # Per home page senza data, usa solo un indizio lessicale forte (passato).
+    path = ""
+    try:
+        path = urlparse(url).path or ""
+    except Exception:
+        path = ""
+
+    if path not in ("", "/"):
+        return False
+
+    text = f"{event.title} {event.description}"
+    return bool(_PAST_TENSE_HINT_RE.search(text))
+
+
 def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
     if _is_clearly_past(event):
         return False, "evento chiaramente passato"
+    if _is_undated_likely_stale_web_result(event):
+        return False, "evento web senza data (probabile passato)"
     if _is_clearly_non_milan(event):
         return False, "evento chiaramente non a Milano"
     return True, "ok"
@@ -388,6 +426,22 @@ def deduplicate_against_store(
     return new_events
 
 
+def deduplicate_post_llm_against_store(
+    events: list[HackathonEvent], store: EventStore
+) -> list[HackathonEvent]:
+    """Seconda passata di dedup vs storico dopo arricchimento LLM (date/titoli migliori)."""
+    unique: list[HackathonEvent] = []
+    for event in events:
+        if store.is_duplicate(event):
+            logger.info(
+                "Post-LLM dedup vs store: scartato duplicato '%s'",
+                event.title[:70],
+            )
+            continue
+        unique.append(event)
+    return unique
+
+
 def run_pipeline(dry_run: bool = False) -> None:
     """Pipeline completa di raccolta, filtro e notifica."""
     start_time = datetime.now()
@@ -539,6 +593,16 @@ def run_pipeline(dry_run: bool = False) -> None:
         logger.info(
             "Post fallback dedup: %d -> %d unici",
             pre_fallback_dedup,
+            len(llm_confirmed),
+        )
+
+    # 5f. Dedup finale contro storico usando date/titoli arricchiti dal LLM
+    pre_store_dedup = len(llm_confirmed)
+    llm_confirmed = deduplicate_post_llm_against_store(llm_confirmed, store)
+    if len(llm_confirmed) < pre_store_dedup:
+        logger.info(
+            "Post-LLM dedup vs store: %d -> %d unici",
+            pre_store_dedup,
             len(llm_confirmed),
         )
 

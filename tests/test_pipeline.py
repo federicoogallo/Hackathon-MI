@@ -131,6 +131,33 @@ class TestPipelineIntegration:
         assert len(result) == 1
         assert result[0].title == "New"
 
+    def test_post_llm_dedup_vs_store_with_extracted_date(self):
+        """Dedup post-LLM: con data estratta deve bloccare duplicati contro lo storico."""
+        from main import deduplicate_post_llm_against_store
+
+        store = EventStore(path=Path("/tmp/_test_post_llm_dedup_store.json"))
+        existing = HackathonEvent(
+            title="Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia",
+            url="https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/",
+            source="web_search",
+            description="Wikimedia Hackathon a Milano dal 1 al 3 maggio 2026",
+            date_str="2026-05-01",
+            location="Milano",
+        )
+        store.add_event(existing)
+
+        candidate = HackathonEvent(
+            title="2026 Wikimedia Hackathon",
+            url="https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@example/message/abc/",
+            source="web_search",
+            description="The 2026 Wikimedia Hackathon will take place in Milan on May 1-3, 2026",
+            date_str="2026-05-01",
+            location="Milano",
+        )
+
+        result = deduplicate_post_llm_against_store([candidate], store)
+        assert result == []
+
 
 class TestPipelineQualityGate:
     def test_rejects_non_milan_event_with_explicit_location(self):
@@ -202,3 +229,19 @@ class TestPipelineQualityGate:
         ok2, _ = _passes_quality_gate(ev2)
         assert ok1 is False
         assert ok2 is False
+
+    def test_rejects_undated_stale_web_result(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="Hacking the City",
+            url="https://hackingthecity.today/",
+            source="web_search",
+            description="L'Hackathon è stato pensato per far nascere progettualità nelle città.",
+            location="",
+            date_str="",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "senza data" in reason or "passato" in reason
