@@ -13,13 +13,12 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Apr 23, 2026 14:02
+> **5 hackathons** coming up in Milan · Last updated: Apr 24, 2026 14:00
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Hackathon for Women – Unlock Your Career with EY and Donne 4.0](https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053629870) | 23 Apr 2026 | 33 Via Andrea Solari, Milano | eventbrite_web |
 | [Il Wikimedia Hackathon 2026 arriva a Milano - Wikimedia Italia](https://www.wikimedia.it/news/il-wikimedia-hackathon-2026-arriva-a-milano/) | 1 May 2026 | Milano | web_search |
 | [GDG AI HACK - 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | 9 May 2026 | Randstad Box, 5 Via San Vigilio | gdg_community |
 | [Hackathon Leonardo - Space Edition - telespazio.com](https://www.telespazio.com/en/careers/hackathon-space-edition) | 9 May 2026 | Milano | web_search |
