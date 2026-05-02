@@ -63,6 +63,11 @@ from storage.json_store import EventStore
 from notifiers.telegram import notify_run_summary
 from utils.html_export import generate_html
 from utils.readme_export import generate_readme_table
+from utils.review_queue import (
+    build_review_queue,
+    load_review_decisions,
+    save_review_queue,
+)
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -569,10 +574,13 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 5. Filtro LLM
     llm_confirmed, llm_discarded = llm_filter(keyword_passed)
     post_llm_count = len(llm_confirmed)
+    review_decisions = load_review_decisions()
+    review_queue = build_review_queue(keyword_passed, llm_confirmed, review_decisions)
     logger.info(
         "Post LLM filter: %d confermati, %d scartati",
         post_llm_count, llm_discarded,
     )
+    logger.info("Review queue: %d candidati dubbi", len(review_queue))
 
     # ── Protezione anti-sovrascrittura ──
     # Se c'erano candidati keyword ma l'LLM li ha scartati TUTTI con
@@ -613,6 +621,7 @@ def run_pipeline(dry_run: bool = False) -> None:
                 "post_llm": post_llm_count,
                 "new_events": 0,
                 "total_stored": store.count,
+                "review_queue": 0,
             })
             if not dry_run:
                 total_upcoming = sum(
@@ -631,6 +640,8 @@ def run_pipeline(dry_run: bool = False) -> None:
             logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
             logger.info("=" * 60)
             return
+
+    save_review_queue(review_queue)
 
     # 5b. Dedup semantica con LLM (rimuove duplicati con titoli/URL diversi)
     llm_confirmed = llm_dedup(llm_confirmed)
@@ -702,6 +713,7 @@ def run_pipeline(dry_run: bool = False) -> None:
         "post_llm": post_llm_count,
         "new_events": notified_count,
         "total_stored": store.count,
+        "review_queue": len(review_queue),
     }
     _write_report(report)
 

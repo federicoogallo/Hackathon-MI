@@ -75,6 +75,9 @@ class HackathonEvent:
     organizer: str = ""
     is_hackathon: bool = False
     confidence: float = 0.0
+    review_status: str = "ai_pending"
+    review_reason: str = ""
+    reviewed_at: str = ""
     alternate_urls: list[str] = field(default_factory=list)
     discovered_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
@@ -174,6 +177,9 @@ class HackathonEvent:
             "organizer": self.organizer,
             "is_hackathon": self.is_hackathon,
             "confidence": self.confidence,
+            "review_status": self.review_status,
+            "review_reason": self.review_reason,
+            "reviewed_at": self.reviewed_at,
             "alternate_urls": self.alternate_urls,
             "discovered_at": self.discovered_at,
         }

@@ -120,7 +120,11 @@ class TestPipelineIntegration:
         mock_llm.return_value = (events, 0)
         mock_llm_dedup.return_value = events
 
-        with patch("main.config.DATA_DIR", tmp_path):
+        with (
+            patch("main.config.DATA_DIR", tmp_path),
+            patch("main.config.REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"),
+            patch("main.config.REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"),
+        ):
             run_pipeline(dry_run=True)
 
         report = json.loads((tmp_path / "last_report.json").read_text())
@@ -172,7 +176,11 @@ class TestPipelineIntegration:
         mock_kw.return_value = (events, 0)
         mock_llm.return_value = ([], len(events))
 
-        with patch("main.config.DATA_DIR", tmp_path):
+        with (
+            patch("main.config.DATA_DIR", tmp_path),
+            patch("main.config.REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"),
+            patch("main.config.REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"),
+        ):
             run_pipeline(dry_run=True)
 
         report = json.loads((tmp_path / "last_report.json").read_text())

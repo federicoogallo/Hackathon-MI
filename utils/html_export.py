@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, date, timezone
+from datetime import datetime, date
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -108,6 +108,31 @@ def _source_style(source: str) -> tuple[str, str]:
     return _SOURCE_COLORS.get(source.lower(), _DEFAULT_SOURCE_COLOR)
 
 
+def _read_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _review_count() -> int:
+    data = _read_json(config.REVIEW_QUEUE_FILE)
+    candidates = data.get("candidates", [])
+    return len(candidates) if isinstance(candidates, list) else 0
+
+
+def _scan_status() -> tuple[str, int]:
+    data = _read_json(config.DATA_DIR / "last_report.json")
+    status = data.get("status") or "completed"
+    failures = data.get("failed_collectors", [])
+    if not isinstance(failures, list):
+        failures = []
+    return str(status), len(failures)
+
+
 # ---- CSS ----
 
 _CSS = (
@@ -126,7 +151,7 @@ _CSS = (
     "--text:#0f1318;"
     "--text-secondary:#52606d;"
     "--text-muted:#9aa5b1;"
-    "--radius:16px;"
+    "--radius:8px;"
     "--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);"
     "--shadow-hover:0 8px 30px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.08);"
     "--shadow-dark:0 24px 60px rgba(0,0,0,.3)}"
@@ -142,17 +167,16 @@ _CSS = (
     ".hero{position:relative;background:var(--dark);overflow:hidden;"
     "padding:0;border-bottom:1px solid rgba(255,255,255,.06)}"
     ".hero-bg{position:absolute;inset:0;z-index:0;"
-    "background:"
-    "radial-gradient(ellipse 130% 120% at 100% -20%,rgba(37,99,235,.28),transparent 55%),"
-    "radial-gradient(ellipse 80% 80% at -10% 110%,rgba(217,119,6,.18),transparent 50%),"
-    "radial-gradient(ellipse 60% 60% at 50% 50%,rgba(30,45,66,.9),transparent 100%),"
-    "var(--dark)}"
-    ".hero-grid{display:none}"
+    "background:linear-gradient(135deg,#0b0f19 0%,#132033 58%,#20344f 100%)}"
+    ".hero-grid{position:absolute;inset:0;z-index:0;opacity:.26;"
+    "background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),"
+    "linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);"
+    "background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}"
     ".hero-content{position:relative;z-index:1}"
     ".topbar{display:flex;align-items:center;justify-content:space-between;"
     "padding:1.25rem 0;border-bottom:1px solid rgba(255,255,255,.07)}"
     ".brand{display:flex;align-items:center;gap:.75rem}"
-    ".brand-mark{width:36px;height:36px;border-radius:10px;"
+    ".brand-mark{width:36px;height:36px;border-radius:8px;"
     "background:linear-gradient(135deg,var(--accent),#1d4ed8);"
     "display:grid;place-items:center;flex-shrink:0}"
     ".brand-mark svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}"
@@ -160,7 +184,7 @@ _CSS = (
     ".brand-city{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:-.1rem}"
     ".topbar-link{display:inline-flex;align-items:center;gap:.4rem;color:rgba(255,255,255,.7);"
     "text-decoration:none;font-weight:500;font-size:.82rem;"
-    "padding:.5rem .9rem;border-radius:999px;"
+    "padding:.5rem .9rem;border-radius:8px;"
     "border:1px solid rgba(255,255,255,.12);"
     "background:rgba(255,255,255,.05);"
     "transition:all .2s;backdrop-filter:blur(4px)}"
@@ -185,7 +209,7 @@ _CSS = (
     ".hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}"
     ".btn-primary{display:inline-flex;align-items:center;gap:.5rem;"
     "background:var(--accent);color:#fff;text-decoration:none;font-weight:600;"
-    "padding:.8rem 1.5rem;border-radius:10px;"
+    "padding:.8rem 1.5rem;border-radius:8px;"
     "box-shadow:0 0 0 1px rgba(37,99,235,.5),0 4px 14px rgba(37,99,235,.4);"
     "transition:transform .2s,box-shadow .2s;font-size:.9rem;letter-spacing:.01em}"
     ".btn-primary:hover{transform:translateY(-1px);"
@@ -198,7 +222,7 @@ _CSS = (
     ".stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));"
     "gap:.75rem;margin-top:3rem;max-width:480px}"
     ".stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);"
-    "padding:1rem 1.25rem;border-radius:12px;backdrop-filter:blur(8px)}"
+    "padding:1rem 1.25rem;border-radius:8px;backdrop-filter:blur(8px)}"
     ".stat-num{font-size:1.6rem;font-weight:700;line-height:1.1;color:#fff;"
     "font-family:'DM Serif Display',Georgia,serif}"
     ".stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;"
@@ -218,7 +242,7 @@ _CSS = (
     ".search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);"
     "width:15px;height:15px;color:var(--text-muted);pointer-events:none}"
     ".search-box input{width:100%;padding:.62rem 1rem .62rem 2.5rem;"
-    "border:1.5px solid var(--border);border-radius:10px;font-family:inherit;"
+    "border:1.5px solid var(--border);border-radius:8px;font-family:inherit;"
     "font-size:.875rem;background:var(--surface);color:var(--text);outline:none;"
     "transition:border-color .15s,box-shadow .15s;font-weight:400}"
     ".search-box input::placeholder{color:var(--text-muted)}"
@@ -233,6 +257,15 @@ _CSS = (
     ".pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,.04)}"
     ".pill.active{background:var(--accent);color:#fff;border-color:var(--accent);"
     "box-shadow:0 1px 4px rgba(37,99,235,.3)}"
+    ".ops-band{background:var(--surface);border-bottom:1px solid var(--border)}"
+    ".ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;"
+    "background:var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border)}"
+    ".ops-item{background:var(--surface);padding:.85rem 1rem}"
+    ".ops-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700}"
+    ".ops-value{display:flex;align-items:center;gap:.45rem;margin-top:.15rem;font-size:.92rem;font-weight:700;color:var(--text)}"
+    ".ops-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.12)}"
+    ".ops-dot.warn{background:#d97706;box-shadow:0 0 0 3px rgba(217,119,6,.14)}"
+    ".ops-link{color:inherit;text-decoration:none}.ops-link:hover{color:var(--accent)}"
     # Grid + Cards
     ".section-header{display:flex;align-items:baseline;justify-content:space-between;"
     "padding:2rem 0 1.25rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}"
@@ -259,7 +292,7 @@ _CSS = (
     # Date badge
     ".date-badge{display:flex;flex-direction:column;align-items:center;"
     "justify-content:center;min-width:58px;height:64px;"
-    "background:var(--dark);border-radius:12px;flex-shrink:0;"
+    "background:var(--dark);border-radius:8px;flex-shrink:0;"
     "box-shadow:0 2px 8px rgba(11,15,25,.35)}"
     ".date-day{font-size:1.5rem;font-weight:700;color:#fff;line-height:1.1;"
     "font-family:'DM Serif Display',Georgia,serif}"
@@ -281,6 +314,13 @@ _CSS = (
     "overflow:hidden;margin-top:.1rem}"
     ".card-footer{display:flex;align-items:center;justify-content:space-between;"
     "gap:.5rem;margin-top:.5rem;padding-top:.6rem;border-top:1px solid var(--border)}"
+    ".quality-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.25rem}"
+    ".chip{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--border);"
+    "border-radius:999px;padding:.18rem .52rem;font-size:.68rem;font-weight:700;color:var(--text-secondary);"
+    "background:var(--surface-2);letter-spacing:.02em}"
+    ".chip.ai{background:#eef6ff;color:#1d4ed8;border-color:#bfdbfe}"
+    ".chip.manual{background:#ecfdf5;color:#047857;border-color:#a7f3d0}"
+    ".chip.tbd{background:#fff7ed;color:#c2410c;border-color:#fed7aa}"
     ".source-dot{display:inline-flex;align-items:center;gap:.4rem;"
     "font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;"
     "color:var(--text-muted)}"
@@ -298,6 +338,14 @@ _CSS = (
     ".empty-state h3{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:.5rem}"
     ".empty-state p{font-size:.9rem;line-height:1.65;max-width:340px;margin:0 auto}"
     ".no-results{text-align:center;padding:3rem 1rem;font-size:.9rem;color:var(--text-muted)}"
+    ".review-list{display:flex;flex-direction:column;gap:.75rem;padding:2rem 0 3rem}"
+    ".review-card{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;"
+    "padding:1.15rem 1.25rem;box-shadow:var(--shadow)}"
+    ".review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}"
+    ".review-id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;color:var(--text-muted)}"
+    ".review-title{font-size:1rem;line-height:1.4;margin:.15rem 0;color:var(--text);font-weight:700}"
+    ".review-title a{color:inherit;text-decoration:none}.review-title a:hover{color:var(--accent)}"
+    ".review-reason{font-size:.82rem;color:var(--text-secondary);line-height:1.55;margin-top:.5rem}"
     # Footer
     "footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);"
     "padding:2.5rem 0}"
@@ -324,6 +372,7 @@ _CSS = (
     ".filter-pills{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none}"
     ".filter-pills::-webkit-scrollbar{display:none}"
     ".card{padding:1.1rem 1.15rem;gap:.85rem}"
+    ".ops{grid-template-columns:repeat(2,minmax(0,1fr))}"
     ".date-badge{min-width:50px;height:56px}"
     ".date-day{font-size:1.25rem}"
     ".card-title{font-size:.95rem}"
@@ -396,7 +445,13 @@ _SVG_CAL = '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenod
 
 # ---- HTML builder ----
 
-def _build_html(upcoming: list[dict], last_scan: str) -> str:
+def _build_html(
+    upcoming: list[dict],
+    last_scan: str,
+    review_count: int = 0,
+    scan_status: str = "completed",
+    collector_failures: int = 0,
+) -> str:
     event_count = len(upcoming)
     months_set: set[str] = set()
     for e in upcoming:
@@ -408,6 +463,8 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
     evt_word = "eventi" if event_count != 1 else "evento"
     mon_word = "mesi" if len(months_set) != 1 else "mese"
     mon_count = str(len(months_set)) if months_set else "\u2014"
+    status_label = "OK" if scan_status == "completed" and collector_failures == 0 else "Da controllare"
+    status_dot = "ops-dot" if status_label == "OK" else "ops-dot warn"
 
     html = (
         '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
@@ -467,6 +524,12 @@ def _build_html(upcoming: list[dict], last_scan: str) -> str:
         '</div>\n'
         '</div>\n'
         '</header>\n\n'
+        '<section class="ops-band"><div class="container ops">\n'
+        f'  <div class="ops-item"><div class="ops-label">Ultima scansione</div><div class="ops-value"><span class="{status_dot}"></span>{_escape(status_label)}</div></div>\n'
+        f'  <div class="ops-item"><div class="ops-label">Aggiornato</div><div class="ops-value">{_escape(last_scan)}</div></div>\n'
+        f'  <div class="ops-item"><div class="ops-label">Candidati in review</div><a class="ops-link" href="review.html"><div class="ops-value">{review_count}</div></a></div>\n'
+        f'  <div class="ops-item"><div class="ops-label">Collector con errori</div><div class="ops-value">{collector_failures}</div></div>\n'
+        '</div></section>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
         f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off"></div>\n'
@@ -518,6 +581,8 @@ def _build_cards(events: list[dict]) -> str:
         location = _escape((e.get("location") or "Milano").strip())
         source = (e.get("source") or "").strip()
         date_str = e.get("date_str", "")
+        review_status = (e.get("review_status") or "ai_verified").strip()
+        confidence = float(e.get("confidence") or 0.0)
 
         day, month = _fmt_date_day_month(date_str)
         date_compact = _fmt_date_compact(date_str)
@@ -554,6 +619,15 @@ def _build_cards(events: list[dict]) -> str:
             meta.append(f'<span class="meta-item">{_SVG_CAL}{_escape(date_compact)}</span>')
         meta_html = "".join(meta)
 
+        chips = []
+        if review_status == "manual_approved":
+            chips.append('<span class="chip manual">Manuale</span>')
+        elif confidence > 0:
+            chips.append(f'<span class="chip ai">AI {int(round(confidence * 100))}%</span>')
+        if not date_iso:
+            chips.append('<span class="chip tbd">Data TBD</span>')
+        quality_html = f'<div class="quality-row">{"".join(chips)}</div>' if chips else ""
+
         desc_html = f'<p class="card-desc">{desc}</p>' if desc else ""
         search_blob = _escape(f"{title} {desc} {location} {source_esc}".lower())
         delay = f"animation-delay:{idx * 0.06:.2f}s"
@@ -564,6 +638,7 @@ def _build_cards(events: list[dict]) -> str:
             f'<div class="card-body">'
             f'<h2 class="card-title"><a href="{url}" target="_blank" rel="noopener">{title}</a></h2>'
             f'<div class="card-meta">{meta_html}</div>'
+            f'{quality_html}'
             f'{desc_html}'
             f'<div class="card-footer">'
             f'<span class="source-dot">{source_esc}</span>'
@@ -584,12 +659,89 @@ def _build_empty() -> str:
     )
 
 
+def _build_review_cards(candidates: list[dict]) -> str:
+    if not candidates:
+        return (
+            '<div class="empty-state">'
+            '<h3>Nessun candidato in revisione</h3>'
+            '<p>La coda si popola solo quando il filtro AI non e sicuro.</p>'
+            '</div>'
+        )
+
+    parts: list[str] = []
+    for item in candidates:
+        title = _escape((item.get("title") or "Senza titolo").strip())
+        url = _escape(item.get("url") or "#")
+        source = _escape(item.get("source") or "")
+        reason = _escape(item.get("review_reason") or "Motivazione non disponibile")
+        candidate_id = _escape(str(item.get("id", ""))[:12])
+        confidence = int(round(float(item.get("confidence") or 0.0) * 100))
+        location = _escape(item.get("location") or "Milano")
+        date_str = _escape(_fmt_date_compact(item.get("date_str", "")) or "TBD")
+        parts.append(
+            '<article class="review-card">'
+            '<div class="review-head">'
+            '<div>'
+            f'<div class="review-id">{candidate_id}</div>'
+            f'<h2 class="review-title"><a href="{url}" target="_blank" rel="noopener">{title}</a></h2>'
+            f'<div class="card-meta"><span class="meta-item">{source}</span>'
+            f'<span class="meta-item">{location}</span><span class="meta-item">{date_str}</span></div>'
+            '</div>'
+            f'<span class="chip ai">AI {confidence}%</span>'
+            '</div>'
+            f'<p class="review-reason">{reason}</p>'
+            '</article>'
+        )
+    return "\n".join(parts)
+
+
+def _build_review_html(candidates: list[dict], last_scan: str) -> str:
+    cards = _build_review_cards(candidates)
+    count = len(candidates)
+    return (
+        '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
+        '<meta charset="UTF-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+        f'<meta name="description" content="{count} candidati hackathon da rivedere.">\n'
+        '<title>Review queue - Hackathon Milano</title>\n'
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">\n'
+        f'<style>{_CSS}</style>\n'
+        '</head>\n<body>\n'
+        '<header class="hero"><div class="hero-bg"></div><div class="hero-grid"></div>'
+        '<div class="hero-content"><div class="container">'
+        '<nav class="topbar"><div class="brand"><div class="brand-mark">'
+        '<svg viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5z"/><path d="M2 13l8 5 8-5"/><path d="M2 10l8 5 8-5"/></svg>'
+        '</div><div><div class="brand-name">Review queue</div>'
+        '<div class="brand-city">Candidati da verificare</div></div></div>'
+        '<a class="topbar-link" href="index.html">Eventi confermati</a></nav>'
+        '<div class="hero-body"><div class="hero-eyebrow"><span></span>Manual review</div>'
+        '<h1>Candidati <em>dubbi</em> prima della pubblicazione.</h1>'
+        f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per meritare una verifica, ma non abbastanza confidenza per entrare automaticamente nel calendario.</p>'
+        '</div></div></div></header>'
+        '<main class="container"><div class="section-header">'
+        '<span class="section-title">Da rivedere</span>'
+        f'<span class="section-count">Aggiornato: {_escape(last_scan)}</span>'
+        '</div><div class="review-list">'
+        f'{cards}'
+        '</div></main>'
+        '<footer><div class="container"><div class="footer-inner">'
+        '<div class="footer-brand"><div class="footer-brand-name">Hackathon Milano</div>'
+        '<div class="footer-brand-desc">Review queue generata dalla pipeline</div></div>'
+        '<div class="footer-center"></div><div class="footer-links">'
+        '<a href="index.html">Calendario</a></div></div></div></footer>'
+        '</body>\n</html>'
+    )
+
+
 # ---- Generator ----
 
-def generate_html(events_path=None, output_path=None):
+def generate_html(events_path=None, output_path=None, review_output_path=None):
     """Legge events.json e scrive docs/index.html con gli hackathon futuri."""
     events_path = events_path or config.EVENTS_FILE
     output_path = output_path or (config.BASE_DIR / "docs" / "index.html")
+    review_output_path = review_output_path or (config.BASE_DIR / "docs" / "review.html")
 
     all_events: list[dict] = []
     last_check = ""
@@ -615,8 +767,25 @@ def generate_html(events_path=None, output_path=None):
         except Exception:
             pass
 
-    html = _build_html(upcoming, last_scan)
+    review_count = _review_count()
+    scan_status, collector_failures = _scan_status()
+    html = _build_html(
+        upcoming,
+        last_scan,
+        review_count=review_count,
+        scan_status=scan_status,
+        collector_failures=collector_failures,
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")
+
+    review_candidates = _read_json(config.REVIEW_QUEUE_FILE).get("candidates", [])
+    if not isinstance(review_candidates, list):
+        review_candidates = []
+    review_output_path.parent.mkdir(parents=True, exist_ok=True)
+    review_output_path.write_text(
+        _build_review_html(review_candidates, last_scan),
+        encoding="utf-8",
+    )
     logger.info("HTML generato: %s (%d eventi)", output_path, len(upcoming))
     return output_path

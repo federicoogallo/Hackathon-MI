@@ -350,6 +350,13 @@ def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]
         for event, result in zip(batch, results):
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
+            event.review_reason = result.reason
+            if result.is_hackathon and result.confidence >= config.LLM_CONFIDENCE_THRESHOLD:
+                event.review_status = "ai_verified"
+            elif result.confidence == 0.0:
+                event.review_status = "llm_error"
+            else:
+                event.review_status = "needs_review"
 
             # Popola date_str dal LLM se l'evento non ne ha già una
             if result.event_date and result.event_date.lower() not in ("null", "none", ""):
