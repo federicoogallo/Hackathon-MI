@@ -61,4 +61,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update events + page + readme [skip ci]"
-          file_pattern: data/events.json docs/index.html README.md
+          file_pattern: data/events.json data/review_queue.json data/review_decisions.json docs/index.html docs/review.html README.md

@@ -20,6 +20,8 @@ if _env_path.exists():
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 EVENTS_FILE = DATA_DIR / "events.json"
+REVIEW_QUEUE_FILE = DATA_DIR / "review_queue.json"
+REVIEW_DECISIONS_FILE = DATA_DIR / "review_decisions.json"
 
 # ─── API Keys ──────────────────────────────────────────────────────────────
 EVENTBRITE_API_KEY = os.getenv("EVENTBRITE_API_KEY", "")
