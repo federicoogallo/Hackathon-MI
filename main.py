@@ -379,6 +379,11 @@ def _event_is_upcoming_dict(e: dict) -> bool:
         return True
 
 
+def _all_llm_results_failed(events: list[HackathonEvent]) -> bool:
+    """True se il LLM sembra fallito tecnicamente per tutti i candidati."""
+    return bool(events) and all(getattr(e, "confidence", 1.0) == 0.0 for e in events)
+
+
 def deduplicate_against_store(
     events: list[HackathonEvent], store: EventStore
 ) -> list[HackathonEvent]:
@@ -509,16 +514,11 @@ def run_pipeline(dry_run: bool = False) -> None:
     )
 
     # ── Protezione anti-sovrascrittura ──
-    # Se c'erano candidati keyword ma l'LLM li ha scartati TUTTI,
-    # potrebbe essere per errori API (non risultati legittimi).
-    # Controlliamo se tutti gli eventi hanno confidence=0.0 (segno di API error).
-    # In quel caso, mantieni lo storico e l'HTML intatti.
-    if post_keyword_count >= 5 and post_llm_count == 0:
-        api_error_count = sum(
-            1 for e in keyword_passed
-            if getattr(e, "confidence", 1.0) == 0.0
-        )
-        if api_error_count == post_keyword_count:
+    # Se c'erano candidati keyword ma l'LLM li ha scartati TUTTI con
+    # confidence=0.0, è quasi certamente un errore API/parsing invece di
+    # una classificazione legittima. Preserva quindi lo storico su disco.
+    if post_keyword_count > 0 and post_llm_count == 0:
+        if _all_llm_results_failed(keyword_passed):
             logger.warning(
                 "⚠️  LLM ha fallito su tutti i %d candidati (probabili errori API) — "
                 "storico NON sovrascritto per preservare i dati precedenti.",
