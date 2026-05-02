@@ -17,7 +17,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run tests
+        run: python -m pytest tests/ -q
+
       - name: Run Hackathon Monitor
         env:
           EVENTBRITE_API_KEY: ${{ secrets.EVENTBRITE_API_KEY }}
@@ -45,6 +48,14 @@ jobs:
 
       - name: Pre-render static site (SSG)
         run: python scripts/build_static_site.py
+
+      - name: Upload run report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackathon-monitor-report
+          path: data/last_report.json
+          if-no-files-found: ignore
 
       - name: Commit updated data and page
         uses: stefanzweifel/git-auto-commit-action@v5

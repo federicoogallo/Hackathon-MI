@@ -2,7 +2,7 @@
 
 **Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
 
-Automated aggregator for hackathon events in Milan from 27 heterogeneous sources.  
+Automated aggregator for hackathon events in Milan from 28 heterogeneous sources.  
 Filters with LLM, notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
 
 <br>
@@ -31,7 +31,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 <p align="center">
   <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
   <img src="https://img.shields.io/badge/AI--verified-Llama_3.3_70B-purple?style=for-the-badge" alt="AI Verified">
-  <img src="https://img.shields.io/badge/sources-27-green?style=for-the-badge" alt="27 Sources">
+  <img src="https://img.shields.io/badge/sources-28-green?style=for-the-badge" alt="28 Sources">
 </p>
 
 ---
@@ -39,7 +39,7 @@ Filters with LLM, notifies via Telegram Bot, and publishes a static website on G
 ## Architecture
 
 ```
-Collectors (27 sources in parallel)
+Collectors (28 sources in parallel)
         │
         ▼
   4-Level Deduplication
@@ -118,6 +118,12 @@ Collectors (27 sources in parallel)
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
 | 27 | **GDG Community** | HTML scraping + JSON-LD | gdg.community.dev — Google Developer Groups Milan chapters |
+
+#### Focus Sources
+
+| # | Source | Method | Notes |
+|---|--------|--------|-------|
+| 28 | **Telespazio** | HTML scraping | Leonardo/Telespazio career hackathon pages |
 
 </details>
 

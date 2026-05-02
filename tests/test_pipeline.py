@@ -76,19 +76,31 @@ class TestSendMessage:
 class TestPipelineIntegration:
     """Test del flusso pipeline con collector e filtri mockati."""
 
+    @patch("main.generate_readme_table")
+    @patch("main.generate_html")
+    @patch("main.llm_dedup")
     @patch("main.llm_filter")
     @patch("main.keyword_filter_batch")
     @patch("main.run_collectors")
     @patch("main.EventStore")
     def test_dry_run_pipeline(
-        self, MockStore, mock_run_coll, mock_kw, mock_llm
+        self,
+        MockStore,
+        mock_run_coll,
+        mock_kw,
+        mock_llm,
+        mock_llm_dedup,
+        mock_generate_html,
+        mock_generate_readme_table,
+        tmp_path,
     ):
-        """Pipeline dry-run: nessuna notifica reale."""
+        """Pipeline dry-run: nessuna notifica reale e nessun export nel repo."""
         from main import run_pipeline
 
         # Setup mocks
         store_instance = MagicMock()
         store_instance.count = 0
+        store_instance.all_events.return_value = []
         store_instance.is_duplicate.return_value = False
         MockStore.return_value = store_instance
 
@@ -99,8 +111,56 @@ class TestPipelineIntegration:
         mock_run_coll.return_value = (events, ["s"], [])
         mock_kw.return_value = (events, 0)
         mock_llm.return_value = (events, 0)
+        mock_llm_dedup.return_value = events
+
+        with patch("main.config.DATA_DIR", tmp_path):
+            run_pipeline(dry_run=True)
+
+        mock_llm_dedup.assert_called_once_with(events)
+        mock_generate_html.assert_called_once()
+        mock_generate_readme_table.assert_called_once()
+
+    @patch("main.generate_readme_table")
+    @patch("main.generate_html")
+    @patch("main.llm_dedup")
+    @patch("main.llm_filter")
+    @patch("main.keyword_filter_batch")
+    @patch("main.run_collectors")
+    @patch("main.EventStore")
+    def test_llm_api_error_preserves_store_even_with_few_candidates(
+        self,
+        MockStore,
+        mock_run_coll,
+        mock_kw,
+        mock_llm,
+        mock_llm_dedup,
+        mock_generate_html,
+        mock_generate_readme_table,
+    ):
+        """Se il LLM fallisce su pochi candidati, lo storico non viene salvato."""
+        from main import run_pipeline
+
+        store_instance = MagicMock()
+        store_instance.count = 0
+        store_instance.all_events.return_value = []
+        store_instance.is_duplicate.return_value = False
+        MockStore.return_value = store_instance
+
+        events = [
+            HackathonEvent(title="Hack1", url="https://a.com/1", source="s"),
+            HackathonEvent(title="Hack2", url="https://a.com/2", source="s"),
+        ]
+        mock_run_coll.return_value = (events, ["s"], [])
+        mock_kw.return_value = (events, 0)
+        mock_llm.return_value = ([], len(events))
 
         run_pipeline(dry_run=True)
+
+        mock_llm_dedup.assert_not_called()
+        store_instance.add_event.assert_not_called()
+        store_instance.save_with_timestamp.assert_not_called()
+        mock_generate_html.assert_called_once()
+        mock_generate_readme_table.assert_called_once()
 
     def test_dedup_intra_batch(self):
         """Dedup intra-batch: stesso URL da collector diversi → uno solo."""
