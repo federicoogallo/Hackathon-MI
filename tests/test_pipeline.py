@@ -108,7 +108,14 @@ class TestPipelineIntegration:
             HackathonEvent(title="Hack1", url="https://a.com/1", source="s"),
             HackathonEvent(title="Hack2", url="https://a.com/2", source="s"),
         ]
-        mock_run_coll.return_value = (events, ["s"], [])
+        collector_runs = [{
+            "name": "s",
+            "ok": True,
+            "event_count": 2,
+            "duration_seconds": 0.1,
+            "error": "",
+        }]
+        mock_run_coll.return_value = (events, ["s"], [], collector_runs)
         mock_kw.return_value = (events, 0)
         mock_llm.return_value = (events, 0)
         mock_llm_dedup.return_value = events
@@ -116,6 +123,9 @@ class TestPipelineIntegration:
         with patch("main.config.DATA_DIR", tmp_path):
             run_pipeline(dry_run=True)
 
+        report = json.loads((tmp_path / "last_report.json").read_text())
+        assert report["status"] == "completed"
+        assert report["collector_runs"] == collector_runs
         mock_llm_dedup.assert_called_once_with(events)
         mock_generate_html.assert_called_once()
         mock_generate_readme_table.assert_called_once()
@@ -136,6 +146,7 @@ class TestPipelineIntegration:
         mock_llm_dedup,
         mock_generate_html,
         mock_generate_readme_table,
+        tmp_path,
     ):
         """Se il LLM fallisce su pochi candidati, lo storico non viene salvato."""
         from main import run_pipeline
@@ -150,12 +161,23 @@ class TestPipelineIntegration:
             HackathonEvent(title="Hack1", url="https://a.com/1", source="s"),
             HackathonEvent(title="Hack2", url="https://a.com/2", source="s"),
         ]
-        mock_run_coll.return_value = (events, ["s"], [])
+        collector_runs = [{
+            "name": "s",
+            "ok": True,
+            "event_count": 2,
+            "duration_seconds": 0.1,
+            "error": "",
+        }]
+        mock_run_coll.return_value = (events, ["s"], [], collector_runs)
         mock_kw.return_value = (events, 0)
         mock_llm.return_value = ([], len(events))
 
-        run_pipeline(dry_run=True)
+        with patch("main.config.DATA_DIR", tmp_path):
+            run_pipeline(dry_run=True)
 
+        report = json.loads((tmp_path / "last_report.json").read_text())
+        assert report["status"] == "llm_failed_preserved"
+        assert report["collector_runs"] == collector_runs
         mock_llm_dedup.assert_not_called()
         store_instance.add_event.assert_not_called()
         store_instance.save_with_timestamp.assert_not_called()

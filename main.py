@@ -21,8 +21,10 @@ import logging
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from time import perf_counter
 from urllib.parse import urlparse
 
 import config
@@ -70,6 +72,26 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("hackathon-monitor")
+
+
+@dataclass
+class CollectorRun:
+    """Esito diagnostico di un singolo collector."""
+
+    name: str
+    ok: bool
+    event_count: int
+    duration_seconds: float
+    error: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "ok": self.ok,
+            "event_count": self.event_count,
+            "duration_seconds": round(self.duration_seconds, 2),
+            "error": self.error,
+        }
 
 _YEAR_RE = re.compile(r"\b(20\d{2})\b")
 _MILAN_RE = re.compile(r"\bmilan(?:o)?\b", re.I)
@@ -319,15 +341,16 @@ def get_collectors() -> list[BaseCollector]:
 
 def run_collectors(
     collectors: list[BaseCollector],
-) -> tuple[list[HackathonEvent], list[str], list[str]]:
+) -> tuple[list[HackathonEvent], list[str], list[str], list[dict]]:
     """Esegue tutti i collector in parallelo.
 
     Returns:
-        (all_events, ok_collectors, failed_collectors)
+        (all_events, ok_collectors, failed_collectors, collector_runs)
     """
     all_events: list[HackathonEvent] = []
     ok_collectors: list[str] = []
     failed_collectors: list[str] = []
+    collector_runs: list[dict] = []
 
     with ThreadPoolExecutor(max_workers=config.MAX_COLLECTOR_WORKERS) as executor:
         future_to_collector = {
@@ -337,32 +360,54 @@ def run_collectors(
         for future in as_completed(future_to_collector):
             collector = future_to_collector[future]
             try:
-                events, error = future.result()
+                events, error, duration = future.result()
                 if error:
                     failed_collectors.append(f"{collector.name}: {error}")
+                    collector_runs.append(CollectorRun(
+                        name=collector.name,
+                        ok=False,
+                        event_count=0,
+                        duration_seconds=duration,
+                        error=error,
+                    ).to_dict())
                     logger.error("Collector %s fallito: %s", collector.name, error)
                 else:
                     ok_collectors.append(collector.name)
                     all_events.extend(events)
+                    collector_runs.append(CollectorRun(
+                        name=collector.name,
+                        ok=True,
+                        event_count=len(events),
+                        duration_seconds=duration,
+                    ).to_dict())
                     logger.info(
                         "Collector %s: %d eventi", collector.name, len(events)
                     )
             except Exception as e:
                 failed_collectors.append(f"{collector.name}: {e}")
+                collector_runs.append(CollectorRun(
+                    name=collector.name,
+                    ok=False,
+                    event_count=0,
+                    duration_seconds=0.0,
+                    error=str(e),
+                ).to_dict())
                 logger.error("Collector %s eccezione: %s", collector.name, e)
 
-    return all_events, ok_collectors, failed_collectors
+    collector_runs.sort(key=lambda item: item["name"])
+    return all_events, ok_collectors, failed_collectors, collector_runs
 
 
 def _safe_collect(
     collector: BaseCollector,
-) -> tuple[list[HackathonEvent], str | None]:
+) -> tuple[list[HackathonEvent], str | None, float]:
     """Wrapper per esecuzione sicura di un collector."""
+    started = perf_counter()
     try:
-        events = collector.collect()
-        return events, None
+        events = collector.collect() or []
+        return events, None, perf_counter() - started
     except Exception as e:
-        return [], str(e)
+        return [], str(e), perf_counter() - started
 
 
 def _event_is_upcoming_dict(e: dict) -> bool:
@@ -382,6 +427,20 @@ def _event_is_upcoming_dict(e: dict) -> bool:
 def _all_llm_results_failed(events: list[HackathonEvent]) -> bool:
     """True se il LLM sembra fallito tecnicamente per tutti i candidati."""
     return bool(events) and all(getattr(e, "confidence", 1.0) == 0.0 for e in events)
+
+
+def _failed_collector_names(failed_collectors: list[str]) -> list[str]:
+    """Estrae solo il nome collector da stringhe 'nome: errore'."""
+    return [f.split(":", 1)[0] for f in failed_collectors]
+
+
+def _write_report(report: dict) -> Path:
+    """Scrive il report dell'ultima run e ritorna il path."""
+    report_path = Path(config.DATA_DIR) / "last_report.json"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    logger.info("Report salvato in %s", report_path)
+    return report_path
 
 
 def deduplicate_against_store(
@@ -479,7 +538,9 @@ def run_pipeline(dry_run: bool = False) -> None:
 
     # 2. Esegui collector
     collectors = get_collectors()
-    all_events, ok_collectors, failed_collectors = run_collectors(collectors)
+    all_events, ok_collectors, failed_collectors, collector_runs = run_collectors(
+        collectors
+    )
     raw_count = len(all_events)
     logger.info("Totale eventi raw: %d (da %d collector)", raw_count, len(ok_collectors))
 
@@ -539,6 +600,20 @@ def run_pipeline(dry_run: bool = False) -> None:
                 logger.warning("Impossibile aggiornare README.md: %s", e)
 
             elapsed = (datetime.now() - start_time).total_seconds()
+            _write_report({
+                "date": start_time.strftime("%Y-%m-%d %H:%M"),
+                "status": "llm_failed_preserved",
+                "collectors_ok": len(ok_collectors),
+                "collectors_total": len(collectors),
+                "failed_collectors": _failed_collector_names(failed_collectors),
+                "collector_runs": collector_runs,
+                "raw_events": raw_count,
+                "post_dedup": post_dedup_count,
+                "post_keyword": post_keyword_count,
+                "post_llm": post_llm_count,
+                "new_events": 0,
+                "total_stored": store.count,
+            })
             if not dry_run:
                 total_upcoming = sum(
                     1 for ev in store.all_events()
@@ -549,7 +624,7 @@ def run_pipeline(dry_run: bool = False) -> None:
                     new_events=0,
                     total_upcoming=total_upcoming,
                     elapsed_seconds=elapsed,
-                    failed_collectors=[f.split(":")[0] for f in failed_collectors],
+                    failed_collectors=_failed_collector_names(failed_collectors),
                     page_url=page_url,
                 )
             logger.info("=" * 60)
@@ -616,9 +691,11 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 7. Salva report su file (accessibile via /report dal bot)
     report = {
         "date": start_time.strftime("%Y-%m-%d %H:%M"),
+        "status": "completed",
         "collectors_ok": len(ok_collectors),
         "collectors_total": len(collectors),
-        "failed_collectors": [f.split(":")[0] for f in failed_collectors],
+        "failed_collectors": _failed_collector_names(failed_collectors),
+        "collector_runs": collector_runs,
         "raw_events": raw_count,
         "post_dedup": post_dedup_count,
         "post_keyword": post_keyword_count,
@@ -626,11 +703,7 @@ def run_pipeline(dry_run: bool = False) -> None:
         "new_events": notified_count,
         "total_stored": store.count,
     }
-
-    report_path = Path(config.DATA_DIR) / "last_report.json"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
-    logger.info("Report salvato in %s", report_path)
+    _write_report(report)
 
     if dry_run:
         logger.info("[DRY RUN] Report: %s", report)
@@ -666,7 +739,7 @@ def run_pipeline(dry_run: bool = False) -> None:
             new_events=notified_count,
             total_upcoming=total_upcoming,
             elapsed_seconds=elapsed,
-            failed_collectors=[f.split(":")[0] for f in failed_collectors],
+            failed_collectors=_failed_collector_names(failed_collectors),
             page_url=page_url,
         )
 

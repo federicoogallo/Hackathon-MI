@@ -149,7 +149,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit `.env` with your keys. **No key is mandatory** — collectors without a key are silently skipped:
+Edit `.env` with your keys. The monitor can run without paid services, but `GROQ_API_KEY` is strongly recommended: without it, new candidates cannot be AI-verified and the pipeline preserves the existing archive instead of adding unverified events.
 
 | Variable | How to obtain |
 |----------|---------------|
@@ -347,7 +347,8 @@ hackathon-monitor/
 - **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by DDG web search.
 - **Twitter/X**: Free Tier API is write-only. Covered by DDG web search (`site:twitter.com`).
 - **LinkedIn**: no public API for events. Covered by DDG web search (`site:linkedin.com/events`).
-- **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY` the LLM filter is skipped (keyword filter only).
+- **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
+- **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
 - **Some collectors** may return 404/403 temporarily due to site changes — they fail gracefully and don't block the pipeline.
 
 </details>

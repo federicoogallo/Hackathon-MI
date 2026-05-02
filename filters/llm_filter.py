@@ -3,8 +3,8 @@ Filtro LLM con Groq (Llama 3.3 70B) per classificare se un evento è un hackatho
 
 Usa batching per ridurre il numero di chiamate API.
 Completamente gratuito: Groq offre 14.400 RPD e 30 RPM gratis (no carta richiesta).
-Graceful degradation: se GROQ_API_KEY non è configurata, tutti gli eventi
-passano (verrà usato solo il keyword filter).
+Graceful degradation: se GROQ_API_KEY non è configurata, i candidati vengono
+marcati come non verificati (confidence=0.0) e la pipeline preserva lo storico.
 """
 
 import json
