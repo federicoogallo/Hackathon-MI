@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-03T13:45:18+02:00",
+  "last_check": "2026-05-03T14:05:42.433040+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -65,7 +65,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://fondazionetriulza.org/il-social-innovation-campus-torna-a-mind-il-25-26-e-27-febbraio/",
-        "https://fondazionetriulza.org/news/"
+        "https://fondazionetriulza.org/news/",
+        "https://fondazionetriulza.org/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760873"
     },
@@ -100,7 +101,9 @@
         "https://www.unimi.it/it/terza-missione/innovazione-ricerca-e-imprese/progetti-e-iniziative-di-open-innovation",
         "https://www.linkedin.com/posts/htechnopole_hsil-hackathon-2026-building-high-value-activity-7433064159564570624-n-sT",
         "https://humantechnopole.it/it/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
-        "https://gdgaihack.com/"
+        "https://gdgaihack.com/",
+        "https://translate.google.com/translate?u=https://gdgaihack.com/&hl=es&sl=en&tl=es&client=srp",
+        "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en"
       ],
       "discovered_at": "2026-03-03T15:34:32.208612"
     },
@@ -135,7 +138,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
-        "https://allhackathons.com/hackathon/gdg-ai-hack-2026/"
+        "https://allhackathons.com/hackathon/gdg-ai-hack-2026/",
+        "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2025/cohost-gdg-cloud-milano/"
       ],
       "discovered_at": "2026-03-09T12:49:12.140572"
     },
@@ -180,8 +184,103 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.9,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/"
+      ],
       "discovered_at": "2026-04-14T13:20:49.478582"
+    },
+    {
+      "id": "a3238a16eae14c587c0ddeba50b060e08c97b54e56b8731d4280dda47ba90cb5",
+      "title": "AI Agent Olympics Hackathon",
+      "url": "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647",
+      "source": "eventbrite_web",
+      "description": "Build next-gen AI agents in a global hackathon, compete online, then pitch live in Milan at the AI Agent Olympics during AI Week 2026.",
+      "date_str": "2026-05-19",
+      "location": "Fiera Milano, Rho",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.95,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon a Milano, futuro, pagina evento",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon",
+        "https://web3voyager.com/event/ai-agent-olympics-hackathon/",
+        "https://luma.com/5fxlxfl5"
+      ],
+      "discovered_at": "2026-05-03T12:05:43.638896"
+    },
+    {
+      "id": "ff107214f8a52cbcaea3c3070c65af4eba85b09ec0020ea942af2872c7704867",
+      "title": "Make-A-Thon",
+      "url": "https://sustainability.ncsu.edu/get-involved/events/makeathon/",
+      "source": "web_search",
+      "description": "During this three-day challenge, student teams research, design, prototype and build a new solution that addresses a sustainability challenge.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "review_status": "ai_verified",
+      "review_reason": "Makeathon con data non specificata, ma descrizione di evento",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-03T12:05:54.098582"
+    },
+    {
+      "id": "ad4ba038839003b37f685745e88c9da5e12f09d3c8e04734cf9d8ad7117587b5",
+      "title": "GameDev.tv Game Jam 2026",
+      "url": "https://itch.io/jam/gamedevtv-jam-2026",
+      "source": "web_search",
+      "description": "A game jam from 2026-05-15 to 2026-06-01 hosted by gamedevtv. Join over 2 million students from 150+ countries and create something epic! In our annual game jam, you'll make a game in 10 days , solo or with a tea...",
+      "date_str": "2026-05-15",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.8,
+      "review_status": "ai_verified",
+      "review_reason": "Game jam online, futuro",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-03T12:06:01.457686"
+    },
+    {
+      "id": "2ee066f36cf4ce19ce7a7b092d44d6fc670da8360c5a2ad22506ec84af29c29b",
+      "title": "Python Coding Challenge",
+      "url": "https://www.clcoding.com/2026/05/python-coding-challenge-id-010526.html",
+      "source": "web_search",
+      "description": "Python Coding Challenge - Question with Answer (ID -260426) Code Expanation: 🔹 Step 1: Create List x = [0, 1, 2] A list x is created 👉 Elements: 0, 1, 2 🔹 Step 2: Understand all() Function all(x)...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.8,
+      "review_status": "ai_verified",
+      "review_reason": "Coding challenge, futuro",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.clcoding.com/2026/05/python-coding-challenge-id-020526.html",
+        "https://www.clcoding.com/2026/04/python-coding-challenge-id-300426.html",
+        "https://www.clcoding.com/2026/04/python-coding-challenge-id-290426.html"
+      ],
+      "discovered_at": "2026-05-03T12:06:04.753932"
+    },
+    {
+      "id": "9c4bf65fd969ef973030a5c4be3eafdb1df9dc6c29ea8da49df97afb0615109f",
+      "title": "Cyber Security CTF 2026",
+      "url": "https://ctf.hackthebox.com/event/details/cyber-security-ctf-2026-3154",
+      "source": "web_search",
+      "description": "Play the Cyber Security CTF 2026 event on the Hack The Box CTF Platform. Go to Jail(break) is a cooperative and competitive Capture-the-Flag challenge that takes place around our Cyber Security Summit.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "review_status": "ai_verified",
+      "review_reason": "CTF competitivo con descrizione dell'evento",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-03T12:06:07.491509"
     }
   ]
 }
