@@ -340,3 +340,24 @@ class EventStore:
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         logger.info("Salvati %d eventi nello storico (check: %s)", len(self._events), timestamp)
+
+    def touch_last_check(self, timestamp: str) -> None:
+        """Aggiorna solo il timestamp dell'ultimo check, preservando gli eventi su disco."""
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        data: dict
+        if self.path.exists():
+            try:
+                with open(self.path, "r", encoding="utf-8") as f:
+                    loaded = json.load(f)
+                data = loaded if isinstance(loaded, dict) else {}
+            except (json.JSONDecodeError, ValueError, OSError) as e:
+                logger.warning("Impossibile aggiornare timestamp storico (%s): %s", e, self.path)
+                data = {}
+        else:
+            data = {}
+
+        data.setdefault("events", [])
+        data["last_check"] = timestamp
+        with open(self.path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        logger.info("Aggiornato timestamp storico (check: %s)", timestamp)

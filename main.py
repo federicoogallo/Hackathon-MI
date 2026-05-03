@@ -26,6 +26,7 @@ from datetime import datetime
 from pathlib import Path
 from time import perf_counter
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 import config
 from models import BaseCollector, HackathonEvent
@@ -77,6 +78,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("hackathon-monitor")
+LOCAL_TZ = ZoneInfo("Europe/Rome")
 
 
 @dataclass
@@ -138,9 +140,14 @@ def _extract_years(*parts: str) -> list[int]:
     return years
 
 
+def _now() -> datetime:
+    """Ora locale usata nei report pubblicati."""
+    return datetime.now(LOCAL_TZ)
+
+
 def _is_clearly_past(event: HackathonEvent) -> bool:
     """Regola deterministica anti-falsi positivi su eventi vecchi."""
-    current_year = datetime.now().year
+    current_year = _now().year
     years = _extract_years(event.title, event.description, event.date_str, event.url)
     if not years:
         return False
@@ -513,7 +520,7 @@ def deduplicate_post_llm_against_store(
 
 def run_pipeline(dry_run: bool = False) -> None:
     """Pipeline completa di raccolta, filtro e notifica."""
-    start_time = datetime.now()
+    start_time = _now()
     logger.info("=" * 60)
     logger.info("Hackathon Monitor — run iniziata: %s", start_time.isoformat())
     logger.info("=" * 60)
@@ -594,8 +601,13 @@ def run_pipeline(dry_run: bool = False) -> None:
                 post_keyword_count,
             )
 
-            # Rigenera comunque HTML e README (con dati dello storico esistente)
-            # per aggiornare il timestamp "Last updated" nel banner.
+            # Aggiorna solo il timestamp: gli eventi restano quelli validati in precedenza.
+            try:
+                store.touch_last_check(start_time.isoformat())
+            except Exception as e:
+                logger.warning("Impossibile aggiornare timestamp storico: %s", e)
+
+            # Rigenera comunque HTML e README (con dati dello storico esistente).
             try:
                 generate_html()
                 logger.info("HTML page rigenerata (storico preservato)")
@@ -607,7 +619,7 @@ def run_pipeline(dry_run: bool = False) -> None:
             except Exception as e:
                 logger.warning("Impossibile aggiornare README.md: %s", e)
 
-            elapsed = (datetime.now() - start_time).total_seconds()
+            elapsed = (_now() - start_time).total_seconds()
             _write_report({
                 "date": start_time.strftime("%Y-%m-%d %H:%M"),
                 "status": "llm_failed_preserved",
@@ -744,7 +756,7 @@ def run_pipeline(dry_run: bool = False) -> None:
     )
 
     # 11. Invia sempre il summary Telegram (anche se 0 nuovi eventi)
-    elapsed = (datetime.now() - start_time).total_seconds()
+    elapsed = (_now() - start_time).total_seconds()
     if not dry_run:
         page_url = "https://federicoogallo.github.io/Hackathon-MI/"
         notify_run_summary(

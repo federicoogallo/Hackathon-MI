@@ -35,6 +35,14 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ -q
 
+      - name: Check AI classifier secret
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          if [ -z "$GROQ_API_KEY" ]; then
+            echo "::warning::GROQ_API_KEY is not configured; scheduled scans will preserve existing events and mark the site as 'LLM non attivo'."
+          fi
+
       - name: Run Hackathon Monitor
         env:
           EVENTBRITE_API_KEY: ${{ secrets.EVENTBRITE_API_KEY }}

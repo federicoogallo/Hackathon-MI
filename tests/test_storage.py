@@ -74,6 +74,30 @@ class TestPersistence:
         store.save()
         assert nested.exists()
 
+    def test_touch_last_check_preserves_events_payload(self, tmp_events_file):
+        """touch_last_check aggiorna solo il timestamp, senza riscrivere gli eventi in memoria."""
+        payload = {
+            "last_check": "2026-04-14T13:38:46",
+            "events": [
+                {
+                    "id": "abc",
+                    "title": "Evento validato",
+                    "url": "https://example.com/e",
+                    "alternate_urls": ["https://mirror.example.com/e"],
+                }
+            ],
+            "extra": {"keep": True},
+        }
+        tmp_events_file.write_text(json.dumps(payload), encoding="utf-8")
+        store = EventStore(path=tmp_events_file)
+
+        store.touch_last_check("2026-05-03T13:45:18+02:00")
+
+        updated = json.loads(tmp_events_file.read_text(encoding="utf-8"))
+        assert updated["last_check"] == "2026-05-03T13:45:18+02:00"
+        assert updated["events"] == payload["events"]
+        assert updated["extra"] == payload["extra"]
+
 
 # ─── Dedup Livello 1: URL esatto ────────────────────────────────────────────
 

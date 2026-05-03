@@ -133,6 +133,14 @@ def _scan_status() -> tuple[str, int]:
     return str(status), len(failures)
 
 
+def _scan_status_label(scan_status: str, collector_failures: int) -> str:
+    if scan_status == "completed" and collector_failures == 0:
+        return "OK"
+    if scan_status == "llm_failed_preserved":
+        return "LLM non attivo"
+    return "Da controllare"
+
+
 # ---- CSS ----
 
 _CSS = (
@@ -507,7 +515,7 @@ def _build_html(
     evt_word = "eventi" if event_count != 1 else "evento"
     mon_word = "mesi" if len(months_set) != 1 else "mese"
     mon_count = str(len(months_set)) if months_set else "\u2014"
-    status_label = "OK" if scan_status == "completed" and collector_failures == 0 else "Da controllare"
+    status_label = _scan_status_label(scan_status, collector_failures)
     status_dot = "ops-dot" if status_label == "OK" else "ops-dot warn"
 
     html = (
