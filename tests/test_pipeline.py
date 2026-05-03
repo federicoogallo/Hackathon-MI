@@ -130,6 +130,9 @@ class TestPipelineIntegration:
         report = json.loads((tmp_path / "last_report.json").read_text())
         assert report["status"] == "completed"
         assert report["collector_runs"] == collector_runs
+        assert report["review_queue"] == 0
+        review_payload = json.loads((tmp_path / "review_queue.json").read_text())
+        assert review_payload["count"] == 0
         mock_llm_dedup.assert_called_once_with(events)
         mock_generate_html.assert_called_once()
         mock_generate_readme_table.assert_called_once()
@@ -186,6 +189,7 @@ class TestPipelineIntegration:
         report = json.loads((tmp_path / "last_report.json").read_text())
         assert report["status"] == "llm_failed_preserved"
         assert report["collector_runs"] == collector_runs
+        assert report["review_queue"] == 0
         mock_llm_dedup.assert_not_called()
         store_instance.add_event.assert_not_called()
         store_instance.save_with_timestamp.assert_not_called()
