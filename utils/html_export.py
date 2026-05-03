@@ -3,7 +3,7 @@ Genera una pagina HTML statica con tutti gli hackathon futuri confermati.
 
 Output: docs/index.html  servita via GitHub Pages.
 Viene rigenerata ad ogni run della pipeline.
-Design: light theme, Inter font, card grid responsive, search e filter JS.
+Design: light theme, DM Sans font, card grid responsive, search e filter JS.
 """
 
 from __future__ import annotations
@@ -203,7 +203,7 @@ _CSS = (
     "background:linear-gradient(90deg,#60a5fa,#818cf8,#c4b5fd,#60a5fa);"
     "background-size:250% auto;"
     "-webkit-background-clip:text;background-clip:text;"
-    "animation:wordReveal .7s cubic-bezier(.22,1,.36,1) .47s both,shimmer 4s linear .47s infinite}"
+    "animation:shimmer 4s linear infinite}"
     ".hero-sub{font-size:1.05rem;color:rgba(255,255,255,.55);max-width:520px;"
     "line-height:1.65;margin-bottom:2.25rem;font-weight:400}"
     ".hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}"
@@ -227,11 +227,7 @@ _CSS = (
     "font-family:'DM Serif Display',Georgia,serif}"
     ".stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;"
     "color:rgba(255,255,255,.35);margin-top:.15rem}"
-    # Hero entrance stagger
-    ".hero-eyebrow{animation:fadeUp .55s ease .05s both}"
-    ".hero-sub{animation:fadeUp .6s ease .64s both}"
-    ".hero-actions{animation:fadeUp .6s ease .8s both}"
-    ".stats-row{animation:fadeUp .65s ease .95s both}"
+    # Hero content stays visible at first paint; list cards keep the subtle entrance.
     # Toolbar
     ".toolbar-wrap{position:sticky;top:0;z-index:90;"
     "background:rgba(247,246,242,.88);backdrop-filter:blur(16px) saturate(180%);"
@@ -286,9 +282,8 @@ _CSS = (
     ".card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);transform:translateY(-2px)}"
     ".card:hover::before{transform:scaleY(1)}"
     "@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}"
-    "@keyframes wordReveal{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}"
     "@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}"
-    ".hw{display:inline-block;opacity:0;animation:wordReveal .7s cubic-bezier(.22,1,.36,1) both}"
+    ".hw{display:inline-block}"
     # Date badge
     ".date-badge{display:flex;flex-direction:column;align-items:center;"
     "justify-content:center;min-width:58px;height:64px;"
@@ -385,18 +380,6 @@ _CSS = (
 
 _JS = (
     "(function(){"
-    # Count-up animation for stat numbers
-    "var stNums=document.querySelectorAll('.stat-num[data-target]');"
-    "stNums.forEach(function(el){"
-    "var target=parseInt(el.dataset.target,10);"
-    "if(isNaN(target))return;"
-    "var start=null,dur=1100;"
-    "function step(ts){if(!start)start=ts;"
-    "var p=Math.min((ts-start)/dur,1);"
-    "var e=1-Math.pow(1-p,3);"
-    "el.textContent=Math.round(e*target);"
-    "if(p<1)requestAnimationFrame(step)}"
-    "setTimeout(function(){requestAnimationFrame(step)},900)});"
     "var input=document.getElementById('search');"
     "var grid=document.getElementById('grid');"
     "var cards=Array.from(grid.querySelectorAll('.card'));"
@@ -516,8 +499,8 @@ def _build_html(
         '      <span class="hero-badge">Dati in tempo reale</span>\n'
         '    </div>\n'
         '    <div class="stats-row">\n'
-        f'      <div class="stat"><div class="stat-num" data-target="{event_count}">0</div><div class="stat-label">{evt_word}</div></div>\n'
-        + (f'      <div class="stat"><div class="stat-num" data-target="{len(months_set)}">0</div><div class="stat-label">{mon_word}</div></div>\n' if months_set else f'      <div class="stat"><div class="stat-num">{mon_count}</div><div class="stat-label">{mon_word}</div></div>\n')
+        f'      <div class="stat"><div class="stat-num">{event_count}</div><div class="stat-label">{evt_word}</div></div>\n'
+        + (f'      <div class="stat"><div class="stat-num">{len(months_set)}</div><div class="stat-label">{mon_word}</div></div>\n' if months_set else f'      <div class="stat"><div class="stat-num">{mon_count}</div><div class="stat-label">{mon_word}</div></div>\n')
         + '      <div class="stat"><div class="stat-num">24h</div><div class="stat-label">refresh</div></div>\n'
         '    </div>\n'
         '  </div>\n'
@@ -664,7 +647,7 @@ def _build_review_cards(candidates: list[dict]) -> str:
         return (
             '<div class="empty-state">'
             '<h3>Nessun candidato in revisione</h3>'
-            '<p>La coda si popola solo quando il filtro AI non e sicuro.</p>'
+            '<p>La coda si popola solo quando il filtro AI non ha confidenza sufficiente.</p>'
             '</div>'
         )
 

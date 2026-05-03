@@ -2,8 +2,8 @@
 """Build static site pages from stored events data.
 
 This script performs static pre-rendering (SSG) for GitHub Pages by writing
-`docs/index.html` and refreshing the README events table directly from
-`data/events.json`, without running the full collection pipeline.
+`docs/index.html`, `docs/review.html`, and refreshing the README events table
+directly from `data/events.json`, without running the full collection pipeline.
 """
 
 from __future__ import annotations
