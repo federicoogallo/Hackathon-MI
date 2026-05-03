@@ -354,6 +354,55 @@ _CSS = (
     ".footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.78rem;"
     "font-weight:500;transition:color .15s}"
     ".footer-links a:hover{color:rgba(255,255,255,.8)}"
+    # Product-dashboard polish
+    "body *{letter-spacing:0}"
+    ".container{max-width:1180px}"
+    ".hero{background:#111827}"
+    ".hero-bg{background:linear-gradient(135deg,#0b1220 0%,#172033 54%,#17365e 100%)}"
+    ".hero-grid{opacity:.16;background-size:38px 38px}"
+    ".topbar{padding:1rem 0}"
+    ".hero-body{display:grid;grid-template-columns:minmax(0,1fr) 420px;"
+    "gap:2rem;align-items:end;padding:2.35rem 0 2rem}"
+    ".hero-body-single{display:block;max-width:760px}"
+    ".hero-copy{min-width:0}"
+    ".hero h1{font-size:3rem;letter-spacing:0;max-width:720px;margin-bottom:.8rem}"
+    ".hero h1 em{animation:none;background:#a5b4fc;-webkit-background-clip:text;background-clip:text}"
+    ".hero-sub{max-width:620px;margin-bottom:1.35rem;color:rgba(255,255,255,.68)}"
+    ".hero-actions{gap:.75rem}"
+    ".hero-panel{border:1px solid rgba(255,255,255,.12);background:rgba(15,23,42,.62);"
+    "border-radius:8px;padding:1rem;box-shadow:0 20px 50px rgba(0,0,0,.2);"
+    "backdrop-filter:blur(12px)}"
+    ".panel-kicker{font-size:.72rem;font-weight:700;text-transform:uppercase;color:#93c5fd;margin-bottom:.55rem}"
+    ".panel-status{display:flex;align-items:center;gap:.55rem;color:#fff;font-weight:700}"
+    ".panel-status small{color:rgba(255,255,255,.55);font-size:.76rem;font-weight:500;margin-left:auto}"
+    ".stats-row{max-width:none;margin:1rem 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));"
+    "gap:1px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);"
+    "border-radius:8px;overflow:hidden}"
+    ".stat{border:0;border-radius:0;background:rgba(255,255,255,.055);padding:.9rem .85rem;backdrop-filter:none}"
+    ".stat-num{font-size:1.7rem}"
+    ".stat-label{font-size:.72rem;color:rgba(255,255,255,.48);margin-top:.18rem}"
+    ".panel-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:.75rem}"
+    ".panel-link,.panel-metric{display:flex;align-items:center;justify-content:space-between;gap:.75rem;"
+    "padding:.72rem .78rem;border-radius:8px;border:1px solid rgba(255,255,255,.1);"
+    "background:rgba(255,255,255,.045);text-decoration:none;color:#fff}"
+    ".panel-link span,.panel-metric span{font-size:.75rem;color:rgba(255,255,255,.58);font-weight:600}"
+    ".panel-link strong,.panel-metric strong{font-size:1rem;color:#fff}"
+    ".panel-link:hover{border-color:rgba(147,197,253,.45);background:rgba(37,99,235,.16)}"
+    ".ops-band{display:none}"
+    ".toolbar-wrap{position:sticky;top:0;background:rgba(247,246,242,.94);box-shadow:0 1px 0 var(--border);"
+    "border-bottom:0}"
+    ".toolbar{display:grid;grid-template-columns:minmax(280px,1fr) auto;gap:.8rem;padding:1rem 0}"
+    ".search-box input{height:46px;border-color:#dedbd2;box-shadow:0 1px 2px rgba(15,23,42,.04)}"
+    ".filter-pills{align-items:center}"
+    ".pill{height:40px;background:#fff;border-color:#dedbd2;color:#475569}"
+    ".pill.active{background:#1d4ed8;border-color:#1d4ed8}"
+    ".section-header{padding:1.35rem 0 1rem;margin-bottom:.9rem}"
+    ".grid{gap:.65rem}"
+    ".card{opacity:1;animation:none;box-shadow:none;border-color:#e1ded6;padding:1.05rem 1.15rem}"
+    ".card:hover{transform:none;box-shadow:0 8px 24px rgba(15,23,42,.08)}"
+    ".date-badge{min-width:54px;height:58px;box-shadow:none}"
+    ".card-title{font-size:1.02rem}"
+    ".card-desc{font-size:.84rem;line-height:1.5}"
     # Responsive
     "@media(max-width:720px){"
     ".container{padding:0 1.1rem}"
@@ -374,6 +423,18 @@ _CSS = (
     ".footer-inner{grid-template-columns:1fr;text-align:center;gap:.75rem}"
     ".footer-links{justify-content:center}"
     ".footer-center{display:none}}"
+    "@media(max-width:900px){"
+    ".hero-body{grid-template-columns:1fr;padding:2rem 0 1.6rem}"
+    ".hero-panel{max-width:100%}"
+    ".toolbar{grid-template-columns:1fr}"
+    ".hero h1{font-size:2.35rem}"
+    ".panel-links{grid-template-columns:1fr}}"
+    "@media(max-width:560px){"
+    ".stats-row{grid-template-columns:1fr}"
+    ".topbar-link{padding:.45rem .65rem}"
+    ".hero-actions{display:none}"
+    ".card{align-items:flex-start}"
+    ".card-footer{flex-direction:column;align-items:flex-start}}"
 )
 
 # ---- JS ----
@@ -483,36 +544,40 @@ def _build_html(
         'GitHub</a>\n'
         '  </nav>\n'
         '  <div class="hero-body">\n'
-        '    <div class="hero-eyebrow"><span></span>Milano &middot; Aggiornato ogni 24h</div>\n'
-        '    <h1>'
+        '    <div class="hero-copy">\n'
+        '      <div class="hero-eyebrow"><span></span>Milano &middot; Aggiornato ogni 24h</div>\n'
+        '      <h1>'
         '<span class="hw" style="animation-delay:.22s">Il</span> '
         '<span class="hw" style="animation-delay:.30s">calendario</span> '
         '<span class="hw" style="animation-delay:.38s">degli</span> '
         '<em>hackathon</em> '
         '<span class="hw" style="animation-delay:.56s">milanesi.</span>'
         '</h1>\n'
-        '    <p class="hero-sub">Ogni giorno raccogliamo e verifichiamo con AI tutti gli hackathon, coding challenge e competizioni tech a Milano.</p>\n'
-        '    <div class="hero-actions">\n'
-        '      <a class="btn-primary" href="#events">'
+        '      <p class="hero-sub">Ogni giorno raccogliamo, filtriamo e verifichiamo gli hackathon davvero rilevanti per Milano.</p>\n'
+        '      <div class="hero-actions">\n'
+        '        <a class="btn-primary" href="#events">'
         '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l-5 5-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         'Esplora gli eventi</a>\n'
-        '      <span class="hero-badge">Dati in tempo reale</span>\n'
+        '        <span class="hero-badge">Dati aggiornati dalla pipeline</span>\n'
+        '      </div>\n'
         '    </div>\n'
-        '    <div class="stats-row">\n'
+        '    <aside class="hero-panel" aria-label="Stato monitor">\n'
+        '      <div class="panel-kicker">Stato monitor</div>\n'
+        f'      <div class="panel-status"><span class="{status_dot}"></span><strong>{_escape(status_label)}</strong><small>{_escape(last_scan)}</small></div>\n'
+        '      <div class="stats-row">\n'
         f'      <div class="stat"><div class="stat-num">{event_count}</div><div class="stat-label">{evt_word}</div></div>\n'
         + (f'      <div class="stat"><div class="stat-num">{len(months_set)}</div><div class="stat-label">{mon_word}</div></div>\n' if months_set else f'      <div class="stat"><div class="stat-num">{mon_count}</div><div class="stat-label">{mon_word}</div></div>\n')
         + '      <div class="stat"><div class="stat-num">24h</div><div class="stat-label">refresh</div></div>\n'
-        '    </div>\n'
+        '      </div>\n'
+        '      <div class="panel-links">\n'
+        f'        <a class="panel-link" href="review.html"><span>Candidati in review</span><strong>{review_count}</strong></a>\n'
+        f'        <div class="panel-metric"><span>Errori collector</span><strong>{collector_failures}</strong></div>\n'
+        '      </div>\n'
+        '    </aside>\n'
         '  </div>\n'
         '</div>\n'
         '</div>\n'
         '</header>\n\n'
-        '<section class="ops-band"><div class="container ops">\n'
-        f'  <div class="ops-item"><div class="ops-label">Ultima scansione</div><div class="ops-value"><span class="{status_dot}"></span>{_escape(status_label)}</div></div>\n'
-        f'  <div class="ops-item"><div class="ops-label">Aggiornato</div><div class="ops-value">{_escape(last_scan)}</div></div>\n'
-        f'  <div class="ops-item"><div class="ops-label">Candidati in review</div><a class="ops-link" href="review.html"><div class="ops-value">{review_count}</div></a></div>\n'
-        f'  <div class="ops-item"><div class="ops-label">Collector con errori</div><div class="ops-value">{collector_failures}</div></div>\n'
-        '</div></section>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
         f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off"></div>\n'
@@ -699,10 +764,10 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
         '</div><div><div class="brand-name">Review queue</div>'
         '<div class="brand-city">Candidati da verificare</div></div></div>'
         '<a class="topbar-link" href="index.html">Eventi confermati</a></nav>'
-        '<div class="hero-body"><div class="hero-eyebrow"><span></span>Manual review</div>'
+        '<div class="hero-body hero-body-single"><div class="hero-copy"><div class="hero-eyebrow"><span></span>Manual review</div>'
         '<h1>Candidati <em>dubbi</em> prima della pubblicazione.</h1>'
         f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per meritare una verifica, ma non abbastanza confidenza per entrare automaticamente nel calendario.</p>'
-        '</div></div></div></header>'
+        '</div></div></div></div></header>'
         '<main class="container"><div class="section-header">'
         '<span class="section-title">Da rivedere</span>'
         f'<span class="section-count">Aggiornato: {_escape(last_scan)}</span>'
