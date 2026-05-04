@@ -5,6 +5,7 @@ Usage:
     python scripts/review_candidate.py list
     python scripts/review_candidate.py approve <candidate-id>
     python scripts/review_candidate.py reject <candidate-id>
+    python scripts/review_candidate.py remove <event-id-or-url-or-title-fragment> [--blacklist]
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
+import config
 from models import HackathonEvent
 from storage.json_store import EventStore
 from utils.html_export import generate_html
@@ -27,6 +29,60 @@ from utils.review_queue import (
     save_review_decisions,
     save_review_queue,
 )
+
+
+def _append_blacklist_term(term: str) -> None:
+    """Aggiunge un termine alla blacklist manuale se non presente."""
+    path = getattr(config, "BLACKLIST_FILE", None)
+    if not path:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    existing: set[str] = set()
+    if path.exists():
+        for raw in path.read_text(encoding="utf-8").splitlines():
+            line = raw.strip().lower()
+            if not line or line.startswith("#"):
+                continue
+            existing.add(line)
+
+    normalized = term.strip().lower()
+    if not normalized or normalized in existing:
+        return
+
+    with open(path, "a", encoding="utf-8") as f:
+        if path.stat().st_size > 0:
+            f.write("\n")
+        f.write(normalized)
+
+
+def _find_event_to_remove(identifier: str, events: list[dict]) -> dict:
+    key = identifier.strip().lower()
+    if not key:
+        raise SystemExit("Identifier cannot be empty")
+
+    # 1) id prefix
+    by_id = [e for e in events if str(e.get("id", "")).startswith(identifier)]
+    if len(by_id) == 1:
+        return by_id[0]
+    if len(by_id) > 1:
+        raise SystemExit(f"Ambiguous id prefix: {identifier}")
+
+    # 2) exact/partial URL
+    by_url = [e for e in events if key in str(e.get("url", "")).lower()]
+    if len(by_url) == 1:
+        return by_url[0]
+    if len(by_url) > 1:
+        raise SystemExit(f"Ambiguous URL fragment: {identifier}")
+
+    # 3) title fragment
+    by_title = [e for e in events if key in str(e.get("title", "")).lower()]
+    if len(by_title) == 1:
+        return by_title[0]
+    if len(by_title) > 1:
+        raise SystemExit(f"Ambiguous title fragment: {identifier}")
+
+    raise SystemExit(f"No stored event matches: {identifier}")
 
 
 def _resolve_candidate(candidate_id: str, queue: list[dict]) -> dict:
@@ -122,6 +178,29 @@ def reject_candidate(candidate_id: str) -> int:
     return 0
 
 
+def remove_event(identifier: str, add_blacklist: bool = False) -> int:
+    """Rimuove un evento già pubblicato dallo storico e rigenera il sito."""
+    store = EventStore()
+    events = store.all_events()
+    target = _find_event_to_remove(identifier, events)
+
+    target_id = target.get("id")
+    remaining = [e for e in events if e.get("id") != target_id]
+    store.replace_events(remaining)
+    store.save_with_timestamp(datetime.now().isoformat())
+
+    if add_blacklist:
+        title = str(target.get("title", "")).strip()
+        if title:
+            _append_blacklist_term(title)
+
+    _rebuild_site()
+    print(f"Removed from published events: {target.get('title', 'Untitled')}")
+    if add_blacklist:
+        print("Added title to blacklist.")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Review hackathon candidates")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -133,6 +212,14 @@ def main() -> int:
     reject = sub.add_parser("reject")
     reject.add_argument("candidate_id")
 
+    remove = sub.add_parser("remove")
+    remove.add_argument("identifier")
+    remove.add_argument(
+        "--blacklist",
+        action="store_true",
+        help="Add removed title to blacklist.txt to prevent re-ingestion",
+    )
+
     args = parser.parse_args()
     if args.command == "list":
         return list_candidates()
@@ -140,6 +227,8 @@ def main() -> int:
         return approve_candidate(args.candidate_id)
     if args.command == "reject":
         return reject_candidate(args.candidate_id)
+    if args.command == "remove":
+        return remove_event(args.identifier, add_blacklist=args.blacklist)
     raise SystemExit(f"Unsupported command: {args.command}")
 
 

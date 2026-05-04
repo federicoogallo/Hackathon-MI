@@ -127,6 +127,32 @@ _PAST_TENSE_HINT_RE = re.compile(
 )
 
 
+def _load_blacklist_terms() -> list[str]:
+    """Carica blacklist manuale (case-insensitive) da file config."""
+    path = getattr(config, "BLACKLIST_FILE", None)
+    if not path:
+        return []
+    try:
+        if not path.exists():
+            return []
+        terms: list[str] = []
+        for raw in path.read_text(encoding="utf-8").splitlines():
+            line = raw.strip().lower()
+            if not line or line.startswith("#"):
+                continue
+            terms.append(line)
+        return terms
+    except Exception as e:
+        logger.warning("Impossibile leggere blacklist (%s): %s", path, e)
+        return []
+
+
+def _is_blacklisted_event(event: HackathonEvent) -> bool:
+    """True se titolo/descrizione matchano blacklist manuale."""
+    haystack = f"{event.title} {event.description}".lower()
+    return any(term in haystack for term in _load_blacklist_terms())
+
+
 def _text_has_milan(text: str) -> bool:
     return bool(_MILAN_RE.search(text or ""))
 
@@ -197,6 +223,8 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
 
 def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
+    if _is_blacklisted_event(event):
+        return False, "evento in blacklist manuale"
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
     if _is_clearly_past(event):
