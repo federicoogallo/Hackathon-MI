@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: May 04, 2026 17:12
+> **6 hackathons** coming up in Milan · Last updated: May 04, 2026 17:44
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -25,9 +25,6 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [Make-A-Thon](https://sustainability.ncsu.edu/get-involved/events/makeathon/) | TBD | Milano | web_search |
-| [Python Coding Challenge](https://www.clcoding.com/2026/05/python-coding-challenge-id-010526.html) | TBD | Milano | web_search |
-| [Cyber Security CTF 2026](https://ctf.hackthebox.com/event/details/cyber-security-ctf-2026-3154) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -192,11 +189,19 @@ python scripts/review_candidate.py list
 # Publish a candidate into data/events.json
 python scripts/review_candidate.py approve <candidate-id>
 
-# Suppress a candidate from future queues
+# Suppress a candidate from future queues (review queue only)
 python scripts/review_candidate.py reject <candidate-id>
+
+# Maintainer: remove an already published event (by id prefix, URL or title fragment)
+python scripts/review_candidate.py remove <identifier>
+
+# Maintainer: remove and also add title to blacklist to prevent re-ingestion
+python scripts/review_candidate.py remove <identifier> --blacklist
 ```
 
-Manual approvals rebuild the static site and README immediately. The public review queue is available at `docs/review.html`.
+Manual approvals/removals rebuild the static site and README immediately. The public review queue is available at `docs/review.html`.
+
+Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions (approve/reject/remove).
 
 ### 6. Pre-render static site (SSG)
 

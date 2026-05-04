@@ -255,6 +255,26 @@ class TestPipelineIntegration:
 
 
 class TestPipelineQualityGate:
+    def test_rejects_blacklisted_event(self, tmp_path):
+        from main import _passes_quality_gate
+
+        blacklist = tmp_path / "blacklist.txt"
+        blacklist.write_text("python coding challenge\n", encoding="utf-8")
+
+        ev = HackathonEvent(
+            title="Python Coding Challenge",
+            url="https://example.com/python-challenge",
+            source="web_search",
+            description="Question with answer",
+            location="Milano",
+        )
+
+        with patch("main.config.BLACKLIST_FILE", blacklist):
+            ok, reason = _passes_quality_gate(ev)
+
+        assert ok is False
+        assert "blacklist" in reason
+
     def test_rejects_non_milan_event_with_explicit_location(self):
         from main import _passes_quality_gate
 
