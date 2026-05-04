@@ -31,6 +31,9 @@ REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 MEETUP_API_KEY = os.getenv("MEETUP_API_KEY", "")  # opzionale — migliora Meetup collector
+GITHUB_REPO_URL = os.getenv(
+    "GITHUB_REPO_URL", "https://github.com/federicoogallo/Hackathon-MI"
+)
 
 # ─── Parametri ricerca ─────────────────────────────────────────────────────
 SEARCH_LOCATION = "Milano"
@@ -192,6 +195,11 @@ HTTP_USER_AGENT = (
 # ─── LLM (Groq — Llama 3.3 70B) ─────────────────────────────────────────────
 # Groq free tier: 14.400 RPD, 30 RPM (vs Gemini 20 RPD)
 LLM_MODEL = "llama-3.3-70b-versatile"
+LLM_MODEL_FALLBACKS = [
+    m.strip()
+    for m in os.getenv("LLM_MODEL_FALLBACKS", "").split(",")
+    if m.strip()
+]
 LLM_CONFIDENCE_THRESHOLD = 0.7
 LLM_BATCH_SIZE = 5  # eventi per singola chiamata API (ridotto per rate-limit)
 LLM_MAX_DESCRIPTION_LENGTH = 500  # troncamento descrizione
@@ -203,3 +211,6 @@ FUZZY_DEDUP_THRESHOLD = 0.75  # SequenceMatcher ratio minimo per match
 
 # ─── Parallelismo ──────────────────────────────────────────────────────────
 MAX_COLLECTOR_WORKERS = 8
+
+# Percorso per blacklist manuale (titoli/keyword da scartare esplicitamente)
+BLACKLIST_FILE = DATA_DIR / "blacklist.txt"

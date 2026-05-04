@@ -126,7 +126,22 @@ def test_static_site_writes_review_page(tmp_path: Path):
     queue = build_review_queue([candidate], confirmed=[])
 
     events_path.write_text(
-        json.dumps({"last_check": "2026-05-03T10:00:00", "events": {}}),
+        json.dumps(
+            {
+                "last_check": "2026-05-03T10:00:00",
+                "events": [
+                    {
+                        "title": "Confirmed Hackathon",
+                        "url": "https://example.com/confirmed",
+                        "source": "test",
+                        "is_hackathon": True,
+                        "confidence": 0.95,
+                        "date_str": "2026-06-15",
+                        "location": "Milano",
+                    }
+                ],
+            }
+        ),
         encoding="utf-8",
     )
     report_path.write_text(
@@ -146,4 +161,9 @@ def test_static_site_writes_review_page(tmp_path: Path):
         )
 
     assert "Candidati in review" in index_path.read_text(encoding="utf-8")
-    assert "Manual Check Hackathon" in review_output_path.read_text(encoding="utf-8")
+    index_html = index_path.read_text(encoding="utf-8")
+    review_html = review_output_path.read_text(encoding="utf-8")
+    assert "Valuta OK" in index_html
+    assert "/issues/new" in index_html
+    assert "Manual Check Hackathon" in review_html
+    assert "Segnala dubbio" in review_html
