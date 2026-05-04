@@ -1,0 +1,6 @@
+# Blacklist manuale: una voce per riga, case-insensitive
+# Esempi forniti dall'utente
+make-a-thon
+python coding challenge
+cyber security ctf 2026
+# Aggiungi qui altri titoli esatti o frammenti da ignorare

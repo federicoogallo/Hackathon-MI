@@ -254,50 +254,86 @@ def _get_groq_client():
     return Groq(api_key=config.GROQ_API_KEY)
 
 
+def _llm_models_to_try() -> list[str]:
+    """Restituisce la lista ordinata di modelli da tentare (primary + fallback)."""
+    primary = getattr(config, "LLM_MODEL", "")
+    fallbacks = getattr(config, "LLM_MODEL_FALLBACKS", []) or []
+    models: list[str] = []
+
+    for model in [primary, *fallbacks]:
+        if not model:
+            continue
+        if model not in models:
+            models.append(model)
+
+    return models
+
+
 def _call_llm(system_prompt: str, user_prompt: str) -> str:
     """Chiama Groq LLM con retry per rate limit.
 
     Returns:
         Il testo della risposta, o "[]" se tutti i tentativi falliscono.
     """
-    for attempt in range(config.LLM_RETRY_MAX):
-        try:
-            client = _get_groq_client()
-            response = client.chat.completions.create(
-                model=config.LLM_MODEL,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                temperature=0.1,
-                max_tokens=4096,
-                response_format={"type": "json_object"},
-            )
-            return response.choices[0].message.content or "[]"
+    models = _llm_models_to_try()
+    if not models:
+        logger.error("Nessun modello LLM configurato")
+        return ""
 
-        except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "rate_limit" in error_str.lower():
-                delay = config.LLM_RETRY_DELAY * (2 ** attempt)
-                logger.warning(
-                    "Rate limit Groq (tentativo %d/%d) — attendo %ds",
-                    attempt + 1, config.LLM_RETRY_MAX, delay,
+    for model_name in models:
+        for attempt in range(config.LLM_RETRY_MAX):
+            try:
+                client = _get_groq_client()
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    temperature=0.1,
+                    max_tokens=4096,
+                    response_format={"type": "json_object"},
                 )
-                time.sleep(delay)
-                continue
-            # Retry anche per errori di connessione / transient errors
-            if any(kw in error_str.lower() for kw in ("connection", "timeout", "502", "503", "reset")):
-                delay = config.LLM_RETRY_DELAY * (2 ** attempt)
-                logger.warning(
-                    "Errore connessione Groq (tentativo %d/%d) — attendo %ds: %s",
-                    attempt + 1, config.LLM_RETRY_MAX, delay, error_str[:100],
-                )
-                time.sleep(delay)
-                continue
-            logger.error("Errore API Groq: %s", e)
-            return ""
+                return response.choices[0].message.content or "[]"
 
-    logger.error("Rate limit Groq persistente dopo %d tentativi", config.LLM_RETRY_MAX)
+            except Exception as e:
+                error_str = str(e)
+                if "429" in error_str or "rate_limit" in error_str.lower():
+                    delay = config.LLM_RETRY_DELAY * (2 ** attempt)
+                    logger.warning(
+                        "Rate limit Groq (%s, tentativo %d/%d) — attendo %ds",
+                        model_name,
+                        attempt + 1,
+                        config.LLM_RETRY_MAX,
+                        delay,
+                    )
+                    time.sleep(delay)
+                    continue
+                # Retry anche per errori di connessione / transient errors
+                if any(kw in error_str.lower() for kw in ("connection", "timeout", "502", "503", "reset")):
+                    delay = config.LLM_RETRY_DELAY * (2 ** attempt)
+                    logger.warning(
+                        "Errore connessione Groq (%s, tentativo %d/%d) — attendo %ds: %s",
+                        model_name,
+                        attempt + 1,
+                        config.LLM_RETRY_MAX,
+                        delay,
+                        error_str[:100],
+                    )
+                    time.sleep(delay)
+                    continue
+
+                # Errori hard sul modello: passa al fallback successivo.
+                if any(kw in error_str.lower() for kw in ("model", "not found", "unsupported")):
+                    logger.warning("Modello Groq non disponibile (%s): %s", model_name, error_str[:120])
+                    break
+
+                logger.error("Errore API Groq (%s): %s", model_name, e)
+                break
+
+        logger.warning("Fallback LLM: provo modello successivo dopo %s", model_name)
+
+    logger.error("Tutti i modelli LLM hanno fallito: %s", ", ".join(models))
     return ""
 
 

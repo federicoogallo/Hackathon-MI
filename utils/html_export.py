@@ -12,6 +12,7 @@ import json
 import logging
 from datetime import datetime, date
 from pathlib import Path
+from urllib.parse import quote_plus
 from zoneinfo import ZoneInfo
 
 import config
@@ -85,6 +86,55 @@ def _escape(s: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def _issue_base_url() -> str:
+    repo_url = str(getattr(config, "GITHUB_REPO_URL", "") or "").strip().rstrip("/")
+    if not repo_url:
+        return ""
+    return f"{repo_url}/issues/new"
+
+
+def _issue_url(event: dict, mode: str) -> str:
+    """Crea URL issue precompilata per conferma o dubbio evento."""
+    base = _issue_base_url()
+    if not base:
+        return "#"
+
+    title = (event.get("title") or "Senza titolo").strip()
+    url = (event.get("url") or "").strip()
+    source = (event.get("source") or "").strip()
+    location = (event.get("location") or "").strip()
+    date_str = (event.get("date_str") or "").strip()
+    confidence = int(round(float(event.get("confidence") or 0.0) * 100))
+
+    if mode == "confirmed_ok":
+        issue_title = f"[VALUTAZIONE OK] {title}"
+        kind = "Conferma evento sicuro"
+    elif mode == "confirmed_doubt":
+        issue_title = f"[DUBBIO] {title}"
+        kind = "Segnalazione dubbio su evento pubblicato"
+    elif mode == "review_ok":
+        issue_title = f"[REVIEW OK] {title}"
+        kind = "Conferma candidato incerto"
+    else:
+        issue_title = f"[REVIEW DUBBIO] {title}"
+        kind = "Segnalazione candidato incerto"
+
+    body = (
+        f"Tipo valutazione: {kind}\n"
+        f"Titolo: {title}\n"
+        f"URL: {url}\n"
+        f"Source: {source}\n"
+        f"Location: {location or '(non specificata)'}\n"
+        f"Data: {date_str or 'TBD'}\n"
+        f"Confidence AI: {confidence}%\n\n"
+        "Note utente:\n"
+        "- \n\n"
+        "Nota: gli utenti non eliminano eventi direttamente; la decisione resta ai maintainer.\n"
+    )
+
+    return f"{base}?title={quote_plus(issue_title)}&body={quote_plus(body)}"
 
 
 # Source badge colors (bg, text)
@@ -335,6 +385,11 @@ _CSS = (
     ".card-link svg{width:14px;height:14px;transition:transform .15s}"
     ".card-link:hover svg{transform:translateX(2px)}"
     ".card-link:hover{opacity:.8}"
+    ".issue-actions{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}"
+    ".issue-link{display:inline-flex;align-items:center;padding:.26rem .56rem;border-radius:999px;"
+    "font-size:.68rem;font-weight:700;text-decoration:none;border:1px solid var(--border);"
+    "color:var(--text-secondary);background:var(--surface-2);transition:all .15s}"
+    ".issue-link:hover{border-color:var(--accent);color:var(--accent);background:#eef6ff}"
     # Empty state + no-results
     ".empty-state{text-align:center;padding:5rem 1rem;color:var(--text-secondary)}"
     ".empty-icon{font-size:2.5rem;margin-bottom:1.25rem;opacity:.4}"
@@ -657,6 +712,8 @@ def _build_cards(events: list[dict]) -> str:
         desc = _escape(desc_raw)
 
         source_esc = _escape(source)
+        issue_ok_url = _escape(_issue_url(e, "confirmed_ok"))
+        issue_doubt_url = _escape(_issue_url(e, "confirmed_doubt"))
 
         if day and month:
             badge = (
@@ -698,7 +755,11 @@ def _build_cards(events: list[dict]) -> str:
             f'{desc_html}'
             f'<div class="card-footer">'
             f'<span class="source-dot">{source_esc}</span>'
+            '<div class="issue-actions">'
+            f'<a href="{issue_ok_url}" class="issue-link" target="_blank" rel="noopener">Valuta OK</a>'
+            f'<a href="{issue_doubt_url}" class="issue-link" target="_blank" rel="noopener">Segnala dubbio</a>'
             f'<a href="{url}" class="card-link" target="_blank" rel="noopener">Vedi evento{arrow}</a>'
+            '</div>'
             f'</div></div></article>'
         )
     return "\n".join(parts)
@@ -734,6 +795,8 @@ def _build_review_cards(candidates: list[dict]) -> str:
         confidence = int(round(float(item.get("confidence") or 0.0) * 100))
         location = _escape(item.get("location") or "Milano")
         date_str = _escape(_fmt_date_compact(item.get("date_str", "")) or "TBD")
+        issue_ok_url = _escape(_issue_url(item, "review_ok"))
+        issue_doubt_url = _escape(_issue_url(item, "review_doubt"))
         parts.append(
             '<article class="review-card">'
             '<div class="review-head">'
@@ -746,6 +809,11 @@ def _build_review_cards(candidates: list[dict]) -> str:
             f'<span class="chip ai">AI {confidence}%</span>'
             '</div>'
             f'<p class="review-reason">{reason}</p>'
+            '<div class="issue-actions">'
+            f'<a href="{issue_ok_url}" class="issue-link" target="_blank" rel="noopener">Valuta OK</a>'
+            f'<a href="{issue_doubt_url}" class="issue-link" target="_blank" rel="noopener">Segnala dubbio</a>'
+            f'<a href="{url}" class="card-link" target="_blank" rel="noopener">Vedi evento</a>'
+            '</div>'
             '</article>'
         )
     return "\n".join(parts)
@@ -773,8 +841,8 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
         '<div class="brand-city">Candidati da verificare</div></div></div>'
         '<a class="topbar-link" href="index.html">Eventi confermati</a></nav>'
         '<div class="hero-body hero-body-single"><div class="hero-copy"><div class="hero-eyebrow"><span></span>Manual review</div>'
-        '<h1>Candidati <em>dubbi</em> prima della pubblicazione.</h1>'
-        f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per meritare una verifica, ma non abbastanza confidenza per entrare automaticamente nel calendario.</p>'
+        '<h1>Candidati <em>da valutare</em> prima della pubblicazione.</h1>'
+        f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per una revisione umana. Gli utenti possono solo aprire issue di conferma/dubbio: l\'eliminazione resta ai maintainer.</p>'
         '</div></div></div></div></header>'
         '<main class="container"><div class="section-header">'
         '<span class="section-title">Da rivedere</span>'

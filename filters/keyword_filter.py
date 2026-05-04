@@ -19,6 +19,20 @@ from models import HackathonEvent
 
 logger = logging.getLogger(__name__)
 
+# Carica blacklist manuale (file di testo con una voce per riga, commenti con #)
+try:
+    _BLACKLIST = []
+    _blacklist_path = getattr(config, "BLACKLIST_FILE", None)
+    if _blacklist_path and _blacklist_path.exists():
+        with open(_blacklist_path, encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if not _line or _line.startswith("#"):
+                    continue
+                _BLACKLIST.append(_line.lower())
+except Exception:
+    _BLACKLIST = []
+
 # Compila i pattern una sola volta
 _positive_patterns = [re.compile(p, re.IGNORECASE) for p in config.POSITIVE_KEYWORDS]
 _negative_patterns = [re.compile(p, re.IGNORECASE) for p in config.NEGATIVE_KEYWORDS]
@@ -177,6 +191,13 @@ def keyword_filter(event: HackathonEvent) -> bool:
         False → l'evento è sicuramente NON un hackathon (keyword negativa matchata).
     """
     text = f"{event.title} {event.description}".strip()
+    text_lower = text.lower()
+
+    # Step 0b: blacklist manuale → scarta subito se titolo/descrizione combaciano
+    for b in _BLACKLIST:
+        if b in text_lower:
+            logger.info("Scartato per blacklist manuale: %s — blacklist='%s'", event.title[:80], b)
+            return False
 
     # Step 0: URL rumorosi → scarta subito
     if event.url and _is_junk_url(event.url):

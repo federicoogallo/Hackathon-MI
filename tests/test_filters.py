@@ -7,9 +7,11 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
+import filters.keyword_filter as keyword_filter_module
 from models import HackathonEvent
 from filters.keyword_filter import keyword_filter, keyword_filter_batch
 from filters.llm_filter import (
+    _call_llm,
     _parse_llm_response,
     classify_batch,
     llm_filter,
@@ -137,6 +139,17 @@ class TestKeywordFilterBatch:
         passed, discarded = keyword_filter_batch([])
         assert passed == []
         assert discarded == 0
+
+
+class TestKeywordFilterManualBlacklist:
+    def test_manual_blacklist_rejects_event(self):
+        event = _make_event(
+            "Python Coding Challenge",
+            "Challenge studentesca con premi",
+        )
+
+        with patch.object(keyword_filter_module, "_BLACKLIST", ["python coding challenge"]):
+            assert keyword_filter(event) is False
 
 
 # =============================================================================
@@ -310,3 +323,31 @@ class TestLLMWithMockAPI:
         assert len(results) == 1
         assert results[0].is_hackathon is True
         assert results[0].confidence == 0.9
+
+    @patch("filters.llm_filter.config")
+    @patch("filters.llm_filter._get_groq_client")
+    def test_call_llm_uses_fallback_model(self, mock_get_client, mock_config):
+        mock_config.LLM_MODEL = "primary-model"
+        mock_config.LLM_MODEL_FALLBACKS = ["fallback-model"]
+        mock_config.LLM_RETRY_MAX = 1
+        mock_config.LLM_RETRY_DELAY = 0
+
+        mock_client = MagicMock()
+        mock_choice = MagicMock()
+        mock_choice.message.content = '{"results": []}'
+        mock_response = MagicMock()
+        mock_response.choices = [mock_choice]
+        mock_client.chat.completions.create.side_effect = [
+            Exception("model not found"),
+            mock_response,
+        ]
+        mock_get_client.return_value = mock_client
+
+        content = _call_llm("sys", "user")
+
+        assert content == '{"results": []}'
+        assert mock_client.chat.completions.create.call_count == 2
+        first_model = mock_client.chat.completions.create.call_args_list[0].kwargs["model"]
+        second_model = mock_client.chat.completions.create.call_args_list[1].kwargs["model"]
+        assert first_model == "primary-model"
+        assert second_model == "fallback-model"
