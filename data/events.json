@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-03T14:05:42.433040+02:00",
+  "last_check": "2026-05-04T14:21:16.396670+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -206,7 +206,11 @@
       "alternate_urls": [
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon",
         "https://web3voyager.com/event/ai-agent-olympics-hackathon/",
-        "https://luma.com/5fxlxfl5"
+        "https://luma.com/5fxlxfl5",
+        "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-road-to-hack-from-idea-to-app-with-ai-agents-online-workshop/",
+        "https://www.aiexpertmagazine.com/ai-agent-olympics-hackathon-2026-everything-you-need-to-know/",
+        "https://opportunitiesforyouth.org/2026/04/02/hack-nation-global-ai-hackathon-2026-build-innovate-and-compete-for-30000-in-prizes/",
+        "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -224,7 +228,9 @@
       "review_status": "ai_verified",
       "review_reason": "Makeathon con data non specificata, ma descrizione di evento",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://makeathon.tum-ai.com/"
+      ],
       "discovered_at": "2026-05-03T12:05:54.098582"
     },
     {
@@ -261,7 +267,8 @@
       "alternate_urls": [
         "https://www.clcoding.com/2026/05/python-coding-challenge-id-020526.html",
         "https://www.clcoding.com/2026/04/python-coding-challenge-id-300426.html",
-        "https://www.clcoding.com/2026/04/python-coding-challenge-id-290426.html"
+        "https://www.clcoding.com/2026/04/python-coding-challenge-id-290426.html",
+        "https://www.clcoding.com/2026/05/python-coding-challenge-id-030526.html"
       ],
       "discovered_at": "2026-05-03T12:06:04.753932"
     },
@@ -279,7 +286,11 @@
       "review_status": "ai_verified",
       "review_reason": "CTF competitivo con descrizione dell'evento",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://ctftime.org/event/list/upcoming",
+        "https://www.eccouncil.org/cybersecurity-exchange/ethical-hacking/capture-the-flag-ctf-cybersecurity/",
+        "https://tryhackme.com/room/easyctf"
+      ],
       "discovered_at": "2026-05-03T12:06:07.491509"
     }
   ]
