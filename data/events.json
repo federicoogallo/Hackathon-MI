@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-05T14:01:49.795379+02:00",
+  "last_check": "2026-05-06T14:27:10.173728+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -210,7 +210,8 @@
         "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-road-to-hack-from-idea-to-app-with-ai-agents-online-workshop/",
         "https://www.aiexpertmagazine.com/ai-agent-olympics-hackathon-2026-everything-you-need-to-know/",
         "https://opportunitiesforyouth.org/2026/04/02/hack-nation-global-ai-hackathon-2026-build-innovate-and-compete-for-30000-in-prizes/",
-        "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html"
+        "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html",
+        "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -230,6 +231,26 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-03T12:06:01.457686"
+    },
+    {
+      "id": "911761d2959035cbf532de6d57301d3fe76b56befc9ddd4126e6e4620856f055",
+      "title": "Makeathon 2026",
+      "url": "https://makeathon.tum-ai.com/",
+      "source": "web_search",
+      "description": "The 3-day challenge that connects young innovators with different backgrounds to develop AI solutions for real-life business cases · The Makeathon is a 3-day hackathon for motivated students and young professionals to develop innovative AI solutions on real-world business cases presented by ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "review_status": "ai_verified",
+      "review_reason": "Makeathon futuro, ma manca la conferma di Milano",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.makeathon.in/",
+        "https://datathon2026.com/"
+      ],
+      "discovered_at": "2026-05-06T12:27:22.276914"
     }
   ]
 }
