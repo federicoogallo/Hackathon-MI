@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-06T14:27:10.173728+02:00",
+  "last_check": "2026-05-07T14:29:01.102567+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -248,9 +248,27 @@
       "reviewed_at": "",
       "alternate_urls": [
         "https://www.makeathon.in/",
-        "https://datathon2026.com/"
+        "https://datathon2026.com/",
+        "https://www.hackathon-2026.com/"
       ],
       "discovered_at": "2026-05-06T12:27:22.276914"
+    },
+    {
+      "id": "cba34e4fb332658bf02c28d2b476327143fe9c11290d7a22dcbbd879342d08f4",
+      "title": "HackYourShoppingExperience",
+      "url": "https://polihub.it/news-it/update-lappuntamento-piu-cool-della-community/",
+      "source": "web_search",
+      "description": "Importanti opportunità per i PoliHubbers: il 25 e 26 maggio con HackYourShoppingExperience, l’hackathon di Gruppo Vegè e PoliHub, studenti e professionisti avranno la possibilità di...",
+      "date_str": "2026-05-25",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon di Gruppo Vegè e PoliHub con data",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-07T12:30:09.580274"
     }
   ]
 }
