@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: May 06, 2026 14:31
+> **8 hackathons** coming up in Milan · Last updated: May 07, 2026 14:35
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -23,6 +23,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [Hackathon Leonardo - Space Edition - telespazio.com](https://www.telespazio.com/en/careers/hackathon-space-edition) | 9 May 2026 | Milano | web_search |
 | [GameDev.tv Game Jam 2026](https://itch.io/jam/gamedevtv-jam-2026) | 15 May 2026 | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
+| [HackYourShoppingExperience](https://polihub.it/news-it/update-lappuntamento-piu-cool-della-community/) | 25 May 2026 | Milano | web_search |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
 | [Makeathon 2026](https://makeathon.tum-ai.com/) | TBD | Milano | web_search |
