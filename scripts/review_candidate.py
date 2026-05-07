@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Review candidates from data/review_queue.json.
+"""Admin workflow for published events and review candidates.
 
 Usage:
     python scripts/review_candidate.py list
+    python scripts/review_candidate.py list-events
     python scripts/review_candidate.py approve <candidate-id>
     python scripts/review_candidate.py reject <candidate-id>
+    python scripts/review_candidate.py dismiss <candidate-id>
     python scripts/review_candidate.py remove <event-id-or-url-or-title-fragment> [--blacklist]
+    python scripts/review_candidate.py move-to-review <event-id-or-url-or-title-fragment>
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
@@ -29,6 +33,12 @@ from utils.review_queue import (
     save_review_decisions,
     save_review_queue,
 )
+
+LOCAL_TZ = ZoneInfo("Europe/Rome")
+
+
+def _now() -> datetime:
+    return datetime.now(LOCAL_TZ)
 
 
 def _append_blacklist_term(term: str) -> None:
@@ -107,10 +117,19 @@ def _event_from_candidate(candidate: dict) -> HackathonEvent:
         confidence=float(candidate.get("confidence") or 0.0),
         review_status="manual_approved",
         review_reason=candidate.get("review_reason", "Manual review approved"),
-        reviewed_at=datetime.now().isoformat(),
+        reviewed_at=_now().isoformat(),
         alternate_urls=candidate.get("alternate_urls", []),
-        discovered_at=candidate.get("discovered_at") or datetime.now().isoformat(),
+        discovered_at=candidate.get("discovered_at") or _now().isoformat(),
     )
+
+
+def _candidate_from_event(event: dict, note: str = "") -> dict:
+    candidate = dict(event)
+    candidate["review_status"] = "needs_review"
+    candidate["queued_at"] = _now().isoformat()
+    candidate["review_note"] = note or "Moved from published events by admin."
+    candidate["review_reason"] = note or event.get("review_reason", "Admin requested re-review")
+    return candidate
 
 
 def _save_decision(candidate: dict, decision: str) -> None:
@@ -119,9 +138,16 @@ def _save_decision(candidate: dict, decision: str) -> None:
         "decision": decision,
         "title": candidate.get("title", ""),
         "url": candidate.get("url", ""),
-        "reviewed_at": datetime.now().isoformat(),
+        "reviewed_at": _now().isoformat(),
     }
     save_review_decisions(decisions)
+
+
+def _clear_decision(candidate_id: str) -> None:
+    decisions = load_review_decisions()
+    if candidate_id in decisions:
+        decisions.pop(candidate_id)
+        save_review_decisions(decisions)
 
 
 def _remove_from_queue(candidate: dict, queue: list[dict]) -> None:
@@ -152,6 +178,22 @@ def list_candidates() -> int:
     return 0
 
 
+def list_events() -> int:
+    store = EventStore()
+    events = store.all_events()
+    if not events:
+        print("No published events.")
+        return 0
+
+    for item in events:
+        event_id = str(item.get("id", ""))[:12]
+        date = item.get("date_str") or "TBD"
+        source = item.get("source", "")
+        title = item.get("title", "Untitled")
+        print(f"{event_id}  {date}  {source}  {title}")
+    return 0
+
+
 def approve_candidate(candidate_id: str) -> int:
     queue = load_review_queue()
     candidate = _resolve_candidate(candidate_id, queue)
@@ -160,7 +202,7 @@ def approve_candidate(candidate_id: str) -> int:
     store = EventStore()
     if not store.is_duplicate(event):
         store.add_event(event)
-        store.save_with_timestamp(datetime.now().isoformat())
+        store.save_with_timestamp(_now().isoformat())
 
     _save_decision(candidate, "approved")
     _remove_from_queue(candidate, queue)
@@ -174,7 +216,18 @@ def reject_candidate(candidate_id: str) -> int:
     candidate = _resolve_candidate(candidate_id, queue)
     _save_decision(candidate, "rejected")
     _remove_from_queue(candidate, queue)
+    _rebuild_site()
     print(f"Rejected: {candidate.get('title', 'Untitled')}")
+    return 0
+
+
+def dismiss_candidate(candidate_id: str) -> int:
+    """Rimuove un candidato dalla coda senza decisione permanente."""
+    queue = load_review_queue()
+    candidate = _resolve_candidate(candidate_id, queue)
+    _remove_from_queue(candidate, queue)
+    _rebuild_site()
+    print(f"Dismissed from review queue: {candidate.get('title', 'Untitled')}")
     return 0
 
 
@@ -187,7 +240,7 @@ def remove_event(identifier: str, add_blacklist: bool = False) -> int:
     target_id = target.get("id")
     remaining = [e for e in events if e.get("id") != target_id]
     store.replace_events(remaining)
-    store.save_with_timestamp(datetime.now().isoformat())
+    store.save_with_timestamp(_now().isoformat())
 
     if add_blacklist:
         title = str(target.get("title", "")).strip()
@@ -201,16 +254,41 @@ def remove_event(identifier: str, add_blacklist: bool = False) -> int:
     return 0
 
 
+def move_event_to_review(identifier: str, note: str = "") -> int:
+    """Sposta un evento pubblicato nella coda di revisione admin."""
+    store = EventStore()
+    events = store.all_events()
+    target = _find_event_to_remove(identifier, events)
+    target_id = target.get("id")
+
+    queue = load_review_queue()
+    if not any(item.get("id") == target_id for item in queue):
+        queue.append(_candidate_from_event(target, note=note))
+        save_review_queue(queue)
+
+    remaining = [e for e in events if e.get("id") != target_id]
+    store.replace_events(remaining)
+    store.save_with_timestamp(_now().isoformat())
+    _clear_decision(str(target_id))
+    _rebuild_site()
+    print(f"Moved to review: {target.get('title', 'Untitled')}")
+    return 0
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Review hackathon candidates")
+    parser = argparse.ArgumentParser(description="Admin workflow for hackathon events")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("list")
+    sub.add_parser("list-events")
 
     approve = sub.add_parser("approve")
     approve.add_argument("candidate_id")
 
     reject = sub.add_parser("reject")
     reject.add_argument("candidate_id")
+
+    dismiss = sub.add_parser("dismiss")
+    dismiss.add_argument("candidate_id")
 
     remove = sub.add_parser("remove")
     remove.add_argument("identifier")
@@ -220,15 +298,25 @@ def main() -> int:
         help="Add removed title to blacklist.txt to prevent re-ingestion",
     )
 
+    move = sub.add_parser("move-to-review")
+    move.add_argument("identifier")
+    move.add_argument("--note", default="", help="Optional note shown in the review queue")
+
     args = parser.parse_args()
     if args.command == "list":
         return list_candidates()
+    if args.command == "list-events":
+        return list_events()
     if args.command == "approve":
         return approve_candidate(args.candidate_id)
     if args.command == "reject":
         return reject_candidate(args.candidate_id)
+    if args.command == "dismiss":
+        return dismiss_candidate(args.candidate_id)
     if args.command == "remove":
         return remove_event(args.identifier, add_blacklist=args.blacklist)
+    if args.command == "move-to-review":
+        return move_event_to_review(args.identifier, note=args.note)
     raise SystemExit(f"Unsupported command: {args.command}")
 
 

@@ -192,12 +192,15 @@ HTTP_USER_AGENT = (
     "Chrome/120.0.0.0 Safari/537.36"
 )
 
-# ─── LLM (Groq — Llama 3.3 70B) ─────────────────────────────────────────────
-# Groq free tier: 14.400 RPD, 30 RPM (vs Gemini 20 RPD)
-LLM_MODEL = "llama-3.3-70b-versatile"
+# ─── LLM (Groq — OpenAI-compatible API) ─────────────────────────────────────
+# Primary più recente, con fallback production stabile per continuità operativa.
+LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-oss-120b")
 LLM_MODEL_FALLBACKS = [
     m.strip()
-    for m in os.getenv("LLM_MODEL_FALLBACKS", "").split(",")
+    for m in os.getenv(
+        "LLM_MODEL_FALLBACKS",
+        "llama-3.3-70b-versatile,meta-llama/llama-4-scout-17b-16e-instruct",
+    ).split(",")
     if m.strip()
 ]
 LLM_CONFIDENCE_THRESHOLD = 0.7

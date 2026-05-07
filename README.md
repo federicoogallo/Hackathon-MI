@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: May 07, 2026 14:35
+> **4 hackathons** coming up in Milan · Last updated: May 07, 2026 18:23
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -21,12 +21,8 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | --- | --- | --- | --- |
 | [GDG AI HACK - 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | 9 May 2026 | Randstad Box, 5 Via San Vigilio | gdg_community |
 | [Hackathon Leonardo - Space Edition - telespazio.com](https://www.telespazio.com/en/careers/hackathon-space-edition) | 9 May 2026 | Milano | web_search |
-| [GameDev.tv Game Jam 2026](https://itch.io/jam/gamedevtv-jam-2026) | 15 May 2026 | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
-| [HackYourShoppingExperience](https://polihub.it/news-it/update-lappuntamento-piu-cool-della-community/) | 25 May 2026 | Milano | web_search |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
-| [Hack The Boot: Italy's Signature Hackathon](https://hacktheboot.it/) | TBD | Milano | web_search |
-| [Makeathon 2026](https://makeathon.tum-ai.com/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -56,7 +52,7 @@ Collectors (28 sources in parallel)
   Keyword Pre-filter (117+ regex patterns, junk-URL blocklist, past-year check)
         │
         ▼
-  LLM Filter (Groq · Llama 3.3 70B, batches of 5, few-shot, threshold 0.7)
+  LLM Filter (Groq · GPT-OSS 120B + Llama fallback, batches of 5, threshold 0.7)
         │  Only events PHYSICALLY in Milan — online/remote → discarded
         ├── Low-confidence candidates → Manual Review Queue
         │       data/review_queue.json + docs/review.html
@@ -182,28 +178,40 @@ python main.py
 python -m pytest tests/ -v
 ```
 
-### 5. Review uncertain candidates
+### 5. Admin workflow
+
+The public site stays read-only. Admin actions are local maintainer commands that edit JSON,
+rebuild `docs/`, and can then be committed/pushed.
 
 ```bash
+# Show published events
+python scripts/admin.py list-events
+
 # Show candidates waiting for manual review
-python scripts/review_candidate.py list
+python scripts/admin.py list
 
 # Publish a candidate into data/events.json
-python scripts/review_candidate.py approve <candidate-id>
+python scripts/admin.py approve <candidate-id>
 
 # Suppress a candidate from future queues (review queue only)
-python scripts/review_candidate.py reject <candidate-id>
+python scripts/admin.py reject <candidate-id>
+
+# Remove a candidate from review only; it may reappear on a future scan
+python scripts/admin.py dismiss <candidate-id>
+
+# Move a published event back to review
+python scripts/admin.py move-to-review <identifier> --note "Check venue"
 
 # Maintainer: remove an already published event (by id prefix, URL or title fragment)
-python scripts/review_candidate.py remove <identifier>
+python scripts/admin.py remove <identifier>
 
 # Maintainer: remove and also add title to blacklist to prevent re-ingestion
-python scripts/review_candidate.py remove <identifier> --blacklist
+python scripts/admin.py remove <identifier> --blacklist
 ```
 
-Manual approvals/removals rebuild the static site and README immediately. The public review queue is available at `docs/review.html`.
+Admin approvals/removals/review moves rebuild the static site and README immediately. The public review queue is available at `docs/review.html`.
 
-Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions (approve/reject/remove).
+Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions.
 
 ### 6. Pre-render static site (SSG)
 
@@ -335,7 +343,7 @@ hackathon-monitor/
 │   └── regione_lombardia.py
 ├── filters/
 │   ├── keyword_filter.py    # Regex pre-filter + junk-URL blocklist
-│   └── llm_filter.py        # Groq · Llama 3.3 70B classifier
+│   └── llm_filter.py        # Groq GPT-OSS + Llama fallback classifier
 ├── notifiers/
 │   └── telegram.py          # Telegram notifications
 ├── storage/
@@ -346,7 +354,8 @@ hackathon-monitor/
 │   ├── readme_export.py     # README table generator
 │   └── review_queue.py      # Manual review queue persistence
 ├── scripts/
-│   ├── review_candidate.py  # Manual approve/reject workflow
+│   ├── admin.py             # Local maintainer entrypoint
+│   ├── review_candidate.py  # Admin workflow implementation
 │   ├── slow_classify.py     # Recovery: classify one-by-one with rate-limit safety
 │   ├── collect_only.py      # Debug: collect + keyword filter, save candidates
 │   └── extract_dates.py     # Backfill missing event dates via LLM
@@ -379,8 +388,8 @@ hackathon-monitor/
 - **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by DDG web search.
 - **Twitter/X**: Free Tier API is write-only. Covered by DDG web search (`site:twitter.com`).
 - **LinkedIn**: no public API for events. Covered by DDG web search (`site:linkedin.com/events`).
-- **Groq free tier**: 14,400 req/day, 30 RPM. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
-- **Manual review**: low-confidence candidates are not published automatically; they are written to `data/review_queue.json` and can be approved or rejected with `scripts/review_candidate.py`.
+- **Groq LLM**: defaults to `openai/gpt-oss-120b`, then falls back to `llama-3.3-70b-versatile` and Llama 4 Scout if configured/available. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
+- **Manual review**: low-confidence candidates are not published automatically; they are written to `data/review_queue.json` and can be approved or rejected with `scripts/admin.py`.
 - **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
 - **Some collectors** may return 404/403 temporarily due to site changes — they fail gracefully and don't block the pipeline.
 

@@ -106,7 +106,8 @@ _NON_MILAN_CITY_RE = re.compile(
     r"\b("
     r"lecco|trento|trentino|bari|roma|rome|torino|napoli|genova|venezia|bologna|"
     r"firenze|bergamo|brescia|udine|padova|verona|palermo|catania|parma|pisa|"
-    r"barcelona|madrid|paris|berlin|london|new\s+york|san\s+francisco|los\s+angeles"
+    r"munich|münchen|monaco\s+di\s+baviera|germany|deutschland|barcelona|madrid|"
+    r"paris|berlin|london|new\s+york|san\s+francisco|los\s+angeles"
     r")\b",
     re.I,
 )
@@ -116,7 +117,28 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     re.I,
 )
 _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(
-    r"hackingthecity\.today/?$",
+    r"(hackingthecity\.today/?$|hacktheboot\.it/?(?:#.*)?$)",
+    re.I,
+)
+_ONLINE_ONLY_URL_RE = re.compile(
+    r"(itch\.io/jam/|lablab\.ai/ai-hackathons/(?!milan-ai-week-hackathon))",
+    re.I,
+)
+_ONLINE_ONLY_HINT_RE = re.compile(
+    r"\b(online|remot[eoai]|remote|virtual(?:e|ly)?|web\s+builds?|discord)\b",
+    re.I,
+)
+_PHYSICAL_MILAN_HINT_RE = re.compile(
+    r"\b("
+    r"milano|milan|rho|mind|fiera\s+milano|politecnico|polimi|201\d{2}"
+    r")\b",
+    re.I,
+)
+_TENTATIVE_EVENT_HINT_RE = re.compile(
+    r"\b("
+    r"tbd|very\s+soon|check\s+back|pre-?register|pre-?registration|"
+    r"be\s+the\s+first\s+to\s+know|applications?\s+open"
+    r")\b",
     re.I,
 )
 _PAST_TENSE_HINT_RE = re.compile(
@@ -196,6 +218,33 @@ def _is_clearly_non_milan(event: HackathonEvent) -> bool:
     return False
 
 
+def _is_online_only_event(event: HackathonEvent) -> bool:
+    """Scarta jam/hackathon online senza venue fisica milanese verificabile."""
+    url = event.url or ""
+    full_text = f"{event.title} {event.description} {event.location} {url}"
+    has_physical_milan = bool(_PHYSICAL_MILAN_HINT_RE.search(event.location or ""))
+
+    if _ONLINE_ONLY_URL_RE.search(url):
+        return not has_physical_milan
+
+    if _ONLINE_ONLY_HINT_RE.search(full_text) and not has_physical_milan:
+        return True
+
+    return False
+
+
+def _is_tentative_without_concrete_details(event: HackathonEvent) -> bool:
+    """Scarta landing page con preregistrazione/TBD senza data concreta."""
+    if event.parsed_date() is not None:
+        return False
+
+    text = f"{event.title} {event.description} {event.location} {event.url}"
+    if not _TENTATIVE_EVENT_HINT_RE.search(text):
+        return False
+
+    return True
+
+
 def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
     """Scarta risultati web_search senza data che hanno forti segnali di evento passato."""
     if event.source != "web_search":
@@ -218,6 +267,8 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
         return False
 
     text = f"{event.title} {event.description}"
+    if _TENTATIVE_EVENT_HINT_RE.search(text):
+        return True
     return bool(_PAST_TENSE_HINT_RE.search(text))
 
 
@@ -229,6 +280,10 @@ def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
         return False, "false positive noto"
     if _is_clearly_past(event):
         return False, "evento chiaramente passato"
+    if _is_online_only_event(event):
+        return False, "evento online/non fisico a Milano"
+    if _is_tentative_without_concrete_details(event):
+        return False, "evento senza data/venue concreta"
     if _is_undated_likely_stale_web_result(event):
         return False, "evento web senza data (probabile passato)"
     if _is_clearly_non_milan(event):

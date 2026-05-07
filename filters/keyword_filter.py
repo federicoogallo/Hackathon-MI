@@ -118,6 +118,7 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"globalgamejam\.it/?$", re.I),                     # homepage IGDA Italy
     re.compile(r"meetup\.com/topics/", re.I),                      # topic listing
     re.compile(r"pretix\.eu/", re.I),                              # ticketing (non pagina evento)
+    re.compile(r"itch\.io/jam/", re.I),                             # game jam online, non fisica a Milano
     # Aggregatori / piattaforme con dati inaffidabili
     re.compile(r"hackathon\.com/event/", re.I),                    # aggregatore con date sbagliate/stale
     re.compile(r"devfolio\.co/", re.I),                             # quasi esclusivamente hackathon indiani

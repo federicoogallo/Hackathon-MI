@@ -360,3 +360,57 @@ class TestPipelineQualityGate:
         ok, reason = _passes_quality_gate(ev)
         assert ok is False
         assert "senza data" in reason or "passato" in reason
+
+    def test_rejects_online_itch_game_jam(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="GameDev.tv Game Jam 2026",
+            url="https://itch.io/jam/gamedevtv-jam-2026",
+            source="web_search",
+            description=(
+                "A game jam from 2026-05-15 to 2026-06-01 hosted by gamedevtv. "
+                "Submit a playable web build and join the community online."
+            ),
+            date_str="2026-05-15",
+            location="",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "online" in reason
+
+    def test_rejects_tentative_homepage_without_concrete_date_or_venue(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="Hack The Boot: Italy's Signature Hackathon",
+            url="https://hacktheboot.it/#hero-heading",
+            source="web_search",
+            description=(
+                "Event Details: Spring 2026. Where: TBD, Italy. "
+                "Very Soon. Pre-register now to be the first to know."
+            ),
+            date_str="",
+            location="TBD, Italy",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "data" in reason or "senza data" in reason
+
+    def test_rejects_tum_makeathon_in_munich(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="The TUM.ai Makeathon",
+            url="https://makeathon.tum-ai.com",
+            source="web_search",
+            description="The Makeathon is in-person on TUM's campus in Munich during April.",
+            date_str="2026-04-17",
+            location="TUM Main Campus, Munich, Germany",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "Milano" in reason or "non a Milano" in reason

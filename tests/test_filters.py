@@ -151,6 +151,16 @@ class TestKeywordFilterManualBlacklist:
         with patch.object(keyword_filter_module, "_BLACKLIST", ["python coding challenge"]):
             assert keyword_filter(event) is False
 
+    def test_online_itch_jam_url_rejected_before_llm(self):
+        event = HackathonEvent(
+            title="GameDev.tv Game Jam 2026",
+            url="https://itch.io/jam/gamedevtv-jam-2026",
+            source="web_search",
+            description="A game jam hosted online with web build submissions.",
+        )
+
+        assert keyword_filter(event) is False
+
 
 # =============================================================================
 # LLM Filter — Parsing

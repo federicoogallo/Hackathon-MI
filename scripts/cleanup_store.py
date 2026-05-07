@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Cleanup deterministico dello store: quality gate + dedup fallback."""
 
-from datetime import datetime
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from main import _deterministic_semantic_dedup_dicts, _passes_quality_gate
+from main import _deterministic_semantic_dedup_dicts, _now, _passes_quality_gate
 from models import HackathonEvent
 from storage.json_store import EventStore
 from utils.html_export import generate_html
@@ -40,7 +39,7 @@ def run() -> None:
     dedup_removed = before - len(kept)
 
     store.replace_events(kept)
-    store.save_with_timestamp(datetime.now().isoformat())
+    store.save_with_timestamp(_now().isoformat())
 
     generate_html()
     generate_readme_table()

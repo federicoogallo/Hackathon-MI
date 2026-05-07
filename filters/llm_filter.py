@@ -40,15 +40,18 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
 
 3. LOCATION — L'evento DEVE svolgersi FISICAMENTE a Milano o area metropolitana milanese.
    NO: eventi online/remoti/virtuali, eventi in altre città (Roma, Torino, Napoli...) o all'estero.
+   NO: game jam ospitate su piattaforme online (es. itch.io) se non c'è una venue fisica milanese esplicita.
+   NO: hackathon in cui la fase di building/competizione è online e Milano ospita solo pitch, demo, finale o conferenza, salvo testo chiarissimo che il lavoro di hacking avvenga onsite a Milano.
    IMPORTANTE: Il campo "Location" fornito nei dati è AFFIDABILE — viene dal collector che ha estratto l'indirizzo dalla pagina evento. Se il campo Location contiene un indirizzo milanese (es. "Via Confalonieri 4, 20124 Milano", CAP 201xx, ecc.), considera l'evento come milanese anche se titolo/descrizione/URL non menzionano esplicitamente Milano.
    Se invece la location è vuota/"(non specificata)" e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
    Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel campo Location o nel testo.
-   ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin — è quasi certamente NON a Milano → false.
+   ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin, Munich/München/Germany — è quasi certamente NON a Milano → false.
 
 4. TEMPO — L'evento DEVE essere futuro (data >= {current_date}).
    - Se trovi una data esplicita nel testo (giorno/mese/anno o mese/anno) e la data è >= {current_date} → OK.
    - Se NON trovi nessuna data esplicita ma il testo è una PAGINA EVENTO diretta (lu.ma, eventbrite, sito ufficiale con form di registrazione) → OK (la data potrebbe non essere nel testo scraping).
    - Se NON trovi nessuna data esplicita E il testo è un ARTICOLO, NEWS, BLOG o RASSEGNA STAMPA → is_hackathon: false. Un articolo senza data futura esplicita è quasi certamente su un evento passato.
+   - Se la pagina dice solo "Spring 2026", "TBD", "Very soon", "pre-register", "applications open soon" o simili, senza data precisa e venue milanese concreta → is_hackathon: false.
    - Se le uniche date trovate sono < {current_date} → is_hackathon: false.
    - Se l'URL contiene anni passati (es. /2019/, /2020/, /2023/) e nessuna data futura nel testo → is_hackathon: false.
    NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti.
@@ -71,6 +74,9 @@ ESEMPI:
 6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" | Desc: "30 Gennaio - 1 Febbraio 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro", "event_date": "2026-01-30"}}
 7. Titolo: "Excited about my hackathon win!" | URL: linkedin.com/posts/... | Desc: "Great experience last weekend" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Racconto personale, non annuncio evento futuro", "event_date": null}}
 8. Titolo: "HSIL Hackathon 2026" | Desc: "10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro", "event_date": "2026-04-10"}}
+9. Titolo: "GameDev.tv Game Jam 2026" | URL: itch.io/jam/... | Desc: "Hosted online, submit web build" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Game jam online senza venue milanese", "event_date": null}}
+10. Titolo: "The TUM.ai Makeathon" | Desc: "in-person on TUM's campus in Munich" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento a Monaco/Munich, non Milano", "event_date": null}}
+11. Titolo: "Hack The Boot" | Desc: "Spring 2026, TBD Italy, pre-register" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Data e venue non concrete", "event_date": null}}
 
 NEL DUBBIO → is_hackathon: false.
 
