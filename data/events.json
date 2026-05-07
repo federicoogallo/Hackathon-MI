@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-07T14:29:01.102567+02:00",
+  "last_check": "2026-05-07T18:23:53.500358+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -69,20 +69,6 @@
         "https://fondazionetriulza.org/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760873"
-    },
-    {
-      "id": "2761ad55bbd44036762d829b0636221f4596b724c7267afbae96b72fda0a5efd",
-      "title": "Hack The Boot: Italy's Signature Hackathon",
-      "url": "https://hacktheboot.it/",
-      "source": "web_search",
-      "description": "Hack The Boot — Italy's premier international student hackathon in Milan. 24 hours of innovation, creativity, and competition.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "alternate_urls": [],
-      "discovered_at": "2026-03-02T21:09:49.760878"
     },
     {
       "id": "45d6f1df9a21ce406d296924b09010341382dee0c5182b6a25761013cc9e6a8f",
@@ -210,65 +196,9 @@
         "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-road-to-hack-from-idea-to-app-with-ai-agents-online-workshop/",
         "https://www.aiexpertmagazine.com/ai-agent-olympics-hackathon-2026-everything-you-need-to-know/",
         "https://opportunitiesforyouth.org/2026/04/02/hack-nation-global-ai-hackathon-2026-build-innovate-and-compete-for-30000-in-prizes/",
-        "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html",
-        "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/"
+        "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
-    },
-    {
-      "id": "ad4ba038839003b37f685745e88c9da5e12f09d3c8e04734cf9d8ad7117587b5",
-      "title": "GameDev.tv Game Jam 2026",
-      "url": "https://itch.io/jam/gamedevtv-jam-2026",
-      "source": "web_search",
-      "description": "A game jam from 2026-05-15 to 2026-06-01 hosted by gamedevtv. Join over 2 million students from 150+ countries and create something epic! In our annual game jam, you'll make a game in 10 days , solo or with a tea...",
-      "date_str": "2026-05-15",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.8,
-      "review_status": "ai_verified",
-      "review_reason": "Game jam online, futuro",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-03T12:06:01.457686"
-    },
-    {
-      "id": "911761d2959035cbf532de6d57301d3fe76b56befc9ddd4126e6e4620856f055",
-      "title": "Makeathon 2026",
-      "url": "https://makeathon.tum-ai.com/",
-      "source": "web_search",
-      "description": "The 3-day challenge that connects young innovators with different backgrounds to develop AI solutions for real-life business cases · The Makeathon is a 3-day hackathon for motivated students and young professionals to develop innovative AI solutions on real-world business cases presented by ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "review_status": "ai_verified",
-      "review_reason": "Makeathon futuro, ma manca la conferma di Milano",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.makeathon.in/",
-        "https://datathon2026.com/",
-        "https://www.hackathon-2026.com/"
-      ],
-      "discovered_at": "2026-05-06T12:27:22.276914"
-    },
-    {
-      "id": "cba34e4fb332658bf02c28d2b476327143fe9c11290d7a22dcbbd879342d08f4",
-      "title": "HackYourShoppingExperience",
-      "url": "https://polihub.it/news-it/update-lappuntamento-piu-cool-della-community/",
-      "source": "web_search",
-      "description": "Importanti opportunità per i PoliHubbers: il 25 e 26 maggio con HackYourShoppingExperience, l’hackathon di Gruppo Vegè e PoliHub, studenti e professionisti avranno la possibilità di...",
-      "date_str": "2026-05-25",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon di Gruppo Vegè e PoliHub con data",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-07T12:30:09.580274"
     }
   ]
 }
