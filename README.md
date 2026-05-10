@@ -13,14 +13,12 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: May 09, 2026 13:59
+> **2 hackathons** coming up in Milan · Last updated: May 10, 2026 14:00
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [GDG AI HACK - 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | 9 May 2026 | Randstad Box, 5 Via San Vigilio | gdg_community |
-| [Hackathon Leonardo - Space Edition - telespazio.com](https://www.telespazio.com/en/careers/hackathon-space-edition) | 9 May 2026 | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 
