@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-11T15:48:41.412618+02:00",
+  "last_check": "2026-05-12T15:04:18.062999+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -15,7 +15,8 @@
       "alternate_urls": [
         "https://polihub.it/en/programs/",
         "https://www.codame.com/p/the-new-human-creative-hackathon",
-        "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch"
+        "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch",
+        "https://github.com/lorenzopalaia/Euro-Hackathons"
       ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
@@ -198,7 +199,8 @@
         "https://www.aiexpertmagazine.com/ai-agent-olympics-hackathon-2026-everything-you-need-to-know/",
         "https://opportunitiesforyouth.org/2026/04/02/hack-nation-global-ai-hackathon-2026-build-innovate-and-compete-for-30000-in-prizes/",
         "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html",
-        "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/"
+        "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/",
+        "https://www.meetup.com/ai-builders-and-learners-seattle/events/314619657/?recId=24eb9237-e758-44b8-8217-9f09e5c3bc58&recSource=event-search&searchId=cfab8744-51b8-42bc-81d6-c196ada19244&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     }
