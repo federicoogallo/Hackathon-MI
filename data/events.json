@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-13T15:11:37.099981+02:00",
+  "last_check": "2026-05-14T14:24:17.017690+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -200,9 +200,28 @@
         "https://opportunitiesforyouth.org/2026/04/02/hack-nation-global-ai-hackathon-2026-build-innovate-and-compete-for-30000-in-prizes/",
         "https://www.clcoding.com/2026/05/job-ready-ai-and-gen-ai-prompt.html",
         "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/",
-        "https://www.meetup.com/ai-builders-and-learners-seattle/events/314619657/?recId=24eb9237-e758-44b8-8217-9f09e5c3bc58&recSource=event-search&searchId=cfab8744-51b8-42bc-81d6-c196ada19244&eventOrigin=find_page%24all"
+        "https://www.meetup.com/ai-builders-and-learners-seattle/events/314619657/?recId=24eb9237-e758-44b8-8217-9f09e5c3bc58&recSource=event-search&searchId=cfab8744-51b8-42bc-81d6-c196ada19244&eventOrigin=find_page%24all",
+        "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-prizes-32k-free-milan-ai-week-ticket-tickets-1987936520647",
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
+    },
+    {
+      "id": "1de84ea17f02be07c00e6f332ac1a99b6beca15b1e848b08ab634a276611ab13",
+      "title": "Google I/O Build with AI Hackathon x Google Cloud Labs - Day IIFri, May 22 · 9:00 AM EDTby Google Developer Group (GDG) NYC4.74 attendees",
+      "url": "https://www.meetup.com/gdgnyc/events/314635492/?recId=9c9aa6fc-8194-4283-9c6e-8e8b66c0e3f0&recSource=event-search&searchId=2aec6b40-d55b-42ed-807a-c71326c0c0a4&eventOrigin=find_page%24all",
+      "source": "meetup",
+      "description": "",
+      "date_str": "",
+      "location": "Milano",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.8,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon specific meetup event, location field indicates Milano, future (date not explicit but page is direct event)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-14T12:24:20.339714"
     }
   ]
 }
