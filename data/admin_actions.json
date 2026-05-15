@@ -1,0 +1,23 @@
+{
+  "updated_at": "2026-05-15T16:29:15.397967+02:00",
+  "count": 1,
+  "actions": [
+    {
+      "id": "1de84ea17f02be07c00e6f332ac1a99b6beca15b1e848b08ab634a276611ab13",
+      "title": "Google I/O Build with AI Hackathon x Google Cloud Labs - Day IIFri, May 22 · 9:00 AM EDTby Google Developer Group (GDG) NYC4.74 attendees",
+      "url": "https://www.meetup.com/gdgnyc/events/314635492/?recId=9c9aa6fc-8194-4283-9c6e-8e8b66c0e3f0&recSource=event-search&searchId=2aec6b40-d55b-42ed-807a-c71326c0c0a4&eventOrigin=find_page%24all",
+      "source": "meetup",
+      "description": "",
+      "date_str": "",
+      "location": "Milano",
+      "organizer": "",
+      "confidence": 0.8,
+      "action": "removed",
+      "expected": "reject",
+      "reason": "Meetup GDG NYC/EDT event; not physically in Milan",
+      "reason_code": "not_milan",
+      "regression": true,
+      "created_at": "2026-05-15T16:29:15.397910+02:00"
+    }
+  ]
+}

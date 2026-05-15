@@ -71,7 +71,7 @@ class HackathonEvent:
     source: str  # Nome del collector che ha trovato l'evento
     description: str = ""
     date_str: str = ""  # Data come stringa grezza (nessun parsing forzato)
-    location: str = "Milano"
+    location: str = ""
     organizer: str = ""
     is_hackathon: bool = False
     confidence: float = 0.0

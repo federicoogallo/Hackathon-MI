@@ -111,7 +111,7 @@ class EventbriteWebCollector(BaseCollector):
                 date_str = start_date
 
             # Location
-            location = config.SEARCH_LOCATION
+            location = ""
             loc = item.get("location", {}) or {}
             if isinstance(loc, dict):
                 addr = loc.get("address", {}) or {}

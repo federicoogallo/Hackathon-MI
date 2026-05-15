@@ -74,7 +74,7 @@ class HackathonComCollector(BaseCollector):
                     title=title,
                     url=url,
                     source=self.name,
-                    location="Milano",
+                    location="",
                 ))
 
         return events
@@ -107,7 +107,7 @@ class HackathonComCollector(BaseCollector):
 
             # Location
             loc_el = card.find(class_=lambda c: c and ("location" in str(c).lower() or "place" in str(c).lower() or "city" in str(c).lower()))
-            location = loc_el.get_text(strip=True) if loc_el else "Milano"
+            location = loc_el.get_text(strip=True) if loc_el else ""
 
             # Description
             desc_el = card.find(class_=lambda c: c and ("desc" in str(c).lower() or "summary" in str(c).lower()))

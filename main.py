@@ -111,6 +111,11 @@ _NON_MILAN_CITY_RE = re.compile(
     r")\b",
     re.I,
 )
+_FOREIGN_MEETUP_SIGNAL_RE = re.compile(
+    r"(meetup\.com/[^/\s]*(?:nyc|new-?york)[^/\s]*/events/|"
+    r"\bgdg\s+nyc\b|\bnew\s+york\b|\b(?:edt|est)\b)",
+    re.I,
+)
 _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"(eventbrite\.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274|"
     r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale)",
@@ -204,18 +209,40 @@ def _is_clearly_past(event: HackathonEvent) -> bool:
 
 def _is_clearly_non_milan(event: HackathonEvent) -> bool:
     """Regola deterministica anti-falsi positivi fuori Milano."""
-    full_text = f"{event.title} {event.description} {event.url}"
+    full_text = f"{event.title} {event.description} {event.organizer} {event.url}"
     location = event.location or ""
+    location_has_milan = _text_has_milan(location)
 
-    # Se troviamo Milano esplicitamente, non scartiamo.
-    if _text_has_milan(full_text) or _text_has_milan(location):
+    # Una venue esplicitamente fuori Milano è più affidabile di un titolo/query con "Milan".
+    if _NON_MILAN_CITY_RE.search(location) and not location_has_milan:
+        return True
+
+    # Se troviamo Milano esplicitamente nel testo o nella venue, non scartiamo qui.
+    if _text_has_milan(full_text) or location_has_milan:
         return False
 
     # Se non c'è Milano ma compare una città non milanese, scarta.
-    if _NON_MILAN_CITY_RE.search(location) or _NON_MILAN_CITY_RE.search(full_text):
+    if _NON_MILAN_CITY_RE.search(full_text):
         return True
 
     return False
+
+
+def _has_conflicting_meetup_location(event: HackathonEvent) -> bool:
+    """Scarta eventi Meetup dove la location Milano deriva dalla ricerca, ma l'evento è estero."""
+    url = event.url or ""
+    if event.source != "meetup" and "meetup.com" not in url.lower():
+        return False
+
+    location = event.location or ""
+    if not _text_has_milan(location):
+        return False
+
+    full_text = f"{event.title} {event.description} {event.organizer} {url}"
+    if _text_has_milan(full_text):
+        return False
+
+    return bool(_FOREIGN_MEETUP_SIGNAL_RE.search(full_text))
 
 
 def _is_online_only_event(event: HackathonEvent) -> bool:
@@ -278,6 +305,8 @@ def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
         return False, "evento in blacklist manuale"
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
+    if _has_conflicting_meetup_location(event):
+        return False, "evento Meetup con segnali geografici non milanesi"
     if _is_clearly_past(event):
         return False, "evento chiaramente passato"
     if _is_online_only_event(event):

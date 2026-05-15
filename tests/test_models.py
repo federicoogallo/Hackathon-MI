@@ -83,6 +83,10 @@ class TestHackathonEvent:
         assert "id" in d
         assert d["id"] == e.id
 
+    def test_location_defaults_to_unknown(self):
+        e = HackathonEvent(title="Test", url="https://x.com/t", source="test")
+        assert e.location == ""
+
     def test_to_dict_complete(self):
         e = HackathonEvent(
             title="Test", url="https://x.com/t", source="test",

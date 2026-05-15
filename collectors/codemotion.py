@@ -76,7 +76,7 @@ class CodemotionCollector(BaseCollector):
                     title=title,
                     url=href,
                     source=self.name,
-                    location="Milano",
+                    location="",
                 ))
 
         return events
@@ -124,7 +124,7 @@ class CodemotionCollector(BaseCollector):
                 source=self.name,
                 description=description,
                 date_str=date_str,
-                location=location or "Milano",
+                location=location,
                 organizer="Codemotion",
             )
         except Exception as e:

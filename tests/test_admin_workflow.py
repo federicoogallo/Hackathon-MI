@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from models import HackathonEvent
 from scripts import review_candidate as admin
+from utils.admin_audit import load_admin_actions
 
 
 def _event_dict(title: str, url: str = "https://example.com/event") -> dict:
@@ -46,6 +47,7 @@ def _patched_admin_paths(tmp_path: Path):
         stack.enter_context(patch.object(admin.config, "EVENTS_FILE", tmp_path / "events.json"))
         stack.enter_context(patch.object(admin.config, "REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"))
         stack.enter_context(patch.object(admin.config, "REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"))
+        stack.enter_context(patch.object(admin.config, "ADMIN_ACTIONS_FILE", tmp_path / "admin_actions.json"))
         stack.enter_context(patch.object(admin.config, "BLACKLIST_FILE", tmp_path / "blacklist.txt"))
         stack.enter_context(patch.object(admin, "_rebuild_site"))
         yield
@@ -84,17 +86,26 @@ def test_approve_candidate_publishes_event_and_records_decision(tmp_path: Path):
         _write_events(admin.config.EVENTS_FILE, [])
         _write_queue(admin.config.REVIEW_QUEUE_FILE, [candidate])
 
-        admin.approve_candidate(candidate["id"][:12])
+        admin.approve_candidate(
+            candidate["id"][:12],
+            reason="Verified by admin",
+            regression=True,
+        )
 
         events_payload = _read_json(admin.config.EVENTS_FILE)
         queue_payload = _read_json(admin.config.REVIEW_QUEUE_FILE)
         decisions_payload = _read_json(admin.config.REVIEW_DECISIONS_FILE)
+        actions = load_admin_actions(admin.config.ADMIN_ACTIONS_FILE)
 
     assert len(events_payload["events"]) == 1
     assert events_payload["events"][0]["title"] == "Candidate Hackathon"
     assert events_payload["events"][0]["review_status"] == "manual_approved"
     assert queue_payload["count"] == 0
     assert decisions_payload["decisions"][candidate["id"]]["decision"] == "approved"
+    assert actions[0]["action"] == "approved"
+    assert actions[0]["expected"] == "publish"
+    assert actions[0]["reason_code"] == "valid_milan_event"
+    assert actions[0]["regression"] is True
 
 
 def test_reject_candidate_removes_from_queue_and_suppresses_future(tmp_path: Path):
@@ -104,13 +115,24 @@ def test_reject_candidate_removes_from_queue_and_suppresses_future(tmp_path: Pat
         _write_events(admin.config.EVENTS_FILE, [])
         _write_queue(admin.config.REVIEW_QUEUE_FILE, [candidate])
 
-        admin.reject_candidate(candidate["id"][:12])
+        admin.reject_candidate(
+            candidate["id"][:12],
+            reason="Remote only",
+            reason_code="online_only",
+            regression=True,
+        )
 
         queue_payload = _read_json(admin.config.REVIEW_QUEUE_FILE)
         decisions_payload = _read_json(admin.config.REVIEW_DECISIONS_FILE)
+        actions = load_admin_actions(admin.config.ADMIN_ACTIONS_FILE)
 
     assert queue_payload["count"] == 0
     assert decisions_payload["decisions"][candidate["id"]]["decision"] == "rejected"
+    assert decisions_payload["decisions"][candidate["id"]]["reason_code"] == "online_only"
+    assert actions[0]["action"] == "rejected"
+    assert actions[0]["expected"] == "reject"
+    assert actions[0]["reason"] == "Remote only"
+    assert actions[0]["regression"] is True
 
 
 def test_dismiss_candidate_removes_from_queue_without_decision(tmp_path: Path):
@@ -135,10 +157,21 @@ def test_remove_event_can_blacklist_title(tmp_path: Path):
     with _patched_admin_paths(tmp_path):
         _write_events(admin.config.EVENTS_FILE, [event])
 
-        admin.remove_event("Bad Published", add_blacklist=True)
+        admin.remove_event(
+            "Bad Published",
+            add_blacklist=True,
+            reason="Aggregator stale page",
+            reason_code="known_false_positive",
+            regression=True,
+        )
 
         events_payload = _read_json(admin.config.EVENTS_FILE)
         blacklist = admin.config.BLACKLIST_FILE.read_text(encoding="utf-8")
+        actions = load_admin_actions(admin.config.ADMIN_ACTIONS_FILE)
 
     assert events_payload["events"] == []
     assert "bad published hackathon" in blacklist
+    assert actions[0]["action"] == "removed"
+    assert actions[0]["expected"] == "reject"
+    assert actions[0]["reason_code"] == "known_false_positive"
+    assert actions[0]["regression"] is True

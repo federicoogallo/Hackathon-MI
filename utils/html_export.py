@@ -174,8 +174,27 @@ def _review_count() -> int:
     return len(candidates) if isinstance(candidates, list) else 0
 
 
-def _scan_status() -> tuple[str, int]:
+def _parse_report_datetime(value: str) -> datetime | None:
+    value = (value or "").strip()
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError:
+        pass
+    try:
+        return datetime.strptime(value, "%Y-%m-%d %H:%M")
+    except ValueError:
+        return None
+
+
+def _scan_status(events_last_check: str = "") -> tuple[str, int]:
     data = _read_json(config.DATA_DIR / "last_report.json")
+    report_dt = _parse_report_datetime(str(data.get("date") or ""))
+    events_dt = _parse_report_datetime(events_last_check)
+    if report_dt and events_dt and report_dt.date() < events_dt.date():
+        return "completed", 0
+
     status = data.get("status") or "completed"
     failures = data.get("failed_collectors", [])
     if not isinstance(failures, list):
@@ -892,7 +911,7 @@ def generate_html(events_path=None, output_path=None, review_output_path=None):
             pass
 
     review_count = _review_count()
-    scan_status, collector_failures = _scan_status()
+    scan_status, collector_failures = _scan_status(last_check)
     html = _build_html(
         upcoming,
         last_scan,

@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: May 15, 2026 15:04
+> **3 hackathons** coming up in Milan · Last updated: May 15, 2026 16:42
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -22,7 +22,6 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
-| [Google I/O Build with AI Hackathon x Google Cloud Labs - Day IIFri, May 22 · 9:00 AM EDTby Google Developer Group (GDG) NYC4.74 attendees](https://www.meetup.com/gdgnyc/events/314635492/?recId=9c9aa6fc-8194-4283-9c6e-8e8b66c0e3f0&recSource=event-search&searchId=2aec6b40-d55b-42ed-807a-c71326c0c0a4&eventOrigin=find_page%24all) | TBD | Milano | meetup |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -191,10 +190,10 @@ python scripts/admin.py list-events
 python scripts/admin.py list
 
 # Publish a candidate into data/events.json
-python scripts/admin.py approve <candidate-id>
+python scripts/admin.py approve <candidate-id> --reason "Verified Milan event"
 
 # Suppress a candidate from future queues (review queue only)
-python scripts/admin.py reject <candidate-id>
+python scripts/admin.py reject <candidate-id> --reason-code not_milan --reason "Munich venue"
 
 # Remove a candidate from review only; it may reappear on a future scan
 python scripts/admin.py dismiss <candidate-id>
@@ -206,12 +205,15 @@ python scripts/admin.py move-to-review <identifier> --note "Check venue"
 python scripts/admin.py remove <identifier>
 
 # Maintainer: remove and also add title to blacklist to prevent re-ingestion
-python scripts/admin.py remove <identifier> --blacklist
+python scripts/admin.py remove <identifier> --blacklist --reason-code online_only --reason "Online jam"
+
+# Mark a high-signal admin decision as a regression case for pytest
+python scripts/admin.py remove <identifier> --reason-code known_false_positive --regression
 ```
 
-Admin approvals/removals/review moves rebuild the static site and README immediately. The public review queue is available at `docs/review.html`.
+Admin approvals/removals/review moves rebuild the static site and README immediately. Every admin action is logged in `data/admin_actions.json` with a free-text `reason` and a stable `reason_code`. Use `--regression` only for high-signal decisions worth preserving as tests; this avoids turning one-off judgement calls into brittle automated checks.
 
-Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions.
+The public review queue is available at `docs/review.html`. Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions.
 
 ### 6. Pre-render static site (SSG)
 
@@ -349,6 +351,7 @@ hackathon-monitor/
 ├── storage/
 │   └── json_store.py        # Persistence + 4-level dedup
 ├── utils/
+│   ├── admin_audit.py       # Structured admin action log + regression cases
 │   ├── http.py              # HTTP client with retry/backoff
 │   ├── html_export.py       # GitHub Pages generator
 │   ├── readme_export.py     # README table generator
@@ -361,6 +364,7 @@ hackathon-monitor/
 │   └── extract_dates.py     # Backfill missing event dates via LLM
 ├── data/
 │   ├── events.json          # Event history (auto-generated)
+│   ├── admin_actions.json   # Admin audit/regression decisions
 │   ├── review_queue.json    # Low-confidence candidates
 │   └── review_decisions.json # Manual approve/reject decisions
 ├── docs/

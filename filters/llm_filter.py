@@ -42,8 +42,9 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
    NO: eventi online/remoti/virtuali, eventi in altre città (Roma, Torino, Napoli...) o all'estero.
    NO: game jam ospitate su piattaforme online (es. itch.io) se non c'è una venue fisica milanese esplicita.
    NO: hackathon in cui la fase di building/competizione è online e Milano ospita solo pitch, demo, finale o conferenza, salvo testo chiarissimo che il lavoro di hacking avvenga onsite a Milano.
-   IMPORTANTE: Il campo "Location" fornito nei dati è AFFIDABILE — viene dal collector che ha estratto l'indirizzo dalla pagina evento. Se il campo Location contiene un indirizzo milanese (es. "Via Confalonieri 4, 20124 Milano", CAP 201xx, ecc.), considera l'evento come milanese anche se titolo/descrizione/URL non menzionano esplicitamente Milano.
-   Se invece la location è vuota/"(non specificata)" e nulla nel titolo/descrizione/URL indica CHIARAMENTE Milano → is_hackathon: false.
+   IMPORTANTE: Il campo "Location" è forte SOLO quando contiene una venue/indirizzo concreto (es. "Via Confalonieri 4, 20124 Milano", "Fiera Milano, Rho", "Politecnico di Milano").
+   Se Location è vuota/"(non specificata)" o generica ("Milano"/"Milan") e titolo/descrizione/URL/organizer non indicano CHIARAMENTE Milano → is_hackathon: false.
+   Per fonti aggregatrici o search-based (meetup, hackathon.com, reddit, web_search, listing generici), una location generica "Milano" può derivare dalla query di ricerca: richiedi conferma nel testo, nel venue o nel dominio ufficiale dell'evento.
    Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel campo Location o nel testo.
    ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin, Munich/München/Germany — è quasi certamente NON a Milano → false.
 
@@ -107,10 +108,13 @@ def _build_user_prompt(events: list[HackathonEvent]) -> str:
     for i, event in enumerate(events):
         desc = event.description[:config.LLM_MAX_DESCRIPTION_LENGTH]
         loc = event.location or "(non specificata)"
+        organizer = event.organizer or "(non specificato)"
         items.append(
             f"{i}. Titolo: \"{event.title}\""
+            f"\n   Source: {event.source}"
             f"\n   URL: {event.url}"
             f"\n   Location: \"{loc}\""
+            f"\n   Organizer: \"{organizer}\""
             f"\n   Descrizione: \"{desc}\""
         )
     return "Classifica questi eventi:\n\n" + "\n\n".join(items)

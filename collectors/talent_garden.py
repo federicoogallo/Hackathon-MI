@@ -73,7 +73,7 @@ class TalentGardenCollector(BaseCollector):
                     title=title,
                     url=href,
                     source=self.name,
-                    location="Milano",
+                    location="",
                     organizer="Talent Garden",
                 ))
 
@@ -122,7 +122,7 @@ class TalentGardenCollector(BaseCollector):
                 source=self.name,
                 description=description,
                 date_str=date_str,
-                location=location or "Milano",
+                location=location,
                 organizer="Talent Garden",
             )
         except Exception as e:
