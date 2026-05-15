@@ -289,6 +289,39 @@ class TestPipelineQualityGate:
         assert ok is False
         assert "Milano" in reason or "non a Milano" in reason
 
+    def test_rejects_foreign_venue_even_if_title_mentions_milan(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="Milan AI Hackathon meetup edition",
+            url="https://example.com/milan-ai",
+            source="meetup",
+            description="Build AI tools with the community.",
+            location="New York, NY, USA",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "Milano" in reason or "non a Milano" in reason
+
+    def test_rejects_meetup_event_with_foreign_group_and_derived_milan_location(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title=(
+                "Google I/O Build with AI Hackathon x Google Cloud Labs - Day II"
+                "Fri, May 22 · 9:00 AM EDTby Google Developer Group (GDG) NYC"
+            ),
+            url="https://www.meetup.com/gdgnyc/events/314635492/",
+            source="meetup",
+            location="Milano",
+            description="",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "Meetup" in reason or "non milanesi" in reason
+
     def test_rejects_clearly_past_event(self):
         from main import _passes_quality_gate
 

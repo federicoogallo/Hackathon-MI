@@ -141,7 +141,7 @@ class MeetupCollector(BaseCollector):
 
                 venue = node.get("venue", {}) or {}
                 venue_parts = [venue.get("name", ""), venue.get("address", ""), venue.get("city", "")]
-                location = ", ".join(p for p in venue_parts if p) or "Milano"
+                location = ", ".join(p for p in venue_parts if p)
 
                 group = node.get("group", {}) or {}
 
@@ -198,13 +198,16 @@ class MeetupCollector(BaseCollector):
                         url = f"https://www.meetup.com{url}"
                     seen_urls.add(url)
 
+                    venue = node.get("venue", {}) or {}
+                    group = node.get("group", {}) or {}
                     events.append(HackathonEvent(
                         title=title,
                         url=url,
                         source=self.name,
                         description=(node.get("description", "") or "")[:500],
                         date_str=node.get("dateTime", ""),
-                        location=node.get("venue", {}).get("city", "Milano") if node.get("venue") else "Milano",
+                        location=venue.get("city", "") if venue else "",
+                        organizer=group.get("name", "") if isinstance(group, dict) else "",
                     ))
             except (json.JSONDecodeError, KeyError) as e:
                 logger.debug("Meetup __NEXT_DATA__ parse error: %s", e)
@@ -225,7 +228,7 @@ class MeetupCollector(BaseCollector):
                     title=title,
                     url=href,
                     source=self.name,
-                    location="Milano",
+                    location="",
                 ))
 
         return events

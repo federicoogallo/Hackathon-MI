@@ -167,10 +167,10 @@ class LumaCollector(BaseCollector):
                 date_str = f"{date_str} — {end_date}"
 
             # Location
-            location = config.SEARCH_LOCATION
+            location = ""
             geo = event_data.get("geo_address_info", {}) or {}
             if geo:
-                location = geo.get("full_address", "") or geo.get("city", config.SEARCH_LOCATION)
+                location = geo.get("full_address", "") or geo.get("city", "")
 
             return HackathonEvent(
                 title=title,
@@ -178,7 +178,7 @@ class LumaCollector(BaseCollector):
                 source=self.name,
                 description=description,
                 date_str=date_str,
-                location=location or config.SEARCH_LOCATION,
+                location=location,
             )
 
         except Exception as e:
@@ -220,7 +220,7 @@ class LumaCollector(BaseCollector):
                 title=text,
                 url=full_url,
                 source=self.name,
-                location=config.SEARCH_LOCATION,
+                location="",
             ))
 
         return events

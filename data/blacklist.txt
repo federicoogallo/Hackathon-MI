@@ -4,3 +4,5 @@ make-a-thon
 python coding challenge
 cyber security ctf 2026
 # Aggiungi qui altri titoli esatti o frammenti da ignorare
+
+google i/o build with ai hackathon x google cloud labs - day iifri, may 22 · 9:00 am edtby google developer group (gdg) nyc4.74 attendees

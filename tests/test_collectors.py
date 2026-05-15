@@ -261,6 +261,28 @@ class TestRedditCollector:
 
 
 # =============================================================================
+#  Meetup
+# =============================================================================
+
+class TestMeetupCollector:
+    def test_html_fallback_does_not_infer_milan_without_venue(self):
+        html = """
+        <html><body>
+          <a href="https://www.meetup.com/gdgnyc/events/314635492/">
+            Google I/O Build with AI Hackathon by GDG NYC
+          </a>
+        </body></html>
+        """
+        from collectors.meetup import MeetupCollector
+
+        events = MeetupCollector()._parse_search_html(html, set())
+
+        assert len(events) == 1
+        assert events[0].source == "meetup"
+        assert events[0].location == ""
+
+
+# =============================================================================
 #  PoliHub
 # =============================================================================
 

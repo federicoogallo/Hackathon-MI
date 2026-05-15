@@ -126,7 +126,7 @@ class InnovUpCollector(BaseCollector):
                 source=self.name,
                 description=description[:500],
                 date_str=date_str,
-                location=config.SEARCH_LOCATION,
+                location="",
             )
 
         except Exception as e:
@@ -159,7 +159,7 @@ class InnovUpCollector(BaseCollector):
                     title=text,
                     url=href,
                     source=self.name,
-                    location=config.SEARCH_LOCATION,
+                    location="",
                 ))
 
         return events

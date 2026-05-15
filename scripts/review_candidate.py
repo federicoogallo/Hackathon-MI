@@ -5,9 +5,9 @@ Usage:
     python scripts/review_candidate.py list
     python scripts/review_candidate.py list-events
     python scripts/review_candidate.py approve <candidate-id>
-    python scripts/review_candidate.py reject <candidate-id>
+    python scripts/review_candidate.py reject <candidate-id> --reason-code not_milan --regression
     python scripts/review_candidate.py dismiss <candidate-id>
-    python scripts/review_candidate.py remove <event-id-or-url-or-title-fragment> [--blacklist]
+    python scripts/review_candidate.py remove <event-id-or-url-or-title-fragment> [--blacklist] [--regression]
     python scripts/review_candidate.py move-to-review <event-id-or-url-or-title-fragment>
 """
 
@@ -25,6 +25,7 @@ sys.path.insert(0, str(ROOT_DIR))
 import config
 from models import HackathonEvent
 from storage.json_store import EventStore
+from utils.admin_audit import REASON_CODES, record_admin_action
 from utils.html_export import generate_html
 from utils.readme_export import generate_readme_table
 from utils.review_queue import (
@@ -132,14 +133,25 @@ def _candidate_from_event(event: dict, note: str = "") -> dict:
     return candidate
 
 
-def _save_decision(candidate: dict, decision: str) -> None:
+def _save_decision(
+    candidate: dict,
+    decision: str,
+    *,
+    reason: str = "",
+    reason_code: str = "",
+) -> None:
     decisions = load_review_decisions()
-    decisions[candidate["id"]] = {
+    item = {
         "decision": decision,
         "title": candidate.get("title", ""),
         "url": candidate.get("url", ""),
         "reviewed_at": _now().isoformat(),
     }
+    if reason:
+        item["reason"] = reason
+    if reason_code:
+        item["reason_code"] = reason_code
+    decisions[candidate["id"]] = item
     save_review_decisions(decisions)
 
 
@@ -158,6 +170,27 @@ def _remove_from_queue(candidate: dict, queue: list[dict]) -> None:
 def _rebuild_site() -> None:
     generate_html()
     generate_readme_table()
+
+
+def _add_audit_args(
+    parser: argparse.ArgumentParser,
+    *,
+    regression: bool = False,
+    default_reason_code: str = "other",
+) -> None:
+    parser.add_argument("--reason", default="", help="Human-readable admin reason")
+    parser.add_argument(
+        "--reason-code",
+        choices=REASON_CODES,
+        default=default_reason_code,
+        help="Stable reason category for audit and regression selection",
+    )
+    if regression:
+        parser.add_argument(
+            "--regression",
+            action="store_true",
+            help="Use this decision as an explicit regression test case",
+        )
 
 
 def list_candidates() -> int:
@@ -194,7 +227,13 @@ def list_events() -> int:
     return 0
 
 
-def approve_candidate(candidate_id: str) -> int:
+def approve_candidate(
+    candidate_id: str,
+    *,
+    reason: str = "",
+    reason_code: str = "valid_milan_event",
+    regression: bool = False,
+) -> int:
     queue = load_review_queue()
     candidate = _resolve_candidate(candidate_id, queue)
     event = _event_from_candidate(candidate)
@@ -204,34 +243,73 @@ def approve_candidate(candidate_id: str) -> int:
         store.add_event(event)
         store.save_with_timestamp(_now().isoformat())
 
-    _save_decision(candidate, "approved")
+    _save_decision(candidate, "approved", reason=reason, reason_code=reason_code)
+    record_admin_action(
+        "approved",
+        event,
+        reason=reason,
+        reason_code=reason_code,
+        regression=regression,
+    )
     _remove_from_queue(candidate, queue)
     _rebuild_site()
     print(f"Approved: {event.title}")
     return 0
 
 
-def reject_candidate(candidate_id: str) -> int:
+def reject_candidate(
+    candidate_id: str,
+    *,
+    reason: str = "",
+    reason_code: str = "other",
+    regression: bool = False,
+) -> int:
     queue = load_review_queue()
     candidate = _resolve_candidate(candidate_id, queue)
-    _save_decision(candidate, "rejected")
+    _save_decision(candidate, "rejected", reason=reason, reason_code=reason_code)
+    record_admin_action(
+        "rejected",
+        candidate,
+        reason=reason,
+        reason_code=reason_code,
+        regression=regression,
+    )
     _remove_from_queue(candidate, queue)
     _rebuild_site()
     print(f"Rejected: {candidate.get('title', 'Untitled')}")
     return 0
 
 
-def dismiss_candidate(candidate_id: str) -> int:
+def dismiss_candidate(
+    candidate_id: str,
+    *,
+    reason: str = "",
+    reason_code: str = "other",
+) -> int:
     """Rimuove un candidato dalla coda senza decisione permanente."""
     queue = load_review_queue()
     candidate = _resolve_candidate(candidate_id, queue)
+    record_admin_action(
+        "dismissed",
+        candidate,
+        reason=reason,
+        reason_code=reason_code,
+        regression=False,
+    )
     _remove_from_queue(candidate, queue)
     _rebuild_site()
     print(f"Dismissed from review queue: {candidate.get('title', 'Untitled')}")
     return 0
 
 
-def remove_event(identifier: str, add_blacklist: bool = False) -> int:
+def remove_event(
+    identifier: str,
+    add_blacklist: bool = False,
+    *,
+    reason: str = "",
+    reason_code: str = "other",
+    regression: bool = False,
+) -> int:
     """Rimuove un evento già pubblicato dallo storico e rigenera il sito."""
     store = EventStore()
     events = store.all_events()
@@ -247,6 +325,13 @@ def remove_event(identifier: str, add_blacklist: bool = False) -> int:
         if title:
             _append_blacklist_term(title)
 
+    record_admin_action(
+        "removed",
+        target,
+        reason=reason,
+        reason_code=reason_code,
+        regression=regression,
+    )
     _rebuild_site()
     print(f"Removed from published events: {target.get('title', 'Untitled')}")
     if add_blacklist:
@@ -254,7 +339,12 @@ def remove_event(identifier: str, add_blacklist: bool = False) -> int:
     return 0
 
 
-def move_event_to_review(identifier: str, note: str = "") -> int:
+def move_event_to_review(
+    identifier: str,
+    note: str = "",
+    *,
+    reason_code: str = "other",
+) -> int:
     """Sposta un evento pubblicato nella coda di revisione admin."""
     store = EventStore()
     events = store.all_events()
@@ -270,6 +360,13 @@ def move_event_to_review(identifier: str, note: str = "") -> int:
     store.replace_events(remaining)
     store.save_with_timestamp(_now().isoformat())
     _clear_decision(str(target_id))
+    record_admin_action(
+        "moved_to_review",
+        target,
+        reason=note,
+        reason_code=reason_code,
+        regression=False,
+    )
     _rebuild_site()
     print(f"Moved to review: {target.get('title', 'Untitled')}")
     return 0
@@ -283,12 +380,15 @@ def main() -> int:
 
     approve = sub.add_parser("approve")
     approve.add_argument("candidate_id")
+    _add_audit_args(approve, regression=True, default_reason_code="valid_milan_event")
 
     reject = sub.add_parser("reject")
     reject.add_argument("candidate_id")
+    _add_audit_args(reject, regression=True)
 
     dismiss = sub.add_parser("dismiss")
     dismiss.add_argument("candidate_id")
+    _add_audit_args(dismiss)
 
     remove = sub.add_parser("remove")
     remove.add_argument("identifier")
@@ -297,10 +397,17 @@ def main() -> int:
         action="store_true",
         help="Add removed title to blacklist.txt to prevent re-ingestion",
     )
+    _add_audit_args(remove, regression=True)
 
     move = sub.add_parser("move-to-review")
     move.add_argument("identifier")
     move.add_argument("--note", default="", help="Optional note shown in the review queue")
+    move.add_argument(
+        "--reason-code",
+        choices=REASON_CODES,
+        default="other",
+        help="Stable reason category for audit",
+    )
 
     args = parser.parse_args()
     if args.command == "list":
@@ -308,15 +415,39 @@ def main() -> int:
     if args.command == "list-events":
         return list_events()
     if args.command == "approve":
-        return approve_candidate(args.candidate_id)
+        return approve_candidate(
+            args.candidate_id,
+            reason=args.reason,
+            reason_code=args.reason_code,
+            regression=args.regression,
+        )
     if args.command == "reject":
-        return reject_candidate(args.candidate_id)
+        return reject_candidate(
+            args.candidate_id,
+            reason=args.reason,
+            reason_code=args.reason_code,
+            regression=args.regression,
+        )
     if args.command == "dismiss":
-        return dismiss_candidate(args.candidate_id)
+        return dismiss_candidate(
+            args.candidate_id,
+            reason=args.reason,
+            reason_code=args.reason_code,
+        )
     if args.command == "remove":
-        return remove_event(args.identifier, add_blacklist=args.blacklist)
+        return remove_event(
+            args.identifier,
+            add_blacklist=args.blacklist,
+            reason=args.reason,
+            reason_code=args.reason_code,
+            regression=args.regression,
+        )
     if args.command == "move-to-review":
-        return move_event_to_review(args.identifier, note=args.note)
+        return move_event_to_review(
+            args.identifier,
+            note=args.note,
+            reason_code=args.reason_code,
+        )
     raise SystemExit(f"Unsupported command: {args.command}")
 
 

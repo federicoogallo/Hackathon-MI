@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-15T14:53:05.094248+02:00",
+  "last_check": "2026-05-15T16:29:15.397213+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -213,35 +213,6 @@
         "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
-    },
-    {
-      "id": "1de84ea17f02be07c00e6f332ac1a99b6beca15b1e848b08ab634a276611ab13",
-      "title": "Google I/O Build with AI Hackathon x Google Cloud Labs - Day IIFri, May 22 · 9:00 AM EDTby Google Developer Group (GDG) NYC4.74 attendees",
-      "url": "https://www.meetup.com/gdgnyc/events/314635492/?recId=9c9aa6fc-8194-4283-9c6e-8e8b66c0e3f0&recSource=event-search&searchId=2aec6b40-d55b-42ed-807a-c71326c0c0a4&eventOrigin=find_page%24all",
-      "source": "meetup",
-      "description": "",
-      "date_str": "",
-      "location": "Milano",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.8,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon specific meetup event, location field indicates Milano, future (date not explicit but page is direct event)",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.meetup.com/hikelag/events/314505434/?recId=216b06ea-10c3-4c3d-b44e-a9d93e8b6d82&recSource=event-search&searchId=1e4c3454-eb1f-41d8-9e9a-c7097998452f&eventOrigin=find_page%24all",
-        "https://www.meetup.com/meetup-group-iipyhalz/events/314709867/?recId=216b06ea-10c3-4c3d-b44e-a9d93e8b6d82&recSource=event-search&searchId=1e4c3454-eb1f-41d8-9e9a-c7097998452f&eventOrigin=find_page%24all",
-        "https://www.meetup.com/meetup-group-iipyhalz/events/314709867/?recId=99bdd2cd-b20b-442f-8e62-06eccb2ae2b5&recSource=event-search&searchId=b25587d7-40e2-4ba4-ac4a-288b8823afa5&eventOrigin=find_page%24all",
-        "https://gdg.community.dev/events/details/google-gdg-cloud-milano-presents-google-developer-groups-milan-meetup-build-with-ai/",
-        "https://www.reply.com/it/newsroom/events/building-agents-together-hackathon",
-        "https://www.meetup.com/it-IT/it-IT/gdg-polimi/events/313666074/",
-        "https://www.meetup.com/it-IT/topics/machine-learning/it/",
-        "https://www.meetup.com/it-IT/topics/softwaredev/it/",
-        "https://www.meetup.com/it-IT/topics/osint/it/",
-        "https://www.meetup.com/it-IT/topics/google/it/",
-        "https://www.meetup.com/canberra-build-together-ai-hackathon/"
-      ],
-      "discovered_at": "2026-05-14T12:24:20.339714"
     },
     {
       "id": "3a4b5074c279a4ec29a7cb3f560f546b0bba8981f619f25ba216ee45da1a413f",

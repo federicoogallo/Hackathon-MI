@@ -12,6 +12,7 @@ from models import HackathonEvent
 from filters.keyword_filter import keyword_filter, keyword_filter_batch
 from filters.llm_filter import (
     _call_llm,
+    _build_user_prompt,
     _parse_llm_response,
     classify_batch,
     llm_filter,
@@ -139,6 +140,21 @@ class TestKeywordFilterBatch:
         passed, discarded = keyword_filter_batch([])
         assert passed == []
         assert discarded == 0
+
+
+def test_llm_prompt_includes_source_and_organizer_context():
+    event = HackathonEvent(
+        title="Potential Hackathon",
+        url="https://www.meetup.com/gdgnyc/events/314635492/",
+        source="meetup",
+        organizer="Google Developer Group NYC",
+        location="Milano",
+    )
+
+    prompt = _build_user_prompt([event])
+
+    assert "Source: meetup" in prompt
+    assert 'Organizer: "Google Developer Group NYC"' in prompt
 
 
 class TestKeywordFilterManualBlacklist:

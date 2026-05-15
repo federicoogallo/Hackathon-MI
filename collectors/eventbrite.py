@@ -113,9 +113,9 @@ class EventbriteCollector(BaseCollector):
             venue = raw.get("venue", {})
             if venue:
                 addr = venue.get("address", {})
-                location = addr.get("localized_address_display", config.SEARCH_LOCATION)
+                location = addr.get("localized_address_display", "")
             else:
-                location = config.SEARCH_LOCATION
+                location = ""
 
             # Organizer
             organizer_data = raw.get("organizer", {})

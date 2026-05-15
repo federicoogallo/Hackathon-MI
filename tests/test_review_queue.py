@@ -167,3 +167,56 @@ def test_static_site_writes_review_page(tmp_path: Path):
     assert "/issues/new" in index_html
     assert "Manual Check Hackathon" in review_html
     assert "Segnala dubbio" in review_html
+
+
+def test_static_site_ignores_stale_local_report(tmp_path: Path):
+    events_path = tmp_path / "events.json"
+    review_path = tmp_path / "review_queue.json"
+    report_path = tmp_path / "last_report.json"
+    index_path = tmp_path / "index.html"
+    review_output_path = tmp_path / "review.html"
+
+    events_path.write_text(
+        json.dumps(
+            {
+                "last_check": "2026-05-11T15:48:41+02:00",
+                "events": [
+                    {
+                        "title": "Confirmed Hackathon",
+                        "url": "https://example.com/confirmed",
+                        "source": "test",
+                        "is_hackathon": True,
+                        "confidence": 0.95,
+                        "date_str": "2099-06-15",
+                        "location": "Milano",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    report_path.write_text(
+        json.dumps(
+            {
+                "date": "2026-05-03 13:41",
+                "status": "llm_failed_preserved",
+                "failed_collectors": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    save_review_queue([], review_path)
+
+    with (
+        patch("utils.html_export.config.DATA_DIR", tmp_path),
+        patch("utils.html_export.config.REVIEW_QUEUE_FILE", review_path),
+    ):
+        generate_html(
+            events_path=events_path,
+            output_path=index_path,
+            review_output_path=review_output_path,
+        )
+
+    index_html = index_path.read_text(encoding="utf-8")
+    assert "LLM non attivo" not in index_html
+    assert "<strong>OK</strong>" in index_html

@@ -116,7 +116,7 @@ class RedditCollector(BaseCollector):
                         source=f"reddit/r/{subreddit_name}",
                         description=description,
                         date_str="",
-                        location=config.SEARCH_LOCATION,
+                        location="",
                     ))
 
             except Exception as e:
