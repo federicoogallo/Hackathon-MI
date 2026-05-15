@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-14T14:24:17.017690+02:00",
+  "last_check": "2026-05-15T14:53:05.094248+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -91,7 +91,8 @@
         "https://humantechnopole.it/it/trainings/hsil-hackathon-2026-building-high-value-health-systems-leveraging-ai/",
         "https://gdgaihack.com/",
         "https://translate.google.com/translate?u=https://gdgaihack.com/&hl=es&sl=en&tl=es&client=srp",
-        "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en"
+        "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en",
+        "https://hackathon-base.org/event/gdg-ai-hack-2026-ai-hackathon-in-milan"
       ],
       "discovered_at": "2026-03-03T15:34:32.208612"
     },
@@ -127,7 +128,8 @@
       "alternate_urls": [
         "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
         "https://allhackathons.com/hackathon/gdg-ai-hack-2026/",
-        "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2025/cohost-gdg-cloud-milano/"
+        "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2025/cohost-gdg-cloud-milano/",
+        "https://happeningnext.com/event/gdg-ai-hack-2026-eid1ef0kuni75tr"
       ],
       "discovered_at": "2026-03-09T12:49:12.140572"
     },
@@ -142,7 +144,9 @@
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.95,
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.telespazio.com/documents/559023/32044402/LDO+#T-TeC_en.pdf?t=1777991620716"
+      ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
     {
@@ -157,7 +161,8 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053598777?aff=ebdssbdestsearch"
+        "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053598777?aff=ebdssbdestsearch",
+        "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053630873"
       ],
       "discovered_at": "2026-04-14T13:20:47.233619"
     },
@@ -173,7 +178,8 @@
       "is_hackathon": true,
       "confidence": 0.9,
       "alternate_urls": [
-        "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/"
+        "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/",
+        "https://www.instagram.com/p/DV6u8A8DKIX/"
       ],
       "discovered_at": "2026-04-14T13:20:49.478582"
     },
@@ -202,7 +208,9 @@
         "https://www.innovami.news/2026/05/05/ai-week-2026-torna-a-milano-700-speaker-e-25-000-partecipanti-attesi/",
         "https://www.meetup.com/ai-builders-and-learners-seattle/events/314619657/?recId=24eb9237-e758-44b8-8217-9f09e5c3bc58&recSource=event-search&searchId=cfab8744-51b8-42bc-81d6-c196ada19244&eventOrigin=find_page%24all",
         "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-prizes-32k-free-milan-ai-week-ticket-tickets-1987936520647",
-        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live"
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live",
+        "https://coinbuzznow.com/news/milan-ai-agent-olympics-hackathon-2026/",
+        "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -220,8 +228,37 @@
       "review_status": "ai_verified",
       "review_reason": "Hackathon specific meetup event, location field indicates Milano, future (date not explicit but page is direct event)",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.meetup.com/hikelag/events/314505434/?recId=216b06ea-10c3-4c3d-b44e-a9d93e8b6d82&recSource=event-search&searchId=1e4c3454-eb1f-41d8-9e9a-c7097998452f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/meetup-group-iipyhalz/events/314709867/?recId=216b06ea-10c3-4c3d-b44e-a9d93e8b6d82&recSource=event-search&searchId=1e4c3454-eb1f-41d8-9e9a-c7097998452f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/meetup-group-iipyhalz/events/314709867/?recId=99bdd2cd-b20b-442f-8e62-06eccb2ae2b5&recSource=event-search&searchId=b25587d7-40e2-4ba4-ac4a-288b8823afa5&eventOrigin=find_page%24all",
+        "https://gdg.community.dev/events/details/google-gdg-cloud-milano-presents-google-developer-groups-milan-meetup-build-with-ai/",
+        "https://www.reply.com/it/newsroom/events/building-agents-together-hackathon",
+        "https://www.meetup.com/it-IT/it-IT/gdg-polimi/events/313666074/",
+        "https://www.meetup.com/it-IT/topics/machine-learning/it/",
+        "https://www.meetup.com/it-IT/topics/softwaredev/it/",
+        "https://www.meetup.com/it-IT/topics/osint/it/",
+        "https://www.meetup.com/it-IT/topics/google/it/",
+        "https://www.meetup.com/canberra-build-together-ai-hackathon/"
+      ],
       "discovered_at": "2026-05-14T12:24:20.339714"
+    },
+    {
+      "id": "3a4b5074c279a4ec29a7cb3f560f546b0bba8981f619f25ba216ee45da1a413f",
+      "title": "Coding Agent Hackathon powered by Cursor - Milan",
+      "url": "https://lu.ma/xvqfrko8",
+      "source": "luma",
+      "description": "",
+      "date_str": "2026-06-13T07:30:00.000Z — 2026-06-13T18:00:00.000Z",
+      "location": "Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon con sede a Milano, pagina evento diretta, data non specificata ma presumibilmente futura",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-15T12:53:06.020930"
     }
   ]
 }
