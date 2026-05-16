@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-15T16:29:15.397213+02:00",
+  "last_check": "2026-05-16T13:50:55.184198+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -16,7 +16,8 @@
         "https://polihub.it/en/programs/",
         "https://www.codame.com/p/the-new-human-creative-hackathon",
         "https://www.eventbrite.com/e/the-new-human-arttech-festival-2026-day-1-the-ignition-tickets-1984074315688?aff=ebdssbdestsearch",
-        "https://github.com/lorenzopalaia/Euro-Hackathons"
+        "https://github.com/lorenzopalaia/Euro-Hackathons",
+        "https://luma.com/jevwfttk"
       ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
@@ -49,7 +50,8 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://www.codame.com/p/arttech-festival-2026"
+        "https://www.codame.com/p/arttech-festival-2026",
+        "https://milanotechevents.substack.com/p/milan-tech-events-2-mar-8-mar"
       ],
       "discovered_at": "2026-03-02T21:17:25.795930"
     },
@@ -210,7 +212,8 @@
         "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-prizes-32k-free-milan-ai-week-ticket-tickets-1987936520647",
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live",
         "https://coinbuzznow.com/news/milan-ai-agent-olympics-hackathon-2026/",
-        "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489"
+        "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489",
+        "https://www.eventbrite.it/b/italy--milano/science-and-tech/high-tech/"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -230,6 +233,42 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-15T12:53:06.020930"
+    },
+    {
+      "id": "d3f096ec6a0ce0836028d389112ee3e8250dab0a8cbeb03a8c0d8a70821aa344",
+      "title": "Hack-in-Towers",
+      "url": "https://www.bo-om.it/eb_aziende/",
+      "source": "web_search",
+      "description": "BOOM lancia la seconda edizione di Hack-in-Towers, l'Hackathon dedicato alla Cybersecurity ... Bologna – 21 e 22/10/2026 e Milano – 25/11/2026. Parte la terza ...",
+      "date_str": "2026-11-25",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.94,
+      "review_status": "ai_verified",
+      "review_reason": "Hack-in-Towers hackathon with concrete date 25/11/2026 in Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-16T11:51:21.318852"
+    },
+    {
+      "id": "ff4c23af4d26bfa697aa689f4a2decf03d1cae07b85f2fa27f07effdf1022a75",
+      "title": "F-hack AI",
+      "url": "https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile",
+      "source": "web_search",
+      "description": "Eventbrite - Talent Garden Calabiana - Milano presenta F-hack AI - giovedì 28 maggio 2026 presso Talent Garden Calabiana, Milano ... A differenza degli hackathon ...",
+      "date_str": "2026-05-28",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "F-hack AI is a hackathon event in Milan on 28 May 2026",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.eventbrite.com/e/biglietti-f-hack-ai-1988819168671"
+      ],
+      "discovered_at": "2026-05-16T11:51:39.681085"
     }
   ]
 }
