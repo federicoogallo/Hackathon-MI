@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-16T13:50:55.184198+02:00",
+  "last_check": "2026-05-17T13:59:42.495005+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -34,7 +34,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://luma.com/rgtc75im",
-        "https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/"
+        "https://www.innovami.news/2026/01/30/milano-ospita-la-sfida-decisiva-dellitalian-hackathon-league-innovazione-e-ai-vocale-in-gioco/",
+        "https://italianhackathonleague.it/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760925"
     },
@@ -70,7 +71,9 @@
         "https://fondazionetriulza.org/il-social-innovation-campus-torna-a-mind-il-25-26-e-27-febbraio/",
         "https://fondazionetriulza.org/news/",
         "https://fondazionetriulza.org/",
-        "https://www.startupnewsitalia.it/mind-innovation-week-2026/"
+        "https://www.startupnewsitalia.it/mind-innovation-week-2026/",
+        "https://www.facebook.com/fondazionetriulza/posts/venerdì-20-marzo-2026eurogenai-hackathon-league-for-social-goodsocial-innovation/1310509491106127/",
+        "https://www.spazio50.org/mind-innovation-week-2026-sei-giorni-per-capire-da-dove-nascono-le-idee/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760873"
     },
@@ -147,7 +150,9 @@
       "is_hackathon": true,
       "confidence": 0.95,
       "alternate_urls": [
-        "https://www.telespazio.com/documents/559023/32044402/LDO+#T-TeC_en.pdf?t=1777991620716"
+        "https://www.telespazio.com/documents/559023/32044402/LDO+#T-TeC_en.pdf?t=1777991620716",
+        "https://www.leonardo.com/documents/15646808/0/Hackathon++-+Space+Edition_ITA.pdf?t=1774958787251",
+        "https://www.telespazio.com/documents/559023/26980301/PR_Telespazio_#T-TeC_en.pdf?t=1696327246811"
       ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
@@ -248,7 +253,9 @@
       "review_status": "ai_verified",
       "review_reason": "Hack-in-Towers hackathon with concrete date 25/11/2026 in Milano",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://fondazionetriulza.org/al-via-la-terza-edizione-dellecohackathon-15-16-aprile/"
+      ],
       "discovered_at": "2026-05-16T11:51:21.318852"
     },
     {
@@ -269,6 +276,76 @@
         "https://www.eventbrite.com/e/biglietti-f-hack-ai-1988819168671"
       ],
       "discovered_at": "2026-05-16T11:51:39.681085"
+    },
+    {
+      "id": "5aa61c61f2042a6c81a38dbe8af06e3812df1bc6da55ae699a8b62a68243f530",
+      "title": "HACKATHON - ISSA PULIRE",
+      "url": "https://www.issapulire.com/it/eventi/hackathon.html",
+      "source": "web_search",
+      "description": "... ISSA PULIRE 2027 MILANO · HOME · POSTSHOW-REPORT · INFORMAZIONI GENERALI ... 2026 All Rights Reserved | ISSA PULIRE Network srl | P.IVA IT10392070966 ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "Pagina specifica di hackathon ISSA PULIRE, indica Milano e anno futuro 2027 ma senza data precisa",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-17T11:59:51.240007"
+    },
+    {
+      "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
+      "title": "NTT Data Hackathon - BOOM",
+      "url": "https://www.bo-om.it/nttdata_hackathon/",
+      "source": "web_search",
+      "description": "NTT DATA apre le porte dei propri uffici di Roma, Napoli e Milano per un ciclo di hackathon esclusivi dedicati all'innovazione e al networking. ... 21 Maggio 2026 ...",
+      "date_str": "2026-05-21",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon NTT Data con data 21 May 2026, sede indicata tra gli uffici di Milano, evento futuro e specifico",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-17T11:59:51.240045"
+    },
+    {
+      "id": "4197c361ef2f3e78c89d7c430aa6cb4eb70417a60b6965372a24e87a4d045b08",
+      "title": "AI Creative Hackathon Vol.2",
+      "url": "https://lu.ma/wow6yhnn",
+      "source": "web_search",
+      "description": "Via Pier Lombardo, 14, 20135 Milano MI, Italy · Hosted By · AI Creative Hackathon · 31 Went · Oldpaul, Anthony Hopkins and 29 others · Contact the Host ·",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon con sede fisica a Milano (Via Pier Lombardo 14), pagina Luma di evento diretto, tipo competizione; data non estratta ma pagina indica evento futuro",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://lu.ma/AiCreativeHackathon"
+      ],
+      "discovered_at": "2026-05-17T12:00:29.418879"
+    },
+    {
+      "id": "2ffe176708163b7d70067cae9669c2c4cae452af52cb2ea4419c920039033c1c",
+      "title": "171 - Beyond Code: The Spec-Driven Development Paradigm - Eventitech",
+      "url": "https://eventitech.it/events/2531",
+      "source": "web_search",
+      "description": "24 giu 2026 · Bologna. We Make Future 2026 · 13 lug 2026 · Milano. Master the vibe - Milan | Robot Challenge Hackathon. Prossimi eventi a Milano. 13 mag 2026 · ...",
+      "date_str": "2026-07-13",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "Robot Challenge Hackathon listed for Milan on 13 July 2026, future and physical venue",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-17T12:00:04.897580"
     }
   ]
 }
