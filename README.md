@@ -13,17 +13,21 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **5 hackathons** coming up in Milan · Last updated: May 16, 2026 14:00
+> **9 hackathons** coming up in Milan · Last updated: May 17, 2026 14:10
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
 | [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
+| [NTT Data Hackathon - BOOM](https://www.bo-om.it/nttdata_hackathon/) | 21 May 2026 | Milano | web_search |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [F-hack AI](https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
+| [171 - Beyond Code: The Spec-Driven Development Paradigm - Eventitech](https://eventitech.it/events/2531) | 13 Jul 2026 | Milano | web_search |
 | [Hack-in-Towers](https://www.bo-om.it/eb_aziende/) | 25 Nov 2026 | Milano | web_search |
+| [HACKATHON - ISSA PULIRE](https://www.issapulire.com/it/eventi/hackathon.html) | TBD | Milano | web_search |
+| [AI Creative Hackathon Vol.2](https://lu.ma/wow6yhnn) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
