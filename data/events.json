@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-17T13:59:42.495005+02:00",
+  "last_check": "2026-05-18T16:29:39.236456+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -152,7 +152,8 @@
       "alternate_urls": [
         "https://www.telespazio.com/documents/559023/32044402/LDO+#T-TeC_en.pdf?t=1777991620716",
         "https://www.leonardo.com/documents/15646808/0/Hackathon++-+Space+Edition_ITA.pdf?t=1774958787251",
-        "https://www.telespazio.com/documents/559023/26980301/PR_Telespazio_#T-TeC_en.pdf?t=1696327246811"
+        "https://www.telespazio.com/documents/559023/26980301/PR_Telespazio_#T-TeC_en.pdf?t=1696327246811",
+        "https://www.meetup.com/shutupandwritefortcollins/events/314527509/?recId=32089fad-ce37-4be3-8b19-12c1ee8c999d&recSource=event-search&searchId=1dbf0ea6-3427-4e93-a7f8-1cdca0a4fb4f&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
@@ -186,7 +187,8 @@
       "confidence": 0.9,
       "alternate_urls": [
         "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/",
-        "https://www.instagram.com/p/DV6u8A8DKIX/"
+        "https://www.instagram.com/p/DV6u8A8DKIX/",
+        "https://cloud.also.mp/microsoft-hackathon-championship-milan/"
       ],
       "discovered_at": "2026-04-14T13:20:49.478582"
     },
@@ -218,7 +220,9 @@
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live",
         "https://coinbuzznow.com/news/milan-ai-agent-olympics-hackathon-2026/",
         "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489",
-        "https://www.eventbrite.it/b/italy--milano/science-and-tech/high-tech/"
+        "https://www.eventbrite.it/b/italy--milano/science-and-tech/high-tech/",
+        "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-28000-prizes-pool-italy",
+        "https://www.affaritaliani.it/fieramilano/ai-week-2026-in-fiera-in-arrivo-oltre-25mila-persone-milano-capitale-europea-dellintelligenza-artificiale.html"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -346,6 +350,40 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-17T12:00:04.897580"
+    },
+    {
+      "id": "9e974e8d188174c6516649e552cd8d1f69810aca45091c17084f9164f1b06b7b",
+      "title": "Ideathon - Civil Week Vivere",
+      "url": "https://civilweek-vivere.it/eventi/ideathon-2/",
+      "source": "web_search",
+      "description": "giorno: 9-10-11 maggio. Il 9 maggio pomeriggio si svolgerà l'evento del Monitor for Circular Fashion SDA Bocconi che coinvolge gli studenti di Università ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.84,
+      "review_status": "ai_verified",
+      "review_reason": "Ideathon competition at SDA Bocconi (Milan), specific dates listed, event page suggests future edition",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-18T14:29:54.413270"
+    },
+    {
+      "id": "098685616861e6f9d6c5c23926b3ff0548e6e15cd6187af75f0c21dc81afe7db",
+      "title": "Milan Global Game Jam 2026",
+      "url": "https://globalgamejam.it/milano",
+      "source": "web_search",
+      "description": "SAE Institute Milano · In cosa consiste una Game Jam? · Come funziona la Global Game Jam? · Come mi iscrivo? · Dove si svolge la jam di Milano?",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "Game jam è una competizione di building, si svolge presso SAE Institute Milano (venue esplicita) e il titolo indica 2026, quindi futuro",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-18T14:30:01.292980"
     }
   ]
 }
