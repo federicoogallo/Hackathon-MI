@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-18T16:29:39.236456+02:00",
+  "last_check": "2026-05-19T15:55:03.384864+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -97,7 +97,8 @@
         "https://gdgaihack.com/",
         "https://translate.google.com/translate?u=https://gdgaihack.com/&hl=es&sl=en&tl=es&client=srp",
         "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en",
-        "https://hackathon-base.org/event/gdg-ai-hack-2026-ai-hackathon-in-milan"
+        "https://hackathon-base.org/event/gdg-ai-hack-2026-ai-hackathon-in-milan",
+        "https://www.competehub.dev/en/competitions/eventbrite_gdg-ai-hack-2026-ai-hackathon-in-milan"
       ],
       "discovered_at": "2026-03-03T15:34:32.208612"
     },
@@ -134,7 +135,8 @@
         "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
         "https://allhackathons.com/hackathon/gdg-ai-hack-2026/",
         "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2025/cohost-gdg-cloud-milano/",
-        "https://happeningnext.com/event/gdg-ai-hack-2026-eid1ef0kuni75tr"
+        "https://happeningnext.com/event/gdg-ai-hack-2026-eid1ef0kuni75tr",
+        "https://www.eventbrite.com/e/ai-hackathon-at-ai-big-data-expo-silicon-valley-2026-tickets-1989320050823"
       ],
       "discovered_at": "2026-03-09T12:49:12.140572"
     },
@@ -222,7 +224,9 @@
         "https://www.eventbrite.it/e/ai-agents-in-action-tickets-1986205958489",
         "https://www.eventbrite.it/b/italy--milano/science-and-tech/high-tech/",
         "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-28000-prizes-pool-italy",
-        "https://www.affaritaliani.it/fieramilano/ai-week-2026-in-fiera-in-arrivo-oltre-25mila-persone-milano-capitale-europea-dellintelligenza-artificiale.html"
+        "https://www.affaritaliani.it/fieramilano/ai-week-2026-in-fiera-in-arrivo-oltre-25mila-persone-milano-capitale-europea-dellintelligenza-artificiale.html",
+        "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-prizes-28k-free-milan-ai-week-ticket-italy",
+        "https://www.linkedin.com/posts/lablab-ai_the-largest-ai-hackathon-ever-in-italy-activity-7462157870852165633-IQ31"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -258,7 +262,8 @@
       "review_reason": "Hack-in-Towers hackathon with concrete date 25/11/2026 in Milano",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://fondazionetriulza.org/al-via-la-terza-edizione-dellecohackathon-15-16-aprile/"
+        "https://fondazionetriulza.org/al-via-la-terza-edizione-dellecohackathon-15-16-aprile/",
+        "https://www.securityopenlab.it/news/4550/coding-e-cybersecurity-ce-la-challenge-di-reply.html"
       ],
       "discovered_at": "2026-05-16T11:51:21.318852"
     },
@@ -348,7 +353,9 @@
       "review_status": "ai_verified",
       "review_reason": "Robot Challenge Hackathon listed for Milan on 13 July 2026, future and physical venue",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://events.codemotion.com/"
+      ],
       "discovered_at": "2026-05-17T12:00:04.897580"
     },
     {
@@ -384,6 +391,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-18T14:30:01.292980"
+    },
+    {
+      "id": "2880338c9e3bc3e70ad8049332fec76b4c6f7a3ed1445281355b05c9d57b05fe",
+      "title": "Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute",
+      "url": "https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute",
+      "source": "web_search",
+      "description": "Jan 27, 2026 · Site Details The Global Game Jam returns to Milan in 2026! IGDA Milan and SAE Institute Milan team up again to host the most important event for the game dev community. More information on the jam site will be available soon.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.84,
+      "review_status": "ai_verified",
+      "review_reason": "Game jam, evento fisico a Milano (SAE Institute), pagina evento diretta, data non specificata",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-19T13:55:25.892432"
     }
   ]
 }

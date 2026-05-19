@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **11 hackathons** coming up in Milan · Last updated: May 18, 2026 16:41
+> **12 hackathons** coming up in Milan · Last updated: May 19, 2026 16:05
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -30,6 +30,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [AI Creative Hackathon Vol.2](https://lu.ma/wow6yhnn) | TBD | Milano | web_search |
 | [Ideathon - Civil Week Vivere](https://civilweek-vivere.it/eventi/ideathon-2/) | TBD | Milano | web_search |
 | [Milan Global Game Jam 2026](https://globalgamejam.it/milano) | TBD | Milano | web_search |
+| [Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute](https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
