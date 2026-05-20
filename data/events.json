@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-19T15:55:03.384864+02:00",
+  "last_check": "2026-05-20T15:37:48.894976+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -73,7 +73,8 @@
         "https://fondazionetriulza.org/",
         "https://www.startupnewsitalia.it/mind-innovation-week-2026/",
         "https://www.facebook.com/fondazionetriulza/posts/venerdì-20-marzo-2026eurogenai-hackathon-league-for-social-goodsocial-innovation/1310509491106127/",
-        "https://www.spazio50.org/mind-innovation-week-2026-sei-giorni-per-capire-da-dove-nascono-le-idee/"
+        "https://www.spazio50.org/mind-innovation-week-2026-sei-giorni-per-capire-da-dove-nascono-le-idee/",
+        "https://www.instagram.com/reel/DYOzjB5DTiu/"
       ],
       "discovered_at": "2026-03-02T21:09:49.760873"
     },
@@ -226,7 +227,8 @@
         "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-28000-prizes-pool-italy",
         "https://www.affaritaliani.it/fieramilano/ai-week-2026-in-fiera-in-arrivo-oltre-25mila-persone-milano-capitale-europea-dellintelligenza-artificiale.html",
         "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-prizes-28k-free-milan-ai-week-ticket-italy",
-        "https://www.linkedin.com/posts/lablab-ai_the-largest-ai-hackathon-ever-in-italy-activity-7462157870852165633-IQ31"
+        "https://www.linkedin.com/posts/lablab-ai_the-largest-ai-hackathon-ever-in-italy-activity-7462157870852165633-IQ31",
+        "https://discourse.openrobotics.org/t/robotic-agents-hackathon-in-milan-build-with-real-robots-win-hardware/54956"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -317,7 +319,9 @@
       "review_status": "ai_verified",
       "review_reason": "Hackathon NTT Data con data 21 May 2026, sede indicata tra gli uffici di Milano, evento futuro e specifico",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.bo-om.it/challengesboom/"
+      ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
     {
@@ -354,7 +358,8 @@
       "review_reason": "Robot Challenge Hackathon listed for Milan on 13 July 2026, future and physical venue",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://events.codemotion.com/"
+        "https://events.codemotion.com/",
+        "https://www.wemakefuture.it/"
       ],
       "discovered_at": "2026-05-17T12:00:04.897580"
     },
@@ -389,7 +394,10 @@
       "review_status": "ai_verified",
       "review_reason": "Game jam è una competizione di building, si svolge presso SAE Institute Milano (venue esplicita) e il titolo indica 2026, quindi futuro",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.sae.edu/ita/insights/sae-institute-milano-ospita-per-il-secondo-anno-la-global-game-jam/",
+        "https://www.finalround.it/notizie/440/la-global-game-jam-di-milano"
+      ],
       "discovered_at": "2026-05-18T14:30:01.292980"
     },
     {
@@ -406,8 +414,47 @@
       "review_status": "ai_verified",
       "review_reason": "Game jam, evento fisico a Milano (SAE Institute), pagina evento diretta, data non specificata",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.eventbrite.it/e/biglietti-milan-global-game-jam-2026-igda-milan-sae-institute-1980094956317",
+        "https://globalgamejam.it/",
+        "https://www.polimi.it/il-politecnico/eventi/dettaglio-evento/global-game-jam",
+        "https://www.gioconews.it/player/videogiochi/global-game-jam-2026-tanta-italia-nell-evento-che-sprigiona-creativita-in-48-ore.aspx"
+      ],
       "discovered_at": "2026-05-19T13:55:25.892432"
+    },
+    {
+      "id": "2b95d6cfa82424f2fbbc7f7448b3e6f692b4c0d9bfd0e43587a223544ef1ff2d",
+      "title": "EcoHackathon 2026",
+      "url": "https://esp.unimi.it/it/eventi/ecohackathon-2026",
+      "source": "web_search",
+      "description": "Mind - Social Innovation Academy di Cascina Triulza in Via Cristina Belgioioso 171 - Milano · Visita il sito · Come partecipare iscrizione entro il 5 aprile 2026 · Allegati · Locandina · Save the date · Cerca una persona · Segreterie e servizi · Contatti · Dove siamo ·",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "EcoHackathon 2026 con sede fisica a Milano, pagina evento ufficiale, futuro",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-20T13:37:53.339135"
+    },
+    {
+      "id": "2d87c81cccb94749e05f865ab09c4617e13d01ef92103f30367b66e914b28690",
+      "title": "Global Game Jam",
+      "url": "https://zero.eu/en/eventi/136252-global-game-jam-4,milano/",
+      "source": "web_search",
+      "description": "22 May 2026 · H 18:30 Centro per l’Arte Contemporanea Luigi Pecci, Prato · Meeting · 21 May 2026 · H 19:00 ex Convento di Santa Maria della Vittoria, c/o Circolo Caldara, Milano ·",
+      "date_str": "2026-05-21",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Game jam (hackathon) with concrete date 21 May 2026 and explicit Milan venue (ex Convento di Santa Maria della Vittoria, c/o Circolo Caldara)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-20T13:38:13.601751"
     }
   ]
 }

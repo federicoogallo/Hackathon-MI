@@ -13,14 +13,14 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **12 hackathons** coming up in Milan · Last updated: May 19, 2026 16:05
+> **13 hackathons** coming up in Milan · Last updated: May 20, 2026 15:49
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [AI Agent Olympics Hackathon](https://www.eventbrite.com/e/ai-agent-olympics-hackathon-tickets-1987936520647) | 19 May 2026 | Fiera Milano, Rho | eventbrite_web |
 | [NTT Data Hackathon - BOOM](https://www.bo-om.it/nttdata_hackathon/) | 21 May 2026 | Milano | web_search |
+| [Global Game Jam](https://zero.eu/en/eventi/136252-global-game-jam-4,milano/) | 21 May 2026 | Milano | web_search |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [F-hack AI](https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
@@ -31,6 +31,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [Ideathon - Civil Week Vivere](https://civilweek-vivere.it/eventi/ideathon-2/) | TBD | Milano | web_search |
 | [Milan Global Game Jam 2026](https://globalgamejam.it/milano) | TBD | Milano | web_search |
 | [Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute](https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute) | TBD | Milano | web_search |
+| [EcoHackathon 2026](https://esp.unimi.it/it/eventi/ecohackathon-2026) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
