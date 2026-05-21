@@ -103,9 +103,6 @@ POSITIVE_KEYWORDS = [
     r"\bbuild\s+challenge\b",
     r"\bsmart\s+city\s+challenge\b",
     r"\bsocial\s+innovation\s+(?:challenge|competition)\b",
-    # ── CTF (con contesto per evitare writeup/blog) ──
-    r"\bctf\s+(?:competition|event|challenge|20\d{2})\b",
-    r"\bcapture\s+the\s+flag\b",
     # ── Hack + contesto specifico ──
     r"\bhack\s+for\s+\w+\b",             # "Hack for Good", "Hack for Climate"
     r"\b\w+\s+hack\s+20\d{2}\b",        # "Climate Hack 2026"
@@ -163,6 +160,12 @@ NEGATIVE_KEYWORDS = [
     r"\bcorso\s+(?:di\s+)?(?:formazione|aggiornamento|laurea|master)\b",
     r"\blezione\s+(?:di|aperta)\b",
     r"\bworkshop\s+(?:gratuito|formativo|introduttivo)\b",
+    r"\b(?:talk|lightning\s+talk|seminario|presentazione)\s+(?:tecnic\w+|community|gratuit\w*)\b",
+    r"\bjava\s+user\s+group\b",
+    r"\bjug\s+milano\b",
+    # ── CTF: per questo monitor non contano come hackathon di building/prodotto ──
+    r"\bctf\s+(?:competition|event|challenge|20\d{2})\b",
+    r"\bcapture\s+the\s+flag\b",
     # ── Recruiting/job ──
     r"\bjob\s+fair\b",
     r"\bcareer\s+(?:fair|day|expo)\b",

@@ -281,6 +281,22 @@ class TestMeetupCollector:
         assert events[0].source == "meetup"
         assert events[0].location == ""
 
+    def test_html_fallback_accepts_relative_group_event_links(self):
+        html = """
+        <html><body>
+          <a href="/it-IT/master-the-vibe-milan/events/314258091/">
+            Robot Challenge Hackathon lun 13 lug · 18:15 CEST Mia Platform Italia, Milano
+          </a>
+        </body></html>
+        """
+        from collectors.meetup import MeetupCollector
+
+        events = MeetupCollector()._parse_search_html(html, set())
+
+        assert len(events) == 1
+        assert events[0].title.startswith("Robot Challenge Hackathon")
+        assert events[0].url == "https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/"
+
 
 # =============================================================================
 #  PoliHub

@@ -118,7 +118,18 @@ _FOREIGN_MEETUP_SIGNAL_RE = re.compile(
 )
 _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"(eventbrite\.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274|"
-    r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale)",
+    r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale|"
+    r"eventitech\.it/events/|"
+    r"bo-om\.it/eb_aziende/?$|"
+    r"issapulire\.com/it/eventi/hackathon\.html|"
+    r"lu\.ma/wow6yhnn|"
+    r"civilweek-vivere\.it/eventi/ideathon-2/?$|"
+    r"globalgamejam\.it/milano/?$|"
+    r"globalgamejam\.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute/?$|"
+    r"esp\.unimi\.it/it/eventi/ecohackathon-2026/?$|"
+    r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$|"
+    r"levillagebyca\.it/it/community-hackathon-by-ca/?$|"
+    r"fastweb\.it/fastwebai-hackathon/?$)",
     re.I,
 )
 _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(
@@ -301,10 +312,10 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
 
 def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
-    if _is_blacklisted_event(event):
-        return False, "evento in blacklist manuale"
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
+    if _is_blacklisted_event(event):
+        return False, "evento in blacklist manuale"
     if _has_conflicting_meetup_location(event):
         return False, "evento Meetup con segnali geografici non milanesi"
     if _is_clearly_past(event):

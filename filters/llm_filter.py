@@ -30,8 +30,8 @@ ATTENZIONE — Sii MOLTO SEVERO. È meglio scartare un evento dubbio che approva
 CRITERI (TUTTI E 4 devono essere soddisfatti):
 
 1. TIPO — L'evento deve essere una COMPETIZIONE/SFIDA A TEMPO LIMITATO dove si COSTRUISCE/PROGRAMMA qualcosa.
-   SÌ: hackathon, code jam, game jam, coding challenge/contest, startup weekend, makeathon, datathon, CTF, innovation challenge CON building.
-   NO: meetup, conferenze, workshop, corsi, webinar, career fair, demo day, networking, pitch senza coding, bootcamp formativi, pagine di listing/ricerca, profili utente.
+   SÌ: hackathon, code jam, game jam, coding challenge/contest, startup weekend, makeathon, datathon, innovation challenge CON building.
+   NO: meetup/talk singoli, conferenze, workshop, corsi, webinar, career fair, demo day, networking, pitch senza coding, bootcamp formativi, CTF/capture-the-flag puri, pagine di listing/ricerca, profili utente.
 
 2. CONTENUTO EVENTO — Il testo (titolo + descrizione) DEVE descrivere un EVENTO SPECIFICO con informazioni concrete (nome dell'hackathon, data, luogo, organizzatore).
    SÌ: pagine evento (lu.ma, eventbrite, devpost), siti ufficiali, ma ANCHE post social (LinkedIn, Facebook) che ANNUNCIANO un hackathon specifico con dettagli concreti.

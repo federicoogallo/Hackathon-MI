@@ -27,6 +27,10 @@ MEETUP_SEARCH_URLS = [
     "https://www.meetup.com/find/?keywords=hack&location=Milano&source=EVENTS",
 ]
 
+MEETUP_GROUP_URLS = [
+    "https://www.meetup.com/master-the-vibe-milan/",
+]
+
 # Query GraphQL per cercare eventi
 SEARCH_QUERY = """
 query ($filter: SearchConnectionFilter!) {
@@ -70,15 +74,18 @@ class MeetupCollector(BaseCollector):
         return "meetup"
 
     def collect(self) -> list[HackathonEvent]:
-        # Try GraphQL API first
         events = self._collect_graphql()
         if events:
             logger.info("Meetup: trovati %d eventi via GraphQL", len(events))
-            return events
 
-        # Fallback: HTML scraping
-        events = self._collect_html()
-        logger.info("Meetup: trovati %d eventi via HTML scraping", len(events))
+        seen_urls = {event.url for event in events}
+        html_events = self._collect_html(seen_urls)
+        events.extend(html_events)
+        logger.info(
+            "Meetup: trovati %d eventi totali (%d via HTML)",
+            len(events),
+            len(html_events),
+        )
         return events
 
     def _collect_graphql(self) -> list[HackathonEvent]:
@@ -157,12 +164,12 @@ class MeetupCollector(BaseCollector):
 
         return all_events
 
-    def _collect_html(self) -> list[HackathonEvent]:
+    def _collect_html(self, seen_urls: set[str] | None = None) -> list[HackathonEvent]:
         """Fallback: scraping delle pagine di ricerca Meetup."""
         all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
+        seen_urls = seen_urls or set()
 
-        for url in MEETUP_SEARCH_URLS:
+        for url in [*MEETUP_SEARCH_URLS, *MEETUP_GROUP_URLS]:
             response = safe_get(url)
             if response is None:
                 continue
@@ -192,10 +199,12 @@ class MeetupCollector(BaseCollector):
                     node = edge.get("node", {}).get("result", {})
                     url = node.get("eventUrl", "") or node.get("link", "")
                     title = node.get("title", "")
-                    if not url or not title or url in seen_urls:
+                    if not url or not title:
                         continue
                     if not url.startswith("http"):
                         url = f"https://www.meetup.com{url}"
+                    if url in seen_urls:
+                        continue
                     seen_urls.add(url)
 
                     venue = node.get("venue", {}) or {}
@@ -214,14 +223,16 @@ class MeetupCollector(BaseCollector):
 
         # Fallback: cerca link a eventi
         if not events:
-            links = soup.find_all("a", href=lambda h: h and "/events/" in h and "meetup.com" in h)
+            links = soup.find_all("a", href=lambda h: h and "/events/" in h)
             for link in links:
                 href = link.get("href", "")
                 title = link.get_text(strip=True)
-                if not href or not title or href in seen_urls:
+                if not href or not title:
                     continue
                 if not href.startswith("http"):
                     href = f"https://www.meetup.com{href}"
+                if href in seen_urls:
+                    continue
                 seen_urls.add(href)
 
                 events.append(HackathonEvent(
