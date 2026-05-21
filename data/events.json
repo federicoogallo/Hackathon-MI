@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-20T15:37:48.894976+02:00",
+  "last_check": "2026-05-21T16:14:52.959027+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -117,7 +117,8 @@
       "alternate_urls": [
         "https://www.facebook.com/WikimediaCH/photos/-save-the-datethe-2026-edition-of-the-wikimedia-hackathon-is-set-to-take-place-f/1317754673721766/",
         "https://www.wikimedia.it/news/con-foss4g-it-osmit-2026-i-software-e-i-dati-geospaziali-liberi-tornano-a-trento/",
-        "https://www.wikimedia.it/news/il-programma-di-foss4g-it-osmit-2024-e-online/"
+        "https://www.wikimedia.it/news/il-programma-di-foss4g-it-osmit-2024-e-online/",
+        "https://wikimedia.org.au/wiki/Wikimedia_Hackathon_2026"
       ],
       "discovered_at": "2026-03-03T15:34:35.836652"
     },
@@ -359,7 +360,9 @@
       "reviewed_at": "",
       "alternate_urls": [
         "https://events.codemotion.com/",
-        "https://www.wemakefuture.it/"
+        "https://www.wemakefuture.it/",
+        "https://eventitech.it/events/2459",
+        "https://www.meetup.com/it-it/master-the-vibe-milan/events/314258091/"
       ],
       "discovered_at": "2026-05-17T12:00:04.897580"
     },
@@ -396,7 +399,8 @@
       "reviewed_at": "",
       "alternate_urls": [
         "https://www.sae.edu/ita/insights/sae-institute-milano-ospita-per-il-secondo-anno-la-global-game-jam/",
-        "https://www.finalround.it/notizie/440/la-global-game-jam-di-milano"
+        "https://www.finalround.it/notizie/440/la-global-game-jam-di-milano",
+        "https://www.direfareinsegnare.education/arriva-la-global-game-jam-2026-tra-creativita-e-orientamento/"
       ],
       "discovered_at": "2026-05-18T14:30:01.292980"
     },
@@ -436,7 +440,9 @@
       "review_status": "ai_verified",
       "review_reason": "EcoHackathon 2026 con sede fisica a Milano, pagina evento ufficiale, futuro",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://fondazionetriulza.org/the-american-ambassador-in-cascina-triulza-rewards-participants-in-the-hackathon-organized-in-collaboration-with-microsoft/?lang=en"
+      ],
       "discovered_at": "2026-05-20T13:37:53.339135"
     },
     {
@@ -453,8 +459,44 @@
       "review_status": "ai_verified",
       "review_reason": "Game jam (hackathon) with concrete date 21 May 2026 and explicit Milan venue (ex Convento di Santa Maria della Vittoria, c/o Circolo Caldara)",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://globalgamejam.org/games/2026"
+      ],
       "discovered_at": "2026-05-20T13:38:13.601751"
+    },
+    {
+      "id": "a7e67302c95e973c7983c764e583dbd345b8c52efa93839e75aad71c33ed86ac",
+      "title": "Community Hackathon by CA | 5^ edizione - Insieme per Innovare!",
+      "url": "https://levillagebyca.it/it/community-hackathon-by-ca/",
+      "source": "web_search",
+      "description": "Dove si svolgerà l'evento? L'hackathon si terrà presso Le Village by CA Milano in Corso di Porta Romana, 61. Metro: M3, Crocetta – M4, Sforza-Policlinico.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon specifico (5ª edizione) con venue indicata a Milano; pagina evento dedicata, anche se data non esplicita",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-21T14:14:54.885761"
+    },
+    {
+      "id": "c83a76b7a8c339cefebfde40c12c8f8ce250f87e408788bf712ddc26d13e7897",
+      "title": "FastwebAI Hackathon a Milano | Fastweb",
+      "url": "https://www.fastweb.it/fastwebai-hackathon/",
+      "source": "web_search",
+      "description": "Unisciti al primo FastwebAI Hackathon: 24 ore no-stop per creare, innovare e superare i limiti dell'intelligenza artificiale generativa.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.73,
+      "review_status": "ai_verified",
+      "review_reason": "Title states Milan location; page appears to be a direct event registration page, no explicit date but assumed future",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-21T14:15:03.663378"
     }
   ]
 }
