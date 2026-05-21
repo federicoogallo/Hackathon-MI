@@ -13,27 +13,17 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **15 hackathons** coming up in Milan · Last updated: May 21, 2026 16:25
+> **5 hackathons** coming up in Milan · Last updated: May 21, 2026 17:21
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [NTT Data Hackathon - BOOM](https://www.bo-om.it/nttdata_hackathon/) | 21 May 2026 | Milano | web_search |
-| [Global Game Jam](https://zero.eu/en/eventi/136252-global-game-jam-4,milano/) | 21 May 2026 | Milano | web_search |
 | [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
 | [F-hack AI](https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
-| [171 - Beyond Code: The Spec-Driven Development Paradigm - Eventitech](https://eventitech.it/events/2531) | 13 Jul 2026 | Milano | web_search |
-| [Hack-in-Towers](https://www.bo-om.it/eb_aziende/) | 25 Nov 2026 | Milano | web_search |
-| [HACKATHON - ISSA PULIRE](https://www.issapulire.com/it/eventi/hackathon.html) | TBD | Milano | web_search |
-| [AI Creative Hackathon Vol.2](https://lu.ma/wow6yhnn) | TBD | Milano | web_search |
-| [Ideathon - Civil Week Vivere](https://civilweek-vivere.it/eventi/ideathon-2/) | TBD | Milano | web_search |
-| [Milan Global Game Jam 2026](https://globalgamejam.it/milano) | TBD | Milano | web_search |
-| [Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute](https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute) | TBD | Milano | web_search |
-| [EcoHackathon 2026](https://esp.unimi.it/it/eventi/ecohackathon-2026) | TBD | Milano | web_search |
-| [Community Hackathon by CA \| 5^ edizione - Insieme per Innovare!](https://levillagebyca.it/it/community-hackathon-by-ca/) | TBD | Milano | web_search |
-| [FastwebAI Hackathon a Milano \| Fastweb](https://www.fastweb.it/fastwebai-hackathon/) | TBD | Milano | web_search |
+| [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
+| [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 

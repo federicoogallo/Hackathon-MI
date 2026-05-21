@@ -378,6 +378,66 @@ class TestPipelineQualityGate:
         assert ok1 is False
         assert ok2 is False
 
+    @pytest.mark.parametrize("title,url", [
+        ("Hack-in-Towers", "https://www.bo-om.it/eb_aziende/"),
+        ("HACKATHON - ISSA PULIRE", "https://www.issapulire.com/it/eventi/hackathon.html"),
+        ("AI Creative Hackathon Vol.2", "https://lu.ma/wow6yhnn"),
+        ("Ideathon - Civil Week Vivere", "https://civilweek-vivere.it/eventi/ideathon-2/"),
+        ("Milan Global Game Jam 2026", "https://globalgamejam.it/milano"),
+        (
+            "Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute",
+            "https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute",
+        ),
+        ("EcoHackathon 2026", "https://esp.unimi.it/it/eventi/ecohackathon-2026"),
+        ("Global Game Jam", "https://zero.eu/en/eventi/136252-global-game-jam-4,milano/"),
+        ("Community Hackathon by CA", "https://levillagebyca.it/it/community-hackathon-by-ca/"),
+        ("FastwebAI Hackathon a Milano", "https://www.fastweb.it/fastwebai-hackathon/"),
+        ("171 - Beyond Code: The Spec-Driven Development Paradigm", "https://eventitech.it/events/2531"),
+    ])
+    def test_rejects_user_reported_false_positive_urls(self, title, url):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title=title,
+            url=url,
+            source="web_search",
+            description="Milano 2026",
+            date_str="",
+            location="Milano",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "false positive" in reason
+
+    def test_rejects_ctf_as_not_hackathon_format(self):
+        from filters.keyword_filter import keyword_filter
+
+        ev = HackathonEvent(
+            title="HACK-IN-TOWERS CTF challenge 2026",
+            url="https://example.com/ctf",
+            source="web_search",
+            description="Capture the flag cybersecurity competition in Milano.",
+            date_str="2026-11-25",
+            location="Milano",
+        )
+
+        assert keyword_filter(ev) is False
+
+    def test_rejects_jug_milano_talk(self):
+        from filters.keyword_filter import keyword_filter
+
+        ev = HackathonEvent(
+            title="JUG Milano - Java User Group talk",
+            url="https://example.com/jug-milano",
+            source="web_search",
+            description="Talk tecnico e networking community, non una sfida di building.",
+            date_str="2026-06-10",
+            location="Milano",
+        )
+
+        assert keyword_filter(ev) is False
+
     def test_rejects_undated_stale_web_result(self):
         from main import _passes_quality_gate
 

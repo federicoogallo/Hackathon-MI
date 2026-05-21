@@ -26,7 +26,7 @@ SEARCH_QUERIES = [
     "startup weekend Milano 2026",
     "game jam Milano 2026",
     "coding challenge Milano 2026",
-    "CTF cybersecurity Milano 2026",
+    "cybersecurity hackathon Milano 2026",
     # ── Italian multi-lingua ──
     "maratona di programmazione Milano 2026",
     "sfida digitale innovazione Milano 2026",
@@ -37,6 +37,8 @@ SEARCH_QUERIES = [
     "site:lu.ma hackathon Milan",
     "site:devpost.com hackathon Milan Italy",
     "site:meetup.com hackathon Milano",
+    "site:bo-om.it/news-ed-eventi hackathon Milano 2026",
+    "site:bo-om.it/nttdata_hackathon IkigAIverse Milano 2026",
     # ── Hub innovazione ──
     "site:polihub.it hackathon",
     "site:cariplofactory.it hackathon",
@@ -60,11 +62,22 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"eventbrite\.[a-z]+/d/", re.I),          # listing/search pages
     re.compile(r"allevents\.in/", re.I),                  # aggregatore rumoroso
     re.compile(r"stayhappening\.com/", re.I),             # aggregatore rumoroso
+    re.compile(r"eventitech\.it/events/", re.I),           # aggregatore eventi tech: spesso cita altri eventi
     re.compile(r"hacktrack-eu\.vercel\.app", re.I),       # aggregatore EU hackathon listing
     re.compile(r"hackathon\.com/event/", re.I),             # aggregatore con date stale
     re.compile(r"devfolio\.co/", re.I),                     # quasi esclusivamente hackathon indiani
     re.compile(r"\d{4}\.lac\.tf", re.I),                    # LA CTF (Los Angeles)
     re.compile(r"foss\.events/", re.I),                     # conferenze FOSS
+    re.compile(r"bo-om\.it/eb_aziende/?$", re.I),           # CTF/academy page, not hackathon listing
+    re.compile(r"issapulire\.com/it/eventi/hackathon\.html", re.I),
+    re.compile(r"lu\.ma/wow6yhnn", re.I),
+    re.compile(r"civilweek-vivere\.it/eventi/ideathon-2/?$", re.I),
+    re.compile(r"globalgamejam\.it/milano/?$", re.I),
+    re.compile(r"globalgamejam\.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute/?$", re.I),
+    re.compile(r"esp\.unimi\.it/it/eventi/ecohackathon-2026/?$", re.I),
+    re.compile(r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$", re.I),
+    re.compile(r"levillagebyca\.it/it/community-hackathon-by-ca/?$", re.I),
+    re.compile(r"fastweb\.it/fastwebai-hackathon/?$", re.I),
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
     re.compile(r"youtube\.com/watch", re.I),
 ]

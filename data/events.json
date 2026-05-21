@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-21T16:14:52.959027+02:00",
+  "last_check": "2026-05-21T17:21:01.002530+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -251,26 +251,6 @@
       "discovered_at": "2026-05-15T12:53:06.020930"
     },
     {
-      "id": "d3f096ec6a0ce0836028d389112ee3e8250dab0a8cbeb03a8c0d8a70821aa344",
-      "title": "Hack-in-Towers",
-      "url": "https://www.bo-om.it/eb_aziende/",
-      "source": "web_search",
-      "description": "BOOM lancia la seconda edizione di Hack-in-Towers, l'Hackathon dedicato alla Cybersecurity ... Bologna – 21 e 22/10/2026 e Milano – 25/11/2026. Parte la terza ...",
-      "date_str": "2026-11-25",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.94,
-      "review_status": "ai_verified",
-      "review_reason": "Hack-in-Towers hackathon with concrete date 25/11/2026 in Milano",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://fondazionetriulza.org/al-via-la-terza-edizione-dellecohackathon-15-16-aprile/",
-        "https://www.securityopenlab.it/news/4550/coding-e-cybersecurity-ce-la-challenge-di-reply.html"
-      ],
-      "discovered_at": "2026-05-16T11:51:21.318852"
-    },
-    {
       "id": "ff4c23af4d26bfa697aa689f4a2decf03d1cae07b85f2fa27f07effdf1022a75",
       "title": "F-hack AI",
       "url": "https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile",
@@ -290,213 +270,40 @@
       "discovered_at": "2026-05-16T11:51:39.681085"
     },
     {
-      "id": "5aa61c61f2042a6c81a38dbe8af06e3812df1bc6da55ae699a8b62a68243f530",
-      "title": "HACKATHON - ISSA PULIRE",
-      "url": "https://www.issapulire.com/it/eventi/hackathon.html",
-      "source": "web_search",
-      "description": "... ISSA PULIRE 2027 MILANO · HOME · POSTSHOW-REPORT · INFORMAZIONI GENERALI ... 2026 All Rights Reserved | ISSA PULIRE Network srl | P.IVA IT10392070966 ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.88,
-      "review_status": "ai_verified",
-      "review_reason": "Pagina specifica di hackathon ISSA PULIRE, indica Milano e anno futuro 2027 ma senza data precisa",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-17T11:59:51.240007"
-    },
-    {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
-      "title": "NTT Data Hackathon - BOOM",
+      "title": "NTT DATA IkigAIverse",
       "url": "https://www.bo-om.it/nttdata_hackathon/",
       "source": "web_search",
-      "description": "NTT DATA apre le porte dei propri uffici di Roma, Napoli e Milano per un ciclo di hackathon esclusivi dedicati all'innovazione e al networking. ... 21 Maggio 2026 ...",
-      "date_str": "2026-05-21",
-      "location": "",
+      "description": "Hackathon esperienziale NTT DATA in collaborazione con BOOM: dati, Generative AI e team working. La pagina indica la tappa milanese per il 3 Dicembre 2026, con iscrizione entro il 25 Novembre 2026.",
+      "date_str": "2026-12-03",
+      "location": "Milano",
       "organizer": "",
       "is_hackathon": true,
-      "confidence": 0.92,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon NTT Data con data 21 May 2026, sede indicata tra gli uffici di Milano, evento futuro e specifico",
-      "reviewed_at": "",
+      "confidence": 0.95,
+      "review_status": "manual_approved",
+      "review_reason": "Data aggiornata da verifica manuale sulla pagina BOOM/NTT DATA: tappa Milano 3 Dicembre 2026.",
+      "reviewed_at": "2026-05-21T17:14:35.927845+02:00",
       "alternate_urls": [
         "https://www.bo-om.it/challengesboom/"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
     {
-      "id": "4197c361ef2f3e78c89d7c430aa6cb4eb70417a60b6965372a24e87a4d045b08",
-      "title": "AI Creative Hackathon Vol.2",
-      "url": "https://lu.ma/wow6yhnn",
-      "source": "web_search",
-      "description": "Via Pier Lombardo, 14, 20135 Milano MI, Italy · Hosted By · AI Creative Hackathon · 31 Went · Oldpaul, Anthony Hopkins and 29 others · Contact the Host ·",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.88,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon con sede fisica a Milano (Via Pier Lombardo 14), pagina Luma di evento diretto, tipo competizione; data non estratta ma pagina indica evento futuro",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://lu.ma/AiCreativeHackathon"
-      ],
-      "discovered_at": "2026-05-17T12:00:29.418879"
-    },
-    {
-      "id": "2ffe176708163b7d70067cae9669c2c4cae452af52cb2ea4419c920039033c1c",
-      "title": "171 - Beyond Code: The Spec-Driven Development Paradigm - Eventitech",
-      "url": "https://eventitech.it/events/2531",
-      "source": "web_search",
-      "description": "24 giu 2026 · Bologna. We Make Future 2026 · 13 lug 2026 · Milano. Master the vibe - Milan | Robot Challenge Hackathon. Prossimi eventi a Milano. 13 mag 2026 · ...",
+      "id": "58b80b45c7fd91ed902fb9aef9fb7b4d1774556449bccdf833bb3710043e1a67",
+      "title": "Robot Challenge Hackathon",
+      "url": "https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/",
+      "source": "meetup",
+      "description": "Arena del Vibe Coding: team che costruiscono bot con logiche AI e microservizi, con kick-off, hackathon start e battle finale onsite.",
       "date_str": "2026-07-13",
-      "location": "",
-      "organizer": "",
+      "location": "Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano",
+      "organizer": "Master The Vibe - Milan Meetup Group",
       "is_hackathon": true,
-      "confidence": 0.88,
-      "review_status": "ai_verified",
-      "review_reason": "Robot Challenge Hackathon listed for Milan on 13 July 2026, future and physical venue",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://events.codemotion.com/",
-        "https://www.wemakefuture.it/",
-        "https://eventitech.it/events/2459",
-        "https://www.meetup.com/it-it/master-the-vibe-milan/events/314258091/"
-      ],
-      "discovered_at": "2026-05-17T12:00:04.897580"
-    },
-    {
-      "id": "9e974e8d188174c6516649e552cd8d1f69810aca45091c17084f9164f1b06b7b",
-      "title": "Ideathon - Civil Week Vivere",
-      "url": "https://civilweek-vivere.it/eventi/ideathon-2/",
-      "source": "web_search",
-      "description": "giorno: 9-10-11 maggio. Il 9 maggio pomeriggio si svolgerà l'evento del Monitor for Circular Fashion SDA Bocconi che coinvolge gli studenti di Università ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.84,
-      "review_status": "ai_verified",
-      "review_reason": "Ideathon competition at SDA Bocconi (Milan), specific dates listed, event page suggests future edition",
-      "reviewed_at": "",
+      "confidence": 0.95,
+      "review_status": "manual_approved",
+      "review_reason": "Segnalato manualmente: hackathon onsite a Milano, data 13 luglio 2026 confermata da Meetup.",
+      "reviewed_at": "2026-05-21T17:14:35.927845+02:00",
       "alternate_urls": [],
-      "discovered_at": "2026-05-18T14:29:54.413270"
-    },
-    {
-      "id": "098685616861e6f9d6c5c23926b3ff0548e6e15cd6187af75f0c21dc81afe7db",
-      "title": "Milan Global Game Jam 2026",
-      "url": "https://globalgamejam.it/milano",
-      "source": "web_search",
-      "description": "SAE Institute Milano · In cosa consiste una Game Jam? · Come funziona la Global Game Jam? · Come mi iscrivo? · Dove si svolge la jam di Milano?",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.88,
-      "review_status": "ai_verified",
-      "review_reason": "Game jam è una competizione di building, si svolge presso SAE Institute Milano (venue esplicita) e il titolo indica 2026, quindi futuro",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.sae.edu/ita/insights/sae-institute-milano-ospita-per-il-secondo-anno-la-global-game-jam/",
-        "https://www.finalround.it/notizie/440/la-global-game-jam-di-milano",
-        "https://www.direfareinsegnare.education/arriva-la-global-game-jam-2026-tra-creativita-e-orientamento/"
-      ],
-      "discovered_at": "2026-05-18T14:30:01.292980"
-    },
-    {
-      "id": "2880338c9e3bc3e70ad8049332fec76b4c6f7a3ed1445281355b05c9d57b05fe",
-      "title": "Milan Global Game Jam 2026 - IGDA Milan @ SAE Institute",
-      "url": "https://globalgamejam.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute",
-      "source": "web_search",
-      "description": "Jan 27, 2026 · Site Details The Global Game Jam returns to Milan in 2026! IGDA Milan and SAE Institute Milan team up again to host the most important event for the game dev community. More information on the jam site will be available soon.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.84,
-      "review_status": "ai_verified",
-      "review_reason": "Game jam, evento fisico a Milano (SAE Institute), pagina evento diretta, data non specificata",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.eventbrite.it/e/biglietti-milan-global-game-jam-2026-igda-milan-sae-institute-1980094956317",
-        "https://globalgamejam.it/",
-        "https://www.polimi.it/il-politecnico/eventi/dettaglio-evento/global-game-jam",
-        "https://www.gioconews.it/player/videogiochi/global-game-jam-2026-tanta-italia-nell-evento-che-sprigiona-creativita-in-48-ore.aspx"
-      ],
-      "discovered_at": "2026-05-19T13:55:25.892432"
-    },
-    {
-      "id": "2b95d6cfa82424f2fbbc7f7448b3e6f692b4c0d9bfd0e43587a223544ef1ff2d",
-      "title": "EcoHackathon 2026",
-      "url": "https://esp.unimi.it/it/eventi/ecohackathon-2026",
-      "source": "web_search",
-      "description": "Mind - Social Innovation Academy di Cascina Triulza in Via Cristina Belgioioso 171 - Milano · Visita il sito · Come partecipare iscrizione entro il 5 aprile 2026 · Allegati · Locandina · Save the date · Cerca una persona · Segreterie e servizi · Contatti · Dove siamo ·",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.92,
-      "review_status": "ai_verified",
-      "review_reason": "EcoHackathon 2026 con sede fisica a Milano, pagina evento ufficiale, futuro",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://fondazionetriulza.org/the-american-ambassador-in-cascina-triulza-rewards-participants-in-the-hackathon-organized-in-collaboration-with-microsoft/?lang=en"
-      ],
-      "discovered_at": "2026-05-20T13:37:53.339135"
-    },
-    {
-      "id": "2d87c81cccb94749e05f865ab09c4617e13d01ef92103f30367b66e914b28690",
-      "title": "Global Game Jam",
-      "url": "https://zero.eu/en/eventi/136252-global-game-jam-4,milano/",
-      "source": "web_search",
-      "description": "22 May 2026 · H 18:30 Centro per l’Arte Contemporanea Luigi Pecci, Prato · Meeting · 21 May 2026 · H 19:00 ex Convento di Santa Maria della Vittoria, c/o Circolo Caldara, Milano ·",
-      "date_str": "2026-05-21",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.96,
-      "review_status": "ai_verified",
-      "review_reason": "Game jam (hackathon) with concrete date 21 May 2026 and explicit Milan venue (ex Convento di Santa Maria della Vittoria, c/o Circolo Caldara)",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://globalgamejam.org/games/2026"
-      ],
-      "discovered_at": "2026-05-20T13:38:13.601751"
-    },
-    {
-      "id": "a7e67302c95e973c7983c764e583dbd345b8c52efa93839e75aad71c33ed86ac",
-      "title": "Community Hackathon by CA | 5^ edizione - Insieme per Innovare!",
-      "url": "https://levillagebyca.it/it/community-hackathon-by-ca/",
-      "source": "web_search",
-      "description": "Dove si svolgerà l'evento? L'hackathon si terrà presso Le Village by CA Milano in Corso di Porta Romana, 61. Metro: M3, Crocetta – M4, Sforza-Policlinico.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.85,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon specifico (5ª edizione) con venue indicata a Milano; pagina evento dedicata, anche se data non esplicita",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-21T14:14:54.885761"
-    },
-    {
-      "id": "c83a76b7a8c339cefebfde40c12c8f8ce250f87e408788bf712ddc26d13e7897",
-      "title": "FastwebAI Hackathon a Milano | Fastweb",
-      "url": "https://www.fastweb.it/fastwebai-hackathon/",
-      "source": "web_search",
-      "description": "Unisciti al primo FastwebAI Hackathon: 24 ore no-stop per creare, innovare e superare i limiti dell'intelligenza artificiale generativa.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.73,
-      "review_status": "ai_verified",
-      "review_reason": "Title states Milan location; page appears to be a direct event registration page, no explicit date but assumed future",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-21T14:15:03.663378"
+      "discovered_at": "2026-05-21T17:14:35.930300"
     }
   ]
 }

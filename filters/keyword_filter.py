@@ -73,6 +73,7 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"hackathon\.com/city/", re.I),            # listing per città
     re.compile(r"allevents\.in/", re.I),
     re.compile(r"stayhappening\.com/", re.I),
+    re.compile(r"eventitech\.it/events/", re.I),           # aggregatore tech, non fonte primaria
     re.compile(r"itch\.io/jams", re.I),                   # listing game jams
     re.compile(r"ctftime\.org/?$", re.I),                 # homepage CTF
     re.compile(r"hackthedate\.com/?$", re.I),             # homepage calendar
@@ -134,6 +135,16 @@ _JUNK_URL_PATTERNS = [
     # False positive noti (verificati manualmente)
     re.compile(r"eventbrite\.it/e/biglietti-hack-the-agriculture-hackathon-1984749196274", re.I),
     re.compile(r"polihub\.it/news-it/assosoftware-organizza-il-primo-hackathon-su-scala-nazionale", re.I),
+    re.compile(r"bo-om\.it/eb_aziende/?$", re.I),
+    re.compile(r"issapulire\.com/it/eventi/hackathon\.html", re.I),
+    re.compile(r"lu\.ma/wow6yhnn", re.I),
+    re.compile(r"civilweek-vivere\.it/eventi/ideathon-2/?$", re.I),
+    re.compile(r"globalgamejam\.it/milano/?$", re.I),
+    re.compile(r"globalgamejam\.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute/?$", re.I),
+    re.compile(r"esp\.unimi\.it/it/eventi/ecohackathon-2026/?$", re.I),
+    re.compile(r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$", re.I),
+    re.compile(r"levillagebyca\.it/it/community-hackathon-by-ca/?$", re.I),
+    re.compile(r"fastweb\.it/fastwebai-hackathon/?$", re.I),
 ]
 
 

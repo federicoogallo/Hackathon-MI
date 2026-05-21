@@ -11,6 +11,7 @@ DETERMINISTIC_REJECT_CODES = {
     "past_or_finished",
     "missing_date_or_venue",
     "known_false_positive",
+    "source_noise",
 }
 
 
