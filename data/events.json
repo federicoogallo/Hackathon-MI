@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-21T17:21:01.002530+02:00",
+  "last_check": "2026-05-22T15:32:12.356585+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -157,7 +157,9 @@
         "https://www.telespazio.com/documents/559023/32044402/LDO+#T-TeC_en.pdf?t=1777991620716",
         "https://www.leonardo.com/documents/15646808/0/Hackathon++-+Space+Edition_ITA.pdf?t=1774958787251",
         "https://www.telespazio.com/documents/559023/26980301/PR_Telespazio_#T-TeC_en.pdf?t=1696327246811",
-        "https://www.meetup.com/shutupandwritefortcollins/events/314527509/?recId=32089fad-ce37-4be3-8b19-12c1ee8c999d&recSource=event-search&searchId=1dbf0ea6-3427-4e93-a7f8-1cdca0a4fb4f&eventOrigin=find_page%24all"
+        "https://www.meetup.com/shutupandwritefortcollins/events/314527509/?recId=32089fad-ce37-4be3-8b19-12c1ee8c999d&recSource=event-search&searchId=1dbf0ea6-3427-4e93-a7f8-1cdca0a4fb4f&eventOrigin=find_page%24all",
+        "https://www.e-geos.it/news-stories/hackathon-leonardo-space-edition-sfida-il-tuo-talento-e-dai-forma-concreta-allinnovazione/",
+        "https://stema.io/it/jobs/33055"
       ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
@@ -229,7 +231,8 @@
         "https://www.affaritaliani.it/fieramilano/ai-week-2026-in-fiera-in-arrivo-oltre-25mila-persone-milano-capitale-europea-dellintelligenza-artificiale.html",
         "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-prizes-28k-free-milan-ai-week-ticket-italy",
         "https://www.linkedin.com/posts/lablab-ai_the-largest-ai-hackathon-ever-in-italy-activity-7462157870852165633-IQ31",
-        "https://discourse.openrobotics.org/t/robotic-agents-hackathon-in-milan-build-with-real-robots-win-hardware/54956"
+        "https://discourse.openrobotics.org/t/robotic-agents-hackathon-in-milan-build-with-real-robots-win-hardware/54956",
+        "https://www.eventbrite.it/fr_BE/b/italy--como/science-and-tech/high-tech/"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -302,8 +305,46 @@
       "review_status": "manual_approved",
       "review_reason": "Segnalato manualmente: hackathon onsite a Milano, data 13 luglio 2026 confermata da Meetup.",
       "reviewed_at": "2026-05-21T17:14:35.927845+02:00",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.meetup.com/master-the-vibe-milan/events/314258091/?eventOrigin=group_upcoming_events"
+      ],
       "discovered_at": "2026-05-21T17:14:35.930300"
+    },
+    {
+      "id": "818de4c6c48581c386ffd1654443d52d475c4b595626c13e2017e48a5ca2c698",
+      "title": "Raspberry JAM @ Wikimedia Hackathon Milan 2026 – Raspberry Pi...",
+      "url": "https://events.raspberrypi.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c",
+      "source": "web_search",
+      "description": "Milan, Italy. Add to Google Calendar. Download iCalendar. Details. Brainstorming Session: Hardware Tools Supporting Wikimedia Projects We are thrilled to invite you to a special Raspberry JAM session, hosted at Wikimedia Hackathon Milan 2026!",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "review_status": "ai_verified",
+      "review_reason": "Specific Raspberry JAM session announced within Wikimedia Hackathon in Milan 2026; page is a direct event listing, location Milan confirmed",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-22T13:32:19.953500"
+    },
+    {
+      "id": "23bb080fca46fbd60bb39a5cd5c8f89c9c62e8d2e391569252007c565f64ab50",
+      "title": "AI Creative Hackathon Vol.1 · Luma",
+      "url": "https://lu.ma/AiCreativeHackathon",
+      "source": "web_search",
+      "description": "Entra in contatto con una nuova ... creativo. Per tutte le informazioni sull’evento, visita il nostro sito! Location · WAO C30 · Viale Cassala, 30, 20143 Milano MI, Italy ·...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.9,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon with explicit Milan venue, direct Luma event page, assumed future",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://lu.ma/0p875vxw"
+      ],
+      "discovered_at": "2026-05-22T13:33:07.725903"
     }
   ]
 }
