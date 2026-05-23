@@ -130,7 +130,8 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"esp\.unimi\.it/it/eventi/ecohackathon-2026/?$|"
     r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$|"
     r"levillagebyca\.it/it/community-hackathon-by-ca/?$|"
-    r"fastweb\.it/fastwebai-hackathon/?$)",
+    r"fastweb\.it/fastwebai-hackathon/?$|"
+    r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c)",
     re.I,
 )
 _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(

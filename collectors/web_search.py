@@ -79,6 +79,7 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$", re.I),
     re.compile(r"levillagebyca\.it/it/community-hackathon-by-ca/?$", re.I),
     re.compile(r"fastweb\.it/fastwebai-hackathon/?$", re.I),
+    re.compile(r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c", re.I),
     re.compile(r"\.(pdf|doc|docx|ppt|pptx)$", re.I),     # documenti
     re.compile(r"youtube\.com/watch", re.I),
 ]

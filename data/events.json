@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-23T21:19:28.290717+02:00",
+  "last_check": "2026-05-23T21:23:35.208280+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -310,23 +310,6 @@
         "https://www.meetup.com/master-the-vibe-milan/events/314258091/?eventOrigin=group_upcoming_events"
       ],
       "discovered_at": "2026-05-21T17:14:35.930300"
-    },
-    {
-      "id": "818de4c6c48581c386ffd1654443d52d475c4b595626c13e2017e48a5ca2c698",
-      "title": "Raspberry JAM @ Wikimedia Hackathon Milan 2026 – Raspberry Pi...",
-      "url": "https://events.raspberrypi.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c",
-      "source": "web_search",
-      "description": "Milan, Italy. Add to Google Calendar. Download iCalendar. Details. Brainstorming Session: Hardware Tools Supporting Wikimedia Projects We are thrilled to invite you to a special Raspberry JAM session, hosted at Wikimedia Hackathon Milan 2026!",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.85,
-      "review_status": "ai_verified",
-      "review_reason": "Specific Raspberry JAM session announced within Wikimedia Hackathon in Milan 2026; page is a direct event listing, location Milan confirmed",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-22T13:32:19.953500"
     }
   ]
 }

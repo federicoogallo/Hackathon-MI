@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-23T21:19:28.291250+02:00",
-  "count": 14,
+  "updated_at": "2026-05-23T21:23:35.208868+02:00",
+  "count": 15,
   "actions": [
     {
       "id": "1de84ea17f02be07c00e6f332ac1a99b6beca15b1e848b08ab634a276611ab13",
@@ -239,6 +239,23 @@
       "reason_code": "past_or_finished",
       "regression": true,
       "created_at": "2026-05-23T21:19:28.291096+02:00"
+    },
+    {
+      "id": "818de4c6c48581c386ffd1654443d52d475c4b595626c13e2017e48a5ca2c698",
+      "title": "Raspberry JAM @ Wikimedia Hackathon Milan 2026 – Raspberry Pi...",
+      "url": "https://events.raspberrypi.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c",
+      "source": "web_search",
+      "description": "Milan, Italy. Add to Google Calendar. Download iCalendar. Details. Brainstorming Session: Hardware Tools Supporting Wikimedia Projects We are thrilled to invite you to a special Raspberry JAM session, hosted at Wikimedia Hackathon Milan 2026!",
+      "date_str": "2026-05-02",
+      "location": "",
+      "organizer": "",
+      "confidence": 0.85,
+      "action": "removed",
+      "expected": "reject",
+      "reason": "Raspberry JAM @ Wikimedia Hackathon Milan 2026 si e tenuto il 2 maggio 2026, 17:00-18:00 CEST: evento passato al 23 maggio 2026.",
+      "reason_code": "past_or_finished",
+      "regression": true,
+      "created_at": "2026-05-23T21:23:35.208664+02:00"
     }
   ]
 }
