@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-23T13:59:46.022376+02:00",
+  "last_check": "2026-05-23T21:19:28.290717+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -327,25 +327,6 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-22T13:32:19.953500"
-    },
-    {
-      "id": "23bb080fca46fbd60bb39a5cd5c8f89c9c62e8d2e391569252007c565f64ab50",
-      "title": "AI Creative Hackathon Vol.1 · Luma",
-      "url": "https://lu.ma/AiCreativeHackathon",
-      "source": "web_search",
-      "description": "Entra in contatto con una nuova ... creativo. Per tutte le informazioni sull’evento, visita il nostro sito! Location · WAO C30 · Viale Cassala, 30, 20143 Milano MI, Italy ·...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.9,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon with explicit Milan venue, direct Luma event page, assumed future",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://lu.ma/0p875vxw"
-      ],
-      "discovered_at": "2026-05-22T13:33:07.725903"
     }
   ]
 }
