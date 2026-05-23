@@ -394,6 +394,10 @@ class TestPipelineQualityGate:
         ("Community Hackathon by CA", "https://levillagebyca.it/it/community-hackathon-by-ca/"),
         ("FastwebAI Hackathon a Milano", "https://www.fastweb.it/fastwebai-hackathon/"),
         ("171 - Beyond Code: The Spec-Driven Development Paradigm", "https://eventitech.it/events/2531"),
+        (
+            "Raspberry JAM @ Wikimedia Hackathon Milan 2026",
+            "https://events.raspberrypi.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c",
+        ),
     ])
     def test_rejects_user_reported_false_positive_urls(self, title, url):
         from main import _passes_quality_gate

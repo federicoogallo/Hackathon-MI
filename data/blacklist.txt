@@ -21,3 +21,4 @@ java user group
 171 - beyond code: the spec-driven development paradigm
 
 ai creative hackathon vol.1
+raspberry jam @ wikimedia hackathon milan 2026
