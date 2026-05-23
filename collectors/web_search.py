@@ -71,6 +71,7 @@ _NOISE_URL_PATTERNS = [
     re.compile(r"bo-om\.it/eb_aziende/?$", re.I),           # CTF/academy page, not hackathon listing
     re.compile(r"issapulire\.com/it/eventi/hackathon\.html", re.I),
     re.compile(r"lu\.ma/wow6yhnn", re.I),
+    re.compile(r"lu\.ma/AiCreativeHackathon", re.I),
     re.compile(r"civilweek-vivere\.it/eventi/ideathon-2/?$", re.I),
     re.compile(r"globalgamejam\.it/milano/?$", re.I),
     re.compile(r"globalgamejam\.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute/?$", re.I),

@@ -381,6 +381,7 @@ class TestPipelineQualityGate:
     @pytest.mark.parametrize("title,url", [
         ("Hack-in-Towers", "https://www.bo-om.it/eb_aziende/"),
         ("HACKATHON - ISSA PULIRE", "https://www.issapulire.com/it/eventi/hackathon.html"),
+        ("AI Creative Hackathon Vol.1 · Luma", "https://lu.ma/AiCreativeHackathon"),
         ("AI Creative Hackathon Vol.2", "https://lu.ma/wow6yhnn"),
         ("Ideathon - Civil Week Vivere", "https://civilweek-vivere.it/eventi/ideathon-2/"),
         ("Milan Global Game Jam 2026", "https://globalgamejam.it/milano"),

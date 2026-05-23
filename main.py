@@ -123,6 +123,7 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"bo-om\.it/eb_aziende/?$|"
     r"issapulire\.com/it/eventi/hackathon\.html|"
     r"lu\.ma/wow6yhnn|"
+    r"lu\.ma/AiCreativeHackathon|"
     r"civilweek-vivere\.it/eventi/ideathon-2/?$|"
     r"globalgamejam\.it/milano/?$|"
     r"globalgamejam\.org/jam-sites/2026/milan-global-game-jam-2026-igda-milan-sae-institute/?$|"

@@ -19,3 +19,5 @@ fastwebai hackathon a milano
 jug milano
 java user group
 171 - beyond code: the spec-driven development paradigm
+
+ai creative hackathon vol.1
