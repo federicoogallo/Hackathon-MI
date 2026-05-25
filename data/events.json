@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-24T14:01:09.316841+02:00",
+  "last_check": "2026-05-25T16:07:55.730853+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -234,7 +234,10 @@
         "https://www.competehub.dev/en/competitions/eventbrite_ai-agent-olympics-hackathon-prizes-28k-free-milan-ai-week-ticket-italy",
         "https://www.linkedin.com/posts/lablab-ai_the-largest-ai-hackathon-ever-in-italy-activity-7462157870852165633-IQ31",
         "https://discourse.openrobotics.org/t/robotic-agents-hackathon-in-milan-build-with-real-robots-win-hardware/54956",
-        "https://www.eventbrite.it/fr_BE/b/italy--como/science-and-tech/high-tech/"
+        "https://www.eventbrite.it/fr_BE/b/italy--como/science-and-tech/high-tech/",
+        "https://www.eventbrite.it/e/ethmilan-2025-tickets-1272648829909",
+        "https://www.eventbrite.it/e/spirit-of-the-olympic-winter-games-milano-cortina-2026-tickets-1974364269679",
+        "https://www.eventbrite.it/e/biglietti-maxischermo-olympic-games-milano-cortina-2026-superpromo-15-con-2-drink-1982294602518"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
