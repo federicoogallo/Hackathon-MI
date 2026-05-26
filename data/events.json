@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-25T16:07:55.730853+02:00",
+  "last_check": "2026-05-26T15:53:55.088438+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -292,7 +292,8 @@
       "review_reason": "Data aggiornata da verifica manuale sulla pagina BOOM/NTT DATA: tappa Milano 3 Dicembre 2026.",
       "reviewed_at": "2026-05-21T17:14:35.927845+02:00",
       "alternate_urls": [
-        "https://www.bo-om.it/challengesboom/"
+        "https://www.bo-om.it/challengesboom/",
+        "https://www.bo-om.it/news-ed-eventi/post-evento-cyberguard/"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
@@ -314,6 +315,23 @@
         "https://www.meetup.com/master-the-vibe-milan/events/314258091/?eventOrigin=group_upcoming_events"
       ],
       "discovered_at": "2026-05-21T17:14:35.930300"
+    },
+    {
+      "id": "60a28b27fa0cd23c513c4ee5d7bced90fd53e80cddb924d93ff7bce5f5036cb0",
+      "title": "Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia... - Meta-Wiki",
+      "url": "https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026",
+      "source": "web_search",
+      "description": "We are thrilled to invite you to a special Raspberry JAM session, hosted as part of the official Wikimedia Hackathon Milan 2026!",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon specific (Wikimedia Hackathon Milan 2026) with concrete page, future 2026, venue explicitly Milan",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-26T13:54:00.705554"
     }
   ]
 }
