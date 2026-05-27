@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-26T15:53:55.088438+02:00",
+  "last_check": "2026-05-27T16:27:03.497342+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -332,6 +332,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-26T13:54:00.705554"
+    },
+    {
+      "id": "8924f3bcb39fdb6892a79e892e51d76198a0722323b159b88bb9cbb78e399367",
+      "title": "FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...",
+      "url": "https://www.instagram.com/reel/DNne53iIqc2/",
+      "source": "web_search",
+      "description": "21 Aug 2025 ... ... Milano Quando: 11–12 settembre ⏳ Le candidature chiudono il 25 ... Hello everyone, here is the news dedicated to the AI world for May 14, 2026.",
+      "date_str": "2026-09-11",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "FastwebAI Hackathon announced with explicit Milano venue and dates 11‑12 September (assumed 2026)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-27T14:27:32.694489"
     }
   ]
 }
