@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: May 26, 2026 16:04
+> **7 hackathons** coming up in Milan · Last updated: May 27, 2026 16:38
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -23,6 +23,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [F-hack AI](https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
 | [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
+| [FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...](https://www.instagram.com/reel/DNne53iIqc2/) | 11 Sep 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia... - Meta-Wiki](https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026) | TBD | Milano | web_search |
 
