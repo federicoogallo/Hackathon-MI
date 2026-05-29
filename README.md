@@ -13,14 +13,12 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: May 28, 2026 16:47
+> **5 hackathons** coming up in Milan · Last updated: May 29, 2026 16:07
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [ALSO Hackathon](https://www.linkedin.com/posts/alsogroup_registration-is-now-open-for-the-also-activity-7440736410866741248-VjKz) | 28 May 2026 | Milano | web_search |
-| [F-hack AI](https://www.eventbrite.it/e/biglietti-f-hack-ai-1988819168671?aff=ebdsoporgprofile) | 28 May 2026 | Milano | web_search |
 | [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
 | [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
 | [FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...](https://www.instagram.com/reel/DNne53iIqc2/) | 11 Sep 2026 | Milano | web_search |
