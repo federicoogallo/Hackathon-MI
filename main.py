@@ -131,7 +131,9 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$|"
     r"levillagebyca\.it/it/community-hackathon-by-ca/?$|"
     r"fastweb\.it/fastwebai-hackathon/?$|"
-    r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c)",
+    r"instagram\.com/reel/DNne53iIqc2|"
+    r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c|"
+    r"meta\.wikimedia\.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026)",
     re.I,
 )
 _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(

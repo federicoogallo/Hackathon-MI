@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-31T14:11:27.610434+02:00",
+  "last_check": "2026-05-31T14:28:47.471177+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -322,40 +322,6 @@
         "https://www.meetup.com/master-the-vibe-milan/events/314258091/?eventOrigin=group_upcoming_events"
       ],
       "discovered_at": "2026-05-21T17:14:35.930300"
-    },
-    {
-      "id": "60a28b27fa0cd23c513c4ee5d7bced90fd53e80cddb924d93ff7bce5f5036cb0",
-      "title": "Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia... - Meta-Wiki",
-      "url": "https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026",
-      "source": "web_search",
-      "description": "We are thrilled to invite you to a special Raspberry JAM session, hosted as part of the official Wikimedia Hackathon Milan 2026!",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.92,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon specific (Wikimedia Hackathon Milan 2026) with concrete page, future 2026, venue explicitly Milan",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-26T13:54:00.705554"
-    },
-    {
-      "id": "8924f3bcb39fdb6892a79e892e51d76198a0722323b159b88bb9cbb78e399367",
-      "title": "FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...",
-      "url": "https://www.instagram.com/reel/DNne53iIqc2/",
-      "source": "web_search",
-      "description": "21 Aug 2025 ... ... Milano Quando: 11–12 settembre ⏳ Le candidature chiudono il 25 ... Hello everyone, here is the news dedicated to the AI world for May 14, 2026.",
-      "date_str": "2026-09-11",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.88,
-      "review_status": "ai_verified",
-      "review_reason": "FastwebAI Hackathon announced with explicit Milano venue and dates 11‑12 September (assumed 2026)",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-05-27T14:27:32.694489"
     },
     {
       "id": "1eb449509271da7e254e2dcc4e3ff146704872340e611861d80dea1e2f1ed93a",
