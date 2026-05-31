@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **5 hackathons** coming up in Milan · Last updated: May 30, 2026 14:13
+> **6 hackathons** coming up in Milan · Last updated: May 31, 2026 14:21
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -24,6 +24,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...](https://www.instagram.com/reel/DNne53iIqc2/) | 11 Sep 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia... - Meta-Wiki](https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026) | TBD | Milano | web_search |
+| [2026 Quantum HACKday Milano · Luma](https://luma.com/k73gcr0t) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 

@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-05-30T14:04:42.193725+02:00",
+  "last_check": "2026-05-31T14:11:27.610434+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -356,6 +356,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-05-27T14:27:32.694489"
+    },
+    {
+      "id": "1eb449509271da7e254e2dcc4e3ff146704872340e611861d80dea1e2f1ed93a",
+      "title": "2026 Quantum HACKday Milano · Luma",
+      "url": "https://luma.com/k73gcr0t",
+      "source": "web_search",
+      "description": "HACKDay Milano: supportato da Fondazione Politecnico di Milano, Politecnico di Milano, QLASS Project, Unitary Foundation, . ENG Below WHAT: Join us for an in-person hack day as part of unitaryHACK, an annual hackathon supporting quantum open so urce projects put on by Unitary Foundation.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.88,
+      "review_status": "ai_verified",
+      "review_reason": "HackDay 2026 in-person in Milano, specific event page, year 2026 indicated",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-05-31T12:11:29.731694"
     }
   ]
 }
