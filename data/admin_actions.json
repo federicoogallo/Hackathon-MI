@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-23T21:23:35.208868+02:00",
-  "count": 15,
+  "updated_at": "2026-05-31T14:28:47.471499+02:00",
+  "count": 17,
   "actions": [
     {
       "id": "1de84ea17f02be07c00e6f332ac1a99b6beca15b1e848b08ab634a276611ab13",
@@ -256,6 +256,40 @@
       "reason_code": "past_or_finished",
       "regression": true,
       "created_at": "2026-05-23T21:23:35.208664+02:00"
+    },
+    {
+      "id": "8924f3bcb39fdb6892a79e892e51d76198a0722323b159b88bb9cbb78e399367",
+      "title": "FastwebAI Hackathon: ultimi giorni per candidarti! Se lavori con l'AI ...",
+      "url": "https://www.instagram.com/reel/DNne53iIqc2/",
+      "source": "web_search",
+      "description": "21 Aug 2025 ... ... Milano Quando: 11–12 settembre ⏳ Le candidature chiudono il 25 ... Hello everyone, here is the news dedicated to the AI world for May 14, 2026.",
+      "date_str": "2025-09-11",
+      "location": "",
+      "organizer": "",
+      "confidence": 0.88,
+      "action": "removed",
+      "expected": "reject",
+      "reason": "FastwebAI Hackathon si e tenuto l 11-12 settembre 2025; il reel social e stato interpretato erroneamente come 2026.",
+      "reason_code": "past_or_finished",
+      "regression": true,
+      "created_at": "2026-05-31T14:27:33.412491+02:00"
+    },
+    {
+      "id": "60a28b27fa0cd23c513c4ee5d7bced90fd53e80cddb924d93ff7bce5f5036cb0",
+      "title": "Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia... - Meta-Wiki",
+      "url": "https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026",
+      "source": "web_search",
+      "description": "We are thrilled to invite you to a special Raspberry JAM session, hosted as part of the official Wikimedia Hackathon Milan 2026!",
+      "date_str": "2026-05-02",
+      "location": "",
+      "organizer": "",
+      "confidence": 0.92,
+      "action": "removed",
+      "expected": "reject",
+      "reason": "Duplicato Meta-Wiki del Raspberry JAM gia rimosso: sessione del 2 maggio 2026, evento passato.",
+      "reason_code": "past_or_finished",
+      "regression": true,
+      "created_at": "2026-05-31T14:28:47.471390+02:00"
     }
   ]
 }

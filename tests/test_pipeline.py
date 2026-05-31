@@ -393,10 +393,18 @@ class TestPipelineQualityGate:
         ("Global Game Jam", "https://zero.eu/en/eventi/136252-global-game-jam-4,milano/"),
         ("Community Hackathon by CA", "https://levillagebyca.it/it/community-hackathon-by-ca/"),
         ("FastwebAI Hackathon a Milano", "https://www.fastweb.it/fastwebai-hackathon/"),
+        (
+            "FastwebAI Hackathon: ultimi giorni per candidarti!",
+            "https://www.instagram.com/reel/DNne53iIqc2/",
+        ),
         ("171 - Beyond Code: The Spec-Driven Development Paradigm", "https://eventitech.it/events/2531"),
         (
             "Raspberry JAM @ Wikimedia Hackathon Milan 2026",
             "https://events.raspberrypi.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c",
+        ),
+        (
+            "Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia",
+            "https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026",
         ),
     ])
     def test_rejects_user_reported_false_positive_urls(self, title, url):

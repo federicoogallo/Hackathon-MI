@@ -146,7 +146,9 @@ _JUNK_URL_PATTERNS = [
     re.compile(r"zero\.eu/en/eventi/136252-global-game-jam-4,milano/?$", re.I),
     re.compile(r"levillagebyca\.it/it/community-hackathon-by-ca/?$", re.I),
     re.compile(r"fastweb\.it/fastwebai-hackathon/?$", re.I),
+    re.compile(r"instagram\.com/reel/DNne53iIqc2", re.I),
     re.compile(r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c", re.I),
+    re.compile(r"meta\.wikimedia\.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026", re.I),
 ]
 
 
