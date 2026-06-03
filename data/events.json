@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-02T16:52:41.878156+02:00",
+  "last_check": "2026-06-03T17:27:25.843177+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -340,7 +340,9 @@
       "review_status": "ai_verified",
       "review_reason": "HackDay 2026 in-person in Milano, specific event page, year 2026 indicated",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.competehub.dev/en/competitions/lumaevt-ckKh3Dl0DsmzNdM"
+      ],
       "discovered_at": "2026-05-31T12:11:29.731694"
     }
   ]
