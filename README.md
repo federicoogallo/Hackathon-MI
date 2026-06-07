@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: Jun 06, 2026 14:14
+> **4 hackathons** coming up in Milan · Last updated: Jun 07, 2026 14:28
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
