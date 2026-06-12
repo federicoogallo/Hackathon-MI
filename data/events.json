@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-11T16:36:14.971010+02:00",
+  "last_check": "2026-06-12T16:10:01.322576+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -21,7 +21,8 @@
         "https://docs.google.com/forms/d/e/1FAIpQLScaUVaYC4hsGmhTygP3cRxS1edse8HJ1j15umZnZ6egrNkTYg/viewform",
         "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=6c607621-227d-4bbb-a69e-7fea22cca849&recSource=event-search&searchId=adcd45a1-8147-4558-beeb-dcefcd8a910f&eventOrigin=find_page%24all",
         "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=33902ade-7b15-4b06-bbdb-da612920164c&recSource=event-search&searchId=5c2e2858-2229-4850-a3d3-41214c2f440e&eventOrigin=find_page%24all",
-        "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=691f8060-edad-435d-a36c-b401c3de7f91&recSource=event-search&searchId=5f18a7b0-d814-45b5-b0b9-195e8a29e5e5&eventOrigin=find_page%24all"
+        "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=691f8060-edad-435d-a36c-b401c3de7f91&recSource=event-search&searchId=5f18a7b0-d814-45b5-b0b9-195e8a29e5e5&eventOrigin=find_page%24all",
+        "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=d6c2729d-9707-418a-8965-477516f9adbc&recSource=event-search&searchId=f2186d08-a74c-444b-a3ed-0c6f0ea406b7&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
@@ -170,7 +171,8 @@
         "https://stema.io/it/jobs/33055",
         "https://www.eventbrite.com/e/biglietti-startup-breakfast-coworking-open-day-talent-garden-milano-isola-1988481069407",
         "https://www.telespazio.com/documents/559023/27901184/T-TeC+progetti+vincitori+finale_EN.pdf?t=1705919060181",
-        "https://www.telespazio.com/home"
+        "https://www.telespazio.com/home",
+        "https://www.instagram.com/p/DWYdcbpDUX7/"
       ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
@@ -351,9 +353,27 @@
       "review_reason": "HackDay 2026 in-person in Milano, specific event page, year 2026 indicated",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://www.competehub.dev/en/competitions/lumaevt-ckKh3Dl0DsmzNdM"
+        "https://www.competehub.dev/en/competitions/lumaevt-ckKh3Dl0DsmzNdM",
+        "https://luma.com/k73gcr0t?locale=it"
       ],
       "discovered_at": "2026-05-31T12:11:29.731694"
+    },
+    {
+      "id": "f25df347d299e30019fc23a98acdbc595f9a3def125f5ce17305374c891cedaf",
+      "title": "Milan Critical Care Datathon and ESICM's Big Datatalk",
+      "url": "https://healthmanagement.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk",
+      "source": "web_search",
+      "description": "A Critical Care Datathon is a 24-hour challenge where clinicians, data scientists and statisticians work in teams with the goal of finding new ways to answer actual clinical questions using large datasets of electronic health records.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.81,
+      "review_status": "ai_verified",
+      "review_reason": "Milan Critical Care Datathon, competition type, venue implied Milan, future event page without explicit date",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-06-12T14:10:18.660866"
     }
   ]
 }
