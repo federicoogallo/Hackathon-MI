@@ -13,13 +13,12 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **5 hackathons** coming up in Milan · Last updated: Jun 13, 2026 14:33
+> **4 hackathons** coming up in Milan · Last updated: Jun 14, 2026 15:08
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Coding Agent Hackathon powered by Cursor - Milan](https://lu.ma/xvqfrko8) | 13 Jun 2026 | Via Polidoro da Caravaggio, 37, 20156 Milano MI, Italia | luma |
 | [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [2026 Quantum HACKday Milano · Luma](https://luma.com/k73gcr0t) | TBD | Milano | web_search |
