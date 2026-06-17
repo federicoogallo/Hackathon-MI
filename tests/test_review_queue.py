@@ -136,7 +136,7 @@ def test_static_site_writes_review_page(tmp_path: Path):
                         "source": "test",
                         "is_hackathon": True,
                         "confidence": 0.95,
-                        "date_str": "2026-06-15",
+                        "date_str": "2099-06-15",
                         "location": "Milano",
                     }
                 ],
