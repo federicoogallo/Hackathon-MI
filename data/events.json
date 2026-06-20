@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-19T16:13:04.091268+02:00",
+  "last_check": "2026-06-20T14:26:12.058583+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -22,7 +22,8 @@
         "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=6c607621-227d-4bbb-a69e-7fea22cca849&recSource=event-search&searchId=adcd45a1-8147-4558-beeb-dcefcd8a910f&eventOrigin=find_page%24all",
         "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=33902ade-7b15-4b06-bbdb-da612920164c&recSource=event-search&searchId=5c2e2858-2229-4850-a3d3-41214c2f440e&eventOrigin=find_page%24all",
         "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=691f8060-edad-435d-a36c-b401c3de7f91&recSource=event-search&searchId=5f18a7b0-d814-45b5-b0b9-195e8a29e5e5&eventOrigin=find_page%24all",
-        "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=d6c2729d-9707-418a-8965-477516f9adbc&recSource=event-search&searchId=f2186d08-a74c-444b-a3ed-0c6f0ea406b7&eventOrigin=find_page%24all"
+        "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=d6c2729d-9707-418a-8965-477516f9adbc&recSource=event-search&searchId=f2186d08-a74c-444b-a3ed-0c6f0ea406b7&eventOrigin=find_page%24all",
+        "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=16181c03-6f22-405b-92d4-928452a3fdf3&recSource=event-search&searchId=c1435b85-f1d0-41bb-8cd4-8122fdc49031&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
@@ -252,7 +253,8 @@
         "https://techbusiness.it/ai-week-2026-milano-intelligenza-artificiale-industria/",
         "https://www.eventbrite.it/fr_CA/b/italy--cinisello-balsamo/science-and-tech/high-tech/",
         "https://www.eventbrite.it/b/italy--zeme/science-and-tech/high-tech/",
-        "https://www.meetup.com/cloudnativesiliconvalley/events/315123857/?recId=f8a119a7-4d55-4909-bab6-be2d9bebe5cb&recSource=event-search&searchId=e8c20441-8109-43be-8453-9b9dc33da80b&eventOrigin=find_page%24all"
+        "https://www.meetup.com/cloudnativesiliconvalley/events/315123857/?recId=f8a119a7-4d55-4909-bab6-be2d9bebe5cb&recSource=event-search&searchId=e8c20441-8109-43be-8453-9b9dc33da80b&eventOrigin=find_page%24all",
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/team-milano-hackathon"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
