@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-21T15:05:20.493765+02:00",
+  "last_check": "2026-06-22T17:51:06.015524+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -191,7 +191,8 @@
       "confidence": 0.95,
       "alternate_urls": [
         "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053598777?aff=ebdssbdestsearch",
-        "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053630873"
+        "https://www.eventbrite.it/e/biglietti-hackathon-for-women-unlock-your-career-with-ey-and-donne-40-1986053630873",
+        "https://midnight-hackathon-2026.devpost.com/"
       ],
       "discovered_at": "2026-04-14T13:20:47.233619"
     },
@@ -395,8 +396,27 @@
       "review_status": "ai_verified",
       "review_reason": "Specific AI Creative Hackathon in Milan on Luma page; date not provided",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://lu.ma/azuxtwh8"
+      ],
       "discovered_at": "2026-06-21T13:06:13.625714"
+    },
+    {
+      "id": "df7a8d5f95696e074a219a6a507a17b63dbee9725577bfc8a1b32d1b89de96f3",
+      "title": "Hack-AI-thon 2026 – 24 ore di creatività, innovazione e Intelligenza ...",
+      "url": "https://www.instagram.com/p/DVskHCnDZO4/",
+      "source": "web_search",
+      "description": "10 Mar 2026 ... HACKATHON 2026 9 maggio Tech FIT GYM HappyGay Gaming Social 2 ... 🎟️ Join us on June 29 2026, in Milan TAG Calabiana → aiheroes.it/2026",
+      "date_str": "2026-06-29",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.94,
+      "review_status": "ai_verified",
+      "review_reason": "Post Instagram annuncia hackathon reale a Milano con data 29 giugno 2026",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-06-22T15:51:11.779537"
     }
   ]
 }
