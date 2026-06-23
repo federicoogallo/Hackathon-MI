@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-22T17:51:06.015524+02:00",
+  "last_check": "2026-06-23T15:43:12.174053+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -378,7 +378,8 @@
       "review_reason": "Milan Critical Care Datathon, competition type, venue implied Milan, future event page without explicit date",
       "reviewed_at": "",
       "alternate_urls": [
-        "http://www.eventideib.polimi.it/en/events/datathon/"
+        "http://www.eventideib.polimi.it/en/events/datathon/",
+        "https://healthmanagement.org/c/healthmanagement/Event/milan-critical-care-datathon-and-esicm-s-big-datatalk"
       ],
       "discovered_at": "2026-06-12T14:10:18.660866"
     },
@@ -415,8 +416,28 @@
       "review_status": "ai_verified",
       "review_reason": "Post Instagram annuncia hackathon reale a Milano con data 29 giugno 2026",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://polihub.it/news-it/gruppo-vege-e-polihub-scrivono-il-futuro-della-distribuzione/",
+        "https://cariplofactory.it/news/climathon/"
+      ],
       "discovered_at": "2026-06-22T15:51:11.779537"
+    },
+    {
+      "id": "d91b1a3a31ddc1b7f133d6d380085a12873789e90ce84c209ea14a7c96446aab",
+      "title": "BCG Platinion Hackathon - Fighting World Hunger | October 16-17, 2026",
+      "url": "https://www.bcgplatinion.com/hackathon",
+      "source": "web_search",
+      "description": "The Hackathon will take place on October 16-17 in our hubs in Casablanca, Frankfurt, Johannesburg, Madrid, Milan, Riyadh, Santiago de Chile, and São Paulo. Depending on which country you live in, you will be assigned to the Hackathon closest ...",
+      "date_str": "2026-10-16",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "Explicit hackathon with dates Oct 16-17 2026 and a physical hub in Milan",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-06-23T13:43:21.161572"
     }
   ]
 }

@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Jun 22, 2026 18:04
+> **7 hackathons** coming up in Milan · Last updated: Jun 23, 2026 15:51
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -21,6 +21,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | --- | --- | --- | --- |
 | [Hack-AI-thon 2026 – 24 ore di creatività, innovazione e Intelligenza ...](https://www.instagram.com/p/DVskHCnDZO4/) | 29 Jun 2026 | Milano | web_search |
 | [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
+| [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [2026 Quantum HACKday Milano · Luma](https://luma.com/k73gcr0t) | TBD | Milano | web_search |
 | [Milan Critical Care Datathon and ESICM's Big Datatalk](https://healthmanagement.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk) | TBD | Milano | web_search |
