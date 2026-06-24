@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-23T15:43:12.174053+02:00",
+  "last_check": "2026-06-24T15:22:26.603276+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -24,7 +24,8 @@
         "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=691f8060-edad-435d-a36c-b401c3de7f91&recSource=event-search&searchId=5f18a7b0-d814-45b5-b0b9-195e8a29e5e5&eventOrigin=find_page%24all",
         "https://www.meetup.com/denver-startup-cofounders/events/314577866/?recId=d6c2729d-9707-418a-8965-477516f9adbc&recSource=event-search&searchId=f2186d08-a74c-444b-a3ed-0c6f0ea406b7&eventOrigin=find_page%24all",
         "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=16181c03-6f22-405b-92d4-928452a3fdf3&recSource=event-search&searchId=c1435b85-f1d0-41bb-8cd4-8122fdc49031&eventOrigin=find_page%24all",
-        "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=5ff67fd5-0d6c-49fd-9448-efcb5a872254&recSource=event-search&searchId=257aa558-698e-4f70-8776-30d81d637b95&eventOrigin=find_page%24all"
+        "https://www.meetup.com/startup-oasis-raleigh/events/314534659/?recId=5ff67fd5-0d6c-49fd-9448-efcb5a872254&recSource=event-search&searchId=257aa558-698e-4f70-8776-30d81d637b95&eventOrigin=find_page%24all",
+        "https://www.meetup.com/dc-startup-cofounders/events/313915138/?recId=e861e22c-2167-42e5-bb53-4631f9a2c4b1&recSource=event-search&searchId=20acae05-8cad-4dd4-b2ec-179b823bbd56&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-03-03T15:34:32.252417"
     },
@@ -149,7 +150,8 @@
         "https://allhackathons.com/hackathon/gdg-ai-hack-2026/",
         "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2025/cohost-gdg-cloud-milano/",
         "https://happeningnext.com/event/gdg-ai-hack-2026-eid1ef0kuni75tr",
-        "https://www.eventbrite.com/e/ai-hackathon-at-ai-big-data-expo-silicon-valley-2026-tickets-1989320050823"
+        "https://www.eventbrite.com/e/ai-hackathon-at-ai-big-data-expo-silicon-valley-2026-tickets-1989320050823",
+        "https://ainave.com/events/hackathons/gdg-ai-hack-2026"
       ],
       "discovered_at": "2026-03-09T12:49:12.140572"
     },
@@ -174,7 +176,8 @@
         "https://www.eventbrite.com/e/biglietti-startup-breakfast-coworking-open-day-talent-garden-milano-isola-1988481069407",
         "https://www.telespazio.com/documents/559023/27901184/T-TeC+progetti+vincitori+finale_EN.pdf?t=1705919060181",
         "https://www.telespazio.com/home",
-        "https://www.instagram.com/p/DWYdcbpDUX7/"
+        "https://www.instagram.com/p/DWYdcbpDUX7/",
+        "https://talentgarden.com/it/agenda"
       ],
       "discovered_at": "2026-03-25T14:42:03.099504"
     },
@@ -210,7 +213,8 @@
       "alternate_urls": [
         "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/",
         "https://www.instagram.com/p/DV6u8A8DKIX/",
-        "https://cloud.also.mp/microsoft-hackathon-championship-milan/"
+        "https://cloud.also.mp/microsoft-hackathon-championship-milan/",
+        "https://www.hackathon.com/"
       ],
       "discovered_at": "2026-04-14T13:20:49.478582"
     },
@@ -379,7 +383,9 @@
       "reviewed_at": "",
       "alternate_urls": [
         "http://www.eventideib.polimi.it/en/events/datathon/",
-        "https://healthmanagement.org/c/healthmanagement/Event/milan-critical-care-datathon-and-esicm-s-big-datatalk"
+        "https://healthmanagement.org/c/healthmanagement/Event/milan-critical-care-datathon-and-esicm-s-big-datatalk",
+        "https://www.hunimed.eu/news/critical-care-datathon-and-esicms-big-datatalk-per-il-secondo-anno-a-milano-2/",
+        "https://www.humanitas.it/news/intelligenza-artificiale-terapia-intensiva-progetti-migliori-della-sfida-critical-care-datathon/"
       ],
       "discovered_at": "2026-06-12T14:10:18.660866"
     },
@@ -418,7 +424,8 @@
       "reviewed_at": "",
       "alternate_urls": [
         "https://polihub.it/news-it/gruppo-vege-e-polihub-scrivono-il-futuro-della-distribuzione/",
-        "https://cariplofactory.it/news/climathon/"
+        "https://cariplofactory.it/news/climathon/",
+        "https://www.eventbrite.com/e/milan-tech-mixer-and-social-tech-ai-data-it-tickets-1989645371867"
       ],
       "discovered_at": "2026-06-22T15:51:11.779537"
     },
