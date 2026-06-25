@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-24T15:22:26.603276+02:00",
+  "last_check": "2026-06-25T15:16:16.774019+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -214,7 +214,12 @@
         "https://lists.wikimedia.org/hyperkitty/list/wikimedia-l@lists.wikimedia.org/message/OG6M6XHHTMO7G4VVB27C4ZUJDX4VLDLE/",
         "https://www.instagram.com/p/DV6u8A8DKIX/",
         "https://cloud.also.mp/microsoft-hackathon-championship-milan/",
-        "https://www.hackathon.com/"
+        "https://www.hackathon.com/",
+        "https://lablab.ai/ai-hackathons/doge-ai-hackathon",
+        "https://lablab.ai/ai-hackathons/falcon-hackathon",
+        "https://lablab.ai/ai-hackathons/trulens-hackathon",
+        "https://lablab.ai/ai-hackathons/ai21-labs-hackathon",
+        "https://bsmachinelearning.com/hackathons/milan/"
       ],
       "discovered_at": "2026-04-14T13:20:49.478582"
     },
@@ -260,7 +265,9 @@
         "https://www.eventbrite.it/fr_CA/b/italy--cinisello-balsamo/science-and-tech/high-tech/",
         "https://www.eventbrite.it/b/italy--zeme/science-and-tech/high-tech/",
         "https://www.meetup.com/cloudnativesiliconvalley/events/315123857/?recId=f8a119a7-4d55-4909-bab6-be2d9bebe5cb&recSource=event-search&searchId=e8c20441-8109-43be-8453-9b9dc33da80b&eventOrigin=find_page%24all",
-        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/team-milano-hackathon"
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/team-milano-hackathon",
+        "https://lablab.ai/ai-hackathons/ai-agents-hackathon-2",
+        "https://lablab.ai/ai-hackathons/ai-agents-hackathon"
       ],
       "discovered_at": "2026-05-03T12:05:43.638896"
     },
@@ -323,7 +330,8 @@
         "https://www.bo-om.it/news-ed-eventi/",
         "https://www.bo-om.it/news-ed-eventi/trender-2026/",
         "https://www.bo-om.it/news-ed-eventi/cybersicurezza-ai-recap-prossimo-evento/",
-        "https://www.bo-om.it/news-ed-eventi/https-www-bo-om-it-anticorpi-contro-i-pregiudizi-il-coraggio-di-sognare-2025/"
+        "https://www.bo-om.it/news-ed-eventi/https-www-bo-om-it-anticorpi-contro-i-pregiudizi-il-coraggio-di-sognare-2025/",
+        "https://www.bo-om.it/news-ed-eventi/ctrl-alt-bias-podcast-media-wow-2026-boom-imola/"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
@@ -445,6 +453,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-06-23T13:43:21.161572"
+    },
+    {
+      "id": "22ff0f50af5fca3e8597a94f5faec5b52ae6e9f9d4e7ae329b7ee50b3e4515fb",
+      "title": "BCG Platinion Hackathon 2026 - Milano | Eightfold",
+      "url": "https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg",
+      "source": "web_search",
+      "description": "Whether you're an IT Architect, an AI Architect, a software developer, or simply someone with a deep passion for technology and an interest in Consulting and Tech, this Hackathon is for you. Spend two days building real solutions alongside BCG Platinion's consultants and tech experts. Be part of the BCG Platinion Hackathon in Milano and create something that truly matters. World hunger is one ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "review_status": "ai_verified",
+      "review_reason": "Specific BCG Platinion hackathon in Milano, competition format, registration page indicates upcoming event, location explicit",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-06-25T13:16:44.063034"
     }
   ]
 }
