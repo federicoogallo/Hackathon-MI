@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-25T15:16:16.774019+02:00",
+  "last_check": "2026-06-26T15:11:39.518268+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -468,7 +468,9 @@
       "review_status": "ai_verified",
       "review_reason": "Specific BCG Platinion hackathon in Milano, competition format, registration page indicates upcoming event, location explicit",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.meetup.com/seattle-idea-to-ipo/events/314873137/?recId=d521d2ab-b20d-4a99-b8d8-ab6ee73b88f8&recSource=event-search&searchId=ccc328a8-5171-4676-a884-c494a2198d50&eventOrigin=find_page%24all"
+      ],
       "discovered_at": "2026-06-25T13:16:44.063034"
     }
   ]
