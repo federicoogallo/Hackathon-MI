@@ -3,6 +3,7 @@ Test suite per notifiers/telegram.py e per la pipeline completa.
 """
 
 import json
+from datetime import date
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
@@ -406,6 +407,10 @@ class TestPipelineQualityGate:
             "Event:Hardware tools for Wiki/Raspberry JAM at Wikimedia",
             "https://meta.wikimedia.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026",
         ),
+        (
+            "Hack-AI-thon 2026 - 24 ore di creativita, innovazione e Intelligenza",
+            "https://www.instagram.com/p/DVskHCnDZO4/",
+        ),
     ])
     def test_rejects_user_reported_false_positive_urls(self, title, url):
         from main import _passes_quality_gate
@@ -422,6 +427,49 @@ class TestPipelineQualityGate:
         ok, reason = _passes_quality_gate(ev)
         assert ok is False
         assert "false positive" in reason
+
+    @pytest.mark.parametrize("title,url", [
+        ("2026 Quantum HACKday Milano", "https://luma.com/k73gcr0t"),
+        (
+            "Milan Critical Care Datathon and ESICM's Big Datatalk",
+            "https://healthmanagement.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk",
+        ),
+        ("LUMEN - Creativity, AI and Community", "https://lu.ma/ayybpg05"),
+    ])
+    def test_rejects_user_reported_stale_undated_web_urls(self, title, url):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title=title,
+            url=url,
+            source="web_search",
+            description="Milano AI hackathon page without a trustworthy current date.",
+            date_str="",
+            location="Milano",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "senza data" in reason or "passato" in reason
+
+    def test_rejects_known_duplicate_bcg_registration_page(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="BCG Platinion Hackathon 2026 - Milano | Eightfold",
+            url="https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg",
+            source="web_search",
+            description=(
+                "BCG Platinion Hackathon registration page for the same October 16-17, "
+                "2026 event already represented by the official BCG Platinion page."
+            ),
+            date_str="",
+            location="Milano",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "duplicato" in reason
 
     def test_rejects_ctf_as_not_hackathon_format(self):
         from filters.keyword_filter import keyword_filter
@@ -466,6 +514,22 @@ class TestPipelineQualityGate:
         ok, reason = _passes_quality_gate(ev)
         assert ok is False
         assert "senza data" in reason or "passato" in reason
+
+    def test_rejects_generic_undated_web_search_result(self):
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="AI Creative Hackathon",
+            url="https://aicreativehackathon.com/",
+            source="web_search",
+            description="AI Creative Hackathon is an event in Milan with competition, talk and music.",
+            location="Milano",
+            date_str="",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "senza data" in reason
 
     def test_rejects_online_itch_game_jam(self):
         from main import _passes_quality_gate
@@ -520,3 +584,35 @@ class TestPipelineQualityGate:
         ok, reason = _passes_quality_gate(ev)
         assert ok is False
         assert "Milano" in reason or "non a Milano" in reason
+
+    def test_cleanup_existing_events_removes_expired_and_known_duplicates(self):
+        from main import _cleanup_existing_event_dicts
+
+        expired = HackathonEvent(
+            title="AI Voice Agent Hackathon powered by ElevenLabs - Milan",
+            url="https://lu.ma/rgtc75im",
+            source="luma",
+            date_str="2026-03-07T08:30:00.000Z",
+            location="Milano",
+            is_hackathon=True,
+        ).to_dict()
+        duplicate = HackathonEvent(
+            title="BCG Platinion Hackathon 2026 - Milano | Eightfold",
+            url="https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg",
+            source="web_search",
+            date_str="",
+            location="Milano",
+            is_hackathon=True,
+        ).to_dict()
+        valid = HackathonEvent(
+            title="BCG Platinion Hackathon - Fighting World Hunger | October 16-17, 2026",
+            url="https://www.bcgplatinion.com/hackathon",
+            source="web_search",
+            date_str="2026-10-16",
+            location="Milano",
+            is_hackathon=True,
+        ).to_dict()
+
+        out = _cleanup_existing_event_dicts([expired, duplicate, valid], ref_date=date(2026, 6, 30))
+
+        assert [item["title"] for item in out] == [valid["title"]]

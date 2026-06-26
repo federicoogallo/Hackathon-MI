@@ -22,7 +22,7 @@ import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from time import perf_counter
 from urllib.parse import urlparse
@@ -132,12 +132,21 @@ _KNOWN_FALSE_POSITIVE_URL_RE = re.compile(
     r"levillagebyca\.it/it/community-hackathon-by-ca/?$|"
     r"fastweb\.it/fastwebai-hackathon/?$|"
     r"instagram\.com/reel/DNne53iIqc2|"
+    r"instagram\.com/p/DVskHCnDZO4|"
     r"events\.raspberrypi\.com/community/6f41b7d6-d731-4376-acf5-c5b5dddb038c|"
     r"meta\.wikimedia\.org/wiki/Event:Hardware_tools_for_Wiki/Raspberry_JAM_at_Wikimedia_Hackathon_Milan_2026)",
     re.I,
 )
 _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(
-    r"(hackingthecity\.today/?$|hacktheboot\.it/?(?:#.*)?$)",
+    r"(hackingthecity\.today/?$|"
+    r"hacktheboot\.it/?(?:#.*)?$|"
+    r"luma\.com/k73gcr0t|"
+    r"lu\.ma/ayybpg05|"
+    r"healthmanagement\.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk)",
+    re.I,
+)
+_KNOWN_DUPLICATE_URL_RE = re.compile(
+    r"(experiencedtalent\.bcg\.com/events/candidate/registration\?.*plannedEventId=aQnm026Vg)",
     re.I,
 )
 _ONLINE_ONLY_URL_RE = re.compile(
@@ -288,7 +297,11 @@ def _is_tentative_without_concrete_details(event: HackathonEvent) -> bool:
 
 
 def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
-    """Scarta risultati web_search senza data che hanno forti segnali di evento passato."""
+    """Scarta risultati web_search senza data verificabile.
+
+    I risultati web generici senza data tendono a essere pagine stale o snippet
+    incompleti: meglio non pubblicarli automaticamente.
+    """
     if event.source != "web_search":
         return False
     if event.parsed_date() is not None:
@@ -311,13 +324,18 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
     text = f"{event.title} {event.description}"
     if _TENTATIVE_EVENT_HINT_RE.search(text):
         return True
-    return bool(_PAST_TENSE_HINT_RE.search(text))
+    if _PAST_TENSE_HINT_RE.search(text):
+        return True
+
+    return True
 
 
 def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
+    if _KNOWN_DUPLICATE_URL_RE.search(event.url or ""):
+        return False, "duplicato noto"
     if _is_blacklisted_event(event):
         return False, "evento in blacklist manuale"
     if _has_conflicting_meetup_location(event):
@@ -329,7 +347,7 @@ def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     if _is_tentative_without_concrete_details(event):
         return False, "evento senza data/venue concreta"
     if _is_undated_likely_stale_web_result(event):
-        return False, "evento web senza data (probabile passato)"
+        return False, "evento web senza data verificabile"
     if _is_clearly_non_milan(event):
         return False, "evento chiaramente non a Milano"
     return True, "ok"
@@ -432,6 +450,39 @@ def _deterministic_semantic_dedup_dicts(events: list[dict]) -> list[dict]:
             logger.info("Dedup fallback: scartato duplicato '%s'", event.title[:60])
 
     return deduped
+
+
+def _event_from_dict(item: dict) -> HackathonEvent:
+    """Ricostruisce un HackathonEvent dal JSON storico."""
+    return HackathonEvent(
+        title=item.get("title", ""),
+        url=item.get("url", ""),
+        source=item.get("source", ""),
+        description=item.get("description", ""),
+        date_str=item.get("date_str", ""),
+        location=item.get("location", ""),
+        organizer=item.get("organizer", ""),
+    )
+
+
+def _cleanup_existing_event_dicts(events: list[dict], ref_date: date | None = None) -> list[dict]:
+    """Rimuove dallo storico eventi scaduti, falsi positivi e duplicati legacy."""
+    today = ref_date or _now().date()
+    kept: list[dict] = []
+
+    for item in events:
+        event = _event_from_dict(item)
+        if event.is_past(today):
+            logger.info("Cleanup storico: rimosso '%s' (evento scaduto)", event.title[:70])
+            continue
+
+        ok, reason = _passes_quality_gate(event)
+        if ok:
+            kept.append(item)
+        else:
+            logger.info("Cleanup storico: rimosso '%s' (%s)", event.title[:70], reason)
+
+    return _deterministic_semantic_dedup_dicts(kept)
 
 
 # ─── Collector registry ────────────────────────────────────────────────────
@@ -655,23 +706,10 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 1. Carica storico
     store = EventStore()
     # Cleanup deterministico dello storico per rimuovere duplicati/falsi positivi legacy
-    existing_events: list[dict] = []
-    for item in store.all_events():
-        ev = HackathonEvent(
-            title=item.get("title", ""),
-            url=item.get("url", ""),
-            source=item.get("source", ""),
-            description=item.get("description", ""),
-            date_str=item.get("date_str", ""),
-            location=item.get("location", ""),
-            organizer=item.get("organizer", ""),
-        )
-        ok, reason = _passes_quality_gate(ev)
-        if ok:
-            existing_events.append(item)
-        else:
-            logger.info("Cleanup storico: rimosso '%s' (%s)", ev.title[:70], reason)
-    existing_events = _deterministic_semantic_dedup_dicts(existing_events)
+    existing_events = _cleanup_existing_event_dicts(
+        store.all_events(),
+        ref_date=start_time.date(),
+    )
     store.replace_events(existing_events)
     logger.info("Storico caricato: %d eventi", store.count)
 

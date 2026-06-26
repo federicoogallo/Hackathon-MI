@@ -13,21 +13,15 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: Jun 29, 2026 16:58
+> **3 hackathons** coming up in Milan · Last updated: Jun 30, 2026 12:19
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Hack-AI-thon 2026 – 24 ore di creatività, innovazione e Intelligenza ...](https://www.instagram.com/p/DVskHCnDZO4/) | 29 Jun 2026 | Milano | web_search |
 | [Robot Challenge Hackathon](https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/) | 13 Jul 2026 | Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano | meetup |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
-| [2026 Quantum HACKday Milano · Luma](https://luma.com/k73gcr0t) | TBD | Milano | web_search |
-| [Milan Critical Care Datathon and ESICM's Big Datatalk](https://healthmanagement.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk) | TBD | Milano | web_search |
-| [LUMEN - Creativity, AI and Community · Luma](https://lu.ma/ayybpg05) | TBD | Milano | web_search |
-| [BCG Platinion Hackathon 2026 - Milano \| Eightfold](https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg) | TBD | Milano | web_search |
-| [AI Creative Hackathon](https://aicreativehackathon.com/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
