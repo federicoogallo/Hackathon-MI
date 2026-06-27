@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-06-26T15:11:39.518268+02:00",
+  "last_check": "2026-06-27T14:08:55.684060+02:00",
   "events": [
     {
       "id": "aed7fb3e43649fe1f9e3598aeb210c9b5b7b6db191a8fd66627be56e6d4b77f8",
@@ -433,7 +433,8 @@
       "alternate_urls": [
         "https://polihub.it/news-it/gruppo-vege-e-polihub-scrivono-il-futuro-della-distribuzione/",
         "https://cariplofactory.it/news/climathon/",
-        "https://www.eventbrite.com/e/milan-tech-mixer-and-social-tech-ai-data-it-tickets-1989645371867"
+        "https://www.eventbrite.com/e/milan-tech-mixer-and-social-tech-ai-data-it-tickets-1989645371867",
+        "https://www.eventbrite.com/e/milan-tech-mixer-and-social-tech-ai-data-it-tickets-1989645372870"
       ],
       "discovered_at": "2026-06-22T15:51:11.779537"
     },
@@ -469,7 +470,10 @@
       "review_reason": "Specific BCG Platinion hackathon in Milano, competition format, registration page indicates upcoming event, location explicit",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://www.meetup.com/seattle-idea-to-ipo/events/314873137/?recId=d521d2ab-b20d-4a99-b8d8-ab6ee73b88f8&recSource=event-search&searchId=ccc328a8-5171-4676-a884-c494a2198d50&eventOrigin=find_page%24all"
+        "https://www.meetup.com/seattle-idea-to-ipo/events/314873137/?recId=d521d2ab-b20d-4a99-b8d8-ab6ee73b88f8&recSource=event-search&searchId=ccc328a8-5171-4676-a884-c494a2198d50&eventOrigin=find_page%24all",
+        "https://www.meetup.com/career-job-search-events/events/314872912/?recId=7d483ece-baba-4420-a431-d23ccd8ae479&recSource=event-search&searchId=47f16ec6-d569-4318-8715-bad1d2127e78&eventOrigin=find_page%24all",
+        "https://www.meetup.com/svbbdev-silicon-valley-blackberry-jammors/events/315226048/?recId=528316a3-c89b-47d0-aea5-8a29fd343df6&recSource=event-search&searchId=89f26fb3-a363-4ee0-bc8d-7f3f81a3f6a3&eventOrigin=find_page%24all",
+        "https://www.meetup.com/svbbdev-silicon-valley-blackberry-jammors/events/314873307/?recId=528316a3-c89b-47d0-aea5-8a29fd343df6&recSource=event-search&searchId=89f26fb3-a363-4ee0-bc8d-7f3f81a3f6a3&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-06-25T13:16:44.063034"
     }
