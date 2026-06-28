@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: Jun 27, 2026 14:22
+> **9 hackathons** coming up in Milan · Last updated: Jun 28, 2026 14:30
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -27,6 +27,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [Milan Critical Care Datathon and ESICM's Big Datatalk](https://healthmanagement.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk) | TBD | Milano | web_search |
 | [LUMEN - Creativity, AI and Community · Luma](https://lu.ma/ayybpg05) | TBD | Milano | web_search |
 | [BCG Platinion Hackathon 2026 - Milano \| Eightfold](https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg) | TBD | Milano | web_search |
+| [AI Creative Hackathon](https://aicreativehackathon.com/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 
