@@ -519,6 +519,204 @@ _CSS = (
     ".card-footer{flex-direction:column;align-items:flex-start}}"
 )
 
+_CSS += """
+:root{
+--bg:#f4f0e8;--surface:#fffdf8;--surface-2:#ece7dc;--border:#ded6c8;
+--border-strong:#b9ad99;--dark:#08111e;--accent:#2454ff;--accent-hover:#163bd6;
+--teal:#15a996;--gold:#d88a25;--text:#101419;--text-secondary:#4b5563;
+--text-muted:#7a8492;--radius:8px;--shadow:0 12px 34px rgba(24,30,42,.08);
+--shadow-hover:0 18px 44px rgba(24,30,42,.13)
+}
+html{background:var(--bg)}
+body{background:
+linear-gradient(180deg,#f9f6ef 0,#f4f0e8 34rem,#ece7dc 100%);
+font-family:'Inter','DM Sans','Helvetica Neue',Arial,sans-serif;color:var(--text)}
+body *{letter-spacing:0!important}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid rgba(21,169,150,.7);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.container{max-width:1200px;padding:0 1.5rem}
+.hero{min-height:620px;background:#08111e;color:#fff;isolation:isolate}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;background:
+linear-gradient(90deg,rgba(6,10,18,.92) 0%,rgba(6,10,18,.76) 42%,rgba(6,10,18,.2) 100%),
+linear-gradient(180deg,rgba(6,10,18,.18) 0%,rgba(6,10,18,.76) 100%),
+url('hero-hackathon-milano.png') center/cover no-repeat;transform:scale(1.01)}
+.hero::after{content:'';position:absolute;inset:auto 0 0;z-index:0;height:38%;background:linear-gradient(180deg,rgba(244,240,232,0),var(--bg))}
+.hero-bg,.hero-grid{display:none}
+.hero-content{position:relative;z-index:1}
+.topbar{padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand-mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.brand-name{font-weight:800;font-size:.95rem}
+.brand-city{color:rgba(255,255,255,.58);font-size:.76rem}
+.topbar-link{min-height:44px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#f8fafc;padding:.58rem .95rem;cursor:pointer}
+.topbar-link:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.32);transform:translateY(-1px)}
+.hero-body{display:block;padding:4.2rem 0 2.6rem;max-width:840px}
+.hero-body-single{display:block;max-width:800px}
+.hero-copy{min-width:0}
+.hero-eyebrow{color:#a9f7e9;margin-bottom:1rem;font-weight:800;font-size:.78rem;text-transform:none}
+.hero-eyebrow span{background:var(--teal);animation:none}
+.hero h1{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:4.9rem;line-height:.96;font-weight:700;color:#fff;max-width:760px;margin:0 0 1rem}
+.hero h1 em{font-style:normal;color:#a9f7e9;background:none;-webkit-background-clip:initial;background-clip:initial}
+.hero-sub{font-size:1.13rem;color:rgba(255,255,255,.8);max-width:640px;line-height:1.65;margin-bottom:1.45rem}
+.hero-actions{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.btn-primary,.btn-secondary{min-height:44px;display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-weight:800;border-radius:8px;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.btn-primary{background:#fff;color:#08111e;padding:.82rem 1.2rem;border:1px solid #fff;box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.btn-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18);padding:.82rem 1rem}
+.btn-secondary:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.34);transform:translateY(-2px)}
+.btn-primary svg,.btn-secondary svg{width:16px;height:16px}
+.hero-badge{min-height:44px;color:rgba(255,255,255,.72);padding:0 .15rem}
+.hero-badge::before{background:var(--teal);box-shadow:0 0 0 4px rgba(21,169,150,.18)}
+.hero-panel{margin-top:2rem;max-width:780px;border:1px solid rgba(255,255,255,.16);background:rgba(8,17,30,.62);border-radius:8px;padding:1rem;box-shadow:none;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.panel-kicker{color:#a9f7e9;font-size:.72rem;font-weight:800;margin-bottom:.55rem;text-transform:none}
+.panel-status{display:flex;align-items:center;gap:.6rem;color:#fff;font-weight:800}
+.panel-status small{margin-left:auto;color:rgba(255,255,255,.68);font-size:.78rem;font-weight:600}
+.stats-row{margin:.95rem 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.12);border-radius:8px;overflow:hidden;max-width:none}
+.stat{border:0;border-radius:0;background:rgba(255,255,255,.08);padding:1rem .9rem;backdrop-filter:none}
+.stat-num{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.9rem;color:#fff}
+.stat-label{font-size:.74rem;color:rgba(255,255,255,.62);text-transform:none;font-weight:700}
+.panel-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:.75rem}
+.panel-link,.panel-metric{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.72rem .8rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);text-decoration:none;color:#fff}
+.panel-link span,.panel-metric span{font-size:.8rem;color:rgba(255,255,255,.68);font-weight:700}
+.panel-link strong,.panel-metric strong{font-size:1rem;color:#fff}
+.panel-link:hover{border-color:rgba(169,247,233,.48);background:rgba(21,169,150,.14)}
+.toolbar-wrap{top:0;background:rgba(250,247,240,.9);border-bottom:1px solid rgba(185,173,153,.42);box-shadow:0 12px 26px rgba(24,30,42,.06)}
+.toolbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:.8rem;padding:.9rem 0}
+.search-box input{height:48px;border:1px solid var(--border);border-radius:8px;background:rgba(255,253,248,.92);box-shadow:0 1px 0 rgba(255,255,255,.8);font-size:.92rem}
+.search-box input:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(21,169,150,.14)}
+.search-icon{color:#5f6b7a}
+.filter-pills{align-items:center;gap:.45rem}
+.pill{height:44px;border-radius:8px;border:1px solid var(--border);background:rgba(255,253,248,.84);color:#4b5563;font-weight:800;padding:.42rem .9rem}
+.pill:hover{border-color:var(--teal);color:#0f766e;background:#eefcf8}
+.pill.active{background:#101419;border-color:#101419;color:#fff;box-shadow:none}
+.section-header{padding:1.35rem 0 1rem;margin-bottom:.9rem;border-bottom:1px solid rgba(185,173,153,.42)}
+.section-title{font-size:.78rem;font-weight:900;color:#101419;text-transform:none}
+.section-count{font-size:.86rem;color:#667085;font-weight:700}
+.grid{gap:.75rem;padding-bottom:3.4rem}
+.card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:1rem;background:rgba(255,253,248,.9);border:1px solid rgba(185,173,153,.46);border-radius:8px;padding:1.05rem;box-shadow:var(--shadow);opacity:1;animation:none;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card::before{display:none}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:#a99b84}
+.date-badge{min-width:64px;width:64px;height:68px;border-radius:8px;background:#101419;box-shadow:none}
+.date-day{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.55rem}
+.date-month{font-size:.68rem;color:#a9f7e9;font-weight:800}
+.date-tbd{background:#ede6d8;border:1px solid var(--border)}
+.date-tbd .date-day{color:#5f6b7a}
+.card-body{gap:.35rem}
+.card-title{font-size:1.08rem;font-weight:850;line-height:1.35}
+.card-title a:hover{color:#1646dc}
+.card-meta{gap:.18rem .8rem}
+.meta-item{font-size:.82rem;color:#5f6b7a}
+.meta-item svg{width:14px;height:14px;color:#0f766e}
+.quality-row{gap:.35rem}
+.chip{border-radius:8px;padding:.2rem .5rem;font-size:.7rem;font-weight:850;background:#f1ecdf;color:#4b5563;border-color:#ded6c8}
+.chip.ai{background:#eef4ff;color:#1646dc;border-color:#c7d7fe}
+.chip.manual{background:#eefcf8;color:#0f766e;border-color:#afe9dd}
+.chip.tbd{background:#fff6e6;color:#a55a00;border-color:#f0cf9b}
+.card-desc{font-size:.9rem;color:#4b5563;line-height:1.58}
+.card-footer{gap:.75rem;border-top:1px solid rgba(185,173,153,.34);padding-top:.72rem}
+.source-dot{font-size:.72rem;color:#667085;font-weight:850;text-transform:none}
+.source-dot::before{background:var(--gold);opacity:1}
+.issue-actions{gap:.45rem}
+.issue-link{min-height:34px;border-radius:8px;background:#f7f1e6;color:#4b5563;border-color:#ded6c8;font-size:.72rem}
+.issue-link:hover{background:#eefcf8;border-color:#85dcca;color:#0f766e}
+.card-link{min-height:34px;color:#1646dc;font-weight:850}
+.empty-state{background:rgba(255,253,248,.82);border:1px solid rgba(185,173,153,.46);border-radius:8px;margin-bottom:3rem}
+.empty-icon{width:44px;height:44px;margin:0 auto 1rem;color:#0f766e;opacity:1}
+.empty-icon svg{width:44px;height:44px}
+.review-list{gap:.75rem;padding:1rem 0 3.4rem}
+.review-card{background:rgba(255,253,248,.9);border:1px solid rgba(185,173,153,.46);border-radius:8px;box-shadow:var(--shadow)}
+.review-title{font-size:1.08rem}
+footer{background:#08111e;padding:2.2rem 0}
+.footer-brand-name{font-weight:800}
+.footer-brand-desc,.footer-center,.footer-links a{color:rgba(255,255,255,.58)}
+@media(max-width:900px){
+.hero{min-height:560px}
+.hero-body{max-width:720px;padding:3.1rem 0 2rem}
+.hero h1{font-size:3.7rem}
+.hero-sub{font-size:1.04rem}
+.toolbar{grid-template-columns:1fr}
+.panel-links{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+.container{padding:0 1rem}
+.hero{min-height:520px}
+.topbar{padding:.85rem 0}
+.brand-mark{width:36px;height:36px}
+.hero-body{padding:2.35rem 0 1.65rem}
+.hero h1{font-size:2.85rem}
+.hero-sub{font-size:.98rem;margin-bottom:1rem}
+.hero-actions{gap:.6rem}
+.btn-primary,.btn-secondary{width:100%;justify-content:center}
+.hero-badge{width:100%;justify-content:center}
+.hero-panel{padding:.85rem;margin-top:1.25rem}
+.panel-status{align-items:flex-start;flex-wrap:wrap}
+.panel-status small{width:100%;margin-left:1.1rem}
+.stats-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat{padding:.75rem .55rem}
+.stat-num{font-size:1.35rem}
+.stat-label{font-size:.68rem}
+.filter-pills{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+.filter-pills::-webkit-scrollbar{display:none}
+.card{grid-template-columns:58px minmax(0,1fr);padding:.9rem;gap:.8rem}
+.date-badge{min-width:54px;width:54px;height:58px}
+.date-day{font-size:1.25rem}
+.date-month{font-size:.58rem}
+.card-footer{flex-direction:column;align-items:flex-start}
+.issue-actions{justify-content:flex-start}
+.footer-inner{grid-template-columns:1fr;text-align:center;gap:.75rem}
+.footer-links{justify-content:center}
+.footer-center{display:block}
+}
+@media(max-width:420px){
+.hero h1{font-size:2.45rem}
+.topbar-link{padding:.5rem .65rem}
+.brand-city{display:none}
+.stats-row{grid-template-columns:1fr}
+.card{grid-template-columns:1fr}
+.card-left{display:flex}
+}
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+}
+"""
+
+_CSS += """
+.hero{min-height:560px}
+.hero-body{padding:2.7rem 0 1.6rem}
+.hero h1{font-size:4.45rem}
+.hero-sub{margin-bottom:1.15rem}
+.hero-panel{display:grid;grid-template-columns:minmax(170px,.9fr) minmax(240px,1.35fr) minmax(190px,1fr);gap:.75rem;align-items:stretch;margin-top:1.35rem;padding:.85rem}
+.panel-kicker{grid-column:1;grid-row:1;margin:0}
+.panel-status{grid-column:1;grid-row:2;align-self:end}
+.stats-row{grid-column:2;grid-row:1 / span 2;margin:0;height:100%}
+.panel-links{grid-column:3;grid-row:1 / span 2;margin:0;grid-template-columns:1fr}
+.panel-link,.panel-metric{min-height:42px}
+@media(max-width:900px){
+.hero{min-height:540px}
+.hero-body{padding:2.35rem 0 1.45rem}
+.hero h1{font-size:3.45rem}
+.hero-panel{grid-template-columns:1fr;gap:.7rem}
+.panel-kicker,.panel-status,.stats-row,.panel-links{grid-column:auto;grid-row:auto}
+.panel-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+.hero{min-height:500px}
+.hero-body{padding:2rem 0 1.2rem}
+.hero h1{font-size:2.75rem}
+.hero-sub{font-size:.95rem;line-height:1.55}
+.btn-primary,.btn-secondary{width:auto}
+.hero-badge{display:none}
+.hero-panel{margin-top:1rem}
+.panel-kicker,.panel-links{display:none}
+.panel-status small{display:none}
+.panel-links{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+.hero h1{font-size:2.35rem}
+.stats-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.panel-links{grid-template-columns:1fr}
+}
+"""
+
 # ---- JS ----
 
 _JS = (
@@ -600,10 +798,11 @@ def _build_html(
         '<meta property="og:title" content="Hackathon Milano">\n'
         f'<meta property="og:description" content="{event_count} hackathon in programma a Milano">\n'
         '<meta property="og:type" content="website">\n'
+        '<meta property="og:image" content="hero-hackathon-milano.png">\n'
         '<title>Hackathon Milano</title>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
         f'<style>{_CSS}</style>\n'
         '</head>\n<body>\n\n'
         # Hero
@@ -627,23 +826,17 @@ def _build_html(
         '  </nav>\n'
         '  <div class="hero-body">\n'
         '    <div class="hero-copy">\n'
-        '      <div class="hero-eyebrow"><span></span>Milano &middot; Aggiornato ogni 24h</div>\n'
-        '      <h1>'
-        '<span class="hw" style="animation-delay:.22s">Il</span> '
-        '<span class="hw" style="animation-delay:.30s">calendario</span> '
-        '<span class="hw" style="animation-delay:.38s">degli</span> '
-        '<em>hackathon</em> '
-        '<span class="hw" style="animation-delay:.56s">milanesi.</span>'
-        '</h1>\n'
-        '      <p class="hero-sub">Ogni giorno raccogliamo, filtriamo e verifichiamo gli hackathon davvero rilevanti per Milano.</p>\n'
+        '      <div class="hero-eyebrow"><span></span>Monitor indipendente &middot; Milano</div>\n'
+        '      <h1>Hackathon <em>Milano</em></h1>\n'
+        '      <p class="hero-sub">Un radar curato e aggiornato per trovare gli hackathon davvero rilevanti in città: fonti pubbliche, filtro AI, revisione manuale e calendario pronto da consultare.</p>\n'
         '      <div class="hero-actions">\n'
         '        <a class="btn-primary" href="#events">'
         '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l-5 5-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         'Esplora gli eventi</a>\n'
+        '        <a class="btn-secondary" href="review.html">Review queue</a>\n'
         '        <span class="hero-badge">Dati aggiornati dalla pipeline</span>\n'
         '      </div>\n'
-        '    </div>\n'
-        '    <aside class="hero-panel" aria-label="Stato monitor">\n'
+        '      <div class="hero-panel" aria-label="Stato monitor">\n'
         '      <div class="panel-kicker">Stato monitor</div>\n'
         f'      <div class="panel-status"><span class="{status_dot}"></span><strong>{_escape(status_label)}</strong><small>{_escape(last_scan)}</small></div>\n'
         '      <div class="stats-row">\n'
@@ -655,14 +848,15 @@ def _build_html(
         f'        <a class="panel-link" href="review.html"><span>Candidati in review</span><strong>{review_count}</strong></a>\n'
         f'        <div class="panel-metric"><span>Errori collector</span><strong>{collector_failures}</strong></div>\n'
         '      </div>\n'
-        '    </aside>\n'
+        '      </div>\n'
+        '    </div>\n'
         '  </div>\n'
         '</div>\n'
         '</div>\n'
         '</header>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
-        f'  <div class="search-box">{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off"></div>\n'
+        f'  <div class="search-box"><label class="sr-only" for="search">Cerca eventi</label>{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off" aria-label="Cerca eventi"></div>\n'
         '  <div class="filter-pills" id="filters">\n'
         '    <button class="pill active" data-filter="all">Tutti</button>\n'
         '    <button class="pill" data-filter="week">Questa settimana</button>\n'
@@ -787,7 +981,11 @@ def _build_cards(events: list[dict]) -> str:
 def _build_empty() -> str:
     return (
         '<div class="empty-state">'
-        '<div class="empty-icon">\U0001f4c5</div>'
+        '<div class="empty-icon" aria-hidden="true">'
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M7 3v3M17 3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/>'
+        '<path d="m9 14 2 2 4-4"/>'
+        '</svg></div>'
         '<h3>Nessun hackathon in programma</h3>'
         '<p>Non ci sono hackathon futuri confermati a Milano al momento.<br>'
         'La lista si aggiorna ogni giorno automaticamente.</p>'
@@ -846,10 +1044,11 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
         '<meta charset="UTF-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
         f'<meta name="description" content="{count} candidati hackathon da rivedere.">\n'
+        '<meta property="og:image" content="hero-hackathon-milano.png">\n'
         '<title>Review queue - Hackathon Milano</title>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
         f'<style>{_CSS}</style>\n'
         '</head>\n<body>\n'
         '<header class="hero"><div class="hero-bg"></div><div class="hero-grid"></div>'
@@ -860,7 +1059,7 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
         '<div class="brand-city">Candidati da verificare</div></div></div>'
         '<a class="topbar-link" href="index.html">Eventi confermati</a></nav>'
         '<div class="hero-body hero-body-single"><div class="hero-copy"><div class="hero-eyebrow"><span></span>Manual review</div>'
-        '<h1>Candidati <em>da valutare</em> prima della pubblicazione.</h1>'
+        '<h1>Review <em>queue</em></h1>'
         f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per una revisione umana. Gli utenti possono solo aprire issue di conferma/dubbio: l\'eliminazione resta ai maintainer.</p>'
         '</div></div></div></div></header>'
         '<main class="container"><div class="section-header">'
