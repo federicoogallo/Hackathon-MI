@@ -759,6 +759,174 @@ _JS = (
     "})();"
 )
 
+_CSS += """
+body{background:#02030a;color:#f6f4ef;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-2;background:
+radial-gradient(circle at 72% 18%,rgba(53,96,255,.28),transparent 28rem),
+radial-gradient(circle at 16% 30%,rgba(24,194,165,.16),transparent 24rem),
+linear-gradient(180deg,#02030a 0%,#050814 42%,#e8e5dc 42.2%,#f5f1e9 100%)}
+.hero{min-height:clamp(600px,88dvh,780px);background:#02030a;border:0;overflow:hidden}
+.hero::before{background:
+linear-gradient(90deg,rgba(2,3,10,.98) 0%,rgba(2,3,10,.84) 42%,rgba(2,3,10,.28) 100%),
+linear-gradient(180deg,rgba(2,3,10,.08),rgba(2,3,10,.92)),
+url('hero-hackathon-milano.png') center/cover no-repeat;opacity:.44;filter:saturate(1.1) contrast(1.2)}
+.hero::after{height:32%;background:linear-gradient(180deg,rgba(2,3,10,0),#02030a 82%,#070914)}
+.signal-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%;opacity:.95;mix-blend-mode:screen}
+.hero-scanline{position:absolute;left:0;right:0;bottom:4.4rem;z-index:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),rgba(69,105,255,.9),transparent)}
+.hero-scanline::after{content:'Live data. Every scan.';position:absolute;right:11%;top:.9rem;color:#f6f4ef;font-size:.8rem;font-weight:800}
+.topbar{border-color:rgba(255,255,255,.08)}
+.brand-mark{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+.brand-name{font-size:1rem}
+.topbar-link{background:#4569ff;border-color:#4569ff;box-shadow:0 0 30px rgba(69,105,255,.28);text-transform:uppercase;font-size:.72rem;letter-spacing:.12em!important}
+.topbar-link:hover{background:#5d7bff;border-color:#5d7bff}
+.hero-body{max-width:760px;padding:clamp(4.2rem,9vh,6.1rem) 0 1.4rem}
+.hero-eyebrow{font-family:'JetBrains Mono','Inter',monospace;color:#cdd6ff;text-transform:uppercase!important;letter-spacing:.14em!important}
+.hero-eyebrow span{background:#45f0d1;box-shadow:0 0 20px rgba(69,240,209,.8)}
+.hero h1{font-size:clamp(4.1rem,8.2vw,7.1rem);letter-spacing:-.06em!important;line-height:.86;max-width:820px;text-wrap:balance}
+.hero h1 em{color:#eef2ff;text-shadow:0 0 34px rgba(69,105,255,.46)}
+.hero-sub{font-size:1.02rem;color:rgba(246,244,239,.72);max-width:620px}
+.btn-primary{background:#4569ff;color:#fff;border-color:#4569ff;text-transform:uppercase;font-size:.75rem;letter-spacing:.1em!important;box-shadow:0 0 40px rgba(69,105,255,.36)}
+.btn-secondary{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.04);text-transform:uppercase;font-size:.75rem;letter-spacing:.1em!important}
+.hero-panel{max-width:820px;background:rgba(7,10,22,.58);border-color:rgba(255,255,255,.12);box-shadow:0 0 0 1px rgba(255,255,255,.02),0 30px 90px rgba(0,0,0,.34)}
+.panel-kicker,.stat-label,.panel-link span,.panel-metric span{font-family:'JetBrains Mono','Inter',monospace;text-transform:uppercase!important;letter-spacing:.08em!important}
+.stats-row,.panel-link,.panel-metric{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1)}
+.stat{background:rgba(255,255,255,.055)}
+.stat-num{color:#f6f4ef}
+.signal-strip{position:relative;background:#070914;color:#f6f4ef;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden}
+.signal-strip::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(69,105,255,.08),transparent);animation:hmSweep 7s ease-in-out infinite}
+.signal-inner{position:relative;max-width:1200px;margin:0 auto;padding:.95rem 1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;font-family:'JetBrains Mono','Inter',monospace;font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(246,244,239,.72)}
+.signal-inner strong{color:#fff}
+.signal-feed{overflow:hidden;white-space:nowrap}
+.signal-feed span{display:inline-block;min-width:100%;animation:hmTicker 24s linear infinite}
+.intel-section{background:#e8e5dc;color:#070914;padding:4.8rem 0 4.2rem;border-top:1px solid #050814}
+.intel-grid{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 1.15fr;gap:2rem}
+.intel-visual,.intel-copy,.intel-card{border:1px solid rgba(7,9,20,.26);background:rgba(255,255,255,.28);border-radius:8px}
+.intel-visual{min-height:470px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 45%,rgba(69,105,255,.18),transparent 18rem),#eceaf2}
+.intel-visual::before{content:'';position:absolute;inset:9%;border:1px solid rgba(7,9,20,.18);background-image:radial-gradient(rgba(69,105,255,.8) 1px,transparent 1.5px);background-size:14px 14px;mask-image:radial-gradient(ellipse at 50% 50%,#000 0 38%,transparent 70%);animation:hmFloat 8s ease-in-out infinite}
+.intel-visual::after{content:'';position:absolute;left:18%;right:18%;top:48%;height:1px;background:linear-gradient(90deg,transparent,#4569ff,#18c2a5,transparent);box-shadow:0 0 24px rgba(69,105,255,.55)}
+.intel-node{position:absolute;border:1px solid rgba(7,9,20,.28);background:rgba(255,255,255,.55);border-radius:8px;padding:.8rem 1rem;font-family:'JetBrains Mono','Inter',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 22px 60px rgba(7,9,20,.08)}
+.intel-node.one{left:8%;top:12%}.intel-node.two{right:7%;top:32%}.intel-node.three{left:16%;bottom:13%}
+.intel-copy{padding:2.5rem;display:flex;flex-direction:column;gap:1.2rem}
+.section-code{font-family:'JetBrains Mono','Inter',monospace;font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:#4569ff;font-weight:800}
+.intel-copy h2{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2.4rem,5vw,4.4rem);line-height:.94;letter-spacing:-.055em;margin:0;text-wrap:balance}
+.intel-copy p{font-size:1rem;line-height:1.7;color:#3e4451;max-width:620px}
+.intel-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border:1px solid rgba(7,9,20,.18);border-radius:8px;overflow:hidden;margin-top:auto}
+.intel-card{border:0;border-radius:0;padding:1.2rem;background:rgba(255,255,255,.34)}
+.intel-card b{display:block;font-family:'JetBrains Mono','Inter',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;color:#070914}
+.intel-card span{display:block;color:#4d5360;font-size:.86rem;line-height:1.55}
+.toolbar-wrap{background:rgba(5,7,16,.82);border-color:rgba(255,255,255,.08);backdrop-filter:blur(20px) saturate(140%)}
+.search-box input{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#fff}
+.search-box input::placeholder{color:rgba(255,255,255,.54)}
+.pill{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.76)}
+.pill:hover{background:rgba(69,105,255,.14);border-color:rgba(69,105,255,.52);color:#fff}
+.pill.active{background:#4569ff;border-color:#4569ff;color:#fff}
+main.container{background:#f5f1e9;color:#070914;max-width:none;padding-left:max(1.5rem,calc((100vw - 1200px)/2));padding-right:max(1.5rem,calc((100vw - 1200px)/2))}
+.section-header{border-color:rgba(7,9,20,.18)}
+.section-title{font-family:'JetBrains Mono','Inter',monospace;text-transform:uppercase!important;letter-spacing:.12em!important;color:#070914}
+.card{position:relative;overflow:hidden;background:rgba(255,255,255,.72);border-color:rgba(7,9,20,.18);box-shadow:0 26px 70px rgba(7,9,20,.08);transform:perspective(900px) rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg));will-change:transform}
+.card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(69,105,255,.18),transparent 16rem);opacity:0;transition:opacity .2s;pointer-events:none}
+.card:hover::after{opacity:1}
+.date-badge{background:#070914}
+.date-month{color:#45f0d1}
+footer{background:#02030a}
+@keyframes hmTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes hmSweep{0%,100%{transform:translateX(-45%);opacity:.25}50%{transform:translateX(45%);opacity:1}}
+@keyframes hmFloat{0%,100%{transform:translate3d(0,0,0) rotate(-2deg)}50%{transform:translate3d(0,-14px,0) rotate(2deg)}}
+[data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+[data-reveal].is-visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){
+.hero{min-height:clamp(600px,86dvh,720px)}
+.hero-body{padding:3.6rem 0 1.2rem}
+.hero h1{font-size:clamp(3.3rem,13vw,5rem)}
+.signal-canvas{opacity:.55}
+.signal-inner{grid-template-columns:1fr;gap:.45rem}
+.signal-feed span{animation-duration:18s}
+.intel-grid{grid-template-columns:1fr}
+.intel-visual{min-height:360px}
+.intel-cards{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+.hero{min-height:640px}
+.hero-scanline{display:none}
+.hero-body{padding:2.4rem 0 1rem}
+.hero h1{font-size:3.25rem}
+.hero-actions{display:flex}
+.hero-panel{display:block}
+.stats-row{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:.7rem}
+.stat{padding:.7rem .45rem}
+.intel-section{padding:3.2rem 0}
+.intel-copy{padding:1.4rem}
+.intel-visual{min-height:280px}
+.intel-node{font-size:.62rem;padding:.55rem .65rem}
+}
+@media(prefers-reduced-motion:reduce){
+.signal-feed span,.signal-strip::before,.intel-visual::before{animation:none!important}
+[data-reveal]{opacity:1!important;transform:none!important}
+}
+"""
+
+_JS += """
+(function(){
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var canvas=document.getElementById('signal-canvas');
+if(canvas&&canvas.getContext){
+var ctx=canvas.getContext('2d'),dpr=1,pts=[],mouse={x:0,y:0,active:false};
+function build(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  var r=canvas.getBoundingClientRect();
+  canvas.width=Math.max(1,Math.floor(r.width*dpr));
+  canvas.height=Math.max(1,Math.floor(r.height*dpr));
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var w=r.width,h=r.height,count=w<700?150:260;
+  pts=[];
+  for(var i=0;i<count;i++){
+    var t=i/count,band=i%5,angle=t*Math.PI*10+band*.35;
+    var radius=(.16+.26*Math.sin(t*Math.PI))*Math.min(w,h);
+    var stream=Math.max(0,t-.58)*w*.58;
+    var tx=w*(.56+.05*Math.sin(t*11))+Math.cos(angle)*radius*.62+stream;
+    var ty=h*(.43+.08*Math.cos(t*7))+Math.sin(angle)*radius*.44+(band-2)*10;
+    pts.push({x:tx+(Math.random()-.5)*42,y:ty+(Math.random()-.5)*42,tx:tx,ty:ty,s:.8+Math.random()*1.8,p:Math.random()*6.28});
+  }
+}
+function frame(now){
+  var r=canvas.getBoundingClientRect(),w=r.width,h=r.height,t=now*.001;
+  ctx.clearRect(0,0,w,h);
+  ctx.globalCompositeOperation='lighter';
+  var mx=mouse.active?(mouse.x/w-.5)*28:0,my=mouse.active?(mouse.y/h-.5)*20:0;
+  for(var i=0;i<pts.length;i++){
+    var p=pts[i];
+    p.x+=(p.tx+Math.sin(t+p.p)*10+mx-p.x)*.035;
+    p.y+=(p.ty+Math.cos(t*.8+p.p)*8+my-p.y)*.035;
+  }
+  for(var a=0;a<pts.length;a+=2){
+    for(var b=a+1;b<Math.min(pts.length,a+18);b+=3){
+      var pa=pts[a],pb=pts[b],dx=pa.x-pb.x,dy=pa.y-pb.y,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<92){ctx.strokeStyle='rgba(69,105,255,'+(1-dist/92)*.13+')';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();}
+    }
+  }
+  for(var j=0;j<pts.length;j++){
+    var q=pts[j],glow=.35+.35*Math.sin(t*2+q.p);
+    ctx.fillStyle=j%9===0?'rgba(69,240,209,.86)':'rgba(229,235,255,'+(.35+glow*.4)+')';
+    ctx.fillRect(q.x,q.y,q.s,q.s);
+  }
+  ctx.globalCompositeOperation='source-over';
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(w*.66,h*.43,Math.min(w,h)*.27,Math.min(w,h)*.18,0,0,Math.PI*2);ctx.stroke();
+  if(!reduce)requestAnimationFrame(frame);
+}
+build();requestAnimationFrame(frame);
+window.addEventListener('resize',build,{passive:true});
+window.addEventListener('pointermove',function(e){var r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;mouse.active=true;},{passive:true});
+window.addEventListener('pointerleave',function(){mouse.active=false},{passive:true});
+}
+var reveal=document.querySelectorAll('[data-reveal]');
+if('IntersectionObserver'in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}})},{threshold:.18});reveal.forEach(function(el){io.observe(el)})}else{reveal.forEach(function(el){el.classList.add('is-visible')})}
+document.querySelectorAll('.card').forEach(function(card){
+  card.addEventListener('pointermove',function(e){var r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;card.style.setProperty('--mx',(x*100).toFixed(1)+'%');card.style.setProperty('--my',(y*100).toFixed(1)+'%');card.style.setProperty('--tilt-x',((x-.5)*3).toFixed(2)+'deg');card.style.setProperty('--tilt-y',((.5-y)*3).toFixed(2)+'deg')},{passive:true});
+  card.addEventListener('pointerleave',function(){card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg')},{passive:true});
+});
+})();
+"""
+
 
 # ---- SVG icons ----
 
@@ -802,12 +970,12 @@ def _build_html(
         '<title>Hackathon Milano</title>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
         f'<style>{_CSS}</style>\n'
         '</head>\n<body>\n\n'
         # Hero
         '<header class="hero">\n'
-        '<div class="hero-bg"></div><div class="hero-grid"></div>\n'
+        '<div class="hero-bg"></div><div class="hero-grid"></div><canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas><div class="hero-scanline" aria-hidden="true"></div>\n'
         '<div class="hero-content">\n'
         '<div class="container">\n'
         '  <nav class="topbar">\n'
@@ -826,9 +994,9 @@ def _build_html(
         '  </nav>\n'
         '  <div class="hero-body">\n'
         '    <div class="hero-copy">\n'
-        '      <div class="hero-eyebrow"><span></span>Monitor indipendente &middot; Milano</div>\n'
+        '      <div class="hero-eyebrow"><span></span>Live intelligence layer &middot; Milano</div>\n'
         '      <h1>Hackathon <em>Milano</em></h1>\n'
-        '      <p class="hero-sub">Un radar curato e aggiornato per trovare gli hackathon davvero rilevanti in città: fonti pubbliche, filtro AI, revisione manuale e calendario pronto da consultare.</p>\n'
+        '      <p class="hero-sub">Ogni fonte, segnale e candidato converge in un unico radar dinamico: la pipeline legge la scena, filtra il rumore e porta in superficie gli hackathon che contano.</p>\n'
         '      <div class="hero-actions">\n'
         '        <a class="btn-primary" href="#events">'
         '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l-5 5-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -854,6 +1022,30 @@ def _build_html(
         '</div>\n'
         '</div>\n'
         '</header>\n\n'
+        '<section class="signal-strip" aria-label="Stato del radar">\n'
+        '<div class="signal-inner">\n'
+        f'<strong>{event_count} eventi verificati</strong>\n'
+        '<div class="signal-feed"><span>Collecting public sources / dedupe graph / AI filter / manual review / GitHub Pages output / Collecting public sources / dedupe graph / AI filter / manual review / GitHub Pages output / </span></div>\n'
+        f'<strong>{review_count} in review</strong>\n'
+        '</div>\n'
+        '</section>\n\n'
+        '<section class="intel-section" aria-label="Come funziona il radar">\n'
+        '<div class="intel-grid">\n'
+        '<div class="intel-visual" data-reveal aria-hidden="true">\n'
+        '<div class="intel-node one">sources</div><div class="intel-node two">ai filter</div><div class="intel-node three">verified output</div>\n'
+        '</div>\n'
+        '<div class="intel-copy" data-reveal>\n'
+        '<div class="section-code">01 / The city brain</div>\n'
+        '<h2>Un layer vivo sopra la scena hackathon milanese.</h2>\n'
+        '<p>Il sito non mostra una lista statica: visualizza il risultato di collector, deduplicazione, scoring AI e review umana. Ogni card è l’ultimo punto stabile di un flusso di segnali.</p>\n'
+        '<div class="intel-cards">\n'
+        '<div class="intel-card"><b>Signals</b><span>Fonti pubbliche, community, piattaforme eventi e ricerca web convergono in un unico stream.</span></div>\n'
+        '<div class="intel-card"><b>Reasoning</b><span>La pipeline separa hackathon reali da rumore, online-only e duplicati.</span></div>\n'
+        '<div class="intel-card"><b>Output</b><span>Solo eventi verificati, cercabili e pronti da consultare su ogni device.</span></div>\n'
+        '</div>\n'
+        '</div>\n'
+        '</div>\n'
+        '</section>\n\n'
         # Toolbar
         '<section class="toolbar-wrap"><div class="container toolbar">\n'
         f'  <div class="search-box"><label class="sr-only" for="search">Cerca eventi</label>{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca eventi..." autocomplete="off" aria-label="Cerca eventi"></div>\n'
@@ -1048,7 +1240,7 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
         '<title>Review queue - Hackathon Milano</title>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
         f'<style>{_CSS}</style>\n'
         '</head>\n<body>\n'
         '<header class="hero"><div class="hero-bg"></div><div class="hero-grid"></div>'
