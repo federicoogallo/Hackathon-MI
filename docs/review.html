@@ -455,6 +455,93 @@ footer{background:#02030a}
 .pipe-node,.pipe-node:nth-child(even),.pipe-node:nth-child(3){grid-template-columns:1fr;padding:2.2rem .9rem .9rem 2.7rem;gap:.35rem}
 .review-page .hero{min-height:520px}
 }
+
+body{background:#02030a;color:#f6f4ef}
+body::before{background:
+radial-gradient(circle at 76% 10%,rgba(69,105,255,.28),transparent 31rem),
+radial-gradient(circle at 18% 22%,rgba(69,240,209,.16),transparent 24rem),
+linear-gradient(180deg,#02030a 0%,#030610 38%,#07101c 66%,#02030a 100%)}
+.hero{background:#02030a}
+.hero-bg{background:transparent!important}
+.hero::before{background:
+radial-gradient(circle at 66% 36%,rgba(69,105,255,.24),transparent 24rem),
+radial-gradient(circle at 82% 64%,rgba(69,240,209,.13),transparent 18rem),
+linear-gradient(90deg,rgba(2,3,10,.98) 0%,rgba(2,3,10,.8) 38%,rgba(2,3,10,.38) 100%)!important;opacity:1!important;filter:none!important}
+.hero::after{height:30%;background:linear-gradient(180deg,rgba(2,3,10,0),#02030a 88%)}
+.signal-canvas{opacity:1;mix-blend-mode:screen}
+.hero-grid{opacity:.1}
+.hero-panel,.stat,.panel-link,.panel-metric,.panel-status{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.12)}
+.flow-bridge{background:#02030a;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.flow-bridge::before{background:linear-gradient(180deg,rgba(69,105,255,.1),rgba(69,240,209,.75),rgba(69,105,255,.1))}
+.flow-line,.flow-line:last-child{background:linear-gradient(90deg,transparent,rgba(69,240,209,.28),transparent)}
+.flow-card{background:rgba(7,10,22,.86);border-color:rgba(255,255,255,.14)}
+.intel-section,.event-deck,main.container{background:#02030a;color:#f6f4ef}
+.intel-section::before,.event-deck::before{background:
+linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+radial-gradient(circle at 72% 18%,rgba(69,105,255,.18),transparent 24rem),
+radial-gradient(circle at 20% 72%,rgba(69,240,209,.09),transparent 22rem);background-size:56px 56px,56px 56px,auto,auto;mask-image:linear-gradient(180deg,#000 0%,#000 72%,transparent 100%)}
+.intel-copy{background:rgba(7,10,22,.68);border-color:rgba(255,255,255,.13);box-shadow:0 28px 90px rgba(0,0,0,.24);backdrop-filter:blur(18px)}
+.intel-copy h2,.event-intro h2,.section-title,.card-title{color:#f6f4ef}
+.intel-copy p,.event-intro p,.card-desc{color:rgba(246,244,239,.68)}
+.intel-card{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.1)}
+.intel-card b{color:#f6f4ef}
+.intel-card span{color:rgba(246,244,239,.62)}
+.intel-cards{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.13)}
+.intel-visual{box-shadow:0 28px 90px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.04)}
+.event-intro-copy{border-left-color:#45f0d1}
+.event-metrics{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.14);box-shadow:0 28px 90px rgba(0,0,0,.24)}
+.event-metric{background:rgba(255,255,255,.055)}
+.event-metric span,.event-metric small,.section-count{color:rgba(246,244,239,.5)}
+.event-metric strong{color:#f6f4ef}
+.section-header{border-color:rgba(255,255,255,.14)}
+.grid{gap:1rem}
+.card{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.13);box-shadow:0 28px 90px rgba(0,0,0,.22)}
+.card:hover{border-color:rgba(69,240,209,.38)}
+.card-footer{border-color:rgba(255,255,255,.12)}
+.card-title a{color:#f6f4ef}
+.meta-item,.source-dot{color:rgba(246,244,239,.55)}
+.issue-link{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);color:rgba(246,244,239,.74)}
+.issue-link:hover{background:rgba(69,105,255,.16);border-color:rgba(69,105,255,.5);color:#fff}
+.date-badge{background:#050814;border:1px solid rgba(255,255,255,.1)}
+.toolbar-wrap{background:rgba(2,3,10,.92)}
+.empty-state{color:rgba(246,244,239,.62)}
+.empty-state h3{color:#f6f4ef}
+.review-list,.review-card{color:#f6f4ef}
+.review-card{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.13)}
+.review-title{color:#f6f4ef}
+.review-reason{color:rgba(246,244,239,.68)}
+@media(max-width:560px){
+.hero::before{background:
+radial-gradient(circle at 66% 34%,rgba(69,105,255,.26),transparent 16rem),
+radial-gradient(circle at 88% 58%,rgba(69,240,209,.14),transparent 14rem),
+linear-gradient(90deg,rgba(2,3,10,.98),rgba(2,3,10,.68))!important}
+}
+
+.flow-bridge{border:0;background:linear-gradient(180deg,rgba(2,3,10,.08),rgba(4,8,18,.86) 52%,rgba(2,3,10,.08));margin-top:-1px}
+.flow-bridge::before{left:50%;width:1px;background:linear-gradient(180deg,transparent,rgba(69,240,209,.9),transparent);box-shadow:0 0 42px rgba(69,240,209,.32)}
+.flow-inner{min-height:156px;padding:2.1rem 1.5rem 2.3rem}
+.flow-line,.flow-line:last-child{opacity:.42;background:linear-gradient(90deg,transparent,rgba(69,240,209,.28),transparent)}
+.flow-card{min-width:0;width:min(410px,82vw);background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(69,105,255,.055));border-color:rgba(255,255,255,.12);box-shadow:0 18px 70px rgba(0,0,0,.2);backdrop-filter:blur(18px)}
+.intel-section{margin-top:-1px;padding-top:4.7rem}
+.intel-section::before,.event-deck::before{opacity:.82;mask-image:linear-gradient(180deg,transparent 0%,#000 15%,#000 78%,transparent 100%)}
+.intel-grid,.event-intro,.section-header,.grid{max-width:1200px;margin-left:auto;margin-right:auto}
+.intel-copy,.intel-visual,.event-metrics,.card{background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.04));border-color:rgba(255,255,255,.115)}
+.intel-visual{background:radial-gradient(circle at 54% 28%,rgba(69,105,255,.2),transparent 18rem),radial-gradient(circle at 72% 78%,rgba(69,240,209,.1),transparent 16rem),linear-gradient(135deg,#050814,#08111e 68%,#06151a)}
+.pipe-node{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.11)}
+.event-deck{padding-top:0}
+.event-intro{padding-top:4.7rem}
+.section-header{background:linear-gradient(90deg,rgba(255,255,255,.055),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.11);border-radius:8px;padding:1rem 1.1rem;margin-bottom:1rem}
+.card{min-height:340px}
+@media(max-width:900px){
+.flow-inner{min-height:124px;padding:1.8rem 1.5rem}
+.intel-section{padding-top:3.6rem}
+.event-intro{padding-top:3.7rem}
+}
+@media(max-width:560px){
+.flow-card{width:100%}
+.section-header{padding:.9rem}
+}
 </style>
 </head>
 <body class="review-page">
