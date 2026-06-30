@@ -1108,9 +1108,169 @@ _CSS += """
 }
 """
 
+_CSS += """
+html{background:#02030a;scroll-behavior:smooth}
+body{background:#02030a!important;color:#f6f4ef;overflow-x:hidden}
+body::before{background:
+radial-gradient(circle at 70% 12%,rgba(69,105,255,.22),transparent 30rem),
+radial-gradient(circle at 20% 36%,rgba(69,240,209,.13),transparent 24rem),
+linear-gradient(180deg,#02030a 0%,#030713 38%,#050b17 68%,#02030a 100%)!important}
+.hero{min-height:100dvh;background:#02030a!important}
+.hero::before{background:
+radial-gradient(circle at 66% 36%,rgba(69,105,255,.24),transparent 25rem),
+radial-gradient(circle at 84% 62%,rgba(69,240,209,.12),transparent 20rem),
+linear-gradient(90deg,rgba(2,3,10,.98) 0%,rgba(2,3,10,.82) 38%,rgba(2,3,10,.34) 100%)!important}
+.hero-body{max-width:min(980px,72vw)}
+.kinetic-title{position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:0 .12em;max-width:980px;perspective:900px;isolation:isolate}
+.kinetic-title .title-network{position:absolute;inset:-.1em -.06em;z-index:-1;width:100%;height:100%;pointer-events:none;opacity:.9;mix-blend-mode:screen}
+.kinetic-title .title-word{display:inline-flex;white-space:nowrap}
+.kinetic-title .title-char{display:inline-block;transform:translate3d(var(--tx,0),var(--ty,0),0) scale(var(--s,1));transform-origin:50% 64%;opacity:var(--o,1);color:var(--c,#fff);text-shadow:0 0 var(--glow,16px) rgba(69,105,255,.42);will-change:transform,opacity,text-shadow}
+.kinetic-title .title-char:nth-child(3n){--c:#eef2ff}
+.kinetic-title .title-char:nth-child(5n){--c:#dce6ff}
+.flow-bridge{min-height:32dvh;border:0!important;background:linear-gradient(180deg,#02030a 0%,#030713 48%,#02030a 100%)!important}
+.flow-inner{min-height:32dvh;padding:3.4rem 1.5rem;align-items:center}
+.flow-card{position:relative;overflow:hidden}
+.flow-card::after{content:'';position:absolute;inset:auto 0 0;height:2px;background:linear-gradient(90deg,transparent,#45f0d1,#4569ff,transparent);animation:hmFlowPulse 2.8s ease-in-out infinite}
+.intel-section,.event-deck,main.container{background:#02030a!important;color:#f6f4ef!important}
+.intel-section{min-height:100dvh;display:flex;align-items:center;margin-top:-1px;padding:6rem 0}
+.intel-section::before,.event-deck::before{opacity:.78;background:
+linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+radial-gradient(circle at 70% 18%,rgba(69,105,255,.18),transparent 24rem),
+radial-gradient(circle at 24% 70%,rgba(69,240,209,.09),transparent 22rem)!important;background-size:56px 56px,56px 56px,auto,auto}
+.intel-grid{width:100%;align-items:center}
+.intel-copy,.intel-visual,.event-metrics,.card,.section-header{background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.035))!important;border-color:rgba(255,255,255,.12)!important}
+.intel-copy{box-shadow:0 30px 110px rgba(0,0,0,.28)!important}
+.intel-copy h2,.event-intro h2,.section-title,.card-title,.card-title a{color:#f6f4ef!important}
+.intel-copy p,.event-intro p,.card-desc,.meta-item,.source-dot{color:rgba(246,244,239,.68)!important}
+.intel-card{background:rgba(255,255,255,.055)!important}
+.intel-card b{color:#f6f4ef!important}
+.intel-card span{color:rgba(246,244,239,.64)!important}
+.intel-visual{box-shadow:0 30px 120px rgba(0,0,0,.36),inset 0 0 0 1px rgba(255,255,255,.04)!important}
+.pipe-map{--pipe-progress:0%;position:relative}
+.pipe-map::before{opacity:.36}
+.pipe-map::after{content:'';position:absolute;left:1.35rem;top:.75rem;width:2px;height:var(--pipe-progress);max-height:calc(100% - 1.5rem);border-radius:99px;background:linear-gradient(180deg,#4569ff,#45f0d1,#d97706);box-shadow:0 0 32px rgba(69,240,209,.42);transition:height .18s ease-out;z-index:1}
+.pipe-node,.pipe-node:nth-child(even),.pipe-node:nth-child(3){opacity:.48;transform:translate3d(-10px,12px,0) scale(.985)!important;transition:opacity .42s ease,transform .42s ease,border-color .42s ease,box-shadow .42s ease,background .42s ease}
+.pipe-node.is-active{opacity:1;transform:translate3d(0,0,0) scale(1)!important;border-color:rgba(69,240,209,.48)!important;background:linear-gradient(135deg,rgba(69,240,209,.12),rgba(255,255,255,.07))!important;box-shadow:0 20px 70px rgba(69,240,209,.1)!important}
+.pipe-node.is-active::after{background:#45f0d1;box-shadow:0 0 30px rgba(69,240,209,.92)}
+.event-deck{min-height:100dvh;padding-bottom:5.6rem}
+.event-intro{min-height:72dvh;align-items:center;padding-top:5.2rem}
+.toolbar-wrap{background:rgba(2,3,10,.88)!important;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.search-box input{background:rgba(255,255,255,.07)!important;color:#fff!important;border-color:rgba(255,255,255,.14)!important}
+.search-box input::placeholder{color:rgba(246,244,239,.52)!important}
+.pill{background:rgba(255,255,255,.065)!important;color:rgba(246,244,239,.78)!important;border-color:rgba(255,255,255,.12)!important}
+.pill.active{background:#4569ff!important;color:#fff!important;border-color:#4569ff!important}
+@keyframes hmFlowPulse{0%,100%{transform:translateX(-35%);opacity:.35}50%{transform:translateX(35%);opacity:1}}
+@media(max-width:900px){
+.hero-body{max-width:760px}
+.kinetic-title{max-width:100%}
+.intel-section{padding:4.2rem 0;min-height:auto}
+.event-intro{min-height:auto}
+}
+@media(max-width:560px){
+.hero{min-height:100dvh}
+.hero-body{max-width:100%}
+.kinetic-title .title-network{opacity:.58}
+.flow-bridge,.flow-inner{min-height:24dvh}
+.intel-section{padding:3.4rem 0}
+}
+@media(prefers-reduced-motion:reduce){
+.kinetic-title .title-char{transform:none!important}
+.kinetic-title .title-network{display:none}
+.flow-card::after{animation:none}
+.pipe-map::after{transition:none}
+.pipe-node,.pipe-node:nth-child(even),.pipe-node:nth-child(3){opacity:1;transform:none!important}
+}
+"""
+
 _JS += """
 (function(){
 var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if('scrollRestoration'in history){history.scrollRestoration='manual'}
+if(!location.hash){
+  window.scrollTo(0,0);
+  window.addEventListener('pageshow',function(){requestAnimationFrame(function(){window.scrollTo(0,0)})});
+}
+var title=document.getElementById('hero-title');
+if(title){
+  var label=title.getAttribute('aria-label')||title.textContent.trim();
+  title.textContent='';
+  title.setAttribute('aria-label',label);
+  var titleCanvas=document.createElement('canvas');
+  titleCanvas.className='title-network';
+  titleCanvas.setAttribute('aria-hidden','true');
+  title.appendChild(titleCanvas);
+  var charList=[],words=label.split(' ');
+  words.forEach(function(word,wi){
+    var wordEl=document.createElement('span');
+    wordEl.className='title-word';
+    word.split('').forEach(function(ch){
+      var c=document.createElement('span');
+      c.className='title-char';
+      c.setAttribute('aria-hidden','true');
+      c.textContent=ch;
+      wordEl.appendChild(c);
+      charList.push(c);
+    });
+    title.appendChild(wordEl);
+    if(wi<words.length-1){
+      var spacer=document.createElement('span');
+      spacer.className='title-space';
+      spacer.setAttribute('aria-hidden','true');
+      spacer.textContent=' ';
+      title.appendChild(spacer);
+    }
+  });
+  var titleCtx=titleCanvas.getContext('2d');
+  function drawTitle(now){
+    var rect=title.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+    if(rect.width>0&&rect.height>0){
+      titleCanvas.width=Math.floor(rect.width*dpr);
+      titleCanvas.height=Math.floor(rect.height*dpr);
+      titleCtx.setTransform(dpr,0,0,dpr,0,0);
+      titleCtx.clearRect(0,0,rect.width,rect.height);
+      titleCtx.globalCompositeOperation='lighter';
+      var t=now*.001,breath=Math.sin(t*1.05),centers=[];
+      charList.forEach(function(ch,i){
+        var phase=i*.47;
+        var wave=Math.sin(t*1.8+phase);
+        var drift=Math.cos(t*1.15+phase*.7);
+        var tx=(wave*2.4)+(breath*(i%2===0?1.35:-1.35));
+        var ty=(drift*3.1)+(Math.sin(t*.8+i*.21)*1.15);
+        var scale=1+Math.sin(t*1.55+phase)*.024+breath*.008;
+        ch.style.setProperty('--tx',tx.toFixed(2)+'px');
+        ch.style.setProperty('--ty',ty.toFixed(2)+'px');
+        ch.style.setProperty('--s',scale.toFixed(3));
+        ch.style.setProperty('--o',(0.88+Math.max(0,wave)*.12).toFixed(2));
+        ch.style.setProperty('--glow',(14+Math.max(0,wave)*24).toFixed(1)+'px');
+        var cr=ch.getBoundingClientRect();
+        centers.push({x:cr.left-rect.left+cr.width/2+tx,y:cr.top-rect.top+cr.height*.58+ty,p:phase});
+      });
+      for(var a=0;a<centers.length;a++){
+        for(var b=a+1;b<centers.length;b++){
+          var ca=centers[a],cb=centers[b],dx=ca.x-cb.x,dy=ca.y-cb.y,dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<92&&((b-a)%3===1||dist<48)){
+            var alpha=(1-dist/92)*(.22+.12*Math.sin(t*2+ca.p));
+            titleCtx.strokeStyle='rgba(69,240,209,'+Math.max(0,alpha).toFixed(3)+')';
+            titleCtx.lineWidth=.8;
+            titleCtx.beginPath();
+            titleCtx.moveTo(ca.x,ca.y);
+            titleCtx.lineTo(cb.x,cb.y);
+            titleCtx.stroke();
+          }
+        }
+      }
+      centers.forEach(function(c,i){
+        titleCtx.fillStyle=i%5===0?'rgba(69,240,209,.85)':'rgba(229,235,255,.45)';
+        titleCtx.beginPath();
+        titleCtx.arc(c.x,c.y,1.4+(i%3)*.45,0,Math.PI*2);
+        titleCtx.fill();
+      });
+    }
+    if(!reduce)requestAnimationFrame(drawTitle);
+  }
+  drawTitle(0);
+}
 var canvas=document.getElementById('signal-canvas');
 if(canvas&&canvas.getContext){
 var ctx=canvas.getContext('2d'),dpr=1,pts=[],mouse={x:0,y:0,active:false};
@@ -1163,6 +1323,19 @@ window.addEventListener('pointerleave',function(){mouse.active=false},{passive:t
 }
 var reveal=document.querySelectorAll('[data-reveal]');
 if('IntersectionObserver'in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}})},{threshold:.18});reveal.forEach(function(el){io.observe(el)})}else{reveal.forEach(function(el){el.classList.add('is-visible')})}
+var pipeMap=document.querySelector('.pipe-map'),pipeSteps=Array.from(document.querySelectorAll('[data-pipe-step]'));
+function updatePipe(){
+  if(!pipeMap||!pipeSteps.length)return;
+  var r=pipeMap.getBoundingClientRect();
+  var p=Math.max(0,Math.min(1,(window.innerHeight*.78-r.top)/(r.height+window.innerHeight*.18)));
+  pipeMap.style.setProperty('--pipe-progress',(p*100).toFixed(1)+'%');
+  pipeSteps.forEach(function(step,i){step.classList.toggle('is-active',p>=(i+.22)/pipeSteps.length)});
+}
+var ticking=false;
+function requestPipe(){if(!ticking){ticking=true;requestAnimationFrame(function(){ticking=false;updatePipe()})}}
+updatePipe();
+window.addEventListener('scroll',requestPipe,{passive:true});
+window.addEventListener('resize',requestPipe,{passive:true});
 document.querySelectorAll('.card').forEach(function(card){
   card.addEventListener('pointermove',function(e){var r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;card.style.setProperty('--mx',(x*100).toFixed(1)+'%');card.style.setProperty('--my',(y*100).toFixed(1)+'%');card.style.setProperty('--tilt-x',((x-.5)*3).toFixed(2)+'deg');card.style.setProperty('--tilt-y',((.5-y)*3).toFixed(2)+'deg')},{passive:true});
   card.addEventListener('pointerleave',function(){card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg')},{passive:true});
@@ -1238,7 +1411,7 @@ def _build_html(
         '  <div class="hero-body">\n'
         '    <div class="hero-copy">\n'
         '      <div class="hero-eyebrow"><span></span>Live intelligence layer &middot; Milano</div>\n'
-        '      <h1>Hackathon <em>Milano</em></h1>\n'
+        '      <h1 id="hero-title" class="kinetic-title" aria-label="Hackathon Milano">Hackathon <em>Milano</em></h1>\n'
         '      <p class="hero-sub">Ogni fonte, segnale e candidato converge in un unico radar dinamico: la pipeline legge la scena, filtra il rumore e porta in superficie gli hackathon che contano.</p>\n'
         '      <div class="hero-actions">\n'
         '        <a class="btn-primary" href="#events">'
@@ -1295,11 +1468,11 @@ def _build_html(
         '<div class="intel-visual" data-reveal aria-hidden="true">\n'
         '<div class="pipe-topline"><span>Pipeline view</span><strong>Live confidence routing</strong></div>\n'
         '<div class="pipe-map">\n'
-        '<div class="pipe-node"><small>01</small><b>Collect</b><em>Fonti pubbliche e community events</em></div>\n'
-        '<div class="pipe-node"><small>02</small><b>Dedupe</b><em>Cluster di record simili e duplicati</em></div>\n'
-        '<div class="pipe-node"><small>03</small><b>AI score</b><em>Luogo, data, formato e attendibilita</em></div>\n'
-        '<div class="pipe-node"><small>04</small><b>Review</b><em>Candidati incerti verso controllo umano</em></div>\n'
-        '<div class="pipe-node"><small>05</small><b>Publish</b><em>Output verificato su GitHub Pages</em></div>\n'
+        '<div class="pipe-node" data-pipe-step><small>01</small><b>Collect</b><em>Fonti pubbliche e community events</em></div>\n'
+        '<div class="pipe-node" data-pipe-step><small>02</small><b>Dedupe</b><em>Cluster di record simili e duplicati</em></div>\n'
+        '<div class="pipe-node" data-pipe-step><small>03</small><b>AI score</b><em>Luogo, data, formato e attendibilita</em></div>\n'
+        '<div class="pipe-node" data-pipe-step><small>04</small><b>Review</b><em>Candidati incerti verso controllo umano</em></div>\n'
+        '<div class="pipe-node" data-pipe-step><small>05</small><b>Publish</b><em>Output verificato su GitHub Pages</em></div>\n'
         '</div>\n'
         '<div class="pipe-console"><div><span>Refresh</span><strong>24h</strong></div><div><span>Scope</span><strong>Milano</strong></div><div><span>Output</span><strong>verified</strong></div></div>\n'
         '</div>\n'
