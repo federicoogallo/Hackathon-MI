@@ -1851,6 +1851,375 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
     )
 
 
+_ELITE_CSS = """
+:root{
+--bg:#02040a;--bg-2:#070a13;--ink:#f7f8fb;--muted:#9aa3b8;--soft:#cfd6e8;
+--line:rgba(255,255,255,.13);--line-2:rgba(255,255,255,.22);
+--panel:rgba(255,255,255,.07);--panel-2:rgba(255,255,255,.11);
+--blue:#6b8cff;--cyan:#42f0dd;--violet:#a58bff;--amber:#e0a84f;--green:#58e69b;
+--danger:#ff6f80;--radius:8px;--z-base:0;--z-ui:10;--z-nav:30
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{background:var(--bg);scroll-behavior:smooth;scrollbar-color:rgba(255,255,255,.22) var(--bg);scrollbar-width:thin}
+body{min-height:100dvh;background:
+linear-gradient(180deg,#02040a 0%,#050713 38%,#080c18 70%,#02040a 100%);
+color:var(--ink);font-family:'Inter','Helvetica Neue',Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body *{letter-spacing:0}
+a{color:inherit}
+button,a,input{touch-action:manipulation}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid rgba(66,240,221,.7);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.elite-container{width:min(1200px,calc(100% - 48px));margin:0 auto}
+.elite-shell{background:#02040a}
+.elite-hero{position:relative;min-height:100dvh;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line)}
+.elite-hero::before{content:'';position:absolute;inset:0;z-index:0;background:
+linear-gradient(90deg,rgba(2,4,10,1) 0%,rgba(2,4,10,.88) 42%,rgba(2,4,10,.36) 100%),
+linear-gradient(180deg,rgba(255,255,255,.045) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+background-size:auto,72px 72px,72px 72px;mask-image:linear-gradient(180deg,#000 0%,#000 76%,transparent 100%)}
+.elite-hero::after{content:'';position:absolute;inset:auto 0 0;height:28%;z-index:0;background:linear-gradient(180deg,rgba(2,4,10,0),#02040a)}
+.elite-canvas,.story-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.elite-nav{position:relative;z-index:var(--z-nav);display:flex;align-items:center;justify-content:space-between;min-height:92px;border-bottom:1px solid var(--line)}
+.elite-brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.elite-logo{width:44px;height:44px;border:1px solid var(--line-2);border-radius:8px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.045));box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.elite-logo svg{width:21px;height:21px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.elite-brand strong{display:block;font-size:1rem;font-weight:800}
+.elite-brand span{display:block;color:var(--muted);font-size:.86rem}
+.elite-nav-actions{display:flex;align-items:center;gap:10px}
+.elite-link,.elite-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:8px;border:1px solid var(--line);padding:0 16px;text-decoration:none;font-weight:800;background:rgba(255,255,255,.055);color:var(--soft);transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.elite-link:hover,.elite-button:hover{background:rgba(255,255,255,.1);border-color:var(--line-2);transform:translateY(-1px)}
+.elite-button{background:#f7f8fb;color:#03050c;border-color:#f7f8fb}
+.elite-button:hover{background:#dfe6ff;border-color:#dfe6ff}
+.elite-link svg,.elite-button svg{width:17px;height:17px}
+.hero-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,520px);gap:56px;align-items:center;min-height:calc(100dvh - 92px);padding:72px 0 80px}
+.hero-kicker,.section-kicker,.micro-label{font-family:'JetBrains Mono','Inter',monospace;color:var(--cyan);font-weight:800;font-size:.86rem}
+.hero-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;color:#dbe5ff}
+.live-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 24px rgba(66,240,221,.8)}
+.hero-title{font-family:'Space Grotesk','Inter',sans-serif;font-weight:700;font-size:5.8rem;line-height:.88;max-width:780px;text-wrap:balance}
+.hero-title .accent{display:block;color:#dfe6ff;text-shadow:0 0 48px rgba(107,140,255,.36)}
+.hero-sub{max-width:680px;margin-top:26px;color:rgba(247,248,251,.68);font-size:1.18rem;line-height:1.72}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero-status{margin-top:34px;display:flex;align-items:center;gap:12px;color:var(--soft)}
+.hero-status strong{color:#fff;font-size:1rem}
+.hero-status small{color:var(--muted)}
+.hero-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:30px;width:min(620px,100%);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--line)}
+.hero-metric{min-height:108px;background:rgba(255,255,255,.055);padding:18px 20px;display:flex;flex-direction:column;justify-content:center}
+.hero-metric strong{font-family:'Space Grotesk','Inter',sans-serif;font-size:2.3rem;line-height:1}
+.hero-metric span{margin-top:8px;color:var(--muted);font-weight:800}
+.product-stage{position:relative;min-height:650px;border-left:1px solid rgba(255,255,255,.1)}
+.product-stage::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--cyan),transparent);box-shadow:0 0 42px rgba(66,240,221,.42)}
+.product-viewport{position:sticky;top:110px;min-height:590px;padding:30px 0 0 36px}
+.lens-system{position:relative;height:430px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.035));box-shadow:0 34px 120px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12)}
+.lens-system::before{content:'';position:absolute;inset:0;background:
+linear-gradient(180deg,rgba(255,255,255,.055) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+background-size:42px 42px;opacity:.64;mask-image:linear-gradient(180deg,#000,transparent 92%)}
+.lens-ring{position:absolute;inset:66px;border:1px solid rgba(66,240,221,.38);border-radius:50%;transform:scale(calc(.78 + var(--hero-p,0) * .22));opacity:calc(.5 + var(--hero-p,0) * .4);box-shadow:0 0 58px rgba(66,240,221,.14)}
+.lens-ring.two{inset:112px;border-color:rgba(107,140,255,.42);transform:scale(calc(1.08 - var(--hero-p,0) * .18))}
+.signal-chip{position:absolute;left:28px;right:28px;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:58px;padding:0 18px;border:1px solid var(--line);border-radius:8px;background:rgba(2,4,10,.56);backdrop-filter:blur(18px);font-family:'JetBrains Mono','Inter',monospace;color:var(--soft);font-size:.82rem;font-weight:800}
+.signal-chip.a{top:28px}.signal-chip.b{top:114px}.signal-chip.c{bottom:114px}.signal-chip.d{bottom:28px}
+.signal-chip span{color:var(--muted);font-weight:700}.signal-chip strong{color:#fff}
+.hero-terminal{margin-top:16px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(2,4,10,.68);backdrop-filter:blur(18px)}
+.terminal-row{display:grid;grid-template-columns:1fr auto;gap:14px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'JetBrains Mono','Inter',monospace;font-size:.82rem;color:var(--muted)}
+.terminal-row:last-child{border-bottom:0}.terminal-row strong{color:#fff}
+.signal-strip{position:relative;z-index:2;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(2,4,10,.92);overflow:hidden}
+.strip-track{display:flex;gap:34px;white-space:nowrap;padding:18px 0;font-family:'JetBrains Mono','Inter',monospace;color:rgba(247,248,251,.66);font-size:.88rem;font-weight:800;animation:eliteMarquee 26s linear infinite}
+.strip-track span{color:#fff}.strip-track b{color:var(--cyan)}
+@keyframes eliteMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.elite-story{position:relative;min-height:220dvh;background:#02040a;border-bottom:1px solid var(--line)}
+.story-sticky{position:sticky;top:0;min-height:100dvh;display:grid;grid-template-columns:minmax(0,.9fr) minmax(440px,1.1fr);gap:56px;align-items:center;padding:76px 0;overflow:hidden}
+.story-copy{position:relative;z-index:2}
+.section-kicker{display:block;margin-bottom:18px}
+.story-copy h2,.events-head h2{font-family:'Space Grotesk','Inter',sans-serif;font-size:4.3rem;line-height:.96;font-weight:700;text-wrap:balance}
+.story-copy p,.events-head p{max-width:620px;margin-top:22px;color:rgba(247,248,251,.66);font-size:1.08rem;line-height:1.75}
+.story-steps{display:grid;gap:10px;margin-top:34px;list-style:none}
+.story-step{display:grid;grid-template-columns:42px 1fr;gap:16px;align-items:start;padding:16px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.04);transition:border-color .24s ease,background .24s ease,transform .24s ease,opacity .24s ease;opacity:.48}
+.story-step.is-active{opacity:1;border-color:rgba(66,240,221,.45);background:linear-gradient(145deg,rgba(66,240,221,.13),rgba(255,255,255,.055));transform:translateX(8px)}
+.story-step code{font-family:'JetBrains Mono','Inter',monospace;color:var(--cyan);font-weight:800}.story-step b{display:block;color:#fff}.story-step span{display:block;color:var(--muted);margin-top:4px}
+.story-stage{position:relative;z-index:1;min-height:620px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025));box-shadow:0 34px 130px rgba(0,0,0,.42)}
+.story-stage::before{content:'';position:absolute;inset:0;background:
+linear-gradient(180deg,rgba(255,255,255,.052) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.044) 1px,transparent 1px);
+background-size:56px 56px;opacity:.7;mask-image:linear-gradient(180deg,#000,transparent 92%)}
+.stage-caption{position:absolute;left:24px;right:24px;top:24px;z-index:2;display:flex;align-items:center;justify-content:space-between;min-height:54px;padding:0 16px;border:1px solid var(--line);border-radius:8px;background:rgba(2,4,10,.62);backdrop-filter:blur(18px);font-family:'JetBrains Mono','Inter',monospace;color:var(--soft);font-weight:800}
+.stage-caption span{color:var(--cyan)}
+.stage-dashboard{position:absolute;left:24px;right:24px;bottom:24px;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(255,255,255,.12)}
+.stage-dashboard div{min-height:92px;padding:18px;background:rgba(2,4,10,.72)}.stage-dashboard span{display:block;color:var(--muted);font-size:.82rem;font-weight:800}.stage-dashboard strong{display:block;margin-top:8px;font-size:1.18rem}
+.elite-events{position:relative;background:linear-gradient(180deg,#02040a,#070a13 42%,#02040a);padding:92px 0 88px}
+.events-head{display:grid;grid-template-columns:minmax(0,.95fr) minmax(320px,.75fr);gap:48px;align-items:end;margin-bottom:36px}
+.events-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(255,255,255,.1)}
+.events-stat{min-height:120px;background:rgba(255,255,255,.055);padding:18px;display:flex;flex-direction:column;justify-content:center}.events-stat strong{font-size:2rem;font-family:'Space Grotesk','Inter',sans-serif}.events-stat span{color:var(--muted);font-weight:800}
+.elite-toolbar{position:sticky;top:0;z-index:var(--z-nav);display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:12px;align-items:center;padding:14px;margin:0 0 18px;border:1px solid var(--line);border-radius:8px;background:rgba(2,4,10,.82);backdrop-filter:blur(22px);box-shadow:0 18px 70px rgba(0,0,0,.28)}
+.search-box{position:relative}.search-icon{position:absolute;left:16px;top:50%;width:17px;height:17px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-box input{width:100%;min-height:48px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;padding:0 16px 0 46px;font:inherit;font-size:1rem;outline:0}
+.search-box input::placeholder{color:rgba(247,248,251,.46)}.search-box input:focus{border-color:rgba(66,240,221,.55);box-shadow:0 0 0 4px rgba(66,240,221,.12)}
+.filter-pills{display:flex;gap:8px;flex-wrap:wrap}.pill{min-height:44px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.06);color:var(--soft);padding:0 14px;font:inherit;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
+.pill:hover{background:rgba(255,255,255,.11);border-color:var(--line-2)}.pill.active{background:#f7f8fb;color:#03050c;border-color:#f7f8fb}
+.deck-header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:26px 0 16px;color:var(--muted);font-weight:800}.deck-header strong{color:#fff}
+.event-grid{display:grid;gap:12px}.event-card{position:relative;display:grid;grid-template-columns:88px minmax(0,1fr);gap:18px;min-height:156px;padding:18px;border:1px solid rgba(255,255,255,.11);border-radius:8px;background:linear-gradient(145deg,rgba(255,255,255,.087),rgba(255,255,255,.04));box-shadow:0 20px 70px rgba(0,0,0,.18);transition:transform .22s ease,border-color .22s ease,background .22s ease}
+.event-card:hover{transform:translateY(-2px);border-color:rgba(66,240,221,.35);background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05))}
+.event-date{height:88px;border:1px solid rgba(255,255,255,.13);border-radius:8px;display:grid;place-items:center;background:rgba(2,4,10,.56)}
+.event-date strong{display:block;text-align:center;font-family:'Space Grotesk','Inter',sans-serif;font-size:2rem;line-height:1}.event-date span{display:block;text-align:center;color:var(--muted);font-weight:800}
+.event-body{min-width:0}.event-title{font-size:1.2rem;line-height:1.32;font-weight:800}.event-title a{text-decoration:none}.event-title a:hover{color:var(--cyan)}
+.event-meta{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:9px;color:var(--muted);font-size:.92rem}.event-meta svg{width:15px;height:15px;vertical-align:-2px;margin-right:4px}
+.quality-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{display:inline-flex;align-items:center;min-height:28px;border-radius:8px;padding:0 9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--soft);font-weight:800;font-size:.82rem}.chip.ai{border-color:rgba(107,140,255,.34);color:#dce4ff}.chip.manual{border-color:rgba(88,230,155,.34);color:#ccffe1}.chip.tbd{border-color:rgba(224,168,79,.38);color:#ffe1a6}
+.event-desc{margin-top:12px;color:rgba(247,248,251,.62);font-size:.94rem;line-height:1.62}.event-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.09)}
+.source-dot{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:800;font-size:.86rem}.source-dot::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 18px rgba(224,168,79,.5)}
+.issue-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}.issue-link,.card-link{min-height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:0 10px;text-decoration:none;color:var(--soft);font-weight:800;font-size:.85rem;transition:background .2s ease,border-color .2s ease}.issue-link:hover,.card-link:hover{border-color:rgba(66,240,221,.45);background:rgba(66,240,221,.12);color:#fff}.card-link svg{width:15px;height:15px;margin-left:5px}
+.empty-state,.no-results{padding:64px 20px;text-align:center;color:var(--muted);border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.045)}.empty-state h3{color:#fff;font-size:1.3rem;margin-bottom:8px}.empty-icon svg{width:46px;height:46px;margin-bottom:18px;color:var(--cyan)}
+.review-page .elite-hero{min-height:64dvh}.review-page .hero-layout{grid-template-columns:1fr;min-height:calc(64dvh - 92px);padding:56px 0}.review-list{display:grid;gap:12px;padding:24px 0 88px}.review-card{border:1px solid rgba(255,255,255,.11);border-radius:8px;background:rgba(255,255,255,.06);padding:18px}.review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.review-id{font-family:'JetBrains Mono','Inter',monospace;color:var(--muted);font-size:.82rem}.review-title{margin-top:6px;font-size:1.12rem}.review-title a{text-decoration:none}.review-title a:hover{color:var(--cyan)}.review-reason{margin-top:14px;color:rgba(247,248,251,.64)}
+footer{border-top:1px solid var(--line);background:#02040a;padding:38px 0}.footer-inner{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;color:var(--muted);font-size:.92rem}.footer-brand-name{color:#fff;font-weight:800}.footer-links{display:flex;justify-content:flex-end;gap:18px}.footer-links a{text-decoration:none;color:var(--muted);font-weight:800}.footer-links a:hover{color:#fff}
+@media(max-width:980px){
+.hero-layout,.story-sticky,.events-head{grid-template-columns:1fr;gap:34px}.product-stage{border-left:0}.product-viewport{position:relative;top:auto;padding:0;min-height:0}.story-sticky{position:relative;min-height:auto;padding:72px 0}.elite-story{min-height:auto}.story-stage{min-height:560px}.hero-title{font-size:4.2rem}.story-copy h2,.events-head h2{font-size:3.4rem}.elite-toolbar{grid-template-columns:1fr}.events-stats{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr;text-align:center}.footer-links{justify-content:center}}
+@media(max-width:620px){
+.elite-container{width:min(100% - 32px,1200px)}.elite-nav{min-height:78px}.elite-brand>span:not(.elite-logo),.elite-link{display:none}.elite-logo{display:grid!important}.elite-button{padding:0 12px}.hero-layout{min-height:calc(100dvh - 78px);padding:48px 0 56px}.hero-title{font-size:3.15rem}.hero-sub{font-size:1rem}.hero-metrics{grid-template-columns:1fr}.lens-system{height:360px}.signal-chip{left:16px;right:16px;font-size:.76rem}.story-copy h2,.events-head h2{font-size:2.65rem}.story-stage{min-height:520px}.stage-dashboard{grid-template-columns:1fr}.event-card{grid-template-columns:1fr}.event-date{width:88px}.event-footer{align-items:flex-start;flex-direction:column}.issue-actions{justify-content:flex-start}.filter-pills{display:grid;grid-template-columns:1fr 1fr}.pill{padding:0 10px}}
+@media(prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}.strip-track{animation:none}.event-card,.story-step,.elite-link,.elite-button,.pill,.issue-link,.card-link{transition:none!important}.elite-canvas,.story-canvas{opacity:.28!important}
+}
+"""
+
+_ELITE_JS = """
+(function(){
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if('scrollRestoration'in history){history.scrollRestoration='manual'}
+if(!location.hash){window.scrollTo(0,0);window.addEventListener('pageshow',function(){requestAnimationFrame(function(){window.scrollTo(0,0)})})}
+var root=document.documentElement,body=document.body;
+var hero=document.querySelector('.elite-hero'),story=document.querySelector('.elite-story'),heroCanvas=document.getElementById('elite-hero-canvas'),storyCanvas=document.getElementById('elite-story-canvas');
+var mouse={x:.5,y:.5,active:false},state={hero:0,story:0};
+function clamp(n){return Math.max(0,Math.min(1,n))}
+function progress(el,bias){if(!el)return 0;var r=el.getBoundingClientRect(),vh=window.innerHeight||1;return clamp((vh*(bias||.72)-r.top)/(r.height-vh*.18))}
+function setupCanvas(canvas){if(!canvas||!canvas.getContext)return null;var ctx=canvas.getContext('2d');function size(){var r=canvas.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.max(1,Math.floor(r.width*d));canvas.height=Math.max(1,Math.floor(r.height*d));ctx.setTransform(d,0,0,d,0,0);return r}return{canvas:canvas,ctx:ctx,size:size}}
+var hc=setupCanvas(heroCanvas),sc=setupCanvas(storyCanvas);
+function drawHero(now){if(!hc)return;var r=hc.size(),ctx=hc.ctx,w=r.width,h=r.height,t=now*.001;ctx.clearRect(0,0,w,h);ctx.globalCompositeOperation='lighter';var count=w<700?90:150;for(var i=0;i<count;i++){var a=i*.71+t*.08,rad=(Math.sin(i*2.1+t*.3)+1)*.5;var x=w*(.56+.28*Math.cos(a)*(.35+rad*.65))+((mouse.x-.5)*42);var y=h*(.48+.36*Math.sin(a*1.34)*(.35+rad*.65))+((mouse.y-.5)*30);var s=i%9===0?2.6:1.35;ctx.fillStyle=i%7===0?'rgba(66,240,221,.76)':'rgba(210,220,255,.34)';ctx.beginPath();ctx.arc(x,y,s,0,Math.PI*2);ctx.fill();if(i%3===0){var x2=w*(.56+.28*Math.cos(a+.42)*(.35+rad*.65)),y2=h*(.48+.36*Math.sin((a+.42)*1.34)*(.35+rad*.65));ctx.strokeStyle='rgba(107,140,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke()}}ctx.globalCompositeOperation='source-over';if(!reduce)requestAnimationFrame(drawHero)}
+function drawStory(now){if(!sc)return;var r=sc.size(),ctx=sc.ctx,w=r.width,h=r.height,t=now*.001,p=state.story;ctx.clearRect(0,0,w,h);ctx.globalCompositeOperation='lighter';var cx=w*.52,cy=h*.49;for(var ring=0;ring<5;ring++){ctx.strokeStyle='rgba(66,240,221,'+(0.13-ring*.018)+')';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(cx,cy,70+ring*48+p*38,42+ring*35+p*18,ring*.2+t*.04,0,Math.PI*2);ctx.stroke()}var steps=[[w*.18,h*.33],[w*.42,h*.22],[w*.68,h*.39],[w*.48,h*.57],[w*.76,h*.70]];ctx.lineWidth=2.4;ctx.lineCap='round';for(var i=0;i<steps.length-1;i++){var a=steps[i],b=steps[i+1],seg=clamp(p*4-i);ctx.strokeStyle='rgba(66,240,221,'+(seg*.72)+')';ctx.beginPath();ctx.moveTo(a[0],a[1]);var mx=(a[0]+b[0])*.5,my=(a[1]+b[1])*.5+(i%2?-60:58);ctx.quadraticCurveTo(mx,my,a[0]+(b[0]-a[0])*seg,a[1]+(b[1]-a[1])*seg);ctx.stroke()}steps.forEach(function(pt,i){var active=p>i/5-.04;ctx.fillStyle=active?'rgba(255,255,255,.95)':'rgba(170,185,220,.28)';ctx.beginPath();ctx.arc(pt[0],pt[1],active?6:4,0,Math.PI*2);ctx.fill();if(active){ctx.strokeStyle='rgba(66,240,221,.36)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(pt[0],pt[1],24+Math.sin(t*2+i)*5,0,Math.PI*2);ctx.stroke()}});ctx.globalCompositeOperation='source-over';if(!reduce)requestAnimationFrame(drawStory)}
+function update(){state.hero=progress(hero,.58);state.story=progress(story,.78);body.style.setProperty('--hero-p',state.hero.toFixed(3));body.style.setProperty('--story-p',state.story.toFixed(3));var idx=Math.min(4,Math.max(0,Math.floor(state.story*5)));document.querySelectorAll('[data-story-step]').forEach(function(el,i){el.classList.toggle('is-active',i===idx||state.story>i/5+.12)})}
+var ticking=false;function request(){if(!ticking){ticking=true;requestAnimationFrame(function(){ticking=false;update()})}}
+update();if(hc)requestAnimationFrame(drawHero);if(sc)requestAnimationFrame(drawStory);
+window.addEventListener('scroll',request,{passive:true});window.addEventListener('resize',function(){request()},{passive:true});
+window.addEventListener('pointermove',function(e){mouse.x=e.clientX/(window.innerWidth||1);mouse.y=e.clientY/(window.innerHeight||1);mouse.active=true},{passive:true});
+var search=document.getElementById('search'),filters=Array.from(document.querySelectorAll('[data-filter]')),cards=Array.from(document.querySelectorAll('.card')),countLabel=document.getElementById('count-label'),noResults=document.getElementById('no-results'),activeFilter='all';
+function inFilter(card){var iso=card.getAttribute('data-date');if(activeFilter==='all')return true;if(!iso)return activeFilter==='later';var d=new Date(iso+'T12:00:00'),now=new Date(),diff=(d-now)/86400000;if(activeFilter==='week')return diff>=0&&diff<=7;if(activeFilter==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();return diff>31}
+function apply(){var q=(search&&search.value||'').trim().toLowerCase(),shown=0;cards.forEach(function(card){var hay=card.getAttribute('data-search')||'',ok=hay.indexOf(q)>-1&&inFilter(card);card.hidden=!ok;if(ok)shown++});if(countLabel)countLabel.textContent=shown+' '+(shown===1?'evento':'eventi');if(noResults)noResults.style.display=shown?'none':'block'}
+if(search)search.addEventListener('input',apply);filters.forEach(function(btn){btn.addEventListener('click',function(){filters.forEach(function(b){b.classList.remove('active')});btn.classList.add('active');activeFilter=btn.getAttribute('data-filter')||'all';apply()})});apply();
+cards.forEach(function(card){card.addEventListener('pointermove',function(e){var r=card.getBoundingClientRect(),x=(e.clientX-r.left)/Math.max(1,r.width),y=(e.clientY-r.top)/Math.max(1,r.height);card.style.setProperty('--mx',(x*100).toFixed(1)+'%');card.style.setProperty('--my',(y*100).toFixed(1)+'%')},{passive:true})});
+})();
+"""
+
+def _build_elite_cards(events: list[dict]) -> str:
+    parts: list[str] = []
+    arrow = (
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor"'
+        ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M3 8h10M9 4l4 4-4 4"/></svg>'
+    )
+    for e in events:
+        title = _escape((e.get("title") or "Senza titolo").strip())
+        url = _escape(e.get("url") or "#")
+        location = _escape((e.get("location") or "Milano").strip())
+        source = _escape((e.get("source") or "").strip())
+        date_str = e.get("date_str", "")
+        review_status = (e.get("review_status") or "ai_verified").strip()
+        confidence = float(e.get("confidence") or 0.0)
+        day, month = _fmt_date_day_month(date_str)
+        date_compact = _fmt_date_compact(date_str)
+        date_iso = ""
+        try:
+            ev = HackathonEvent(title="", url="", source="", date_str=date_str)
+            d = ev.parsed_date()
+            if d:
+                date_iso = d.isoformat()
+        except Exception:
+            pass
+        desc_raw = (e.get("description") or "").strip().replace("\n", " ")
+        if len(desc_raw) > 210:
+            desc_raw = desc_raw[:210].rsplit(" ", 1)[0] + "..."
+        desc = _escape(desc_raw)
+        issue_ok_url = _escape(_issue_url(e, "confirmed_ok"))
+        issue_doubt_url = _escape(_issue_url(e, "confirmed_doubt"))
+        date_badge = (
+            f'<div class="event-date"><div><strong>{day}</strong><span>{month}</span></div></div>'
+            if day and month
+            else '<div class="event-date"><div><strong>TBD</strong><span>data</span></div></div>'
+        )
+        chips = []
+        if review_status == "manual_approved":
+            chips.append('<span class="chip manual">Manuale</span>')
+        elif confidence > 0:
+            chips.append(f'<span class="chip ai">AI {int(round(confidence * 100))}%</span>')
+        if not date_iso:
+            chips.append('<span class="chip tbd">Data TBD</span>')
+        quality_html = f'<div class="quality-row">{"".join(chips)}</div>' if chips else ""
+        desc_html = f'<p class="event-desc">{desc}</p>' if desc else ""
+        search_blob = _escape(f"{title} {desc} {location} {source}".lower())
+        parts.append(
+            f'<article class="event-card card" data-date="{date_iso}" data-search="{search_blob}">'
+            f'{date_badge}'
+            '<div class="event-body">'
+            f'<h2 class="event-title"><a href="{url}" target="_blank" rel="noopener">{title}</a></h2>'
+            '<div class="event-meta">'
+            f'<span>{_SVG_PIN}{location}</span>'
+            + (f'<span>{_SVG_CAL}{_escape(date_compact)}</span>' if date_compact else '')
+            + '</div>'
+            f'{quality_html}'
+            f'{desc_html}'
+            '<div class="event-footer">'
+            f'<span class="source-dot">{source}</span>'
+            '<div class="issue-actions">'
+            f'<a href="{issue_ok_url}" class="issue-link" target="_blank" rel="noopener">Valuta OK</a>'
+            f'<a href="{issue_doubt_url}" class="issue-link" target="_blank" rel="noopener">Segnala dubbio</a>'
+            f'<a href="{url}" class="card-link" target="_blank" rel="noopener">Vedi evento{arrow}</a>'
+            '</div></div></div></article>'
+        )
+    return "\n".join(parts)
+
+
+def _build_html(
+    upcoming: list[dict],
+    last_scan: str,
+    review_count: int = 0,
+    scan_status: str = "completed",
+    collector_failures: int = 0,
+) -> str:
+    event_count = len(upcoming)
+    months_set: set[str] = set()
+    for e in upcoming:
+        _, mon = _fmt_date_day_month(e.get("date_str", ""))
+        if mon:
+            months_set.add(mon)
+
+    cards_html = _build_elite_cards(upcoming) if upcoming else _build_empty()
+    evt_word = "eventi" if event_count != 1 else "evento"
+    mon_word = "mesi" if len(months_set) != 1 else "mese"
+    mon_count = str(len(months_set)) if months_set else "0"
+    status_label = _scan_status_label(scan_status, collector_failures)
+    status_dot = "ops-dot" if status_label == "OK" else "ops-dot warn"
+
+    return (
+        '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
+        '<meta charset="UTF-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+        f'<meta name="description" content="{event_count} hackathon in programma a Milano e dintorni.">\n'
+        '<meta property="og:title" content="Hackathon Milano">\n'
+        f'<meta property="og:description" content="{event_count} hackathon in programma a Milano">\n'
+        '<meta property="og:type" content="website">\n'
+        '<meta property="og:image" content="hero-hackathon-milano.png">\n'
+        '<title>Hackathon Milano</title>\n'
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
+        f'<style>{_ELITE_CSS}</style>\n'
+        '</head>\n<body class="elite-shell">\n'
+        '<header class="elite-hero" id="top">\n'
+        '<canvas class="elite-canvas" id="elite-hero-canvas" aria-hidden="true"></canvas>\n'
+        '<div class="elite-container">\n'
+        '<nav class="elite-nav" aria-label="Navigazione principale">\n'
+        '<a class="elite-brand" href="#top"><span class="elite-logo"><svg viewBox="0 0 24 24"><path d="M12 3 3.8 8.2 12 13.4l8.2-5.2L12 3Z"/><path d="m3.8 12.2 8.2 5.2 8.2-5.2"/><path d="m3.8 16.2 8.2 5.2 8.2-5.2"/></svg></span><span><strong>Hackathon Milano</strong><span>Milano intelligence layer</span></span></a>\n'
+        '<div class="elite-nav-actions"><a class="elite-link" href="review.html">Candidati in review</a><a class="elite-button" href="#events"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 10h10M11 6l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>Eventi</a></div>\n'
+        '</nav>\n'
+        '<div class="hero-layout">\n'
+        '<div class="hero-copy">\n'
+        '<div class="hero-kicker"><span class="live-dot"></span>Live AI scouting system</div>\n'
+        '<h1 class="hero-title">Hackathon <span class="accent">Milano</span></h1>\n'
+        '<p class="hero-sub">Un prodotto editoriale e operativo per leggere il territorio: raccoglie segnali pubblici, comprime duplicati, assegna fiducia e pubblica solo opportunita verificabili.</p>\n'
+        '<div class="hero-actions"><a class="elite-button" href="#events">Apri il deck eventi</a><a class="elite-link" href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">GitHub</a></div>\n'
+        f'<div class="hero-status"><span class="{status_dot}"></span><strong>{_escape(status_label)}</strong><small>{_escape(last_scan)}</small></div>\n'
+        '<div class="hero-metrics" aria-label="Metriche monitor">\n'
+        f'<div class="hero-metric"><strong>{event_count}</strong><span>{evt_word} verificati</span></div>\n'
+        f'<div class="hero-metric"><strong>{mon_count}</strong><span>{mon_word} coperti</span></div>\n'
+        '<div class="hero-metric"><strong>24h</strong><span>refresh</span></div>\n'
+        '</div>\n'
+        '</div>\n'
+        '<aside class="product-stage" aria-hidden="true">\n'
+        '<div class="product-viewport">\n'
+        '<div class="lens-system"><div class="lens-ring"></div><div class="lens-ring two"></div>'
+        '<div class="signal-chip a"><strong>Collect</strong><span>fonti pubbliche</span></div>'
+        '<div class="signal-chip b"><strong>Dedupe</strong><span>cluster simili</span></div>'
+        '<div class="signal-chip c"><strong>AI score</strong><span>fiducia e contesto</span></div>'
+        '<div class="signal-chip d"><strong>Publish</strong><span>output verificato</span></div>'
+        '</div>\n'
+        '<div class="hero-terminal"><div class="terminal-row"><span>scope</span><strong>Milano</strong></div><div class="terminal-row"><span>Candidati in review</span><strong>'
+        f'{review_count}</strong></div><div class="terminal-row"><span>collector errors</span><strong>{collector_failures}</strong></div></div>\n'
+        '</div>\n'
+        '</aside>\n'
+        '</div>\n'
+        '</div>\n'
+        '</header>\n'
+        '<section class="signal-strip" aria-label="Pipeline status"><div class="strip-track">'
+        '<span>PUBLIC SOURCES</span><b>/</b><span>DEDUPLICATION</span><b>/</b><span>AI CONFIDENCE</span><b>/</b><span>MANUAL REVIEW</span><b>/</b><span>GITHUB PAGES OUTPUT</span><b>/</b>'
+        '<span>PUBLIC SOURCES</span><b>/</b><span>DEDUPLICATION</span><b>/</b><span>AI CONFIDENCE</span><b>/</b><span>MANUAL REVIEW</span><b>/</b><span>GITHUB PAGES OUTPUT</span><b>/</b>'
+        '</div></section>\n'
+        '<section class="elite-story" id="system">\n'
+        '<canvas class="story-canvas" id="elite-story-canvas" aria-hidden="true"></canvas>\n'
+        '<div class="elite-container story-sticky">\n'
+        '<div class="story-copy">\n'
+        '<span class="section-kicker">01 / Intelligence system</span>\n'
+        '<h2>Dal rumore pubblico a un calendario ad alta fiducia.</h2>\n'
+        '<p>La pagina non deve sembrare una lista: deve far percepire il sistema che lavora sotto. Ogni scroll rivela una fase del motore, dal segnale grezzo all output pronto per essere usato.</p>\n'
+        '<ol class="story-steps">\n'
+        '<li class="story-step" data-story-step><code>01</code><div><b>Collect</b><span>Community, piattaforme eventi e ricerca web entrano nel radar.</span></div></li>\n'
+        '<li class="story-step" data-story-step><code>02</code><div><b>Dedupe</b><span>I record sovrapposti diventano un solo candidato leggibile.</span></div></li>\n'
+        '<li class="story-step" data-story-step><code>03</code><div><b>AI score</b><span>Luogo, data, formato, descrizione e fonte generano fiducia.</span></div></li>\n'
+        '<li class="story-step" data-story-step><code>04</code><div><b>Review</b><span>I casi incerti passano a controllo umano senza sporcare la pagina pubblica.</span></div></li>\n'
+        '<li class="story-step" data-story-step><code>05</code><div><b>Publish</b><span>Gli eventi verificati diventano output stabile su GitHub Pages.</span></div></li>\n'
+        '</ol>\n'
+        '</div>\n'
+        '<div class="story-stage" aria-hidden="true"><div class="stage-caption"><span>Signal routing</span><strong>Confidence graph</strong></div><div class="stage-dashboard"><div><span>Refresh</span><strong>24h</strong></div><div><span>Scope</span><strong>Milano</strong></div><div><span>Output</span><strong>verified</strong></div></div></div>\n'
+        '</div>\n'
+        '</section>\n'
+        '<main class="elite-events" id="events">\n'
+        '<div class="elite-container">\n'
+        '<section class="events-head" aria-label="Eventi verificati">\n'
+        '<div><span class="section-kicker">02 / Event deck</span><h2>Output finale, pronto da scansionare.</h2><p>Gli eventi sono presentati come un deck operativo: pochi segnali forti, fonte visibile, qualita esplicita e azioni rapide per confermare o aprire dubbi.</p></div>\n'
+        '<div class="events-stats"><div class="events-stat"><strong>'
+        f'{event_count}</strong><span>{evt_word}</span></div><div class="events-stat"><strong>{mon_count}</strong><span>{mon_word}</span></div><div class="events-stat"><strong>{review_count}</strong><span>Candidati in review</span></div></div>\n'
+        '</section>\n'
+        '<section class="elite-toolbar" aria-label="Filtri eventi">\n'
+        f'<div class="search-box"><label class="sr-only" for="search">Cerca eventi</label>{_SVG_SEARCH}<input type="text" id="search" placeholder="Cerca hackathon, fonte o luogo..." autocomplete="off"></div>\n'
+        '<div class="filter-pills" id="filters"><button class="pill active" data-filter="all">Tutti</button><button class="pill" data-filter="week">Settimana</button><button class="pill" data-filter="month">Mese</button><button class="pill" data-filter="later">Prossimi</button></div>\n'
+        '</section>\n'
+        f'<div class="deck-header"><strong>Prossimi eventi verificati</strong><span id="count-label">{event_count} eventi</span></div>\n'
+        f'<div class="event-grid" id="grid">{cards_html}</div>\n'
+        '<p class="no-results" id="no-results" style="display:none">Nessun risultato trovato.</p>\n'
+        '</div>\n'
+        '</main>\n'
+        '<footer><div class="elite-container"><div class="footer-inner"><div><div class="footer-brand-name">Hackathon Milano</div><div>Dati raccolti automaticamente con AI</div></div><div>Aggiornato: '
+        f'{_escape(last_scan)}</div><div class="footer-links"><a href="https://github.com/federicoogallo/Hackathon-MI" target="_blank" rel="noopener">GitHub</a><a href="#top">Top</a></div></div></div></footer>\n'
+        f'<script>{_ELITE_JS}</script>\n'
+        '</body>\n</html>'
+    )
+
+
+def _build_review_html(candidates: list[dict], last_scan: str) -> str:
+    cards = _build_review_cards(candidates)
+    count = len(candidates)
+    return (
+        '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
+        '<meta charset="UTF-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+        f'<meta name="description" content="{count} candidati hackathon da rivedere.">\n'
+        '<meta property="og:image" content="hero-hackathon-milano.png">\n'
+        '<title>Review queue - Hackathon Milano</title>\n'
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">\n'
+        f'<style>{_ELITE_CSS}</style>\n'
+        '</head>\n<body class="elite-shell review-page">\n'
+        '<header class="elite-hero"><canvas class="elite-canvas" id="elite-hero-canvas" aria-hidden="true"></canvas><div class="elite-container">'
+        '<nav class="elite-nav"><a class="elite-brand" href="index.html"><span class="elite-logo"><svg viewBox="0 0 24 24"><path d="M12 3 3.8 8.2 12 13.4l8.2-5.2L12 3Z"/><path d="m3.8 12.2 8.2 5.2 8.2-5.2"/><path d="m3.8 16.2 8.2 5.2 8.2-5.2"/></svg></span><span><strong>Review queue</strong><span>Manual confidence control</span></span></a><div class="elite-nav-actions"><a class="elite-button" href="index.html">Eventi confermati</a></div></nav>'
+        '<div class="hero-layout"><div class="hero-copy"><div class="hero-kicker"><span class="live-dot"></span>Manual review</div><h1 class="hero-title">Review <span class="accent">queue</span></h1>'
+        f'<p class="hero-sub">{count} eventi hanno abbastanza segnale per una revisione umana. Gli utenti possono solo aprire issue di conferma o dubbio: l eliminazione resta ai maintainer.</p>'
+        f'<div class="hero-status"><span class="ops-dot"></span><strong>{count}</strong><small>Aggiornato: {_escape(last_scan)}</small></div></div></div>'
+        '</div></header>'
+        '<main class="elite-events"><div class="elite-container"><div class="deck-header"><strong>Da rivedere</strong><span>Manual layer</span></div><div class="review-list">'
+        f'{cards}'
+        '</div></div></main>'
+        '<footer><div class="elite-container"><div class="footer-inner"><div><div class="footer-brand-name">Hackathon Milano</div><div>Review queue generata dalla pipeline</div></div><div></div><div class="footer-links"><a href="index.html">Calendario</a></div></div></div></footer>'
+        f'<script>{_ELITE_JS}</script>\n'
+        '</body>\n</html>'
+    )
+
+
 # ---- Generator ----
 
 def generate_html(events_path=None, output_path=None, review_output_path=None):
