@@ -68,5 +68,5 @@ jobs:
       - name: Commit updated data and page
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: update events + page + readme [skip ci]"
+          commit_message: "chore: update events + page + readme"
           file_pattern: data/events.json data/review_queue.json data/review_decisions.json docs/index.html docs/review.html docs/assets/* README.md
