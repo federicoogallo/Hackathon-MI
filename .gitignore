@@ -34,3 +34,6 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .vercel
+
+# Next.js local env (chiavi client-side, mai in repo)
+.env*.local

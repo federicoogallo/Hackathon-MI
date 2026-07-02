@@ -448,6 +448,7 @@ export default function GlobeIntro() {
     let tileScene: THREE.Scene | null = null;
     let tileCam: THREE.PerspectiveCamera | null = null;
     let tilesReady = false;
+    let tilesRootLoaded = false; // il fotorealistico si attiva SOLO a tileset caricato
     let attribTick = 0;
     if (GMAPS_KEY) {
       (async () => {
@@ -460,24 +461,29 @@ export default function GlobeIntro() {
           const draco = new DRACOLoader();
           draco.setDecoderPath("https://www.gstatic.com/draco/gltf/");
           t.registerPlugin(new plugins.GLTFExtensionsPlugin({ dracoLoader: draco }));
+          try { if (plugins.TilesFadePlugin) t.registerPlugin(new plugins.TilesFadePlugin()); } catch { /* opzionale */ }
           const cam = new THREE.PerspectiveCamera(50, camera.aspect, 5, 1e8);
           t.setCamera(cam);
           t.setResolutionFromRenderer(cam, renderer);
+          // frame locale documentato: Y = quota, X = nord, Z = est
           t.setLatLonToYUp(MILAN.lat * (Math.PI / 180), MILAN.lon * (Math.PI / 180));
-          t.errorTarget = 20;
+          t.errorTarget = 24;
+          t.addEventListener("load-tile-set", () => { tilesRootLoaded = true; });
+          t.addEventListener("load-error", (e: unknown) => console.warn("[intro] Google 3D Tiles:", e));
           const sc = new THREE.Scene();
           sc.add(t.group);
           tiles = t;
           tileScene = sc;
           tileCam = cam;
           tilesReady = true;
-        } catch {
+        } catch (e) {
+          console.warn("[intro] Google 3D Tiles non disponibili:", e);
           tilesReady = false;
           tiles = null;
         }
       })();
     }
-    const TILE_CUT = 0.6; // p oltre cui si passa al fotorealistico
+    const TILE_CUT = 0.58; // p oltre cui si passa al fotorealistico
 
     /* ---------- overlay ---------- */
     const captions: Array<[number, string]> = [
@@ -586,18 +592,23 @@ export default function GlobeIntro() {
       if (captionRef.current) captionRef.current.style.opacity = p > 0.985 ? "0" : ".9";
       setCaption(p);
 
-      // ---- fase Google Earth (solo con chiave e tiles pronti) ----
-      const useTiles = tilesReady && tiles && tileScene && tileCam;
-      if (useTiles && p > 0.4) {
-        // percorso: discesa log da 65 km a ~300 m, poi arco a sud del Duomo
-        const q = clamp01((p - TILE_CUT) / (0.94 - TILE_CUT));
-        const alt = Math.exp(Math.log(65000) + (Math.log(narrow ? 340 : 300) - Math.log(65000)) * smooth(q));
-        const so = smooth((p - 0.86) / 0.14);
-        const dist = (narrow ? 660 : 560) * so;
-        tileCam!.position.set(drift * 4000 * (1 - so) + drift * 90 * so, alt, Math.max(alt * 0.14, dist));
-        tileCam!.lookAt(0, 130 * so, 0);
-        tileCam!.updateMatrixWorld();
-        tiles.update(); // warmup anche prima del taglio: i tile si caricano in anticipo
+      // ---- fase Google Earth (solo con chiave e root tileset caricato) ----
+      const useTiles = tilesReady && tilesRootLoaded && tiles && tileScene && tileCam;
+      if (tilesReady && tiles && tileCam && p > 0.35) {
+        // discesa log 65 km -> ~300 m leggermente inclinata da ovest, poi arco
+        // in quota drone sulla facciata (che guarda a ovest, verso la piazza).
+        // Frame locale: X = nord, Z = est, Y = quota.
+        const q = clamp01((p - TILE_CUT) / (0.95 - TILE_CUT));
+        const altEnd = narrow ? 330 : 290;
+        const alt = Math.exp(Math.log(65000) + (Math.log(altEnd) - Math.log(65000)) * smooth(q));
+        const so = smooth((p - 0.85) / 0.15);
+        const driftM = Math.sin(now * 0.00025) * 8 * so;
+        const westDist = Math.max(alt * 0.16, (narrow ? 520 : 450) * so);
+        tileCam.position.set(-35 * so + driftM, alt, -westDist);
+        tileCam.lookAt(0, 62 * so, 0);
+        tileCam.updateMatrixWorld();
+        tiles.errorTarget = alt > 4000 ? 40 : 14; // veloce in quota, nitido sul finale
+        tiles.update(); // warmup anche prima del taglio: i tile arrivano in anticipo
         if (attribRef.current && ++attribTick % 40 === 0) {
           try {
             const parts = (tiles.getAttributions() || []).map((a: { value?: string }) => a.value).filter(Boolean);
