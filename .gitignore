@@ -26,3 +26,11 @@ build/
 
 # macOS
 .DS_Store
+
+# Next.js (UI su Vercel)
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
