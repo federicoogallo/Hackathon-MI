@@ -7,11 +7,15 @@ import landTopo from "world-atlas/land-110m.json";
 /**
  * Intro orbitale in tre atti, scrubbed dallo scroll e reversibile:
  *  1. Terra a puntini vista dal polo (nord-up garantito da una base ortonormale)
- *  2. zoom su Lombardia/Milano con crossfade mappa -> citta' 3D vista dall'alto
- *  3. la camera lascia l'asse verticale e si abbassa in un'inquadratura aerea
- *     obliqua sul Duomo 3D (marmo chiaro, selva di guglie, Madonnina dorata).
+ *  2. zoom su Lombardia/Milano
+ *  3. finale "Google Earth": con NEXT_PUBLIC_GOOGLE_MAPS_API_KEY presente, la
+ *     discesa passa ai Photorealistic 3D Tiles di Google fino a un'inquadratura
+ *     aerea reale del Duomo. Senza chiave (o in caso di errore) si atterra sul
+ *     diorama 3D stilizzato (citta' + Duomo in marmo con Madonnina).
  * Fallback: reduced-motion (CSS), hash/WebGL/dati -> sezione collassata.
  */
+const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
   const wrapRef = useRef<HTMLElement>(null);
@@ -20,6 +24,8 @@ export default function GlobeIntro() {
   const labelRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
+  const attribRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -434,6 +440,45 @@ export default function GlobeIntro() {
     };
     scene.add(starCloud(320, 0.02, 0.45), starCloud(80, 0.038, 0.7));
 
+    /* ---------- finale Google Earth: Photorealistic 3D Tiles ---------- */
+    // Scena separata in metri (Y-up locale sul Duomo). Attiva solo con chiave;
+    // qualunque errore lascia il diorama come finale.
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    let tiles: any = null;
+    let tileScene: THREE.Scene | null = null;
+    let tileCam: THREE.PerspectiveCamera | null = null;
+    let tilesReady = false;
+    let attribTick = 0;
+    if (GMAPS_KEY) {
+      (async () => {
+        try {
+          const core: any = await import("3d-tiles-renderer");
+          const plugins: any = await import("3d-tiles-renderer/plugins");
+          const { DRACOLoader } = await import("three/examples/jsm/loaders/DRACOLoader.js");
+          const t = new core.TilesRenderer();
+          t.registerPlugin(new plugins.GoogleCloudAuthPlugin({ apiToken: GMAPS_KEY, autoRefreshToken: true }));
+          const draco = new DRACOLoader();
+          draco.setDecoderPath("https://www.gstatic.com/draco/gltf/");
+          t.registerPlugin(new plugins.GLTFExtensionsPlugin({ dracoLoader: draco }));
+          const cam = new THREE.PerspectiveCamera(50, camera.aspect, 5, 1e8);
+          t.setCamera(cam);
+          t.setResolutionFromRenderer(cam, renderer);
+          t.setLatLonToYUp(MILAN.lat * (Math.PI / 180), MILAN.lon * (Math.PI / 180));
+          t.errorTarget = 20;
+          const sc = new THREE.Scene();
+          sc.add(t.group);
+          tiles = t;
+          tileScene = sc;
+          tileCam = cam;
+          tilesReady = true;
+        } catch {
+          tilesReady = false;
+          tiles = null;
+        }
+      })();
+    }
+    const TILE_CUT = 0.6; // p oltre cui si passa al fotorealistico
+
     /* ---------- overlay ---------- */
     const captions: Array<[number, string]> = [
       [0, "Low earth orbit — il mondo visto dall’alto"],
@@ -468,6 +513,11 @@ export default function GlobeIntro() {
       narrow = camera.aspect < 0.8;
       dStart = narrow ? 4.4 : 3.2;
       camera.updateProjectionMatrix();
+      if (tileCam) {
+        tileCam.aspect = camera.aspect;
+        tileCam.updateProjectionMatrix();
+        try { tiles?.setResolutionFromRenderer?.(tileCam, renderer); } catch { /* non pronto */ }
+      }
     };
     resize();
     window.addEventListener("resize", resize, { passive: true });
@@ -536,7 +586,34 @@ export default function GlobeIntro() {
       if (captionRef.current) captionRef.current.style.opacity = p > 0.985 ? "0" : ".9";
       setCaption(p);
 
-      renderer.render(scene, camera);
+      // ---- fase Google Earth (solo con chiave e tiles pronti) ----
+      const useTiles = tilesReady && tiles && tileScene && tileCam;
+      if (useTiles && p > 0.4) {
+        // percorso: discesa log da 65 km a ~300 m, poi arco a sud del Duomo
+        const q = clamp01((p - TILE_CUT) / (0.94 - TILE_CUT));
+        const alt = Math.exp(Math.log(65000) + (Math.log(narrow ? 340 : 300) - Math.log(65000)) * smooth(q));
+        const so = smooth((p - 0.86) / 0.14);
+        const dist = (narrow ? 660 : 560) * so;
+        tileCam!.position.set(drift * 4000 * (1 - so) + drift * 90 * so, alt, Math.max(alt * 0.14, dist));
+        tileCam!.lookAt(0, 130 * so, 0);
+        tileCam!.updateMatrixWorld();
+        tiles.update(); // warmup anche prima del taglio: i tile si caricano in anticipo
+        if (attribRef.current && ++attribTick % 40 === 0) {
+          try {
+            const parts = (tiles.getAttributions() || []).map((a: { value?: string }) => a.value).filter(Boolean);
+            attribRef.current.textContent = "© " + (parts.length ? parts.join(" · ") : "Google");
+          } catch { attribRef.current.textContent = "© Google"; }
+        }
+      }
+      const tilesActive = !!useTiles && p >= TILE_CUT;
+      if (flashRef.current) {
+        const f = useTiles ? Math.max(0, 1 - Math.abs(p - TILE_CUT) / 0.05) : 0;
+        flashRef.current.style.opacity = String(f * 0.85);
+      }
+      if (attribRef.current) attribRef.current.style.opacity = tilesActive ? "1" : "0";
+
+      if (tilesActive) renderer.render(tileScene!, tileCam!);
+      else renderer.render(scene, camera);
       rafId = requestAnimationFrame(frame);
     };
     let io: IntersectionObserver | null = null;
@@ -557,6 +634,7 @@ export default function GlobeIntro() {
       io?.disconnect();
       window.removeEventListener("resize", resize);
       skipRef.current?.removeEventListener("click", onSkip);
+      try { tiles?.dispose?.(); } catch { /* già smontato */ }
       renderer.dispose();
     };
     } catch (err) {
@@ -580,7 +658,9 @@ export default function GlobeIntro() {
           </div>
           <div ref={hintRef} className="intro-hint mono" id="intro-hint">Scroll</div>
           <button ref={skipRef} className="intro-skip mono" id="intro-skip" type="button">Salta l&apos;intro &darr;</button>
+          <div ref={attribRef} className="intro-attrib" id="intro-attrib" aria-hidden="true" />
         </div>
+        <div ref={flashRef} className="intro-flash" aria-hidden="true" />
         <div className="intro-fade" />
       </div>
     </section>
