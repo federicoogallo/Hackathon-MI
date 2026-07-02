@@ -1,0 +1,6 @@
+main.py
+bot.py
+logs/
+__pycache__/
+.pytest_cache/
+.venv/
