@@ -23,6 +23,7 @@ export default function GlobeIntro() {
   const hintRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
   const attribRef = useRef<HTMLDivElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -663,10 +664,29 @@ export default function GlobeIntro() {
 
       // ---- dissolvenza punti -> Terra notturna; credit NASA ----
       if (texOn && texRamp < 1) texRamp = Math.min(1, texRamp + dt * 1.2);
+
+      // ---- finale reale: crossfade sulla fotografia notturna del Duomo ----
+      const photoO = smooth((p - 0.86) / 0.1);
+      if (photoRef.current) {
+        if (p > 0.45 && photoRef.current.dataset.eager !== "1") {
+          const im = photoRef.current.querySelector("img");
+          if (im) (im as HTMLImageElement).loading = "eager";
+          photoRef.current.dataset.eager = "1";
+        }
+        photoRef.current.style.opacity = String(photoO);
+        const im2 = photoRef.current.firstElementChild as HTMLElement | null;
+        if (im2 && photoO > 0) {
+          const kb = 1.1 - 0.08 * photoO + Math.sin(now * 0.0002) * 0.004 * photoO;
+          im2.style.transform = `scale(${kb.toFixed(4)}) translateY(${((1 - photoO) * 2.5).toFixed(2)}%)`;
+        }
+      }
       if (attribRef.current) {
-        if (texOn) {
+        if (photoO > 0.4) {
+          attribRef.current.textContent = "Foto: Giacomo Antonini — CC BY-SA 4.0 (Wikimedia Commons)";
+          attribRef.current.style.opacity = ".7";
+        } else if (texOn && p < 0.7) {
           attribRef.current.textContent = "Earth at night — NASA Black Marble";
-          attribRef.current.style.opacity = p < 0.7 ? ".6" : "0";
+          attribRef.current.style.opacity = ".6";
         } else attribRef.current.style.opacity = "0";
       }
 
@@ -705,6 +725,11 @@ export default function GlobeIntro() {
     <section ref={wrapRef} className={`intro${off ? " off" : ""}`} id="intro" aria-label="Introduzione: dal mondo al Duomo di Milano">
       <div className="intro-sticky">
         <canvas ref={canvasRef} id="globe-canvas" aria-hidden="true" />
+        <div ref={photoRef} className="intro-photo" aria-hidden="true">
+          {/* Il Duomo vero: facciata illuminata di notte (CC BY-SA 4.0) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/duomo-night.jpg" alt="" loading="lazy" decoding="async" />
+        </div>
         <div className="intro-ui">
           <div ref={captionRef} className="intro-caption mono" id="intro-caption">Low earth orbit</div>
           <div className="intro-coords mono" id="intro-coords">45.4642&deg; N &mdash; 9.1900&deg; E</div>
