@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-02T14:57:55.820988+02:00",
+  "last_check": "2026-07-03T14:56:00.749702+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -68,6 +68,40 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-06-23T13:43:21.161572"
+    },
+    {
+      "id": "a4c100bbcc527a11175ad232d48f39b376788b43ac5c231bdd175c9a3f4409fb",
+      "title": "Harvard HSIL Hackathon 2026",
+      "url": "https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026",
+      "source": "web_search",
+      "description": "11 Apr 2026 ... Partecipa all'HSIL Hackathon 2026 a Milano e sviluppa soluzioni AI per il futuro dei sistemi sanitari in un contesto internazionale.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.93,
+      "review_status": "ai_verified",
+      "review_reason": "HSIL Hackathon 2026 announced for Milano, future, specific event page",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-07-03T12:56:04.562560"
+    },
+    {
+      "id": "2b1be2090386db997ed9b96c1d10c2254e9062511e63ecdafe23e703b92d710b",
+      "title": "AI Agent Olympics Hackathon",
+      "url": "https://luma.com/5fxlxfl5",
+      "source": "web_search",
+      "description": "Join us in Milan for the AI Agent Olympics Hackathon, the official builder event of Milan AI Week 2026. $32K+ in prizes for all participants. FREE Milan AI…",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.87,
+      "review_status": "ai_verified",
+      "review_reason": "Luma registration page for a specific hackathon in Milan, future 2026 edition, no explicit date but qualifies as direct event page",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-07-03T12:56:08.082679"
     }
   ]
 }
