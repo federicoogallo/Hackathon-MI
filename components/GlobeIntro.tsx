@@ -6,17 +6,14 @@ import landTopo from "world-atlas/land-110m.json";
 import countriesTopo from "world-atlas/countries-110m.json";
 
 /**
- * Intro orbitale in tre atti, scrubbed dallo scroll e reversibile:
- *  1. Terra a puntini vista dal polo (nord-up garantito da una base ortonormale)
- *  2. zoom su Lombardia/Milano
- *  3. finale "Google Earth": con NEXT_PUBLIC_GOOGLE_MAPS_API_KEY presente, la
- *     discesa passa ai Photorealistic 3D Tiles di Google fino a un'inquadratura
- *     aerea reale del Duomo. Senza chiave (o in caso di errore) si atterra sul
- *     diorama 3D stilizzato (citta' + Duomo in marmo con Madonnina).
- * Fallback: reduced-motion (CSS), hash/WebGL/dati -> sezione collassata.
+ * Intro scrubbed dallo scroll, tutta "di design" e senza servizi a pagamento:
+ * Terra notturna (texture NASA Black Marble, pubblico dominio, servita dal
+ * repo) su sfondo OLED-dark coerente col brand -> l'Italia si sottolinea in
+ * smeraldo -> lock-on Lombardia -> crossfade nella Milano 3D al crepuscolo
+ * (isolati, luci stradali e finestre accese) -> arco cinematico sul Duomo 3D
+ * in marmo illuminato con la Madonnina dorata. Reversibile, reduced-motion
+ * safe; senza texture/WebGL resta il globo a puntini.
  */
-const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
   const wrapRef = useRef<HTMLElement>(null);
@@ -25,7 +22,6 @@ export default function GlobeIntro() {
   const labelRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
-  const flashRef = useRef<HTMLDivElement>(null);
   const attribRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +32,7 @@ export default function GlobeIntro() {
     if (location.hash) { setOff(true); return; }
 
     try {
+    let dead = false; // il cleanup dell'effect ferma loop e init asincroni
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -120,8 +117,6 @@ export default function GlobeIntro() {
       return new Float32Array(pos);
     };
     const globalDots = buildDots(mobile ? 1.35 : 0.95, -56, 84, -180, 180, R + 0.002);
-    const regionDots = buildDots(0.2, 40, 48.5, 5, 14.5, R + 0.003);
-    const cityDots = buildDots(mobile ? 0.14 : 0.1, 43.4, 47.6, 6.4, 12.2, R + 0.004);
 
     /* ---------- scena base ---------- */
     const scene = new THREE.Scene();
@@ -130,7 +125,8 @@ export default function GlobeIntro() {
     const globe = new THREE.Group();
     scene.add(globe);
 
-    globe.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.994, 64, 64), new THREE.MeshBasicMaterial({ color: 0x0b1120 })));
+    const oceanMat = new THREE.MeshBasicMaterial({ color: 0x0b1120 });
+    globe.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.996, 96, 96), oceanMat));
 
     // graticola sottile
     const gratGeo = (() => {
@@ -179,9 +175,7 @@ export default function GlobeIntro() {
       );
     };
     const coarse = pointCloud(globalDots, 0x7ca0ff, 0.0105, 0.85);
-    const region = pointCloud(regionDots, 0xb3c6ff, 0.0022, 0);
-    const city = pointCloud(cityDots, 0xd6e4ff, 0.0013, 0);
-    globe.add(coarse, region, city);
+    globe.add(coarse);
 
     /* ---------- narrativa progressiva: Italia -> Lombardia -> Milano ---------- */
     // atto 2a: l'Italia si "sottolinea" (contorno + riempimento a punti, verde segnale)
@@ -295,7 +289,8 @@ export default function GlobeIntro() {
     const e1 = new THREE.Vector3().crossVectors(e2, e3).normalize();
     const basis = new THREE.Matrix4().makeBasis(e1, e2, e3);
     const qMilan = new THREE.Quaternion().setFromRotationMatrix(basis).invert();
-    const qPole = new THREE.Quaternion().setFromUnitVectors(pole, Z);
+    // partenza: alta orbita sull'Europa illuminata (non il polo buio)
+    const qPole = new THREE.Quaternion().setFromUnitVectors(v3(48, 8, 1).normalize(), Z);
     const qSpin = new THREE.Quaternion(), qA = new THREE.Quaternion(), qOut = new THREE.Quaternion();
     let spin = 0;
 
@@ -317,11 +312,14 @@ export default function GlobeIntro() {
     globe.add(cityG);
 
     // luci: sole caldo basso da sud-ovest + ambiente freddo
-    const amb = new THREE.AmbientLight(0x94a8d0, 0.9);
-    const sun = new THREE.DirectionalLight(0xfff2dd, 1.5);
+    const amb = new THREE.AmbientLight(0x36436a, 1.25);
+    const sun = new THREE.DirectionalLight(0xffc9a0, 1.35); // sole basso, luce dorata
     sun.position.copy(milanDir.clone().multiplyScalar(1.4).add(e1.clone().multiplyScalar(-0.5)).add(e2.clone().multiplyScalar(-0.4)));
     sun.target.position.copy(milanDir);
-    scene.add(amb, sun, sun.target);
+    const fill = new THREE.DirectionalLight(0x3d6bff, 0.8); // controluce blu elettrico
+    fill.position.copy(milanDir.clone().multiplyScalar(1.4).add(e1.clone().multiplyScalar(0.5)).add(e2.clone().multiplyScalar(0.45)));
+    fill.target = sun.target;
+    scene.add(amb, sun, sun.target, fill);
 
     // suolo con bordo dissolto
     const groundTex = (() => {
@@ -394,7 +392,7 @@ export default function GlobeIntro() {
         pv.set(b.x, b.y, b.h / 2);
         m4.compose(pv, q, s);
         inst.setMatrixAt(i, m4);
-        col.setHSL(0.62 + rand() * 0.03, 0.32, 0.1 + rand() * 0.07);
+        col.setHSL(0.61 + rand() * 0.03, 0.2, 0.065 + rand() * 0.04);
         inst.setColorAt(i, col);
       });
       inst.instanceMatrix.needsUpdate = true;
@@ -404,7 +402,7 @@ export default function GlobeIntro() {
       // finestre accese
       const wpts: number[] = [];
       blocks.forEach((b) => {
-        const n = 1 + Math.floor(rand() * 3);
+        const n = 2 + Math.floor(rand() * 4);
         for (let k = 0; k < n; k++) {
           wpts.push(b.x + (rand() - 0.5) * b.sx, b.y + (rand() - 0.5) * b.sy, b.h * (0.35 + rand() * 0.65));
         }
@@ -412,13 +410,13 @@ export default function GlobeIntro() {
       const wg = new THREE.BufferGeometry();
       wg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(wpts), 3));
       cityG.add(new THREE.Points(wg, fm(new THREE.PointsMaterial({
-        color: 0xffd9a0, size: 0.0016, sizeAttenuation: true, depthWrite: false, map: dotTex, alphaTest: 0.04,
+        color: 0xffc37a, size: 0.0018, sizeAttenuation: true, depthWrite: false, map: dotTex, alphaTest: 0.04,
       }), 1)));
     }
 
     /* ---------- Duomo 3D (facciata verso sud = lato camera) ---------- */
-    const marble = fm(new THREE.MeshLambertMaterial({ color: 0xe9eff9 }), 1);
-    const marbleHi = fm(new THREE.MeshLambertMaterial({ color: 0xf6f9fe }), 1);
+    const marble = fm(new THREE.MeshLambertMaterial({ color: 0xe9eff9, emissive: 0x38301f }), 1);
+    const marbleHi = fm(new THREE.MeshLambertMaterial({ color: 0xf6f9fe, emissive: 0x4a4029 }), 1);
     const duomo = new THREE.Group();
     cityG.add(duomo);
     const box = (w: number, d: number, h: number, x: number, y: number, z: number, mat: THREE.Material) => {
@@ -445,7 +443,7 @@ export default function GlobeIntro() {
     }
     // selva di guglie (instanced)
     {
-      const gm = fm(new THREE.MeshLambertMaterial({ color: 0xf6f9fe }), 1);
+      const gm = fm(new THREE.MeshLambertMaterial({ color: 0xf6f9fe, emissive: 0x4a4029 }), 1);
       const positions: Array<[number, number, number, number]> = []; // x, y, z base, scala
       for (let y = -0.27; y <= 0.23; y += 0.05) {
         positions.push([-0.075, y, 0.094, 1], [0.075, y, 0.094, 1]);
@@ -531,50 +529,27 @@ export default function GlobeIntro() {
     };
     scene.add(starCloud(320, 0.02, 0.45), starCloud(80, 0.038, 0.7));
 
-    /* ---------- finale Google Earth: Photorealistic 3D Tiles ---------- */
-    // Scena separata in metri (Y-up locale sul Duomo). Attiva solo con chiave;
-    // qualunque errore lascia il diorama come finale.
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    let tiles: any = null;
-    let tileScene: THREE.Scene | null = null;
-    let tileCam: THREE.PerspectiveCamera | null = null;
-    let tilesReady = false;
-    let tilesRootLoaded = false; // il fotorealistico si attiva SOLO a tileset caricato
-    let attribTick = 0;
-    if (GMAPS_KEY) {
-      (async () => {
-        try {
-          const core: any = await import("3d-tiles-renderer");
-          const plugins: any = await import("3d-tiles-renderer/plugins");
-          const { DRACOLoader } = await import("three/examples/jsm/loaders/DRACOLoader.js");
-          const t = new core.TilesRenderer();
-          t.registerPlugin(new plugins.GoogleCloudAuthPlugin({ apiToken: GMAPS_KEY, autoRefreshToken: true }));
-          const draco = new DRACOLoader();
-          draco.setDecoderPath("https://www.gstatic.com/draco/gltf/");
-          t.registerPlugin(new plugins.GLTFExtensionsPlugin({ dracoLoader: draco }));
-          try { if (plugins.TilesFadePlugin) t.registerPlugin(new plugins.TilesFadePlugin()); } catch { /* opzionale */ }
-          const cam = new THREE.PerspectiveCamera(50, camera.aspect, 5, 1e8);
-          t.setCamera(cam);
-          t.setResolutionFromRenderer(cam, renderer);
-          // frame locale documentato: Y = quota, X = nord, Z = est
-          t.setLatLonToYUp(MILAN.lat * (Math.PI / 180), MILAN.lon * (Math.PI / 180));
-          t.errorTarget = 24;
-          t.addEventListener("load-tile-set", () => { tilesRootLoaded = true; });
-          t.addEventListener("load-error", (e: unknown) => console.warn("[intro] Google 3D Tiles:", e));
-          const sc = new THREE.Scene();
-          sc.add(t.group);
-          tiles = t;
-          tileScene = sc;
-          tileCam = cam;
-          tilesReady = true;
-        } catch (e) {
-          console.warn("[intro] Google 3D Tiles non disponibili:", e);
-          tilesReady = false;
-          tiles = null;
-        }
-      })();
+    /* ---------- Terra di design: night lights NASA (pubblico dominio) ---------- */
+    // Look OLED-dark coerente col brand: oceani neri, citta' che brillano.
+    let texOn = false;
+    let texRamp = 0; // dissolve i punti quando la texture e' pronta
+    {
+      const loader = new THREE.TextureLoader();
+      loader.load(
+        mobile ? "/earth-night-4k.jpg" : "/earth-night-8k.jpg",
+        (tex) => {
+          if (dead) return;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          try { tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); } catch { /* opzionale */ }
+          oceanMat.map = tex;
+          oceanMat.color.set(0xeef2fc); // grading freddo e luminoso: le luci brillano
+          oceanMat.needsUpdate = true;
+          texOn = true;
+        },
+        undefined,
+        () => { /* niente texture: resta il globo a puntini */ },
+      );
     }
-    const TILE_CUT = 0.64; // p oltre cui si passa al fotorealistico
 
     /* ---------- overlay ---------- */
     const captions: Array<[number, string]> = [
@@ -610,11 +585,6 @@ export default function GlobeIntro() {
       narrow = camera.aspect < 0.8;
       dStart = narrow ? 4.4 : 3.2;
       camera.updateProjectionMatrix();
-      if (tileCam) {
-        tileCam.aspect = camera.aspect;
-        tileCam.updateProjectionMatrix();
-        try { tiles?.setResolutionFromRenderer?.(tileCam, renderer); } catch { /* non pronto */ }
-      }
     };
     resize();
     window.addEventListener("resize", resize, { passive: true });
@@ -629,7 +599,7 @@ export default function GlobeIntro() {
     const upEnd = new THREE.Vector3(0, 0, 1);
     const up = new THREE.Vector3();
 
-    let visible = true, rafId = 0, last = 0, dead = false;
+    let visible = true, rafId = 0, last = 0;
     const frame = (now: number) => {
       if (dead || !visible) return;
       const dt = Math.min(0.05, (now - last) * 0.001 || 0.016);
@@ -638,7 +608,7 @@ export default function GlobeIntro() {
       const p = clamp01(window.scrollY / denom);
 
       // rotazione del globo: lock completo su Milano entro p=0.8
-      const eRot = easeIO(clamp01(p / 0.8));
+      const eRot = easeIO(clamp01(p / 0.7));
       spin += dt * 0.05 * (1 - eRot);
       qSpin.setFromAxisAngle(Z, spin);
       qA.copy(qSpin).multiply(qPole);
@@ -646,11 +616,11 @@ export default function GlobeIntro() {
       globe.quaternion.copy(qOut);
 
       // discesa verticale fino a quota citta'
-      const eDolly = easeIO(clamp01(p / 0.82));
-      posStraight.set(0, 0, dStart + (1.36 - dStart) * eDolly);
+      const eDolly = easeIO(clamp01(p / 0.72));
+      posStraight.set(0, 0, dStart + (1.52 - dStart) * eDolly);
 
       // arco finale: la camera scende a sud del Duomo, orizzonte in alto
-      const tCam = smooth((p - 0.8) / 0.2);
+      const tCam = smooth((p - 0.78) / 0.22);
       const drift = Math.sin(now * 0.00025) * 0.012 * tCam;
       // tre quarti da sud-ovest, quota drone: facciata + fianco in vista
       if (narrow) posFinal.set(drift - 0.07, -0.27, 1.105);
@@ -663,25 +633,23 @@ export default function GlobeIntro() {
       camera.lookAt(target);
 
       // ---- beat narrativi sequenziali: Italia -> Lombardia -> Milano ----
-      const italyO = smooth((p - 0.28) / 0.12) * (1 - smooth((p - 0.6) / 0.1));
+      const italyO = smooth((p - 0.28) / 0.12) * (1 - smooth((p - 0.55) / 0.1));
       if (italyOutline) (italyOutline.material as THREE.LineBasicMaterial).opacity =
         italyO * (0.75 + Math.sin(now * 0.003) * 0.15);
       if (italyFill) (italyFill.material as THREE.PointsMaterial).opacity = italyO * 0.85;
-      const lombO = smooth((p - 0.48) / 0.1) * (1 - smooth((p - 0.72) / 0.08));
+      const lombO = smooth((p - 0.46) / 0.1) * (1 - smooth((p - 0.62) / 0.08));
       lombMat.opacity = lombO * (0.8 + Math.sin(now * 0.0035) * 0.2);
       lombGroup.scale.setScalar(1.7 - 0.7 * smooth((p - 0.48) / 0.1)); // lock-on
       lombGroup.rotation.z = now * 0.0003;
 
       // crossfade mappa di punti -> citta' 3D (solo fallback senza tiles)
-      const cityO = clamp01((p - 0.72) / 0.16);
-      (region.material as THREE.PointsMaterial).opacity = clamp01((p - 0.5) / 0.22) * 0.95 * (1 - cityO);
-      (city.material as THREE.PointsMaterial).opacity = clamp01((p - 0.62) / 0.14) * 0.85 * (1 - cityO * 0.95);
-      (coarse.material as THREE.PointsMaterial).opacity = 0.85 * (1 - clamp01((p - 0.45) / 0.25));
+      const cityO = clamp01((p - 0.62) / 0.14);
+      (coarse.material as THREE.PointsMaterial).opacity = 0.85 * (1 - clamp01((p - 0.45) / 0.25)) * (1 - texRamp);
       (graticule.material as THREE.LineBasicMaterial).opacity = 0.08 * (1 - eRot);
       (atmoInner.material as THREE.SpriteMaterial).opacity = 1 - eRot * 0.9;
       for (const { m, k } of fadeMats) (m as THREE.Material & { opacity: number }).opacity = cityO * k;
 
-      const mk = clamp01((p - 0.62) / 0.12) * (1 - clamp01((p - 0.76) / 0.08));
+      const mk = clamp01((p - 0.5) / 0.1) * (1 - clamp01((p - 0.6) / 0.06));
       (marker.material as THREE.MeshBasicMaterial).opacity = mk;
       const pulse = 1 + Math.sin(now * 0.004) * 0.4;
       ring.scale.setScalar((1 + (1 - clamp01((p - 0.62) / 0.12)) * 3) * pulse);
@@ -693,49 +661,16 @@ export default function GlobeIntro() {
       if (captionRef.current) captionRef.current.style.opacity = p > 0.985 ? "0" : ".9";
       setCaption(p);
 
-      // ---- fase Google Earth (solo con chiave e root tileset caricato) ----
-      const useTiles = tilesReady && tilesRootLoaded && tiles && tileScene && tileCam;
-      if (tilesReady && tiles && tileCam && p > 0.35) {
-        // discesa log 65 km -> ~300 m leggermente inclinata da ovest, poi arco
-        // in quota drone sulla facciata (che guarda a ovest, verso la piazza).
-        // Frame locale: X = nord, Z = est, Y = quota.
-        const q = clamp01((p - TILE_CUT) / (0.95 - TILE_CUT));
-        const altEnd = narrow ? 330 : 290;
-        const alt = Math.exp(Math.log(25000) + (Math.log(altEnd) - Math.log(25000)) * smooth(q));
-        const so = smooth((p - 0.85) / 0.15);
-        const driftM = Math.sin(now * 0.00025) * 8 * so;
-        const westDist = Math.max(alt * 0.16, (narrow ? 520 : 450) * so);
-        tileCam.position.set(-35 * so + driftM, alt, -westDist);
-        tileCam.lookAt(0, 62 * so, 0);
-        tileCam.updateMatrixWorld();
-        tiles.errorTarget = alt > 4000 ? 40 : 14; // veloce in quota, nitido sul finale
-        tiles.update(); // warmup anche prima del taglio: i tile arrivano in anticipo
-        if (attribRef.current && ++attribTick % 40 === 0) {
-          try {
-            const parts = (tiles.getAttributions() || []).map((a: { value?: string }) => a.value).filter(Boolean);
-            attribRef.current.textContent = "© " + (parts.length ? parts.join(" · ") : "Google");
-          } catch { attribRef.current.textContent = "© Google"; }
-        }
-      }
-      const tilesActive = !!useTiles && p >= TILE_CUT;
-      if (flashRef.current) {
-        const f = useTiles ? Math.max(0, 1 - Math.abs(p - TILE_CUT) / 0.05) : 0;
-        flashRef.current.style.opacity = String(f * 0.85);
-      }
-      // badge diagnostico: rende visibile PERCHE' manca il fotorealistico
+      // ---- dissolvenza punti -> Terra notturna; credit NASA ----
+      if (texOn && texRamp < 1) texRamp = Math.min(1, texRamp + dt * 1.2);
       if (attribRef.current) {
-        if (tilesActive) attribRef.current.style.opacity = "1";
-        else if (p > 0.55 && !GMAPS_KEY) {
-          attribRef.current.textContent = "vista satellite off — NEXT_PUBLIC_GOOGLE_MAPS_API_KEY assente";
-          attribRef.current.style.opacity = ".85";
-        } else if (p > 0.68 && GMAPS_KEY && !tilesRootLoaded) {
-          attribRef.current.textContent = "vista satellite non caricata — verifica Map Tiles API / restrizioni della chiave";
-          attribRef.current.style.opacity = ".85";
+        if (texOn) {
+          attribRef.current.textContent = "Earth at night — NASA Black Marble";
+          attribRef.current.style.opacity = p < 0.7 ? ".6" : "0";
         } else attribRef.current.style.opacity = "0";
       }
 
-      if (tilesActive) renderer.render(tileScene!, tileCam!);
-      else renderer.render(scene, camera);
+      renderer.render(scene, camera);
       rafId = requestAnimationFrame(frame);
     };
     let io: IntersectionObserver | null = null;
@@ -756,7 +691,6 @@ export default function GlobeIntro() {
       io?.disconnect();
       window.removeEventListener("resize", resize);
       skipRef.current?.removeEventListener("click", onSkip);
-      try { tiles?.dispose?.(); } catch { /* già smontato */ }
       renderer.dispose();
     };
     } catch (err) {
@@ -782,7 +716,6 @@ export default function GlobeIntro() {
           <button ref={skipRef} className="intro-skip mono" id="intro-skip" type="button">Salta l&apos;intro &darr;</button>
           <div ref={attribRef} className="intro-attrib" id="intro-attrib" aria-hidden="true" />
         </div>
-        <div ref={flashRef} className="intro-flash" aria-hidden="true" />
         <div className="intro-fade" />
       </div>
     </section>

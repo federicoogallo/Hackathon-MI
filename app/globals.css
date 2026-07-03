@@ -85,7 +85,7 @@ background:linear-gradient(150deg,rgba(61,107,255,.32),rgba(255,255,255,.04));bo
 .intro-skip{position:absolute;right:24px;bottom:30px;pointer-events:auto;min-height:44px;padding:0 16px;border:1px solid var(--line-2);border-radius:100px;background:rgba(7,10,17,.55);backdrop-filter:blur(10px);color:var(--soft);font-size:.78rem;font-weight:700;letter-spacing:.06em;transition:background .25s,border-color .25s,opacity .4s}
 .intro-skip:hover{background:rgba(255,255,255,.1);border-color:var(--line-3)}
 .intro-fade{position:absolute;left:0;right:0;bottom:0;height:22vh;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent,var(--bg))}
-.intro-flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 55%,rgba(198,220,255,.95),rgba(124,160,255,.4) 45%,transparent 78%)}
+.intro-ui{z-index:2}
 .intro-attrib{position:absolute;left:24px;bottom:32px;z-index:2;max-width:60%;font-size:.66rem;line-height:1.4;color:rgba(255,255,255,.62);letter-spacing:.03em;text-shadow:0 1px 3px rgba(0,0,0,.8);opacity:0;transition:opacity .4s;pointer-events:none}
 @media(max-width:640px){.intro-attrib{left:16px;bottom:26px;max-width:52%}}
 
