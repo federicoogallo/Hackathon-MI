@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { feature } from "topojson-client";
 import landTopo from "world-atlas/land-110m.json";
+import countriesTopo from "world-atlas/countries-110m.json";
 
 /**
  * Intro orbitale in tre atti, scrubbed dallo scroll e reversibile:
@@ -181,6 +182,96 @@ export default function GlobeIntro() {
     const region = pointCloud(regionDots, 0xb3c6ff, 0.0022, 0);
     const city = pointCloud(cityDots, 0xd6e4ff, 0.0013, 0);
     globe.add(coarse, region, city);
+
+    /* ---------- narrativa progressiva: Italia -> Lombardia -> Milano ---------- */
+    // atto 2a: l'Italia si "sottolinea" (contorno + riempimento a punti, verde segnale)
+    let italyOutline: THREE.LineSegments | null = null;
+    let italyFill: THREE.Points | null = null;
+    try {
+      const cfc: any = feature(countriesTopo as any, (countriesTopo as any).objects.countries);
+      const italy = (cfc.features || []).find(
+        (f: any) => String(f.id) === "380" || f?.properties?.name === "Italy",
+      );
+      if (italy) {
+        const polys = italy.geometry.type === "Polygon" ? [italy.geometry.coordinates] : italy.geometry.coordinates;
+        const seg: number[] = [];
+        const itRings: Ring[] = [];
+        polys.forEach((poly: number[][][]) => {
+          poly.forEach((ring: number[][]) => {
+            let minX = 999, minY = 999, maxX = -999, maxY = -999;
+            for (const pt of ring) {
+              if (pt[0] < minX) minX = pt[0];
+              if (pt[0] > maxX) maxX = pt[0];
+              if (pt[1] < minY) minY = pt[1];
+              if (pt[1] > maxY) maxY = pt[1];
+            }
+            itRings.push({ pts: ring, minX, minY, maxX, maxY });
+            for (let i = 0; i < ring.length - 1; i++) {
+              const a = v3(ring[i][1], ring[i][0], R * 1.0028);
+              const b = v3(ring[i + 1][1], ring[i + 1][0], R * 1.0028);
+              seg.push(a.x, a.y, a.z, b.x, b.y, b.z);
+            }
+          });
+        });
+        const og = new THREE.BufferGeometry();
+        og.setAttribute("position", new THREE.BufferAttribute(new Float32Array(seg), 3));
+        italyOutline = new THREE.LineSegments(og, new THREE.LineBasicMaterial({
+          color: 0x2fe3a7, transparent: true, opacity: 0, depthWrite: false,
+        }));
+        globe.add(italyOutline);
+        const inItaly = (lon: number, lat: number): boolean => {
+          let inside = false;
+          for (const g of itRings) {
+            if (lon < g.minX || lon > g.maxX || lat < g.minY || lat > g.maxY) continue;
+            const pts = g.pts;
+            for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+              const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+              if (yi > lat !== yj > lat && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+            }
+          }
+          return inside;
+        };
+        const fill: number[] = [];
+        for (let lat = 36.6; lat <= 47.2; lat += 0.3) {
+          const lonStep = 0.3 / Math.max(0.4, Math.cos((lat * Math.PI) / 180));
+          for (let lon = 6.5; lon <= 18.7; lon += lonStep) {
+            if (inItaly(lon, lat)) {
+              const v = v3(lat, lon, R * 1.0026);
+              fill.push(v.x, v.y, v.z);
+            }
+          }
+        }
+        italyFill = pointCloud(new Float32Array(fill), 0x8fe8c8, 0.0036, 0);
+        globe.add(italyFill);
+      }
+    } catch { /* niente evidenziazione Italia: il resto dell'intro regge */ }
+
+    // atto 2b: lock-on HUD sulla Lombardia (anello ad archi con tacche, rotante)
+    const lombGroup = new THREE.Group();
+    const lombMat = new THREE.LineBasicMaterial({ color: 0x2fe3a7, transparent: true, opacity: 0, depthWrite: false });
+    {
+      const lombC = v3(45.65, 9.6, 1).normalize();
+      const rr = Math.sin((1.45 * Math.PI) / 180); // raggio angolare ~1.45 gradi
+      const seg: number[] = [];
+      const n = 72;
+      for (const r2 of [rr, rr * 0.975]) { // doppio tratto = spessore percepito
+        for (let i = 0; i < n; i++) {
+          if (i % 18 >= 15) continue; // archi con varchi, stile HUD
+          const a1 = (i / n) * 6.2832, a2 = ((i + 1) / n) * 6.2832;
+          seg.push(Math.cos(a1) * r2, Math.sin(a1) * r2, 0, Math.cos(a2) * r2, Math.sin(a2) * r2, 0);
+        }
+      }
+      for (let k = 0; k < 4; k++) { // tacche cardinali
+        const a = (k / 4) * 6.2832 + 0.7854;
+        seg.push(Math.cos(a) * rr * 1.06, Math.sin(a) * rr * 1.06, 0, Math.cos(a) * rr * 1.22, Math.sin(a) * rr * 1.22, 0);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(seg), 3));
+      lombGroup.add(new THREE.LineSegments(g, lombMat));
+      lombGroup.position.copy(lombC).multiplyScalar(R * 1.004);
+      lombGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), lombC);
+      globe.add(lombGroup);
+    }
 
     // marker + anello (fase di avvicinamento, poi lascia il posto alla citta')
     const marker = new THREE.Mesh(
@@ -483,15 +574,15 @@ export default function GlobeIntro() {
         }
       })();
     }
-    const TILE_CUT = 0.58; // p oltre cui si passa al fotorealistico
+    const TILE_CUT = 0.64; // p oltre cui si passa al fotorealistico
 
     /* ---------- overlay ---------- */
     const captions: Array<[number, string]> = [
       [0, "Low earth orbit — il mondo visto dall’alto"],
-      [0.3, "Europa — triangolazione dei segnali"],
-      [0.56, "Italia — Lombardia"],
-      [0.74, "Milano — vista aerea"],
-      [0.9, "Piazza del Duomo"],
+      [0.28, "Europa — Italia nel mirino"],
+      [0.5, "Nord Italia — Lombardia"],
+      [0.66, "Milano — acquisizione citta'"],
+      [0.88, "Piazza del Duomo"],
     ];
     let capIdx = -1;
     const setCaption = (p: number) => {
@@ -571,19 +662,29 @@ export default function GlobeIntro() {
       camera.up.copy(up);
       camera.lookAt(target);
 
-      // crossfade mappa di punti -> citta' 3D
+      // ---- beat narrativi sequenziali: Italia -> Lombardia -> Milano ----
+      const italyO = smooth((p - 0.28) / 0.12) * (1 - smooth((p - 0.6) / 0.1));
+      if (italyOutline) (italyOutline.material as THREE.LineBasicMaterial).opacity =
+        italyO * (0.75 + Math.sin(now * 0.003) * 0.15);
+      if (italyFill) (italyFill.material as THREE.PointsMaterial).opacity = italyO * 0.85;
+      const lombO = smooth((p - 0.48) / 0.1) * (1 - smooth((p - 0.72) / 0.08));
+      lombMat.opacity = lombO * (0.8 + Math.sin(now * 0.0035) * 0.2);
+      lombGroup.scale.setScalar(1.7 - 0.7 * smooth((p - 0.48) / 0.1)); // lock-on
+      lombGroup.rotation.z = now * 0.0003;
+
+      // crossfade mappa di punti -> citta' 3D (solo fallback senza tiles)
       const cityO = clamp01((p - 0.72) / 0.16);
-      (region.material as THREE.PointsMaterial).opacity = clamp01((p - 0.45) / 0.3) * 0.95 * (1 - cityO);
-      (city.material as THREE.PointsMaterial).opacity = clamp01((p - 0.6) / 0.16) * 0.85 * (1 - cityO * 0.95);
+      (region.material as THREE.PointsMaterial).opacity = clamp01((p - 0.5) / 0.22) * 0.95 * (1 - cityO);
+      (city.material as THREE.PointsMaterial).opacity = clamp01((p - 0.62) / 0.14) * 0.85 * (1 - cityO * 0.95);
       (coarse.material as THREE.PointsMaterial).opacity = 0.85 * (1 - clamp01((p - 0.45) / 0.25));
       (graticule.material as THREE.LineBasicMaterial).opacity = 0.08 * (1 - eRot);
       (atmoInner.material as THREE.SpriteMaterial).opacity = 1 - eRot * 0.9;
       for (const { m, k } of fadeMats) (m as THREE.Material & { opacity: number }).opacity = cityO * k;
 
-      const mk = clamp01((p - 0.5) / 0.18) * (1 - clamp01((p - 0.7) / 0.08));
+      const mk = clamp01((p - 0.62) / 0.12) * (1 - clamp01((p - 0.76) / 0.08));
       (marker.material as THREE.MeshBasicMaterial).opacity = mk;
       const pulse = 1 + Math.sin(now * 0.004) * 0.4;
-      ring.scale.setScalar((1 + (1 - clamp01((p - 0.5) / 0.18)) * 3) * pulse);
+      ring.scale.setScalar((1 + (1 - clamp01((p - 0.62) / 0.12)) * 3) * pulse);
       (ring.material as THREE.MeshBasicMaterial).opacity = mk * (0.5 + Math.sin(now * 0.004) * 0.25);
 
       if (labelRef.current) labelRef.current.classList.toggle("on", p > 0.9);
@@ -600,7 +701,7 @@ export default function GlobeIntro() {
         // Frame locale: X = nord, Z = est, Y = quota.
         const q = clamp01((p - TILE_CUT) / (0.95 - TILE_CUT));
         const altEnd = narrow ? 330 : 290;
-        const alt = Math.exp(Math.log(65000) + (Math.log(altEnd) - Math.log(65000)) * smooth(q));
+        const alt = Math.exp(Math.log(25000) + (Math.log(altEnd) - Math.log(25000)) * smooth(q));
         const so = smooth((p - 0.85) / 0.15);
         const driftM = Math.sin(now * 0.00025) * 8 * so;
         const westDist = Math.max(alt * 0.16, (narrow ? 520 : 450) * so);
@@ -621,7 +722,17 @@ export default function GlobeIntro() {
         const f = useTiles ? Math.max(0, 1 - Math.abs(p - TILE_CUT) / 0.05) : 0;
         flashRef.current.style.opacity = String(f * 0.85);
       }
-      if (attribRef.current) attribRef.current.style.opacity = tilesActive ? "1" : "0";
+      // badge diagnostico: rende visibile PERCHE' manca il fotorealistico
+      if (attribRef.current) {
+        if (tilesActive) attribRef.current.style.opacity = "1";
+        else if (p > 0.55 && !GMAPS_KEY) {
+          attribRef.current.textContent = "vista satellite off — NEXT_PUBLIC_GOOGLE_MAPS_API_KEY assente";
+          attribRef.current.style.opacity = ".85";
+        } else if (p > 0.68 && GMAPS_KEY && !tilesRootLoaded) {
+          attribRef.current.textContent = "vista satellite non caricata — verifica Map Tiles API / restrizioni della chiave";
+          attribRef.current.style.opacity = ".85";
+        } else attribRef.current.style.opacity = "0";
+      }
 
       if (tilesActive) renderer.render(tileScene!, tileCam!);
       else renderer.render(scene, camera);
