@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-03T14:56:00.749702+02:00",
+  "last_check": "2026-07-04T14:06:54.155598+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -83,7 +83,9 @@
       "review_status": "ai_verified",
       "review_reason": "HSIL Hackathon 2026 announced for Milano, future, specific event page",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026/"
+      ],
       "discovered_at": "2026-07-03T12:56:04.562560"
     },
     {
@@ -100,7 +102,10 @@
       "review_status": "ai_verified",
       "review_reason": "Luma registration page for a specific hackathon in Milan, future 2026 edition, no explicit date but qualifies as direct event page",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon",
+        "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-prizes-32k-free-milan-ai-week-ticket-tickets-1987936520647"
+      ],
       "discovered_at": "2026-07-03T12:56:08.082679"
     }
   ]
