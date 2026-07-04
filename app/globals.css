@@ -84,12 +84,11 @@ background:linear-gradient(150deg,rgba(61,107,255,.32),rgba(255,255,255,.04));bo
 @keyframes hintDrop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .intro-skip{position:absolute;right:24px;bottom:30px;pointer-events:auto;min-height:44px;padding:0 16px;border:1px solid var(--line-2);border-radius:100px;background:rgba(7,10,17,.55);backdrop-filter:blur(10px);color:var(--soft);font-size:.78rem;font-weight:700;letter-spacing:.06em;transition:background .25s,border-color .25s,opacity .4s}
 .intro-skip:hover{background:rgba(255,255,255,.1);border-color:var(--line-3)}
-.intro-photo{position:absolute;inset:0;z-index:1;opacity:0;overflow:hidden;pointer-events:none}
-.intro-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;will-change:transform;filter:saturate(.92) contrast(1.04)}
-.intro-photo::after{content:'';position:absolute;inset:0;background:
-radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(7,10,17,.55) 100%),
-linear-gradient(180deg,rgba(7,10,17,.35),transparent 30%,transparent 70%,rgba(7,10,17,.5))}
+
+
+
 .intro-fade{position:absolute;left:0;right:0;bottom:0;height:22vh;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent,var(--bg))}
+.intro-tiles{position:absolute;inset:0;z-index:1;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .12s linear}
 .intro-ui{z-index:2}
 .intro-attrib{position:absolute;left:24px;bottom:32px;z-index:2;max-width:60%;font-size:.66rem;line-height:1.4;color:rgba(255,255,255,.62);letter-spacing:.03em;text-shadow:0 1px 3px rgba(0,0,0,.8);opacity:0;transition:opacity .4s;pointer-events:none}
 @media(max-width:640px){.intro-attrib{left:16px;bottom:26px;max-width:52%}}

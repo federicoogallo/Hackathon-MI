@@ -14,6 +14,13 @@ import countriesTopo from "world-atlas/countries-110m.json";
  * in marmo illuminato con la Madonnina dorata. Reversibile, reduced-motion
  * safe; senza texture/WebGL resta il globo a puntini.
  */
+const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+// Duomo di Milano: geometria reale per l'inquadratura frontale.
+// Bearing 250 deg = direzione verso cui GUARDA la facciata (WSW, verso la
+// piazza), ricavata dall'asse facciata->abside reale; la camera finale sta a
+// questo bearing dal centro, quindi in piazza, e guarda la facciata.
+const DUOMO = { lat: 45.46418, lon: 9.19199, facadeBearing: 250 };
+
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
   const wrapRef = useRef<HTMLElement>(null);
@@ -23,7 +30,7 @@ export default function GlobeIntro() {
   const hintRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
   const attribRef = useRef<HTMLDivElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
+  const tilesCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -552,6 +559,53 @@ export default function GlobeIntro() {
       );
     }
 
+    /* ---------- FINALE REALE: Google Photorealistic 3D Tiles ---------- */
+    // Vera geometria 3D fotorealistica di Milano e del Duomo (come Google Earth),
+    // resa in un secondo canvas/renderer perche' vive in coordinate ECEF (metri).
+    // Nessuna chiave / errore rete -> il canvas resta trasparente e sotto suona
+    // il diorama stilizzato come fallback.
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    let tiles: any = null;
+    let tilesRenderer: THREE.WebGLRenderer | null = null;
+    let tilesScene: THREE.Scene | null = null;
+    let tilesCam: THREE.PerspectiveCamera | null = null;
+    let ELL: any = null;
+    let tilesReady = false;
+    let tilesShown = false;   // abbastanza tile caricati per mostrare la scena
+    let loadedModels = 0;
+    const enuMat = new THREE.Matrix4();
+    if (GMAPS_KEY && tilesCanvasRef.current) {
+      (async () => {
+        try {
+          const core: any = await import("3d-tiles-renderer");
+          const plugins: any = await import("3d-tiles-renderer/plugins");
+          const { DRACOLoader } = await import("three/examples/jsm/loaders/DRACOLoader.js");
+          if (dead || !tilesCanvasRef.current) return;
+          const tr = new THREE.WebGLRenderer({ canvas: tilesCanvasRef.current, antialias: true, alpha: true });
+          tr.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.4 : 1.75));
+          tr.setSize(wrap.clientWidth || window.innerWidth, window.innerHeight, false);
+          const cam = new THREE.PerspectiveCamera(52, camera.aspect, 1, 4e7);
+          const sc = new THREE.Scene();
+          const t = new core.TilesRenderer();
+          t.registerPlugin(new plugins.GoogleCloudAuthPlugin({ apiToken: GMAPS_KEY, autoRefreshToken: true }));
+          const draco = new DRACOLoader();
+          draco.setDecoderPath("https://www.gstatic.com/draco/gltf/");
+          t.registerPlugin(new plugins.GLTFExtensionsPlugin({ dracoLoader: draco }));
+          try { if (plugins.TilesFadePlugin) t.registerPlugin(new plugins.TilesFadePlugin()); } catch { /* opzionale */ }
+          t.setCamera(cam);
+          t.setResolutionFromRenderer(cam, tr);
+          t.errorTarget = mobile ? 18 : 10;
+          t.addEventListener("load-model", () => { loadedModels++; });
+          t.addEventListener("load-error", (e: any) => console.warn("[intro] Google 3D Tiles:", e?.error || e));
+          sc.add(t.group);
+          ELL = core.WGS84_ELLIPSOID;
+          tiles = t; tilesRenderer = tr; tilesScene = sc; tilesCam = cam; tilesReady = true;
+        } catch (e) {
+          console.warn("[intro] 3D Tiles non disponibili, resto sul diorama:", e);
+        }
+      })();
+    }
+
     /* ---------- overlay ---------- */
     const captions: Array<[number, string]> = [
       [0, "Low earth orbit — il mondo visto dall’alto"],
@@ -578,6 +632,11 @@ export default function GlobeIntro() {
     const smooth = (t: number) => { const c = clamp01(t); return c * c * (3 - 2 * c); };
 
     let dStart = 3.2, narrow = false;
+    const D2R = Math.PI / 180;
+    const camWorld = new THREE.Vector3(), tgtWorld = new THREE.Vector3(), upWorld = new THREE.Vector3();
+    const enuPos = (east: number, north: number, up: number, out: THREE.Vector3) =>
+      out.set(east, north, up).applyMatrix4(enuMat); // ENU locale -> ECEF mondo
+
     const resize = () => {
       const w = wrap.clientWidth || window.innerWidth, h = window.innerHeight;
       renderer.setSize(w, h, false);
@@ -586,6 +645,11 @@ export default function GlobeIntro() {
       narrow = camera.aspect < 0.8;
       dStart = narrow ? 4.4 : 3.2;
       camera.updateProjectionMatrix();
+      if (tilesRenderer && tilesCam) {
+        tilesRenderer.setSize(w, h, false);
+        tilesCam.aspect = w / h;
+        tilesCam.updateProjectionMatrix();
+      }
     };
     resize();
     window.addEventListener("resize", resize, { passive: true });
@@ -665,32 +729,52 @@ export default function GlobeIntro() {
       // ---- dissolvenza punti -> Terra notturna; credit NASA ----
       if (texOn && texRamp < 1) texRamp = Math.min(1, texRamp + dt * 1.2);
 
-      // ---- finale reale: crossfade sulla fotografia notturna del Duomo ----
-      const photoO = smooth((p - 0.86) / 0.1);
-      if (photoRef.current) {
-        if (p > 0.45 && photoRef.current.dataset.eager !== "1") {
-          const im = photoRef.current.querySelector("img");
-          if (im) (im as HTMLImageElement).loading = "eager";
-          photoRef.current.dataset.eager = "1";
-        }
-        photoRef.current.style.opacity = String(photoO);
-        const im2 = photoRef.current.firstElementChild as HTMLElement | null;
-        if (im2 && photoO > 0) {
-          const kb = 1.1 - 0.08 * photoO + Math.sin(now * 0.0002) * 0.004 * photoO;
-          im2.style.transform = `scale(${kb.toFixed(4)}) translateY(${((1 - photoO) * 2.5).toFixed(2)}%)`;
-        }
+      // ---- FINALE: volo in Google 3D Tiles fino alla facciata del Duomo ----
+      let tilesO = 0;
+      if (tilesReady && tiles && tilesCam && tilesRenderer && tilesScene && ELL) {
+        tiles.group.updateMatrixWorld();
+        ELL.getEastNorthUpFrame(DUOMO.lat * D2R, DUOMO.lon * D2R, 0, enuMat);
+        enuMat.premultiply(tiles.group.matrixWorld);
+
+        const g = smooth(clamp01((p - 0.42) / 0.56));        // quota: ~9km -> facciata
+        const alt = Math.exp(Math.log(9000) + (Math.log(narrow ? 165 : 125) - Math.log(9000)) * g);
+        const hf = smooth(clamp01((p - 0.66) / 0.34));        // spostamento sul davanti
+        const brg = (DUOMO.facadeBearing + Math.sin(now * 0.0002) * 5 * hf) * D2R;
+        const horiz = alt * 0.05 + (narrow ? 360 : 300) * hf;
+        enuPos(Math.sin(brg) * horiz, Math.cos(brg) * horiz, alt, camWorld);
+        const foff = 60 * hf;                                 // mira sulla facciata
+        enuPos(Math.sin(brg) * foff, Math.cos(brg) * foff, 24 + 34 * g, tgtWorld);
+        upWorld.set(enuMat.elements[8], enuMat.elements[9], enuMat.elements[10]).normalize();
+        tilesCam.position.copy(camWorld);
+        tilesCam.up.copy(upWorld);
+        tilesCam.lookAt(tgtWorld);
+        tilesCam.aspect = camera.aspect;
+        tilesCam.updateProjectionMatrix();
+        tiles.setResolutionFromRenderer(tilesCam, tilesRenderer);
+        tiles.update();
+        if (!tilesShown && loadedModels >= (mobile ? 4 : 8)) tilesShown = true;
+        tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.05)) : 0;
+        if (tilesCanvasRef.current) tilesCanvasRef.current.style.opacity = String(tilesO);
+        if (tilesO > 0) tilesRenderer.render(tilesScene, tilesCam);
       }
+
       if (attribRef.current) {
-        if (photoO > 0.4) {
-          attribRef.current.textContent = "Foto: Giacomo Antonini — CC BY-SA 4.0 (Wikimedia Commons)";
-          attribRef.current.style.opacity = ".7";
+        if (tilesO > 0.3) {
+          let cred = "Google";
+          try {
+            const a = (tiles.getAttributions?.() || []) as Array<{ value?: string }>;
+            const parts = a.map((x) => x.value).filter(Boolean);
+            if (parts.length) cred = parts.join(" · ");
+          } catch { /* credit di default */ }
+          attribRef.current.textContent = "© " + cred;
+          attribRef.current.style.opacity = ".8";
         } else if (texOn && p < 0.7) {
           attribRef.current.textContent = "Earth at night — NASA Black Marble";
           attribRef.current.style.opacity = ".6";
         } else attribRef.current.style.opacity = "0";
       }
 
-      renderer.render(scene, camera);
+      if (tilesO < 1) renderer.render(scene, camera); // globo/diorama sotto (fallback)
       rafId = requestAnimationFrame(frame);
     };
     let io: IntersectionObserver | null = null;
@@ -711,6 +795,8 @@ export default function GlobeIntro() {
       io?.disconnect();
       window.removeEventListener("resize", resize);
       skipRef.current?.removeEventListener("click", onSkip);
+      try { tiles?.dispose?.(); } catch { /* già smontato */ }
+      try { tilesRenderer?.dispose?.(); } catch { /* già smontato */ }
       renderer.dispose();
     };
     } catch (err) {
@@ -725,11 +811,8 @@ export default function GlobeIntro() {
     <section ref={wrapRef} className={`intro${off ? " off" : ""}`} id="intro" aria-label="Introduzione: dal mondo al Duomo di Milano">
       <div className="intro-sticky">
         <canvas ref={canvasRef} id="globe-canvas" aria-hidden="true" />
-        <div ref={photoRef} className="intro-photo" aria-hidden="true">
-          {/* Il Duomo vero: facciata illuminata di notte (CC BY-SA 4.0) */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/duomo-night.jpg" alt="" loading="lazy" decoding="async" />
-        </div>
+        {/* Il Duomo vero in 3D: Google Photorealistic 3D Tiles */}
+        <canvas ref={tilesCanvasRef} className="intro-tiles" aria-hidden="true" />
         <div className="intro-ui">
           <div ref={captionRef} className="intro-caption mono" id="intro-caption">Low earth orbit</div>
           <div className="intro-coords mono" id="intro-coords">45.4642&deg; N &mdash; 9.1900&deg; E</div>
