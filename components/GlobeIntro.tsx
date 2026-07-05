@@ -301,9 +301,10 @@ export default function GlobeIntro() {
     const basis = new THREE.Matrix4().makeBasis(e1, e2, e3);
     const qMilan = new THREE.Quaternion().setFromRotationMatrix(basis).invert();
     // partenza: alta orbita sull'Europa illuminata (non il polo buio)
-    // vista d'apertura: Atlantico, con Europa/Africa a destra e le Americhe a
-    // sinistra (di notte le loro luci sono ben visibili), poi si ruota su Milano
-    const qPole = new THREE.Quaternion().setFromUnitVectors(v3(33, -36, 1).normalize(), Z);
+    // vista d'apertura: perpendicolare all'Atlantico, con Europa/Africa a destra
+    // e le Americhe a sinistra (di notte le luci sono ben visibili), equatore
+    // quasi orizzontale (niente polo nord in vista); poi si ruota su Milano
+    const qPole = new THREE.Quaternion().setFromUnitVectors(v3(22, -40, 1).normalize(), Z);
     const qSpin = new THREE.Quaternion(), qA = new THREE.Quaternion(), qOut = new THREE.Quaternion();
     let spin = 0;
 
@@ -686,9 +687,10 @@ export default function GlobeIntro() {
       const denom = Math.max(1, wrap.offsetHeight - window.innerHeight);
       const p = clamp01(window.scrollY / denom);
 
-      // rotazione del globo: lock completo su Milano entro p=0.8
+      // rotazione del globo: lock completo su Milano entro p=0.8. Deriva iniziale
+      // molto lenta per tenere stabile la vista perpendicolare Europa/America.
       const eRot = easeIO(clamp01(p / 0.7));
-      spin += dt * 0.05 * (1 - eRot);
+      spin += dt * 0.014 * (1 - eRot);
       qSpin.setFromAxisAngle(Z, spin);
       qA.copy(qSpin).multiply(qPole);
       qOut.copy(qA).slerp(qMilan, eRot);
