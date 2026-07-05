@@ -91,7 +91,8 @@ background:linear-gradient(150deg,rgba(61,107,255,.32),rgba(255,255,255,.04));bo
 .intro-tiles{position:absolute;inset:0;z-index:1;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .12s linear}
 .intro-ui{z-index:2}
 .intro-attrib{position:absolute;left:24px;bottom:32px;z-index:2;max-width:60%;font-size:.66rem;line-height:1.4;color:rgba(255,255,255,.62);letter-spacing:.03em;text-shadow:0 1px 3px rgba(0,0,0,.8);opacity:0;transition:opacity .4s;pointer-events:none}
-@media(max-width:640px){.intro-attrib{left:16px;bottom:26px;max-width:52%}}
+.intro-attrib.warn{color:#ffd591;font-size:.72rem;font-weight:600;max-width:min(560px,80%);background:rgba(7,10,17,.6);backdrop-filter:blur(8px);padding:8px 12px;border:1px solid rgba(245,165,36,.35);border-radius:8px}
+@media(max-width:640px){.intro-attrib{left:16px;bottom:26px;max-width:52%}.intro-attrib.warn{max-width:88%}}
 
 /* ============ HERO ============ */
 .hero{position:relative;min-height:100dvh;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line);padding-top:var(--nav-h)}

@@ -573,6 +573,8 @@ export default function GlobeIntro() {
     let tilesReady = false;
     let tilesShown = false;   // abbastanza tile caricati per mostrare la scena
     let loadedModels = 0;
+    let tileErr = "";         // diagnostica visibile: perche' il 3D reale non c'e'
+    let tilePhaseSince = 0;   // quando si e' entrati nella fase tiles (per timeout)
     const enuMat = new THREE.Matrix4();
     if (GMAPS_KEY && tilesCanvasRef.current) {
       (async () => {
@@ -596,7 +598,14 @@ export default function GlobeIntro() {
           t.setResolutionFromRenderer(cam, tr);
           t.errorTarget = mobile ? 18 : 10;
           t.addEventListener("load-model", () => { loadedModels++; });
-          t.addEventListener("load-error", (e: any) => console.warn("[intro] Google 3D Tiles:", e?.error || e));
+          t.addEventListener("load-error", (e: any) => {
+            const msg = String(e?.error?.message || e?.message || e || "");
+            console.warn("[intro] Google 3D Tiles load-error:", msg || e);
+            // messaggio azionabile per l'utente sul badge in basso a sinistra
+            if (/40[13]|denied|referer|referrer|forbidden|key/i.test(msg))
+              tileErr = "3D Google negato — abilita 'Map Tiles API' + billing e consenti il referrer *.vercel.app nella chiave";
+            else if (!tileErr) tileErr = "3D Google non caricato — controlla la chiave / rete";
+          });
           sc.add(t.group);
           ELL = core.WGS84_ELLIPSOID;
           tiles = t; tilesRenderer = tr; tilesScene = sc; tilesCam = cam; tilesReady = true;
@@ -756,22 +765,34 @@ export default function GlobeIntro() {
         tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.05)) : 0;
         if (tilesCanvasRef.current) tilesCanvasRef.current.style.opacity = String(tilesO);
         if (tilesO > 0) tilesRenderer.render(tilesScene, tilesCam);
+        // timeout: in fase Duomo da >7s senza nemmeno un tile => problema chiave/API
+        if (p > 0.6) {
+          if (!tilePhaseSince) tilePhaseSince = now;
+          if (!tileErr && loadedModels === 0 && now - tilePhaseSince > 7000)
+            tileErr = "3D Google non caricato — verifica 'Map Tiles API', billing e referrer della chiave";
+        }
       }
 
       if (attribRef.current) {
+        const a = attribRef.current;
         if (tilesO > 0.3) {
           let cred = "Google";
           try {
-            const a = (tiles.getAttributions?.() || []) as Array<{ value?: string }>;
-            const parts = a.map((x) => x.value).filter(Boolean);
+            const at = (tiles.getAttributions?.() || []) as Array<{ value?: string }>;
+            const parts = at.map((x) => x.value).filter(Boolean);
             if (parts.length) cred = parts.join(" · ");
           } catch { /* credit di default */ }
-          attribRef.current.textContent = "© " + cred;
-          attribRef.current.style.opacity = ".8";
+          a.textContent = "© " + cred; a.style.opacity = ".8"; a.classList.remove("warn");
+        } else if (GMAPS_KEY && p > 0.62 && tileErr) {
+          a.textContent = tileErr; a.style.opacity = ".95"; a.classList.add("warn");
+        } else if (!GMAPS_KEY && p > 0.62) {
+          a.textContent = "3D reale off — NEXT_PUBLIC_GOOGLE_MAPS_API_KEY assente nel build";
+          a.style.opacity = ".95"; a.classList.add("warn");
+        } else if (GMAPS_KEY && p > 0.62 && !tilesShown) {
+          a.textContent = "caricamento 3D Google…"; a.style.opacity = ".7"; a.classList.remove("warn");
         } else if (texOn && p < 0.7) {
-          attribRef.current.textContent = "Earth at night — NASA Black Marble";
-          attribRef.current.style.opacity = ".6";
-        } else attribRef.current.style.opacity = "0";
+          a.textContent = "Earth at night — NASA Black Marble"; a.style.opacity = ".6"; a.classList.remove("warn");
+        } else { a.style.opacity = "0"; a.classList.remove("warn"); }
       }
 
       if (tilesO < 1) renderer.render(scene, camera); // globo/diorama sotto (fallback)
