@@ -19,9 +19,9 @@ const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 // Bearing 250 deg = direzione verso cui GUARDA la facciata (WSW, verso la
 // piazza), ricavata dall'asse facciata->abside reale; la camera finale sta a
 // questo bearing dal centro, quindi in piazza, e guarda la facciata.
-// Mira del finale sul Duomo; la camera sta nella piazza (WSW) e guarda a est
-// la facciata. Valori tarati visivamente sui tile reali di Google.
-const DUOMO = { lat: 45.46421, lon: 9.19158, facadeBearing: 251 };
+// Mira del finale sul Duomo; la camera sta nella piazza (a ovest) e guarda a
+// est la facciata. Valori tarati visivamente sui tile reali di Google.
+const DUOMO = { lat: 45.46421, lon: 9.19134, facadeBearing: 263 };
 
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
@@ -32,6 +32,7 @@ export default function GlobeIntro() {
   const hintRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
   const attribRef = useRef<HTMLDivElement>(null);
+  const gradeRef = useRef<HTMLDivElement>(null);
   const tilesCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -752,8 +753,8 @@ export default function GlobeIntro() {
         // g: discesa complessiva (quota+raggio 9km -> hero shot); pitch: da quasi
         // zenitale a quasi frontale sulla facciata (bearing = lato piazza).
         const g = smooth(clamp01((p - 0.42) / 0.56));
-        const pEnd = TUNE.pitchEnd ?? 48, rEnd = TUNE.radEnd ?? (narrow ? 500 : 390);
-        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 60;
+        const pEnd = TUNE.pitchEnd ?? 57, rEnd = TUNE.radEnd ?? (narrow ? 400 : 300);
+        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 98;
         const pitch = (6 + (pEnd - 6) * g) * D2R;             // zenitale -> obliqua aerea (no radente)
         const radius = Math.exp(Math.log(9000) + (Math.log(rEnd) - Math.log(9000)) * g);
         const brg = (bEnd + Math.sin(now * 0.00018) * 4 * g) * D2R;
@@ -773,6 +774,7 @@ export default function GlobeIntro() {
         if (!tilesShown && loadedModels >= (mobile ? 4 : 8)) tilesShown = true;
         tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.05)) : 0;
         if (tilesCanvasRef.current) tilesCanvasRef.current.style.opacity = String(tilesO);
+        if (gradeRef.current) gradeRef.current.style.opacity = String(tilesO); // grading dark-blue
         if (canvas) canvas.style.opacity = String(1 - tilesO); // spegne il globo dietro
         if (tilesO > 0) tilesRenderer.render(tilesScene, tilesCam);
         // timeout: in fase Duomo da >7s senza nemmeno un tile => problema chiave/API
@@ -844,6 +846,8 @@ export default function GlobeIntro() {
         <canvas ref={canvasRef} id="globe-canvas" aria-hidden="true" />
         {/* Il Duomo vero in 3D: Google Photorealistic 3D Tiles */}
         <canvas ref={tilesCanvasRef} className="intro-tiles" aria-hidden="true" />
+        {/* grading dark-blue: fonde la vista reale nell'estetica elite del sito */}
+        <div ref={gradeRef} className="intro-grade" aria-hidden="true" />
         <div className="intro-ui">
           <div ref={captionRef} className="intro-caption mono" id="intro-caption">Low earth orbit</div>
           <div className="intro-coords mono" id="intro-coords">45.4642&deg; N &mdash; 9.1900&deg; E</div>
