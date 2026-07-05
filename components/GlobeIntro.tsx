@@ -21,7 +21,7 @@ const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 // questo bearing dal centro, quindi in piazza, e guarda la facciata.
 // Mira del finale sul Duomo; la camera sta nella piazza (a ovest) e guarda a
 // est la facciata. Valori tarati visivamente sui tile reali di Google.
-const DUOMO = { lat: 45.46421, lon: 9.19134, facadeBearing: 263 };
+const DUOMO = { lat: 45.46421, lon: 9.19168, facadeBearing: 256 };
 
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
@@ -301,7 +301,9 @@ export default function GlobeIntro() {
     const basis = new THREE.Matrix4().makeBasis(e1, e2, e3);
     const qMilan = new THREE.Quaternion().setFromRotationMatrix(basis).invert();
     // partenza: alta orbita sull'Europa illuminata (non il polo buio)
-    const qPole = new THREE.Quaternion().setFromUnitVectors(v3(48, 8, 1).normalize(), Z);
+    // vista d'apertura: Atlantico, con Europa/Africa a destra e le Americhe a
+    // sinistra (di notte le loro luci sono ben visibili), poi si ruota su Milano
+    const qPole = new THREE.Quaternion().setFromUnitVectors(v3(33, -36, 1).normalize(), Z);
     const qSpin = new THREE.Quaternion(), qA = new THREE.Quaternion(), qOut = new THREE.Quaternion();
     let spin = 0;
 
@@ -752,9 +754,14 @@ export default function GlobeIntro() {
         // camera in coordinate sferiche ATTORNO al Duomo: resta sempre centrato.
         // g: discesa complessiva (quota+raggio 9km -> hero shot); pitch: da quasi
         // zenitale a quasi frontale sulla facciata (bearing = lato piazza).
-        const g = smooth(clamp01((p - 0.42) / 0.56));
-        const pEnd = TUNE.pitchEnd ?? 57, rEnd = TUNE.radEnd ?? (narrow ? 400 : 300);
-        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 98;
+        const g0 = smooth(clamp01((p - 0.42) / 0.56));
+        const pEnd = TUNE.pitchEnd ?? 52, rEnd = TUNE.radEnd ?? (narrow ? 300 : 212);
+        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 76;
+        // PRELOAD: durante tutta la prima parte (p<0.55) la camera tiles e' gia'
+        // puntata sul Duomo finale (g=1) e update() scarica i tile profondi
+        // mentre l'utente guarda globo/Italia/Lombardia. Dalla discesa in poi
+        // segue l'animazione. Il "salto" avviene mentre e' invisibile (opacity 0).
+        const g = p < 0.55 ? 1 : g0;
         const pitch = (6 + (pEnd - 6) * g) * D2R;             // zenitale -> obliqua aerea (no radente)
         const radius = Math.exp(Math.log(9000) + (Math.log(rEnd) - Math.log(9000)) * g);
         const brg = (bEnd + Math.sin(now * 0.00018) * 4 * g) * D2R;
@@ -771,8 +778,8 @@ export default function GlobeIntro() {
         tilesCam.updateProjectionMatrix();
         tiles.setResolutionFromRenderer(tilesCam, tilesRenderer);
         tiles.update();
-        if (!tilesShown && loadedModels >= (mobile ? 4 : 8)) tilesShown = true;
-        tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.05)) : 0;
+        if (!tilesShown && loadedModels >= (mobile ? 6 : 12)) tilesShown = true;
+        tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.06)) : 0;
         if (tilesCanvasRef.current) tilesCanvasRef.current.style.opacity = String(tilesO);
         if (gradeRef.current) gradeRef.current.style.opacity = String(tilesO); // grading dark-blue
         if (canvas) canvas.style.opacity = String(1 - tilesO); // spegne il globo dietro
