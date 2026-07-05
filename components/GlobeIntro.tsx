@@ -19,7 +19,9 @@ const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 // Bearing 250 deg = direzione verso cui GUARDA la facciata (WSW, verso la
 // piazza), ricavata dall'asse facciata->abside reale; la camera finale sta a
 // questo bearing dal centro, quindi in piazza, e guarda la facciata.
-const DUOMO = { lat: 45.46418, lon: 9.19199, facadeBearing: 250 };
+// Mira del finale sul Duomo; la camera sta nella piazza (WSW) e guarda a est
+// la facciata. Valori tarati visivamente sui tile reali di Google.
+const DUOMO = { lat: 45.46421, lon: 9.19158, facadeBearing: 251 };
 
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
@@ -742,17 +744,24 @@ export default function GlobeIntro() {
       let tilesO = 0;
       if (tilesReady && tiles && tilesCam && tilesRenderer && tilesScene && ELL) {
         tiles.group.updateMatrixWorld();
-        ELL.getEastNorthUpFrame(DUOMO.lat * D2R, DUOMO.lon * D2R, 0, enuMat);
+        const TUNE: any = (window as any).__TUNE__ || {};
+        ELL.getEastNorthUpFrame((TUNE.lat ?? DUOMO.lat) * D2R, (TUNE.lon ?? DUOMO.lon) * D2R, 0, enuMat);
         enuMat.premultiply(tiles.group.matrixWorld);
 
-        const g = smooth(clamp01((p - 0.42) / 0.56));        // quota: ~9km -> facciata
-        const alt = Math.exp(Math.log(9000) + (Math.log(narrow ? 165 : 125) - Math.log(9000)) * g);
-        const hf = smooth(clamp01((p - 0.66) / 0.34));        // spostamento sul davanti
-        const brg = (DUOMO.facadeBearing + Math.sin(now * 0.0002) * 5 * hf) * D2R;
-        const horiz = alt * 0.05 + (narrow ? 360 : 300) * hf;
-        enuPos(Math.sin(brg) * horiz, Math.cos(brg) * horiz, alt, camWorld);
-        const foff = 60 * hf;                                 // mira sulla facciata
-        enuPos(Math.sin(brg) * foff, Math.cos(brg) * foff, 24 + 34 * g, tgtWorld);
+        // camera in coordinate sferiche ATTORNO al Duomo: resta sempre centrato.
+        // g: discesa complessiva (quota+raggio 9km -> hero shot); pitch: da quasi
+        // zenitale a quasi frontale sulla facciata (bearing = lato piazza).
+        const g = smooth(clamp01((p - 0.42) / 0.56));
+        const pEnd = TUNE.pitchEnd ?? 48, rEnd = TUNE.radEnd ?? (narrow ? 500 : 390);
+        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 60;
+        const pitch = (6 + (pEnd - 6) * g) * D2R;             // zenitale -> obliqua aerea (no radente)
+        const radius = Math.exp(Math.log(9000) + (Math.log(rEnd) - Math.log(9000)) * g);
+        const brg = (bEnd + Math.sin(now * 0.00018) * 4 * g) * D2R;
+        const tgtH = 6 + thEnd * g;                           // mira: suolo -> meta' facciata
+        const horiz = radius * Math.sin(pitch);
+        const vert = radius * Math.cos(pitch);
+        enuPos(0, 0, tgtH, tgtWorld);
+        enuPos(Math.sin(brg) * horiz, Math.cos(brg) * horiz, tgtH + vert, camWorld);
         upWorld.set(enuMat.elements[8], enuMat.elements[9], enuMat.elements[10]).normalize();
         tilesCam.position.copy(camWorld);
         tilesCam.up.copy(upWorld);
@@ -764,6 +773,7 @@ export default function GlobeIntro() {
         if (!tilesShown && loadedModels >= (mobile ? 4 : 8)) tilesShown = true;
         tilesO = tilesShown ? smooth(clamp01((p - 0.6) / 0.05)) : 0;
         if (tilesCanvasRef.current) tilesCanvasRef.current.style.opacity = String(tilesO);
+        if (canvas) canvas.style.opacity = String(1 - tilesO); // spegne il globo dietro
         if (tilesO > 0) tilesRenderer.render(tilesScene, tilesCam);
         // timeout: in fase Duomo da >7s senza nemmeno un tile => problema chiave/API
         if (p > 0.6) {
