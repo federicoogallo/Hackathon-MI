@@ -44,6 +44,9 @@ export default function GlobeIntro() {
     if (!wrap || !canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (location.hash) { setOff(true); return; }
+    // reload / ritorno nella stessa sessione: intro gia' vista -> niente scena
+    // pesante, si parte dalla pagina (lo script inline ha gia' nascosto .intro)
+    if (document.documentElement.classList.contains("skip-intro")) { setOff(true); return; }
 
     try {
     let dead = false; // il cleanup dell'effect ferma loop e init asincroni

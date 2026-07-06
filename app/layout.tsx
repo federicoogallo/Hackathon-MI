@@ -28,6 +28,19 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it" className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
+      <head>
+        {/* Intro orbitale solo alla prima visita della sessione: al reload (o
+            deep-link con hash) si salta e si va dritti alla pagina. Deciso
+            prima del primo paint per non far lampeggiare il globo. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var s=sessionStorage.getItem('hm_intro_seen');" +
+              "if(location.hash||s){document.documentElement.classList.add('skip-intro');}" +
+              "if(!s){sessionStorage.setItem('hm_intro_seen','1');}}catch(e){}})();",
+          }}
+        />
+      </head>
       <body className="elite-shell">{children}</body>
     </html>
   );
