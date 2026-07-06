@@ -1,25 +1,5 @@
 {
-  "updated_at": "2026-07-05T12:30:20.072859",
-  "count": 1,
-  "candidates": [
-    {
-      "id": "bedff9b142271a4e15090b23365086ddcb165ceea0020abced95145e7d84bd47",
-      "title": "Prima edizione di Hack4Innovation | Università degli Studi di Milano-Bicocca",
-      "url": "https://www.unimib.it/news/prima-edizione-hack4innovation",
-      "source": "web_search",
-      "description": "April 2, 2026 - L’hackathon conferma il ruolo del Bicocca Pavilion come hub strategico per l’innovazione, favorendo la nascita di nuove collaborazioni tra università e aziende. Leggi il comunicato stampa · a cura di Redazione Centrale, ultimo aggiornamento ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.8,
-      "review_status": "needs_review",
-      "review_reason": "Annuncio di evento senza data specifica",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-07-05T12:15:51.717267",
-      "queued_at": "2026-07-05T12:30:20.070891",
-      "review_note": "AI uncertain: approve to publish, reject to suppress future repeats."
-    }
-  ]
+  "updated_at": "2026-07-06T14:34:29.734588",
+  "count": 0,
+  "candidates": []
 }
