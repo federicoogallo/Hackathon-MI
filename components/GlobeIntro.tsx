@@ -21,7 +21,10 @@ const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 // questo bearing dal centro, quindi in piazza, e guarda la facciata.
 // Mira del finale sul Duomo; la camera sta nella piazza (a ovest) e guarda a
 // est la facciata. Valori tarati visivamente sui tile reali di Google.
-const DUOMO = { lat: 45.46421, lon: 9.19168, facadeBearing: 256 };
+// Mira al centro della cattedrale (tiburio) cosi' il Duomo entra INTERO nel
+// frame finale: facciata + fianco + selva di guglie + Madonnina. La camera sta
+// nella piazza (a ovest) e guarda a est in obliqua aerea.
+const DUOMO = { lat: 45.46418, lon: 9.19198, facadeBearing: 255 };
 
 export default function GlobeIntro() {
   const [off, setOff] = useState(false);
@@ -757,8 +760,8 @@ export default function GlobeIntro() {
         // g: discesa complessiva (quota+raggio 9km -> hero shot); pitch: da quasi
         // zenitale a quasi frontale sulla facciata (bearing = lato piazza).
         const g0 = smooth(clamp01((p - 0.42) / 0.56));
-        const pEnd = TUNE.pitchEnd ?? 52, rEnd = TUNE.radEnd ?? (narrow ? 300 : 212);
-        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 76;
+        const pEnd = TUNE.pitchEnd ?? 47, rEnd = TUNE.radEnd ?? (narrow ? 520 : 365);
+        const bEnd = TUNE.brgEnd ?? DUOMO.facadeBearing, thEnd = TUNE.thEnd ?? 56;
         // PRELOAD: durante tutta la prima parte (p<0.55) la camera tiles e' gia'
         // puntata sul Duomo finale (g=1) e update() scarica i tile profondi
         // mentre l'utente guarda globo/Italia/Lombardia. Dalla discesa in poi
