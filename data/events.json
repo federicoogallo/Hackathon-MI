@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-08T14:21:48.949312+02:00",
+  "last_check": "2026-07-09T15:50:04.262633+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -28,7 +28,9 @@
         "https://www.bo-om.it/news-ed-eventi/ctrl-alt-bias-podcast-media-wow-2026-boom-imola/",
         "https://gdgaihack.com/",
         "https://www.bo-om.it/news-ed-eventi/1-compleanno-boom/",
-        "https://www.meetup.com/data-science-nc/events/314212547/?recId=74a265e0-3298-4027-a256-f8fb2b8fea41&recSource=event-search&searchId=15e81d27-6bc5-4545-8938-d190afdd036b&eventOrigin=find_page%24all"
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=74a265e0-3298-4027-a256-f8fb2b8fea41&recSource=event-search&searchId=15e81d27-6bc5-4545-8938-d190afdd036b&eventOrigin=find_page%24all",
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=ca6c35f0-3f8c-4bd1-ab71-1c05eb8c4b92&recSource=event-search&searchId=84edc705-2fd6-4e2e-a127-21c9c8b71e3d&eventOrigin=find_page%24all",
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=081447ca-aefb-4bda-9368-d542616df414&recSource=event-search&searchId=c3c97e73-e408-4503-82c9-4d2afd60b0b5&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
@@ -108,7 +110,8 @@
         "https://www.eventbrite.com/e/ai-agent-olympics-hackathon-prizes-32k-free-milan-ai-week-ticket-tickets-1987936520647",
         "https://www.avantgrade.com/intelligenza-artificiale/vieni-a-trovarci-allai-week-2026-il-19-e-20-maggio-padiglione-13-stand-33",
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/team-milano-hackathon",
-        "https://basedigitale.com/base-digitale-ai-week-2026-milano/"
+        "https://basedigitale.com/base-digitale-ai-week-2026-milano/",
+        "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live"
       ],
       "discovered_at": "2026-07-03T12:56:08.082679"
     }
