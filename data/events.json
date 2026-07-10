@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-09T15:50:04.262633+02:00",
+  "last_check": "2026-07-10T15:10:53.501511+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -30,7 +30,9 @@
         "https://www.bo-om.it/news-ed-eventi/1-compleanno-boom/",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=74a265e0-3298-4027-a256-f8fb2b8fea41&recSource=event-search&searchId=15e81d27-6bc5-4545-8938-d190afdd036b&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=ca6c35f0-3f8c-4bd1-ab71-1c05eb8c4b92&recSource=event-search&searchId=84edc705-2fd6-4e2e-a127-21c9c8b71e3d&eventOrigin=find_page%24all",
-        "https://www.meetup.com/data-science-nc/events/314212547/?recId=081447ca-aefb-4bda-9368-d542616df414&recSource=event-search&searchId=c3c97e73-e408-4503-82c9-4d2afd60b0b5&eventOrigin=find_page%24all"
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=081447ca-aefb-4bda-9368-d542616df414&recSource=event-search&searchId=c3c97e73-e408-4503-82c9-4d2afd60b0b5&eventOrigin=find_page%24all",
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=7aa30de9-da72-4c05-b039-9eef2c1cab6f&recSource=event-search&searchId=1b0a6d60-389f-4106-84f9-14e0d5b15519&eventOrigin=find_page%24all",
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=18edbb5b-8daf-4dec-ba6d-834c9ac9db5a&recSource=event-search&searchId=53dc4d48-1383-4702-9cd0-a18d6181a971&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
