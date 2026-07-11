@@ -2,7 +2,10 @@ import Link from "next/link";
 import { getSiteData, REPO_URL } from "@/lib/data";
 import Nav from "@/components/Nav";
 import Fx from "@/components/Fx";
-import GlobeIntro from "@/components/GlobeIntro";
+// Intro orbitale (globo -> Duomo) disattivata: il sito apre direttamente
+// sull'hero. Codice e componente conservati per riattivarla in futuro —
+// basta ripristinare l'import e <GlobeIntro /> qui sotto.
+// import GlobeIntro from "@/components/GlobeIntro";
 import HeroCanvas from "@/components/HeroCanvas";
 import Materialize from "@/components/Materialize";
 import EventsDeck from "@/components/EventsDeck";
@@ -36,7 +39,7 @@ export default function Home() {
         <a className="btn btn-primary" href="#events">{SvgArrow}Eventi</a>
       </Nav>
 
-      <GlobeIntro />
+      {/* <GlobeIntro /> */}
 
       <header className="hero" id="top">
         <HeroCanvas />
