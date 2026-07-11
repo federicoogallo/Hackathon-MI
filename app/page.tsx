@@ -160,7 +160,8 @@ export default function Home() {
       <footer>
         <div className="container">
           <div className="footer-inner">
-            <div className="footer-brand"><b>Hackathon Milano</b>Dati raccolti automaticamente con AI</div>
+            <div className="footer-brand"><b>Hackathon Milano</b>Dati raccolti automaticamente con AI<br />
+              <small>Icona: Madonnina da foto di Ibex73 (Wikimedia Commons, CC BY-SA 4.0)</small></div>
             <div className="footer-mid">aggiornato {d.lastScan}</div>
             <div className="footer-links">
               <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub</a>

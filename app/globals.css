@@ -55,7 +55,7 @@ section[id],main[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 .brand{display:flex;align-items:center;gap:13px}
 .brand-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;
 background:linear-gradient(150deg,rgba(61,107,255,.32),rgba(255,255,255,.04));border:1px solid var(--line-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 24px rgba(61,107,255,.18)}
-.brand-mark svg{width:21px;height:21px;fill:none;stroke:#dbe6ff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.brand-mark svg{width:24px;height:24px}
 .brand b{display:block;font-weight:800;font-size:.98rem;letter-spacing:-.01em}
 .brand span{display:block;color:var(--muted);font-size:.8rem;font-weight:600}
 .nav-actions{display:flex;align-items:center;gap:10px}
