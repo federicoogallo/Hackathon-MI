@@ -29,7 +29,7 @@ export default function ReviewPage() {
   return (
     <>
       <Fx />
-      <Nav brandTitle="Review queue" brandSub="Manual confidence control" brandHref="/">
+      <Nav>
         <Link className="btn btn-primary" href="/">Eventi confermati</Link>
       </Nav>
 

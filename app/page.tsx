@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <>
       <Fx />
-      <Nav brandTitle="Hackathon Milano" brandSub="Milano intelligence layer" brandHref="#top">
+      <Nav>
         <Link className="btn btn-ghost nav-secondary" href="/review">Candidati in review</Link>
         <a className="btn btn-primary" href="#events">{SvgArrow}Eventi</a>
       </Nav>
