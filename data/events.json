@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-12T13:59:12.512837+02:00",
+  "last_check": "2026-07-13T15:23:14.222425+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -33,7 +33,8 @@
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=081447ca-aefb-4bda-9368-d542616df414&recSource=event-search&searchId=c3c97e73-e408-4503-82c9-4d2afd60b0b5&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=7aa30de9-da72-4c05-b039-9eef2c1cab6f&recSource=event-search&searchId=1b0a6d60-389f-4106-84f9-14e0d5b15519&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=18edbb5b-8daf-4dec-ba6d-834c9ac9db5a&recSource=event-search&searchId=53dc4d48-1383-4702-9cd0-a18d6181a971&eventOrigin=find_page%24all",
-        "https://www.meetup.com/data-science-nc/events/314212547/?recId=f01424bb-a224-40a7-a821-ab629c189d65&recSource=event-search&searchId=77f45520-a554-4bab-9bba-67770ba75a8f&eventOrigin=find_page%24all"
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=f01424bb-a224-40a7-a821-ab629c189d65&recSource=event-search&searchId=77f45520-a554-4bab-9bba-67770ba75a8f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=732ad5a2-6774-4da5-9368-be1f6ef8f5fc&recSource=event-search&searchId=c36a5b82-6ccf-40c2-846f-1e0b85930984&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
     },
