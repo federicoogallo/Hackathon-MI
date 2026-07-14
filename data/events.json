@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-13T15:23:14.222425+02:00",
+  "last_check": "2026-07-14T14:11:48.859222+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -34,30 +34,10 @@
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=7aa30de9-da72-4c05-b039-9eef2c1cab6f&recSource=event-search&searchId=1b0a6d60-389f-4106-84f9-14e0d5b15519&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=18edbb5b-8daf-4dec-ba6d-834c9ac9db5a&recSource=event-search&searchId=53dc4d48-1383-4702-9cd0-a18d6181a971&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547/?recId=f01424bb-a224-40a7-a821-ab629c189d65&recSource=event-search&searchId=77f45520-a554-4bab-9bba-67770ba75a8f&eventOrigin=find_page%24all",
-        "https://www.meetup.com/data-science-nc/events/314212547/?recId=732ad5a2-6774-4da5-9368-be1f6ef8f5fc&recSource=event-search&searchId=c36a5b82-6ccf-40c2-846f-1e0b85930984&eventOrigin=find_page%24all"
+        "https://www.meetup.com/data-science-nc/events/314212547/?recId=732ad5a2-6774-4da5-9368-be1f6ef8f5fc&recSource=event-search&searchId=c36a5b82-6ccf-40c2-846f-1e0b85930984&eventOrigin=find_page%24all",
+        "https://lespresso.it/c/innovazione/2026/6/29/data-center-milano-lombardia-dove-sono/63081"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
-    },
-    {
-      "id": "58b80b45c7fd91ed902fb9aef9fb7b4d1774556449bccdf833bb3710043e1a67",
-      "title": "Robot Challenge Hackathon",
-      "url": "https://www.meetup.com/it-IT/master-the-vibe-milan/events/314258091/",
-      "source": "meetup",
-      "description": "Arena del Vibe Coding: team che costruiscono bot con logiche AI e microservizi, con kick-off, hackathon start e battle finale onsite.",
-      "date_str": "2026-07-13",
-      "location": "Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano",
-      "organizer": "Master The Vibe - Milan Meetup Group",
-      "is_hackathon": true,
-      "confidence": 0.95,
-      "review_status": "manual_approved",
-      "review_reason": "Segnalato manualmente: hackathon onsite a Milano, data 13 luglio 2026 confermata da Meetup.",
-      "reviewed_at": "2026-05-21T17:14:35.927845+02:00",
-      "alternate_urls": [
-        "https://www.meetup.com/master-the-vibe-milan/events/314258091/?eventOrigin=group_upcoming_events",
-        "https://www.meetup.com/it-IT/it-IT/master-the-vibe-milan/events/314258091/",
-        "https://www.meetup.com/it-IT/find/it--milano/"
-      ],
-      "discovered_at": "2026-05-21T17:14:35.930300"
     },
     {
       "id": "d91b1a3a31ddc1b7f133d6d380085a12873789e90ce84c209ea14a7c96446aab",
