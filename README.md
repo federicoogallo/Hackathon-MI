@@ -13,7 +13,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: Jul 20, 2026 15:16
+> **5 hackathons** coming up in Milan · Last updated: Jul 21, 2026 14:35
 >
 > 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
 
@@ -23,6 +23,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [Harvard HSIL Hackathon 2026](https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026) | TBD | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://luma.com/5fxlxfl5) | TBD | Milano | web_search |
+| [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 

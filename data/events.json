@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-20T15:05:43.909927+02:00",
+  "last_check": "2026-07-21T14:23:51.495663+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -96,9 +96,27 @@
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/team-milano-hackathon",
         "https://basedigitale.com/base-digitale-ai-week-2026-milano/",
         "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon/live",
-        "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=5f2b6104-9ea6-4937-80bf-81fe37ffd862&recSource=event-search&searchId=f7eb1553-1bbf-4be7-929c-8c779866d9f7&eventOrigin=find_page%24all"
+        "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=5f2b6104-9ea6-4937-80bf-81fe37ffd862&recSource=event-search&searchId=f7eb1553-1bbf-4be7-929c-8c779866d9f7&eventOrigin=find_page%24all",
+        "https://lablab.ai/ai-articles/lablab-hackathon-success-stories-part-2"
       ],
       "discovered_at": "2026-07-03T12:56:08.082679"
+    },
+    {
+      "id": "0686702076a84eba759ed904e056661db44cc61baae3ec601b9a7722123a3c63",
+      "title": "GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026",
+      "url": "https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026",
+      "source": "web_search",
+      "description": "1.1 Wikimedia Hackathon, Milan 2026. 1.1.1 Project Genesis. 1.1.2 Pre-Hackathon Preparatory Activities.GLAM Professional and User Survey. Wikimedia Hackathon, Milan 2026. Community.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.85,
+      "review_status": "ai_verified",
+      "review_reason": "Specific Wikimedia hackathon announced for Milan 2026, competition format, future year, location mentioned in title/description",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-07-21T12:23:57.829125"
     }
   ]
 }
