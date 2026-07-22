@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-21T14:23:51.495663+02:00",
+  "last_check": "2026-07-22T14:24:51.374387+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -117,6 +117,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-07-21T12:23:57.829125"
+    },
+    {
+      "id": "69ad502aff5c5744b137a628f996f62a7b45543e2231f19c0b83bc57d5a34ac9",
+      "title": "Italian Game Jam",
+      "url": "https://italiangamejam.it/",
+      "source": "web_search",
+      "description": "November 17, 2025 - L’Italian Game Jam – Edizione speciale x Combo festival si svolgerà il 3 e 4 ottobre 2026 all’interno del COMBO Festival, presso Morel Milano. La partecipazione è aperta a tutti i maggiorenni, italiani e stranieri, sia individualmente sia in team composti da un massimo di due persone.",
+      "date_str": "2026-10-03",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Game jam (hackathon) con data 3‑4 oct 2026, venue concreto a Milano (Morel Milano)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-07-22T12:25:16.026677"
     }
   ]
 }
