@@ -17,6 +17,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
 from datetime import datetime, date
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -29,7 +30,12 @@ logger = logging.getLogger(__name__)
 
 # Host canonico (deployment Vercel di produzione). Le pagine generate qui sono
 # un mirror su GitHub Pages e dichiarano <link rel="canonical"> verso l'originale.
-SITE_URL = "https://hackathon-mi-ten.vercel.app"
+# Unico punto di verita' condiviso con il sito Next (lib/data.ts) e con il
+# README: per cambiare dominio basta impostare NEXT_PUBLIC_SITE_URL.
+SITE_URL = (
+    os.environ.get("NEXT_PUBLIC_SITE_URL", "").strip()
+    or "https://hackathon-mi-ten.vercel.app"
+).rstrip("/")
 
 _MONTHS_IT = [
     "gen", "feb", "mar", "apr", "mag", "giu",

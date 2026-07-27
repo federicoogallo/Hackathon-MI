@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from datetime import datetime, date, timezone
 from pathlib import Path
@@ -27,6 +28,14 @@ _MONTHS_EN = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ]
+
+# Host canonico del sito, condiviso con il sito Next (lib/data.ts) e con il
+# generatore del mirror (html_export.py): per cambiare dominio basta impostare
+# NEXT_PUBLIC_SITE_URL.
+SITE_URL = (
+    os.environ.get("NEXT_PUBLIC_SITE_URL", "").strip()
+    or "https://hackathon-mi-ten.vercel.app"
+).rstrip("/")
 
 TABLE_START = "<!-- HACKATHON_TABLE_START -->"
 TABLE_END = "<!-- HACKATHON_TABLE_END -->"
@@ -135,7 +144,7 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
 
 > **{len(upcoming)} hackathon{'s' if len(upcoming) != 1 else ''}** coming up in Milan \u00b7 Last updated: {now_str}
 >
-> \U0001f310 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
+> \U0001f310 **[View the full website]({SITE_URL}/)** for search, filters & details.
 
 {table_section}
 
@@ -161,7 +170,7 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
 
 Hackathons, coding challenges & tech competitions in Milan \u2014 updated daily with AI.
 
-**Full website \u2192 [hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)**
+**Full website \u2192 [{SITE_URL.replace("https://", "")}]({SITE_URL}/)**
 
 {new_content}
 """
