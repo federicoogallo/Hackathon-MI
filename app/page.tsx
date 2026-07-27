@@ -72,7 +72,7 @@ export default function Home() {
 
       {/* <GlobeIntro /> */}
 
-      <header className="hero" id="top">
+      <header className="hero" id="top" tabIndex={-1}>
         <HeroCanvas />
         <div className="container">
           <div className="hero-grid">

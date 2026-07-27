@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { HackEvent } from "@/lib/data";
 
 const SvgPin = (
@@ -36,6 +37,8 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
+  const reduce = useReducedMotion();
+
   const shown = useMemo(() => {
     const query = q.trim().toLowerCase();
     return events.filter((e) => e.searchBlob.includes(query) && inFilter(e, filter));
@@ -53,13 +56,13 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
         </div>
         <div className="pills">
           {pills.map(([f, label]) => (
-            <button key={f} className={`pill${filter === f ? " active" : ""}`} onClick={() => setFilter(f)}>{label}</button>
+            <button key={f} type="button" aria-pressed={filter === f} className={`pill${filter === f ? " active" : ""}`} onClick={() => setFilter(f)}>{label}</button>
           ))}
         </div>
       </div>
       <div className="deck-head">
         <strong>Prossimi eventi verificati</strong>
-        <span id="count-label">{shown.length} {shown.length === 1 ? "evento" : "eventi"}</span>
+        <span id="count-label" aria-live="polite" aria-atomic="true">{shown.length} {shown.length === 1 ? "evento" : "eventi"}</span>
       </div>
       <div className="grid" id="grid">
         {events.length === 0 && (
@@ -72,8 +75,19 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
             <p>Non ci sono hackathon futuri confermati a Milano al momento.<br />La lista si aggiorna ogni giorno automaticamente.</p>
           </div>
         )}
-        {events.map((e) => (
-          <article key={e.id} className="card" hidden={!shown.includes(e)} onPointerMove={onSpot} data-reveal>
+        {/* Niente AnimatePresence/exit: con questo set-up le card filtrate
+            restavano appese nel DOM (uscita mai avviata). Entrata a molla +
+            `layout` per il riordino fluido: robusto e senza stati fantasma. */}
+        {shown.map((e, i) => (
+          <motion.article
+            key={e.id}
+            layout={!reduce}
+            initial={reduce ? false : { opacity: 0, y: 18, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 320, damping: 34, delay: reduce ? 0 : Math.min(i * 0.035, 0.2) }}
+            className="card"
+            onPointerMove={onSpot}
+          >
             <div className="date">
               <div>
                 <strong>{e.day || "TBD"}</strong>
@@ -102,7 +116,7 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
                 </div>
               </div>
             </div>
-          </article>
+          </motion.article>
         ))}
       </div>
       {events.length > 0 && shown.length === 0 && <p className="no-results">Nessun risultato trovato.</p>}

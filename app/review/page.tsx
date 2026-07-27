@@ -34,7 +34,7 @@ export default function ReviewPage() {
         <Link className="btn btn-primary" href="/">Eventi confermati</Link>
       </Nav>
 
-      <header className="hero review-hero" id="top">
+      <header className="hero review-hero" id="top" tabIndex={-1}>
         <HeroCanvas />
         <div className="container">
           <div className="hero-grid review-grid">

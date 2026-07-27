@@ -358,3 +358,18 @@ section[id],main[id]{scroll-margin-top:calc(var(--nav-h) + 24px)}
   .intro{display:none}
   body::after{display:none}
 }
+
+/* ============ SKIP LINK (a11y) ============ */
+.skip-link{position:fixed;top:-100px;left:16px;z-index:200;padding:12px 18px;border-radius:var(--radius-xs);
+background:var(--blue);color:#fff;font-weight:700;font-size:.92rem;box-shadow:0 10px 30px rgba(61,107,255,.4);
+transition:top .2s var(--ease)}
+.skip-link:focus{top:16px}
+
+/* ============ PAGINE DI STATO (404 / errore) ============ */
+.status-page{display:grid;place-items:center;min-height:100svh;padding:calc(var(--nav-h) + 32px) 0 64px}
+.status-inner{max-width:640px}
+.status-code{display:inline-block;margin-bottom:20px;padding:6px 14px;border:1px solid var(--line-2);border-radius:100px;
+background:rgba(61,107,255,.08);color:var(--blue-ink);font-size:.82rem;font-weight:700;letter-spacing:.14em}
+.status-inner .h2{margin-bottom:16px}
+.status-inner .lead-p{margin-bottom:28px}
+.status-digest{margin:-14px 0 24px;color:var(--faint);font-size:.76rem}

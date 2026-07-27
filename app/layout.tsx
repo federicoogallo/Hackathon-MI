@@ -54,7 +54,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="elite-shell">{children}</body>
+      <body className="elite-shell">
+        {/* skip-link: primo elemento focusabile, visibile solo da tastiera */}
+        <a className="skip-link" href="#top">Salta al contenuto</a>
+        {children}
+      </body>
     </html>
   );
 }
