@@ -135,7 +135,7 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
 
 > **{len(upcoming)} hackathon{'s' if len(upcoming) != 1 else ''}** coming up in Milan \u00b7 Last updated: {now_str}
 >
-> \U0001f310 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
+> \U0001f310 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
 {table_section}
 
@@ -161,7 +161,7 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
 
 Hackathons, coding challenges & tech competitions in Milan \u2014 updated daily with AI.
 
-**Full website \u2192 [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
+**Full website \u2192 [hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)**
 
 {new_content}
 """

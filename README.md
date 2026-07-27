@@ -1,9 +1,11 @@
 # 🏆 Hackathon Milan Monitor
 
-**Live site → [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/)**
+**Live site → [hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)**
+
+<sub>The GitHub Pages build at [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/) is a mirror; it declares a `canonical` link to the Vercel site so the two don't compete in search.</sub>
 
 Automated aggregator for hackathon events in Milan from 28 heterogeneous sources.  
-Filters with LLM, routes uncertain candidates to manual review, notifies via Telegram Bot, and publishes a static website on GitHub Pages. Runs locally or on GitHub Actions.
+Filters with LLM, routes uncertain candidates to manual review, notifies via Telegram Bot, and publishes a Next.js website on Vercel (plus a static GitHub Pages mirror). Runs locally or on GitHub Actions.
 
 <br>
 
@@ -13,9 +15,9 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Jul 27, 2026 17:41
+> **6 hackathons** coming up in Milan · Last updated: Jul 27, 2026 22:18
 >
-> 🌐 **[View the full website](https://federicoogallo.github.io/Hackathon-MI/)** for search, filters & details.
+> 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
@@ -239,13 +241,17 @@ This generates `docs/index.html` and `docs/review.html` with content already emb
 
 Go to **Settings → Secrets and variables → Actions → New repository secret** and add all keys from `.env`.
 
-### 3. Enable GitHub Pages
+### 3. Enable GitHub Pages (optional mirror)
 
-Go to **Settings → Pages** and set:
+The primary site is the Next.js app deployed on **Vercel** ([hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)),
+which rebuilds on every push — including the daily data commit from the workflow.
+
+GitHub Pages is kept as an optional static mirror. To enable it, go to **Settings → Pages** and set:
 - **Source**: `Deploy from a branch`
 - **Branch**: `main` · **Folder**: `/docs`
 
-The site will be available at `https://<username>.github.io/<repo>/`.
+The mirror will be available at `https://<username>.github.io/<repo>/`. Its pages declare a
+`canonical` link to the Vercel site, so duplicate content is attributed to the primary host.
 
 ### 4. Enable the workflow
 
