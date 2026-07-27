@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-26T14:02:46.868634+02:00",
+  "last_check": "2026-07-27T15:39:05.279314+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -103,7 +103,9 @@
         "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=4e5f82a4-88f3-4b9f-9718-4d21128d0f53&recSource=event-search&searchId=4aadd27e-9fff-47b7-bee5-05f64bcf8b73&eventOrigin=find_page%24all",
         "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=9f6ce1b7-79e5-48bc-a189-4e5bdbde4837&recSource=event-search&searchId=59c6f1fe-40c9-4083-bce4-f317f1691db1&eventOrigin=find_page%24all",
         "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=bf1b491a-2f25-41f5-a194-d220622db5d4&recSource=event-search&searchId=21eb2e1d-4b39-4ef1-972f-6b4958741f13&eventOrigin=find_page%24all",
-        "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=4a4d2339-7a4b-44a0-95f7-b7e545c14ba6&recSource=event-search&searchId=3270a4bb-df7e-42d5-9c09-50dadfb825c6&eventOrigin=find_page%24all"
+        "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=4a4d2339-7a4b-44a0-95f7-b7e545c14ba6&recSource=event-search&searchId=3270a4bb-df7e-42d5-9c09-50dadfb825c6&eventOrigin=find_page%24all",
+        "https://www.linkedin.com/company/lablab-ai/",
+        "https://github.com/enrichicco/translator4hackaton"
       ],
       "discovered_at": "2026-07-03T12:56:08.082679"
     },
