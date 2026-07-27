@@ -11,6 +11,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Review queue - Hackathon Milano",
   description: "Candidati hackathon in attesa di revisione umana.",
+  alternates: { canonical: "/review" },
 };
 
 const SvgPin = (

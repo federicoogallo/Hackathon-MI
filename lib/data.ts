@@ -8,6 +8,13 @@ import path from "node:path";
 
 export const REPO_URL = "https://github.com/federicoogallo/Hackathon-MI";
 
+/**
+ * Host canonico del sito. GitHub Pages serve lo stesso contenuto come mirror e
+ * punta qui con <link rel="canonical">, cosi' i due host non competono in SERP.
+ * Deve combaciare con il deployment di produzione Vercel.
+ */
+export const SITE_URL = "https://hackathon-mi-ten.vercel.app";
+
 export interface HackEvent {
   id: string;
   title: string;
@@ -44,6 +51,7 @@ export interface SiteData {
   events: HackEvent[];
   reviewCount: number;
   lastScan: string;
+  lastScanIso: string;
   monthsCovered: number;
   statusLabel: string;
   statusOk: boolean;
@@ -205,6 +213,7 @@ export function getSiteData(): SiteData {
     events,
     reviewCount: candidates.length,
     lastScan,
+    lastScanIso: lastCheck,
     monthsCovered: months.size,
     statusLabel,
     statusOk: statusLabel === "OK",

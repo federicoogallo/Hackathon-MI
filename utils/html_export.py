@@ -27,6 +27,10 @@ from models import HackathonEvent
 
 logger = logging.getLogger(__name__)
 
+# Host canonico (deployment Vercel di produzione). Le pagine generate qui sono
+# un mirror su GitHub Pages e dichiarano <link rel="canonical"> verso l'originale.
+SITE_URL = "https://hackathon-mi-ten.vercel.app"
+
 _MONTHS_IT = [
     "gen", "feb", "mar", "apr", "mag", "giu",
     "lug", "ago", "set", "ott", "nov", "dic",
@@ -372,16 +376,33 @@ def _build_review_cards(candidates: list[dict]) -> str:
     return "\n".join(parts)
 
 
-def _head(title: str, description: str, body_class: str, asset_v: str) -> str:
+def _head(
+    title: str,
+    description: str,
+    body_class: str,
+    asset_v: str,
+    canonical_path: str = "/",
+) -> str:
+    """Head del mirror GitHub Pages.
+
+    Il sito canonico e' il deployment Vercel: Pages serve lo stesso contenuto,
+    quindi ogni pagina dichiara <link rel="canonical"> verso l'host canonico per
+    non competere in SERP (gli og:* devono essere URL assoluti).
+    """
+    canonical = f"{SITE_URL}{canonical_path}"
     return (
         '<!DOCTYPE html>\n<html lang="it">\n<head>\n'
         '<meta charset="UTF-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
         f'<meta name="description" content="{_escape(description)}">\n'
+        f'<link rel="canonical" href="{canonical}">\n'
+        f'<meta property="og:url" content="{canonical}">\n'
         f'<meta property="og:title" content="{_escape(title)}">\n'
         f'<meta property="og:description" content="{_escape(description)}">\n'
         '<meta property="og:type" content="website">\n'
-        '<meta property="og:image" content="hero-hackathon-milano.png">\n'
+        '<meta property="og:site_name" content="Hackathon Milano">\n'
+        '<meta property="og:locale" content="it_IT">\n'
+        f'<meta property="og:image" content="{SITE_URL}/hero-hackathon-milano.png">\n'
         '<meta name="theme-color" content="#070a11">\n'
         f'<title>{_escape(title)}</title>\n'
         f'{_FONTS_LINK}'
@@ -603,6 +624,7 @@ def _build_review_html(candidates: list[dict], last_scan: str) -> str:
             f"{count} candidati hackathon da rivedere.",
             "elite-shell review-page",
             asset_v,
+            canonical_path="/review",
         )
         + _nav(
             "Review queue",

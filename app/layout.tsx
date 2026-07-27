@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk, Instrument_Serif } from "next/font/google";
+import { SITE_URL } from "@/lib/data";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--f-inter", display: "swap" });
@@ -8,13 +9,25 @@ const grotesk = Space_Grotesk({ subsets: ["latin"], weight: ["500", "600", "700"
 const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--f-serif", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hackathon-mi.vercel.app"),
+  // deve combaciare col deployment di produzione: og:image e canonical si
+  // risolvono da qui (l'host precedente rispondeva 404)
+  metadataBase: new URL(SITE_URL),
   title: "Hackathon Milano",
   description: "Hackathon in programma a Milano e dintorni, verificati da AI e review umana.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Hackathon Milano",
     description: "Hackathon in programma a Milano e dintorni.",
     type: "website",
+    url: SITE_URL,
+    siteName: "Hackathon Milano",
+    locale: "it_IT",
+    images: ["/hero-hackathon-milano.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hackathon Milano",
+    description: "Hackathon in programma a Milano e dintorni.",
     images: ["/hero-hackathon-milano.png"],
   },
 };

@@ -31,8 +31,39 @@ export default function Home() {
   const evtWord = d.events.length === 1 ? "evento" : "eventi";
   const monWord = d.monthsCovered === 1 ? "mese" : "mesi";
 
+  // JSON-LD: solo eventi con data reale (startDate e' obbligatorio per i rich
+  // result). Location come Place; niente campi inventati se il dato manca.
+  const eventsLd = d.events
+    .filter((e) => e.dateIso)
+    .map((e) => ({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: e.title,
+      startDate: e.dateIso,
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      url: e.url,
+      ...(e.description ? { description: e.description } : {}),
+      location: {
+        "@type": "Place",
+        name: e.location || "Milano",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Milano",
+          addressCountry: "IT",
+          ...(e.location && e.location !== "Milano" ? { streetAddress: e.location } : {}),
+        },
+      },
+    }));
+
   return (
     <>
+      {eventsLd.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventsLd) }}
+        />
+      )}
       <Fx />
       <Nav>
         <Link className="btn btn-ghost nav-secondary" href="/review">Candidati in review</Link>
