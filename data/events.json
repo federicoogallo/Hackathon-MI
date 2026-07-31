@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-07-30T14:28:21.517698+02:00",
+  "last_check": "2026-07-31T14:55:14.150932+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -144,6 +144,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-07-22T12:25:16.026677"
+    },
+    {
+      "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
+      "title": "Hackathon per universitari Talenti STEM per l'Innovazione Sociale",
+      "url": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/",
+      "source": "web_search",
+      "description": "1 day ago - L’Hackathon si svolgerà in presenza giovedì 29 ottobre 2026, presso la Social Innovation Academy di Fondazione Triulza in MIND – Milano Innovation District.",
+      "date_str": "2026-10-29",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "Valid hackathon in Milan, future (29 Oct 2026) with concrete venue",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-07-31T12:55:16.164587"
     }
   ]
 }

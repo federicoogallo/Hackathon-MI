@@ -15,7 +15,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **6 hackathons** coming up in Milan · Last updated: Jul 30, 2026 14:39
+> **7 hackathons** coming up in Milan · Last updated: Jul 31, 2026 15:05
 >
 > 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
@@ -23,6 +23,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | --- | --- | --- | --- |
 | [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | web_search |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
+| [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [Harvard HSIL Hackathon 2026](https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026) | TBD | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://luma.com/5fxlxfl5) | TBD | Milano | web_search |
