@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-05T14:51:28.357493+02:00",
+  "last_check": "2026-08-06T14:55:26.345363+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -145,7 +145,9 @@
       "review_status": "ai_verified",
       "review_reason": "Game jam (hackathon) con data 3‑4 oct 2026, venue concreto a Milano (Morel Milano)",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://mantovauno.it/home-page/il-team-di-lto-sul-podio-dellhackathon-di-open-fiber-alla-milano-digital-week/"
+      ],
       "discovered_at": "2026-07-22T12:25:16.026677"
     },
     {
