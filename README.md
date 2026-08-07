@@ -15,7 +15,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: Aug 06, 2026 15:05
+> **7 hackathons** coming up in Milan · Last updated: Aug 07, 2026 13:55
 >
 > 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
