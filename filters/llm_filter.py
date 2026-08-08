@@ -503,12 +503,36 @@ def llm_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
     used_indices: set[int] = set()
 
     for group in groups:
+        if not isinstance(group, dict):
+            logger.warning("LLM dedup: gruppo non parsabile ignorato: %r", group)
+            continue
+
         indices = group.get("group", [])
+        if not isinstance(indices, list):
+            logger.warning("LLM dedup: indici non parsabili ignorati: %r", indices)
+            continue
+
+        # I modelli a volte serializzano gli indici come stringhe ("0"),
+        # anche se il prompt richiede numeri JSON. Normalizzali senza
+        # permettere valori arbitrari o booleani, che in Python sono int.
+        normalized_indices: list[int] = []
+        for value in indices:
+            if isinstance(value, bool):
+                continue
+            if isinstance(value, int):
+                normalized_indices.append(value)
+                continue
+            if isinstance(value, str) and value.strip().isdigit():
+                normalized_indices.append(int(value.strip()))
+
         if not indices:
             continue
 
         # Filtra indici gia' usati o fuori range
-        valid_indices = [i for i in indices if i < len(events) and i not in used_indices]
+        valid_indices = [
+            i for i in normalized_indices
+            if 0 <= i < len(events) and i not in used_indices
+        ]
         if not valid_indices:
             continue
 

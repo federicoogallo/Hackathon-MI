@@ -16,6 +16,7 @@ from filters.llm_filter import (
     _parse_llm_response,
     classify_batch,
     llm_filter,
+    llm_dedup,
     LLMResult,
 )
 
@@ -217,6 +218,51 @@ class TestLLMParsing:
         assert results[1].confidence == 0.0
         assert results[2].is_hackathon is False
         assert results[2].confidence == 0.0
+
+
+class TestLLMDedup:
+    @pytest.fixture
+    def events(self):
+        return [
+            _make_event("Milan AI Hackathon"),
+            _make_event("Milan AI Hackathon - official page"),
+            _make_event("Milan Game Jam"),
+        ]
+
+    @patch("filters.llm_filter.config")
+    @patch("filters.llm_filter._call_llm")
+    def test_normalizes_string_indices_from_llm(self, mock_call, mock_config, events):
+        mock_config.GROQ_API_KEY = "test-key"
+        mock_call.return_value = json.dumps([
+            {"group": ["0", "1"], "best_title": "Milan AI Hackathon"},
+            {"group": ["2"]},
+        ])
+
+        result = llm_dedup(events)
+
+        assert len(result) == 2
+        assert result[0].title == "Milan AI Hackathon"
+        assert result[0].alternate_urls == [events[1].url]
+
+    @patch("filters.llm_filter.config")
+    @patch("filters.llm_filter._call_llm")
+    def test_ignores_malformed_groups_and_indices(self, mock_call, mock_config, events):
+        mock_config.GROQ_API_KEY = "test-key"
+        mock_call.return_value = json.dumps([
+            "not a group",
+            {"group": "0"},
+            {"group": [True, "wat", -1, 99]},
+            {"group": ["2"]},
+        ])
+
+        result = llm_dedup(events)
+
+        assert {event.title for event in result} == {
+            "Milan AI Hackathon",
+            "Milan AI Hackathon - official page",
+            "Milan Game Jam",
+        }
+        assert len(result) == 3
 
     def test_parse_truncates_extra_results(self):
         content = json.dumps([
