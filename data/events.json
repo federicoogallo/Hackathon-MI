@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-11T13:43:08.340212+02:00",
+  "last_check": "2026-08-12T13:44:26.896159+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -170,6 +170,23 @@
         "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en"
       ],
       "discovered_at": "2026-07-31T12:55:16.164587"
+    },
+    {
+      "id": "990842ac10eb4517fc3fa10e513d0cc11064cd4879df73eac7b10d718a071795",
+      "title": "BCG Platinion Hackathon 2026 - Milano - Eightfold",
+      "url": "https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg",
+      "source": "web_search",
+      "description": "Be part of the BCG Platinion Hackathon in Milano and create something that truly matters. World hunger is one of today's most pressing challenges, and we're bringing together tech minds from across the world to develop bold, meaningful solutions. To apply, submit your CV before Sunday 11:59 PM, September 13, 2026. Participation is completely free.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.78,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon announced for Milan, future application deadline, but no explicit event date",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-08-12T11:44:54.715658"
     }
   ]
 }
