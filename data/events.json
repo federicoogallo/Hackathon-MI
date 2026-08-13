@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-12T13:44:26.896159+02:00",
+  "last_check": "2026-08-13T13:45:02.167068+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -110,7 +110,8 @@
         "https://github.com/enrichicco/translator4hackaton",
         "https://it.linkedin.com/pulse/n-10-0630-dallai-agent-ai-digital-twin-le-tecnologie-che-stanno-0vxhf",
         "https://www.meetup.com/odsc-data-science-santaclara/events/315709362/?recId=24247e00-7e6e-45b2-9bc6-3aae3d78537e&recSource=event-search&searchId=c50132e3-5a8b-4cf5-9e2f-431c056bd623&eventOrigin=find_page%24all",
-        "https://www.meetup.com/san-francisco-odsc/events/315709338/?recId=6caf8f69-fcac-4bdf-8591-15d76d251839&recSource=event-search&searchId=63ea0932-434f-44a8-b139-f9ed27f250a9&eventOrigin=find_page%24all"
+        "https://www.meetup.com/san-francisco-odsc/events/315709338/?recId=6caf8f69-fcac-4bdf-8591-15d76d251839&recSource=event-search&searchId=63ea0932-434f-44a8-b139-f9ed27f250a9&eventOrigin=find_page%24all",
+        "https://arena.ai/"
       ],
       "discovered_at": "2026-07-03T12:56:08.082679"
     },
