@@ -1,8 +1,8 @@
 """
-Filtro LLM con Groq (Llama 3.3 70B) per classificare se un evento è un hackathon.
+Filtro LLM con Groq (GPT-OSS 120B con fallback Qwen 3.6 27B) per classificare
+se un evento è un hackathon.
 
 Usa batching per ridurre il numero di chiamate API.
-Completamente gratuito: Groq offre 14.400 RPD e 30 RPM gratis (no carta richiesta).
 Graceful degradation: se GROQ_API_KEY non è configurata, i candidati vengono
 marcati come non verificati (confidence=0.0) e la pipeline preserva lo storico.
 """
@@ -268,15 +268,29 @@ def _llm_models_to_try() -> list[str]:
     """Restituisce la lista ordinata di modelli da tentare (primary + fallback)."""
     primary = getattr(config, "LLM_MODEL", "")
     fallbacks = getattr(config, "LLM_MODEL_FALLBACKS", []) or []
+    deprecated_models = set(getattr(config, "DEPRECATED_LLM_MODELS", ()))
     models: list[str] = []
 
     for model in [primary, *fallbacks]:
-        if not model:
+        model_name = str(model).strip()
+        if not model_name:
             continue
-        if model not in models:
-            models.append(model)
+        if model_name in deprecated_models:
+            logger.warning("Modello Groq dismesso ignorato: %s", model_name)
+            continue
+        if model_name not in models:
+            models.append(model_name)
 
     return models
+
+
+def _model_request_options(model_name: str) -> dict[str, str]:
+    """Imposta il ragionamento dei modelli sostitutivi per un output JSON conciso."""
+    if model_name.startswith("openai/gpt-oss-"):
+        return {"reasoning_effort": "low"}
+    if model_name.startswith("qwen/"):
+        return {"reasoning_effort": "none"}
+    return {}
 
 
 def _call_llm(system_prompt: str, user_prompt: str) -> str:
@@ -303,6 +317,7 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
                     temperature=0.1,
                     max_tokens=4096,
                     response_format={"type": "json_object"},
+                    **_model_request_options(model_name),
                 )
                 return response.choices[0].message.content or "[]"
 
@@ -334,7 +349,10 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
                     continue
 
                 # Errori hard sul modello: passa al fallback successivo.
-                if any(kw in error_str.lower() for kw in ("model", "not found", "unsupported")):
+                if any(
+                    kw in error_str.lower()
+                    for kw in ("model", "not found", "unsupported", "decommission", "retired")
+                ):
                     logger.warning("Modello Groq non disponibile (%s): %s", model_name, error_str[:120])
                     break
 
@@ -348,7 +366,7 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
 
 
 def classify_batch(events: list[HackathonEvent]) -> list[LLMResult]:
-    """Classifica un batch di eventi usando Groq (Llama 3.3 70B).
+    """Classifica un batch di eventi usando Groq.
 
     Args:
         events: Lista di eventi da classificare (max LLM_BATCH_SIZE).

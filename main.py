@@ -6,7 +6,7 @@ Pipeline:
 2. Esegue tutti i collector in parallelo (con error handling per ciascuno)
 3. Deduplicazione a due livelli (URL esatto + fuzzy titolo)
 4. Pre-filtro keyword (+ filtro eventi passati)
-5. Filtro LLM (Groq — Llama 3.3 70B)
+5. Filtro LLM (Groq — GPT-OSS 120B, fallback Qwen 3.6 27B)
 6. Notifica nuovi hackathon via Telegram
 7. Salvataggio storico e ultimo report
 

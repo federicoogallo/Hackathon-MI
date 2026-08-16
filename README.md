@@ -36,7 +36,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <p align="center">
   <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
-  <img src="https://img.shields.io/badge/AI--verified-Llama_3.3_70B-purple?style=for-the-badge" alt="AI Verified">
+  <img src="https://img.shields.io/badge/AI--verified-GPT--OSS_120B-purple?style=for-the-badge" alt="AI Verified">
   <img src="https://img.shields.io/badge/sources-28-green?style=for-the-badge" alt="28 Sources">
 </p>
 
@@ -58,7 +58,7 @@ Collectors (28 sources in parallel)
   Keyword Pre-filter (117+ regex patterns, junk-URL blocklist, past-year check)
         │
         ▼
-  LLM Filter (Groq · GPT-OSS 120B + Llama fallback, batches of 5, threshold 0.7)
+  LLM Filter (Groq · GPT-OSS 120B + Qwen 3.6 27B fallback, batches of 5, threshold 0.7)
         │  Only events PHYSICALLY in Milan — online/remote → discarded
         ├── Low-confidence candidates → Manual Review Queue
         │       data/review_queue.json + docs/review.html
@@ -356,7 +356,7 @@ hackathon-monitor/
 │   └── regione_lombardia.py
 ├── filters/
 │   ├── keyword_filter.py    # Regex pre-filter + junk-URL blocklist
-│   └── llm_filter.py        # Groq GPT-OSS + Llama fallback classifier
+│   └── llm_filter.py        # Groq GPT-OSS + Qwen fallback classifier
 ├── notifiers/
 │   └── telegram.py          # Telegram notifications
 ├── storage/
@@ -403,7 +403,7 @@ hackathon-monitor/
 - **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by DDG web search.
 - **Twitter/X**: Free Tier API is write-only. Covered by DDG web search (`site:twitter.com`).
 - **LinkedIn**: no public API for events. Covered by DDG web search (`site:linkedin.com/events`).
-- **Groq LLM**: defaults to `openai/gpt-oss-120b`, then falls back to `llama-3.3-70b-versatile` and Llama 4 Scout if configured/available. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
+- **Groq LLM**: defaults to `openai/gpt-oss-120b`, then falls back to `qwen/qwen3.6-27b`. The decommissioned `llama-3.3-70b-versatile` is ignored even if it remains in an older environment configuration. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
 - **Manual review**: low-confidence candidates are not published automatically; they are written to `data/review_queue.json` and can be approved or rejected with `scripts/admin.py`.
 - **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
 - **Some collectors** may return 404/403 temporarily due to site changes — they fail gracefully and don't block the pipeline.

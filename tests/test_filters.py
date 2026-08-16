@@ -13,6 +13,8 @@ from filters.keyword_filter import keyword_filter, keyword_filter_batch
 from filters.llm_filter import (
     _call_llm,
     _build_user_prompt,
+    _llm_models_to_try,
+    _model_request_options,
     _parse_llm_response,
     classify_batch,
     llm_filter,
@@ -341,7 +343,9 @@ class TestLLMWithMockAPI:
     def test_classify_batch_calls_groq(self, mock_get_client, mock_config):
         """Verifica che classify_batch chiama Groq correttamente."""
         mock_config.GROQ_API_KEY = "test-key"
-        mock_config.LLM_MODEL = "llama-3.3-70b-versatile"
+        mock_config.LLM_MODEL = "openai/gpt-oss-120b"
+        mock_config.LLM_MODEL_FALLBACKS = []
+        mock_config.DEPRECATED_LLM_MODELS = frozenset()
         mock_config.LLM_MAX_DESCRIPTION_LENGTH = 500
         mock_config.LLM_BATCH_SIZE = 10
         mock_config.LLM_RETRY_MAX = 3
@@ -365,13 +369,18 @@ class TestLLMWithMockAPI:
         assert results[0].is_hackathon is True
         assert results[0].confidence == 0.95
         mock_client.chat.completions.create.assert_called_once()
+        request = mock_client.chat.completions.create.call_args.kwargs
+        assert request["model"] == "openai/gpt-oss-120b"
+        assert request["reasoning_effort"] == "low"
 
     @patch("filters.llm_filter.config")
     @patch("filters.llm_filter._get_groq_client")
     def test_api_error_returns_default(self, mock_get_client, mock_config):
         """Se l'API va in errore, tutti vengono scartati per sicurezza."""
         mock_config.GROQ_API_KEY = "test-key"
-        mock_config.LLM_MODEL = "llama-3.3-70b-versatile"
+        mock_config.LLM_MODEL = "openai/gpt-oss-120b"
+        mock_config.LLM_MODEL_FALLBACKS = []
+        mock_config.DEPRECATED_LLM_MODELS = frozenset()
         mock_config.LLM_MAX_DESCRIPTION_LENGTH = 500
         mock_config.LLM_BATCH_SIZE = 10
         mock_config.LLM_RETRY_MAX = 3
@@ -401,6 +410,7 @@ class TestLLMWithMockAPI:
     def test_call_llm_uses_fallback_model(self, mock_get_client, mock_config):
         mock_config.LLM_MODEL = "primary-model"
         mock_config.LLM_MODEL_FALLBACKS = ["fallback-model"]
+        mock_config.DEPRECATED_LLM_MODELS = frozenset()
         mock_config.LLM_RETRY_MAX = 1
         mock_config.LLM_RETRY_DELAY = 0
 
@@ -423,3 +433,25 @@ class TestLLMWithMockAPI:
         second_model = mock_client.chat.completions.create.call_args_list[1].kwargs["model"]
         assert first_model == "primary-model"
         assert second_model == "fallback-model"
+
+    @patch("filters.llm_filter.config")
+    def test_skips_decommissioned_model_from_legacy_configuration(self, mock_config):
+        mock_config.LLM_MODEL = "llama-3.3-70b-versatile"
+        mock_config.LLM_MODEL_FALLBACKS = [
+            "llama-3.3-70b-versatile",
+            "qwen/qwen3.6-27b",
+        ]
+        mock_config.DEPRECATED_LLM_MODELS = frozenset({"llama-3.3-70b-versatile"})
+
+        assert _llm_models_to_try() == ["qwen/qwen3.6-27b"]
+
+    @pytest.mark.parametrize(
+        ("model", "expected"),
+        [
+            ("openai/gpt-oss-120b", {"reasoning_effort": "low"}),
+            ("qwen/qwen3.6-27b", {"reasoning_effort": "none"}),
+            ("custom-model", {}),
+        ],
+    )
+    def test_model_request_options_are_compatible_with_replacements(self, model, expected):
+        assert _model_request_options(model) == expected
