@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-24T13:27:16.659663+02:00",
+  "last_check": "2026-08-25T13:26:20.601804+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -187,7 +187,8 @@
       "review_reason": "Hackathon announced for Milan, future application deadline, but no explicit event date",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=lj5b3dmvQ"
+        "https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=lj5b3dmvQ",
+        "https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg"
       ],
       "discovered_at": "2026-08-12T11:44:54.715658"
     }
