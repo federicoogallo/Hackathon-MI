@@ -15,7 +15,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: Aug 28, 2026 23:27
+> **11 hackathons** coming up in Milan · Last updated: Aug 29, 2026 17:39
 >
 > 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
@@ -24,11 +24,14 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | web_search |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
 | [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | web_search |
+| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | web_search |
+| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
 | [Harvard HSIL Hackathon 2026](https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026) | TBD | Milano | web_search |
 | [AI Agent Olympics Hackathon](https://luma.com/5fxlxfl5) | TBD | Milano | web_search |
 | [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | web_search |
 | [BCG Platinion Hackathon 2026 - Milano - Eightfold](https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg) | TBD | Milano | web_search |
+| [Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI](https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai) | 21settembre2026 | Milano | universities |
 
 <!-- HACKATHON_TABLE_END -->
 

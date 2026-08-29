@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-28T23:19:27.830037+02:00",
+  "last_check": "2026-08-29T17:30:28.452695+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -191,6 +191,57 @@
         "https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg"
       ],
       "discovered_at": "2026-08-12T11:44:54.715658"
+    },
+    {
+      "id": "9bac77bed2b226ff749c4c5bec30c4f5c2fe53d570cfa6d1d1c764a70499a127",
+      "title": "Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI",
+      "url": "https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai",
+      "source": "universities",
+      "description": "21settembre2026",
+      "date_str": "21settembre2026",
+      "location": "Milano",
+      "organizer": "Politecnico di Milano",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "Innovation Challenge è una competizione con data futura a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-08-29T15:30:30.917822"
+    },
+    {
+      "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
+      "title": "Oliver Wyman Data & Analytics Hackathon Challenge Milan",
+      "url": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan",
+      "source": "web_search",
+      "description": "11/20/2026 9:00 AM 11/20/2026 11:00 PM Europe/Rome Oliver Wyman Data&Analytics Hackathon Challenge Milan Event DescriptionHave you ever wondered what it's really like to work in consulting? Want to put your analytical and coding skills to the test by tackling a real-world challenge?Join the Oliver Wyman Data & Analytics Hackathon Challenge in Milan — an opportunity to challenge yourself ...",
+      "date_str": "2026-11-20",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon Oliver Wyman Data&Analytics a Milano, data futura 20 novembre 2026",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-08-29T15:30:53.633602"
+    },
+    {
+      "id": "a90e0d40d081016d7d781e1dd163c29dd3ed8fd3ccf1289e9f66c0ee4342e6c1",
+      "title": "NASA Space Apps Challenge – Milano",
+      "url": "https://www.instagram.com/milano_spaceapps/",
+      "source": "web_search",
+      "description": "35 Followers, 43 Following, 3 Posts - NASA Space Apps Challenge - Milano (@milano_spaceapps) on Instagram: \"🚀NASA Space Apps Challenge Il più grande hackathon al mondo 📍A Milano 🗓️14-15 Novembre 2026 @nasa_spaceapps\"",
+      "date_str": "2026-11-14",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "NASA Space Apps Challenge a Milano, date 14-15 novembre 2026",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-08-29T15:30:53.633648"
     }
   ]
 }
