@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-29T17:30:28.452695+02:00",
+  "last_check": "2026-08-30T17:10:38.710178+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -223,7 +223,15 @@
       "review_status": "ai_verified",
       "review_reason": "Hackathon Oliver Wyman Data&Analytics a Milano, data futura 20 novembre 2026",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.meetup.com/hackerdojo/events/315713948/?recId=167d7154-634b-40d7-ae0c-5ae4f971efcb&recSource=event-search&searchId=c6d6b3b6-275e-4dac-8245-3b7182ac8e31&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/313303100/?recId=167d7154-634b-40d7-ae0c-5ae4f971efcb&recSource=event-search&searchId=c6d6b3b6-275e-4dac-8245-3b7182ac8e31&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/316061900/?recId=167d7154-634b-40d7-ae0c-5ae4f971efcb&recSource=event-search&searchId=c6d6b3b6-275e-4dac-8245-3b7182ac8e31&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/316061900/?recId=81b3e429-49e7-487e-8c10-4f04585de532&recSource=event-search&searchId=c66e7172-83c6-4eb6-a800-591a7b18e614&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/315713948/?recId=81b3e429-49e7-487e-8c10-4f04585de532&recSource=event-search&searchId=c66e7172-83c6-4eb6-a800-591a7b18e614&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/315713948/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/313303100/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all"
+      ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
     {
