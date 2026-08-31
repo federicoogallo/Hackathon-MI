@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-30T17:10:38.710178+02:00",
+  "last_check": "2026-08-31T19:54:29.634933+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -230,7 +230,9 @@
         "https://www.meetup.com/hackerdojo/events/316061900/?recId=81b3e429-49e7-487e-8c10-4f04585de532&recSource=event-search&searchId=c66e7172-83c6-4eb6-a800-591a7b18e614&eventOrigin=find_page%24all",
         "https://www.meetup.com/hackerdojo/events/315713948/?recId=81b3e429-49e7-487e-8c10-4f04585de532&recSource=event-search&searchId=c66e7172-83c6-4eb6-a800-591a7b18e614&eventOrigin=find_page%24all",
         "https://www.meetup.com/hackerdojo/events/315713948/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all",
-        "https://www.meetup.com/hackerdojo/events/313303100/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all"
+        "https://www.meetup.com/hackerdojo/events/313303100/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all",
+        "https://www.meetup.com/black-code-collective/events/316099427/?recId=4f5cf948-db7b-4b6d-bc57-5d3ebdc65b7d&recSource=event-search&searchId=29688de1-354a-4d80-9cae-d851b96d35b2&eventOrigin=find_page%24all",
+        "https://www.meetup.com/openanalyticsdc/events/316128958/?recId=4f5cf948-db7b-4b6d-bc57-5d3ebdc65b7d&recSource=event-search&searchId=29688de1-354a-4d80-9cae-d851b96d35b2&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -250,6 +252,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-08-29T15:30:53.633648"
+    },
+    {
+      "id": "a858d0761c2e4263c0fe2859e04e6b0c7e7feb1f50763d2d024e617281413d42",
+      "title": "Hackathon ServiceNow Milano",
+      "url": "https://rsvp.servicenow.com/hackathon-milano/begin",
+      "source": "web_search",
+      "description": "Non parlare di AI. Creala. martedì 20 ottobre 2026 | 09:30-18:00 PLB WORLD, Viale Francesco Restelli, 3, Milano Registrati ora speaker-area, agenda-area, sponsor-section, why-attend-area",
+      "date_str": "2026-10-20",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon onsite a Milano con data futura 20 ottobre 2026",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-08-31T17:54:54.852105"
     }
   ]
 }
