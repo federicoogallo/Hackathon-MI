@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-08-31T19:54:29.634933+02:00",
+  "last_check": "2026-09-01T17:23:46.785913+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -232,7 +232,8 @@
         "https://www.meetup.com/hackerdojo/events/315713948/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all",
         "https://www.meetup.com/hackerdojo/events/313303100/?recId=e0982565-65e5-46e8-9ddf-472c990404f9&recSource=event-search&searchId=70df9b59-593b-44e2-8134-0f877dfe1f80&eventOrigin=find_page%24all",
         "https://www.meetup.com/black-code-collective/events/316099427/?recId=4f5cf948-db7b-4b6d-bc57-5d3ebdc65b7d&recSource=event-search&searchId=29688de1-354a-4d80-9cae-d851b96d35b2&eventOrigin=find_page%24all",
-        "https://www.meetup.com/openanalyticsdc/events/316128958/?recId=4f5cf948-db7b-4b6d-bc57-5d3ebdc65b7d&recSource=event-search&searchId=29688de1-354a-4d80-9cae-d851b96d35b2&eventOrigin=find_page%24all"
+        "https://www.meetup.com/openanalyticsdc/events/316128958/?recId=4f5cf948-db7b-4b6d-bc57-5d3ebdc65b7d&recSource=event-search&searchId=29688de1-354a-4d80-9cae-d851b96d35b2&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-ord/events/316129895/?recId=e75047bf-d6df-457b-9ac7-6b3256795cb8&recSource=event-search&searchId=9b0e1bcf-8795-4a86-9552-b13445166cf1&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -269,6 +270,23 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-08-31T17:54:54.852105"
+    },
+    {
+      "id": "0c9c1f86b6aa1686d1513574c8cc73b32a4eac862d1d664ee410ca17433bcff5",
+      "title": "GDG AI HACK 2026",
+      "url": "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/",
+      "source": "web_search",
+      "description": "GDG AI HACK is back for its third edition — a free 3-day AI hackathon at Randstad Box in Milan.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "Specific GDG AI Hack event page, hackathon in Milan, future (no explicit date)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-09-01T15:23:47.840440"
     }
   ]
 }
