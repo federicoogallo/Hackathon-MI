@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-02T16:59:04.045405+02:00",
+  "last_check": "2026-09-03T16:53:17.350012+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -236,7 +236,9 @@
         "https://www.meetup.com/ac-ord/events/316129895/?recId=e75047bf-d6df-457b-9ac7-6b3256795cb8&recSource=event-search&searchId=9b0e1bcf-8795-4a86-9552-b13445166cf1&eventOrigin=find_page%24all",
         "https://www.meetup.com/openanalyticsdc/events/316128958/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all",
         "https://www.meetup.com/black-code-collective/events/316099427/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all",
-        "https://www.meetup.com/dc_careerclub/events/315991205/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all"
+        "https://www.meetup.com/dc_careerclub/events/315991205/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-phx/events/316131182/?recId=fef543ab-5ea3-4b3b-86f8-a4374030c685&recSource=event-search&searchId=66f708e7-fe22-458d-8202-8dc5be27a71a&eventOrigin=find_page%24all",
+        "https://www.meetup.com/move-towards-your-best-life/events/316327912/?recId=03d26cfc-0a0f-4473-8df3-f4ec20cc123d&recSource=event-search&searchId=51283c93-a6ae-4d9f-a53e-1e2c44d223f9&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
