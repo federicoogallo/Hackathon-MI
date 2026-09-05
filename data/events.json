@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-04T16:48:46.431696+02:00",
+  "last_check": "2026-09-05T15:41:06.454142+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -238,7 +238,13 @@
         "https://www.meetup.com/black-code-collective/events/316099427/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all",
         "https://www.meetup.com/dc_careerclub/events/315991205/?recId=b4ce60a9-5b5b-4ed7-a7a9-5eecb433b170&recSource=event-search&searchId=e91fe139-77b0-48c0-8f0f-480303527a5d&eventOrigin=find_page%24all",
         "https://www.meetup.com/ac-phx/events/316131182/?recId=fef543ab-5ea3-4b3b-86f8-a4374030c685&recSource=event-search&searchId=66f708e7-fe22-458d-8202-8dc5be27a71a&eventOrigin=find_page%24all",
-        "https://www.meetup.com/move-towards-your-best-life/events/316327912/?recId=03d26cfc-0a0f-4473-8df3-f4ec20cc123d&recSource=event-search&searchId=51283c93-a6ae-4d9f-a53e-1e2c44d223f9&eventOrigin=find_page%24all"
+        "https://www.meetup.com/move-towards-your-best-life/events/316327912/?recId=03d26cfc-0a0f-4473-8df3-f4ec20cc123d&recSource=event-search&searchId=51283c93-a6ae-4d9f-a53e-1e2c44d223f9&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/315713948/?recId=ac85466a-60db-4233-899e-ca27406af88d&recSource=event-search&searchId=d312ed9d-45ae-43db-9baf-d2ee4f168cd3&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/313303100/?recId=ac85466a-60db-4233-899e-ca27406af88d&recSource=event-search&searchId=d312ed9d-45ae-43db-9baf-d2ee4f168cd3&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/316157969/?recId=ac85466a-60db-4233-899e-ca27406af88d&recSource=event-search&searchId=d312ed9d-45ae-43db-9baf-d2ee4f168cd3&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/316157969/?recId=f47171b0-f5c3-418e-8fbc-0b449cd3f563&recSource=event-search&searchId=c33b4662-e87f-42db-8f6d-1222dbe77036&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/315713948/?recId=57fb2909-2dae-4c74-a08e-b162ce4127b8&recSource=event-search&searchId=a6eb4802-09fb-4f1d-8e00-4e0370a73045&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/313303100/?recId=57fb2909-2dae-4c74-a08e-b162ce4127b8&recSource=event-search&searchId=a6eb4802-09fb-4f1d-8e00-4e0370a73045&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
