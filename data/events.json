@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-07T18:17:45.950135+02:00",
+  "last_check": "2026-09-08T16:54:42.601804+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -247,7 +247,8 @@
         "https://www.meetup.com/hackerdojo/events/313303100/?recId=57fb2909-2dae-4c74-a08e-b162ce4127b8&recSource=event-search&searchId=a6eb4802-09fb-4f1d-8e00-4e0370a73045&eventOrigin=find_page%24all",
         "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=d2b41939-7251-4778-8ab1-4d9ca55976ec&recSource=event-search&searchId=1856c869-bbf8-431a-bac0-c4b0ca7efd94&eventOrigin=find_page%24all",
         "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=5f57e093-815d-434b-b627-075a249331aa&recSource=event-search&searchId=56047236-15d4-475f-bb5c-4764665cc990&eventOrigin=find_page%24all",
-        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=0a3e70bb-cc5e-4648-828e-b4af28f858e5&recSource=event-search&searchId=e4a81812-e31b-4ed5-9a3c-1ad369a5c4bc&eventOrigin=find_page%24all"
+        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=0a3e70bb-cc5e-4648-828e-b4af28f858e5&recSource=event-search&searchId=e4a81812-e31b-4ed5-9a3c-1ad369a5c4bc&eventOrigin=find_page%24all",
+        "https://www.meetup.com/black-code-collective/events/316099427/?recId=11d37af3-df60-41f6-84d9-47a070ea1da6&recSource=event-search&searchId=eb4a7f0e-5376-4623-b67b-d886d203ea49&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
