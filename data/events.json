@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-13T16:48:46.177241+02:00",
+  "last_check": "2026-09-14T18:47:34.550546+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -260,7 +260,9 @@
         "https://www.meetup.com/seattlejs/events/316257831/?recId=2e529843-8f30-4844-9abf-e63b8562f323&recSource=event-search&searchId=5fec6fcb-9f33-4519-a569-93bb741b886c&eventOrigin=find_page%24all",
         "https://www.meetup.com/testlio-join-this-group-attend-event-dont-edit/events/280562038/?recId=2e529843-8f30-4844-9abf-e63b8562f323&recSource=event-search&searchId=5fec6fcb-9f33-4519-a569-93bb741b886c&eventOrigin=find_page%24all",
         "https://www.meetup.com/iwanttodothatdc/events/315288505/?recId=7e31add1-307c-492b-bd07-7efd2a1e0c75&recSource=event-search&searchId=442a0a1c-7eb9-4a37-a008-eb9855dee070&eventOrigin=find_page%24all",
-        "https://www.meetup.com/ac-rdu/events/316528107/?recId=0c2eb17d-ced8-4ca5-923b-78f490d94c1a&recSource=event-search&searchId=b97b8840-636e-4fd5-8792-98a33f8354ee&eventOrigin=find_page%24all"
+        "https://www.meetup.com/ac-rdu/events/316528107/?recId=0c2eb17d-ced8-4ca5-923b-78f490d94c1a&recSource=event-search&searchId=b97b8840-636e-4fd5-8792-98a33f8354ee&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-rdu/events/316528107/?recId=f75064b0-e466-4778-9e79-6cba923469a2&recSource=event-search&searchId=13f2956b-a291-48f5-8031-da51e8e67ac7&eventOrigin=find_page%24all",
+        "https://www.meetup.com/virtual-social-events/events/316540844/?recId=012c19fc-d831-4d3c-a7fe-27eb830019c5&recSource=event-search&searchId=bf519969-74f3-4b8f-9f69-34769a7c1269&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
