@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-14T18:47:34.550546+02:00",
+  "last_check": "2026-09-15T17:27:23.959853+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -55,7 +55,9 @@
       "review_status": "ai_verified",
       "review_reason": "Explicit hackathon with dates Oct 16-17 2026 and a physical hub in Milan",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://github.com/federicoogallo/Hackathon-MI"
+      ],
       "discovered_at": "2026-06-23T13:43:21.161572"
     },
     {
@@ -170,7 +172,8 @@
         "https://www.sicampus.org/",
         "https://fondazionetriulza.org/",
         "https://fondazionetriulza.org/students-and-schools-at-the-social-innovation-campus-2025/?lang=en",
-        "https://www.unimib.it/news/hackathon-talenti-stem-linnovazione-sociale-tecnologie-affrontare-sfide-sociali"
+        "https://www.unimib.it/news/hackathon-talenti-stem-linnovazione-sociale-tecnologie-affrontare-sfide-sociali",
+        "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale/"
       ],
       "discovered_at": "2026-07-31T12:55:16.164587"
     },
@@ -262,7 +265,9 @@
         "https://www.meetup.com/iwanttodothatdc/events/315288505/?recId=7e31add1-307c-492b-bd07-7efd2a1e0c75&recSource=event-search&searchId=442a0a1c-7eb9-4a37-a008-eb9855dee070&eventOrigin=find_page%24all",
         "https://www.meetup.com/ac-rdu/events/316528107/?recId=0c2eb17d-ced8-4ca5-923b-78f490d94c1a&recSource=event-search&searchId=b97b8840-636e-4fd5-8792-98a33f8354ee&eventOrigin=find_page%24all",
         "https://www.meetup.com/ac-rdu/events/316528107/?recId=f75064b0-e466-4778-9e79-6cba923469a2&recSource=event-search&searchId=13f2956b-a291-48f5-8031-da51e8e67ac7&eventOrigin=find_page%24all",
-        "https://www.meetup.com/virtual-social-events/events/316540844/?recId=012c19fc-d831-4d3c-a7fe-27eb830019c5&recSource=event-search&searchId=bf519969-74f3-4b8f-9f69-34769a7c1269&eventOrigin=find_page%24all"
+        "https://www.meetup.com/virtual-social-events/events/316540844/?recId=012c19fc-d831-4d3c-a7fe-27eb830019c5&recSource=event-search&searchId=bf519969-74f3-4b8f-9f69-34769a7c1269&eventOrigin=find_page%24all",
+        "https://www.meetup.com/seattlejs/events/316460451/?recId=adce5507-3dfe-4224-9909-5fcc7dd743c7&recSource=event-search&searchId=69f15970-662d-43b5-bbd4-6a12bee882ff&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-sea/events/316530309/?recId=adce5507-3dfe-4224-9909-5fcc7dd743c7&recSource=event-search&searchId=69f15970-662d-43b5-bbd4-6a12bee882ff&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
