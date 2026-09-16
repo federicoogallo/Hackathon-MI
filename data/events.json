@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-15T17:27:23.959853+02:00",
+  "last_check": "2026-09-16T17:20:36.664772+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -267,7 +267,8 @@
         "https://www.meetup.com/ac-rdu/events/316528107/?recId=f75064b0-e466-4778-9e79-6cba923469a2&recSource=event-search&searchId=13f2956b-a291-48f5-8031-da51e8e67ac7&eventOrigin=find_page%24all",
         "https://www.meetup.com/virtual-social-events/events/316540844/?recId=012c19fc-d831-4d3c-a7fe-27eb830019c5&recSource=event-search&searchId=bf519969-74f3-4b8f-9f69-34769a7c1269&eventOrigin=find_page%24all",
         "https://www.meetup.com/seattlejs/events/316460451/?recId=adce5507-3dfe-4224-9909-5fcc7dd743c7&recSource=event-search&searchId=69f15970-662d-43b5-bbd4-6a12bee882ff&eventOrigin=find_page%24all",
-        "https://www.meetup.com/ac-sea/events/316530309/?recId=adce5507-3dfe-4224-9909-5fcc7dd743c7&recSource=event-search&searchId=69f15970-662d-43b5-bbd4-6a12bee882ff&eventOrigin=find_page%24all"
+        "https://www.meetup.com/ac-sea/events/316530309/?recId=adce5507-3dfe-4224-9909-5fcc7dd743c7&recSource=event-search&searchId=69f15970-662d-43b5-bbd4-6a12bee882ff&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-phx/events/316530156/?recId=73dc620c-1d4c-41cf-9fc3-8ae2ce9e730a&recSource=event-search&searchId=1886bcb6-fe81-414a-ac63-8dcbac32aaf3&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -302,7 +303,9 @@
       "review_status": "ai_verified",
       "review_reason": "Hackathon onsite a Milano con data futura 20 ottobre 2026",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://rsvp.servicenow.com/hackathon-milano"
+      ],
       "discovered_at": "2026-08-31T17:54:54.852105"
     },
     {
@@ -323,6 +326,23 @@
         "https://allhackathons.com/hackathon/gdg-ai-hack-2026/"
       ],
       "discovered_at": "2026-09-01T15:23:47.840440"
+    },
+    {
+      "id": "502e42f72cb775e058662b6bc78d9291a4975cfdc41e4ab6ee419ebc0828e71a",
+      "title": "Milano Finanza Hackathon",
+      "url": "https://it.linkedin.com/posts/milano-finanza_hackathon-activity-7504195623886274560-6lsh",
+      "source": "web_search",
+      "description": "Fra AI e digitale, qual è il futuro del giornalismo finanziario? Milano Finanza & Class Editori, insieme con Softlab S.p.A. e Google Italia, hanno organizzato l'#hackathon dal tema: \"Dove l'intelligenza artificiale incontra l'informazione, i dati e la finanza\". Qui tutte le informazioni utili: • 📅 28 settembre 2026 • 🕘 9:00 - 18:00 • 📍 Google Arena, Milano - Isola ...",
+      "date_str": "2026-09-28",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.97,
+      "review_status": "ai_verified",
+      "review_reason": "LinkedIn post details a specific hackathon in Milan with date and venue",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-09-16T15:21:03.686469"
     }
   ]
 }

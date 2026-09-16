@@ -15,12 +15,13 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **13 hackathons** coming up in Milan · Last updated: Sep 15, 2026 17:30
+> **14 hackathons** coming up in Milan · Last updated: Sep 16, 2026 17:27
 >
 > 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
+| [Milano Finanza Hackathon](https://it.linkedin.com/posts/milano-finanza_hackathon-activity-7504195623886274560-6lsh) | 28 Sep 2026 | Milano | web_search |
 | [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | web_search |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
 | [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | web_search |
