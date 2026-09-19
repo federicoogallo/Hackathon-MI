@@ -413,6 +413,11 @@ hackathon-monitor/
 
 ---
 
+## Verified metrics
+
+See [reproducible metrics](docs/cv-metrics.md) for the 28-collector registry,
+249 passing tests (1 skipped), source hashes, limitations, and reproduction commands.
+
 ## Contributing
 
 Contributions are warmly welcome!
