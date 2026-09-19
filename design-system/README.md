@@ -8,7 +8,7 @@ Direzione: un radar cittadino per chi vuole partecipare a un hackathon. La ricer
 - Arancio `#f36a3d` per accenti e superfici; arancio scuro `#a53b1d` per testo su avorio.
 - Space Grotesk per titoli, Inter per testo e controlli, Instrument Serif per accenti editoriali, JetBrains Mono per etichette e dati.
 - Contenitore massimo 1248 px, spaziatura responsive, bordi sottili e raggi contenuti.
-- Scena a livelli con profondità al puntatore e allo scroll, radar collegato ai tre prossimi eventi reali, ingresso tipografico e transizioni brevi dei risultati. Nessun canvas, WebGL o animazione continua nel flusso principale.
+- Scena a livelli con profondità al puntatore e allo scroll, radar collegato ai tre prossimi eventi reali, ingresso tipografico e transizioni brevi dei risultati. Nessun canvas o WebGL nel flusso principale.
 - Movimento disattivabile dalla hero, ridotto automaticamente su touch e reattivo ai cambi di `prefers-reduced-motion` anche a pagina aperta. I contenuti restano visibili nel rendering server.
 - Ricerca, filtri e azioni da tastiera; focus visibile e controlli da almeno 44 px.
 
@@ -19,6 +19,13 @@ Direzione: un radar cittadino per chi vuole partecipare a un hackathon. La ricer
 - `DiscoveryStory`: composizione asimmetrica con connessioni, biglietto e promemoria, per spiegare il percorso dalla scoperta alla partecipazione.
 
 Riferimenti: [Stripe — progettazione del globo](https://stripe.com/blog/globe) per profondità e interazione, [Linear — redesign dell'interfaccia](https://linear.app/now/how-we-redesigned-the-linear-ui) per gerarchia e disciplina visiva, [Luma Discover](https://luma.com/discover) per centralità degli eventi. Composizione, palette e illustrazioni sono adattate al progetto.
+
+## Tema e movimento
+
+- Tema `Sistema` predefinito, con scelte `Chiaro` e `Scuro` nella navigazione desktop e mobile. La scelta è salvata in `hackathon-mi:theme` e sincronizzata fra schede. Un bootstrap nel documento applica la preferenza prima del rendering; in modalità Sistema risponde anche ai cambi del sistema operativo.
+- Il tema scuro usa sfondi verde carbone, testo avorio e arancio caldo. La scena architettonica e il biglietto del radar mantengono la loro palette illustrativa. Contrasti del tema scuro: testo principale 15,68:1, secondario 7,76:1, accento 7,53:1.
+- Il radar avanza ogni 7 secondi con indicatore di avanzamento e controllo pausa/ripresa. Tocco, selezione manuale e focus da tastiera interrompono l'automatismo fino a una ripresa esplicita. Hover, scheda nascosta e scena fuori schermo sospendono il timer; il movimento ridotto disattiva l'avanzamento automatico.
+- L'accento `qui.` ha un ingresso breve per lettera e una sottolineatura disegnata una sola volta. Il testo non cambia durante la lettura e rimane accessibile come parola intera. Anche questo ingresso rispetta la preferenza di movimento ridotto.
 
 ## Funzioni
 
@@ -38,13 +45,14 @@ Linee guida ricavate dalla skill UI/UX Pro Max: directory con ricerca primaria, 
 
 ## Verifiche finali
 
-- `npm run build`: build statica completata; pagina principale 60,4 kB, first load JavaScript 166 kB, incluse le interazioni Motion.
+- `npm run build`: build statica completata; pagina principale 61,4 kB, first load JavaScript 167 kB, incluse le interazioni Motion e il tema.
 - `npm run typecheck`: nessun errore TypeScript.
-- `npm run test:frontend`: 13 test superati, inclusi date/Roma/DST, filtri, ricerca completa, URL, preferiti e formato ICS.
+- `npm run test:frontend`: 17 test superati, inclusi date/Roma/DST, filtri, ricerca completa, URL, preferiti, formato ICS e bootstrap del tema (preferenza di sistema, override, valori non validi e storage indisponibile).
 - Verifica nel browser della build di produzione: ricerca dall'hero, URL condivisibili e reset dalla home, preferiti e rimozione, filtri periodo, indietro, ordinamento, griglia/elenco, export calendario, review e 404.
 - Layout controllato a 320, 375, 768, 1024 e 1440 px; nessun overflow orizzontale. Menu mobile verificato anche a 568 × 320, con scorrimento interno e chiusura Escape che ripristina il focus.
 - Contrasto: testo secondario su avorio 4,93:1; accento testuale 5,88:1; testo hero 9,30:1. Movimento ridotto gestito da media query CSS e hook reattivo per Motion.
 - Secondo passaggio: radar, titoli lunghi, pausa della scena, ricerca, feedback preferiti, elenco e nuova composizione illustrata verificati nel browser sui breakpoint indicati.
+- Tema: scelta manuale, persistenza dopo reload e ritorno a Sistema verificati nel browser; controllo visivo di home, ricerca, FAQ, footer e revisione in scuro. Radar verificato in avanzamento automatico, ripresa esplicita e arresto dopo l'interazione.
 - Console della sessione di produzione pulita.
 
 Per aprire localmente: `npm run dev`. Per verificare la versione compilata: `npm run build` e `npm run start`.

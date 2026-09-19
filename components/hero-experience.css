@@ -3,6 +3,10 @@
 .cinematic-hero .hero-content :is(a, input, button, form) { pointer-events: auto; }
 .cinematic-hero .hero-content h1 { font-size: clamp(62px, 6.5vw, 94px); line-height: 1.05; margin-top: 30px; letter-spacing: -.07em; }
 .cinematic-hero .hero-description { margin-top: 28px; }
+.hero-dynamic-word { position: relative; display: inline-block; white-space: nowrap; }
+.hero-word-glyphs { display: inline-flex; }
+.hero-word-glyphs > span { display: inline-block; }
+.hero-word-flourish { position: absolute; left: 3%; bottom: -.06em; width: 96%; height: .14em; overflow: visible; opacity: .6; }
 .cinematic-hero .hero-search { margin-top: 32px; max-width: 464px; }
 .cinematic-hero .hero-eyebrow { color: #c5cfbf; }
 .cinematic-hero .hero-search-field { border-radius: 4px; }
@@ -42,7 +46,9 @@
 .radar-event h2 a { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .radar-event h2 a:hover { color: #994524; }
 .radar-event h2 svg { margin-top: 2px; height: 15px; width: 15px; }
-.radar-preview-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #d4d8c9; margin-top: 14px; }
+.radar-preview-foot { position: relative; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #d4d8c9; margin-top: 14px; }
+.radar-countdown { position: absolute; top: -1px; left: 0; width: 100%; height: 2px; background: #a94b2d; transform-origin: left; animation: radar-countdown 7s linear both; pointer-events: none; }
+@keyframes radar-countdown { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .radar-preview-foot > a { display: inline-flex; gap: 7px; align-items: center; min-height: 44px; font-size: 10px; font-weight: 500; }
 .radar-preview-foot svg { width: 14px; height: 14px; }
 .radar-preview-foot > div { display: flex; }
@@ -58,6 +64,11 @@
 .scene-motion-toggle svg { height: 13px; width: 13px; }
 .cinematic-hero .hero-bottom { z-index: 3; }
 @media (prefers-reduced-motion: no-preference) {
+  .hero-word-glyphs > span { animation: hero-letter-arrive .65s .2s var(--ease) both; }
+  .hero-word-glyphs > span:nth-child(2) { animation-delay: .28s; }
+  .hero-word-glyphs > span:nth-child(3) { animation-delay: .36s; }
+  .hero-word-glyphs > span:nth-child(4) { animation-delay: .44s; }
+  .hero-word-flourish path { stroke-dasharray: 1; animation: hero-word-draw .6s .65s var(--ease) both; }
   .cinematic-hero .hero-eyebrow { animation: hero-appear .35s both; }
   .cinematic-hero h1 { animation: hero-appear .5s .06s both; }
   .cinematic-hero .hero-description { animation: hero-appear .45s .12s both; }
@@ -67,6 +78,8 @@
   .radar-node { animation: node-arrive .4s .5s both; }
   .radar-node-1 { animation-delay: .6s; }.radar-node-2 { animation-delay: .7s; }
 }
+@keyframes hero-letter-arrive { from { opacity: .25; transform: translateY(.18em) rotate(5deg); } to { opacity: 1; transform: translateY(0) rotate(0); } }
+@keyframes hero-word-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes city-arrive { from { opacity: .5; transform: translateY(22px) scale(1.04); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes pass-arrive { from { opacity: .5; transform: translateY(14px) rotate(0); } to { opacity: 1; transform: translateY(0) rotate(-2deg); } }
 @keyframes node-arrive { from { opacity: .3; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }

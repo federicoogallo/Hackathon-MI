@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import type { HackEvent } from "@/lib/data";
@@ -17,9 +17,15 @@ export default function HeroExperience({ events, children }: { events: HackEvent
   const [compact, setCompact] = useState(true);
   const [paused, setPaused] = useState(false);
   const [selected, setSelected] = useState(0);
+  const [autoplayStopped, setAutoplayStopped] = useState(false);
+  const [hoveringRadar, setHoveringRadar] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
   const upcoming = events.filter(event => event.dateIso).slice(0, 3);
   const event = upcoming[selected];
   const quiet = reduce !== false || compact || paused;
+  const autoplayEnabled = !autoplayStopped && !reduce && !paused && upcoming.length > 1;
+  const autoplayRunning = autoplayEnabled && !hoveringRadar && inView && pageVisible;
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const softX = useSpring(x, { stiffness: 70, damping: 23 });
@@ -39,6 +45,29 @@ export default function HeroExperience({ events, children }: { events: HackEvent
     return () => media.removeEventListener("change", update);
   }, []);
   useEffect(() => { if (quiet) { x.set(0); y.set(0); } }, [quiet, x, y]);
+
+  useEffect(() => {
+    const updateVisibility = () => setPageVisible(document.visibilityState === "visible");
+    updateVisibility();
+    document.addEventListener("visibilitychange", updateVisibility);
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: .15 });
+    if (panel.current) observer.observe(panel.current);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", updateVisibility); };
+  }, []);
+
+  useEffect(() => {
+    if (!autoplayRunning) return;
+    const timer = window.setTimeout(() => setSelected(index => (index + 1) % upcoming.length), 7000);
+    return () => window.clearTimeout(timer);
+  }, [autoplayRunning, selected, upcoming.length]);
+
+  function stopOnInteraction(interaction: PointerEvent<HTMLDivElement> | FocusEvent<HTMLDivElement>) {
+    // The explicit playback button controls itself; all other interactions stop
+    // rotation for this visit, including keyboard focus and a tap on the card.
+    if (!(interaction.target as Element).closest("[data-radar-playback]")) setAutoplayStopped(true);
+  }
+
+  function selectEvent(index: number) { setAutoplayStopped(true); setSelected(index); }
 
   function move(pointer: PointerEvent<HTMLDivElement>) {
     if (quiet || pointer.pointerType !== "mouse" || !panel.current) return;
@@ -66,16 +95,24 @@ export default function HeroExperience({ events, children }: { events: HackEvent
           <span className="stage-watermark">MILANO.</span>
         </motion.div>
         {event && <>
-          <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar">
-            {upcoming.map((item, index) => <button key={item.id} type="button" className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => setSelected(index)}><span className="radar-node-dot" /><span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span></button>)}
+          <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar" onFocusCapture={stopOnInteraction}>
+            {upcoming.map((item, index) => <button key={item.id} type="button" className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}><span className="radar-node-dot" /><span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span></button>)}
           </div>
-          <div className="radar-preview">
+          <div className="radar-preview" data-autoplay={autoplayRunning ? "running" : "paused"} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction} onPointerEnter={pointer => setHoveringRadar(pointer.pointerType === "mouse")} onPointerLeave={() => setHoveringRadar(false)}>
             <div className="radar-preview-head"><span><i />PROSSIMI NEL RADAR</span><span>{String(selected + 1).padStart(2, "0")} / {String(upcoming.length).padStart(2, "0")}</span></div>
-            <div aria-live="polite" aria-atomic="true"><motion.div key={event.id} initial={quiet ? false : { opacity: .5, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: quiet ? 0 : .2 }} className="radar-event">
+            <div aria-live={autoplayEnabled ? "off" : "polite"} aria-atomic="true"><motion.div key={event.id} initial={quiet ? false : { opacity: .5, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: quiet ? 0 : .2 }} className="radar-event">
               <p className="radar-event-meta">{event.dateCompact} <span>·</span> {event.location}</p>
               <h2><a href={event.url} target="_blank" rel="noopener noreferrer">{event.title}<Arrow direction="up" /><span className="sr-only"> (nuova scheda)</span></a></h2>
             </motion.div></div>
-            <div className="radar-preview-foot"><a href={event.url} target="_blank" rel="noopener noreferrer">Scopri la sfida <Arrow direction="up" /><span className="sr-only"> (nuova scheda)</span></a><div><button type="button" aria-label="Evento precedente nel radar" onClick={() => setSelected(index => (index + upcoming.length - 1) % upcoming.length)}><Arrow direction="left" /></button><button type="button" aria-label="Evento successivo nel radar" onClick={() => setSelected(index => (index + 1) % upcoming.length)}><Arrow /></button></div></div>
+            <div className="radar-preview-foot">
+              {autoplayRunning && <span key={selected} className="radar-countdown" aria-hidden="true" />}
+              <a href={event.url} target="_blank" rel="noopener noreferrer">Scopri <Arrow direction="up" /><span className="sr-only">la sfida (nuova scheda)</span></a>
+              <div>
+                <button type="button" aria-label="Evento precedente nel radar" onClick={() => selectEvent((selected + upcoming.length - 1) % upcoming.length)}><Arrow direction="left" /></button>
+                {!reduce && upcoming.length > 1 && <button type="button" data-radar-playback aria-label={autoplayEnabled ? "Metti in pausa lo scorrimento automatico" : "Riprendi lo scorrimento automatico"} title={autoplayEnabled ? "Avanza ogni 7 secondi · Metti in pausa" : "Riprendi lo scorrimento automatico"} onClick={() => { setAutoplayStopped(autoplayEnabled); if (paused) setPaused(false); }}><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">{autoplayEnabled ? <path d="M5 3v10m6-10v10" /> : <path d="m5 3 7 5-7 5V3Z" />}</svg></button>}
+                <button type="button" aria-label="Evento successivo nel radar" onClick={() => selectEvent((selected + 1) % upcoming.length)}><Arrow /></button>
+              </div>
+            </div>
           </div>
         </>}
         <div className="stage-caption"><span className="stage-caption-cross" aria-hidden="true" /> UNA CITTÀ. INFINITE POSSIBILITÀ.</div>

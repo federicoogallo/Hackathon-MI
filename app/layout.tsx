@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk, Instrument_Serif } from "next/font/google";
 import { SITE_URL } from "@/lib/data";
+import { THEME_BOOTSTRAP } from "@/lib/theme";
 import "./globals.css";
+import "./theme.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--f-inter", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--f-mono", display: "swap" });
@@ -40,7 +42,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" data-scroll-behavior="smooth" className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
+    <html lang="it" data-scroll-behavior="smooth" suppressHydrationWarning className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
+      <head><script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} /></head>
       <body>
         {/* skip-link: primo elemento focusabile, visibile solo da tastiera */}
         <a className="skip-link" href="#top">Salta al contenuto</a>

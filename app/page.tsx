@@ -34,7 +34,7 @@ export default function Home() {
           <HeroExperience events={d.events}>
             <div className="hero-content">
               <div className="hero-eyebrow"><span className="status-dot" /> IL RADAR DEGLI HACKATHON A MILANO</div>
-              <h1 id="hero-title">Le grandi idee<br />iniziano <em>qui.</em></h1>
+              <h1 id="hero-title">Le grandi idee<br />iniziano <em className="hero-dynamic-word"><span className="sr-only">qui.</span><span className="hero-word-glyphs" aria-hidden="true"><span>q</span><span>u</span><span>i</span><span>.</span></span><svg className="hero-word-flourish" viewBox="0 0 180 15" fill="none" aria-hidden="true"><path pathLength="1" d="M4 10C45 2 100 2 172 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg></em></h1>
               <p className="hero-description">Trova la tua prossima sfida. Incontra il tuo team.<br className="desktop-break" /> Costruisci qualcosa che prima non c’era.</p>
               <form className="hero-search" action="/#events" method="get" role="search">
                 <label htmlFor="hero-query">Cosa vuoi costruire?</label>
