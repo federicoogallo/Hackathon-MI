@@ -15,6 +15,7 @@ import logging
 from datetime import datetime
 
 import config
+from filters.event_exclusions import event_exclusion_reason
 from models import HackathonEvent
 
 logger = logging.getLogger(__name__)
@@ -208,6 +209,11 @@ def keyword_filter(event: HackathonEvent) -> bool:
     """
     text = f"{event.title} {event.description}".strip()
     text_lower = text.lower()
+
+    exclusion_reason = event_exclusion_reason(event.url)
+    if exclusion_reason:
+        logger.info("Scartato evento verificato: %s — %s", event.title[:80], exclusion_reason)
+        return False
 
     # Step 0b: blacklist manuale → scarta subito se titolo/descrizione combaciano
     for b in _BLACKLIST:

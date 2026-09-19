@@ -15,7 +15,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 
 <!-- HACKATHON_TABLE_START -->
 
-> **14 hackathons** coming up in Milan · Last updated: Sep 18, 2026 16:54
+> **9 hackathons** coming up in Milan · Last updated: Sep 19, 2026 13:12
 >
 > 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
 
@@ -29,12 +29,7 @@ Filters with LLM, routes uncertain candidates to manual review, notifies via Tel
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | web_search |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | web_search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
-| [Harvard HSIL Hackathon 2026](https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026) | TBD | Milano | web_search |
-| [AI Agent Olympics Hackathon](https://luma.com/5fxlxfl5) | TBD | Milano | web_search |
 | [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | web_search |
-| [BCG Platinion Hackathon 2026 - Milano - Eightfold](https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg) | TBD | Milano | web_search |
-| [Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI](https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai) | 21settembre2026 | Milano | universities |
-| [GDG AI HACK 2026](https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-gdg-ai-hack-2026/) | TBD | Milano | web_search |
 
 <!-- HACKATHON_TABLE_END -->
 

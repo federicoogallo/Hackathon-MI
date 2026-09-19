@@ -471,6 +471,52 @@ class TestPipelineQualityGate:
         assert ok is False
         assert "duplicato" in reason
 
+    def test_rejects_known_duplicate_bcg_eightfold_landing_page(self):
+        from filters.keyword_filter import keyword_filter
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title="BCG Platinion Hackathon 2026 - Milano - Eightfold",
+            url="https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg",
+            source="web_search",
+            description="BCG Platinion Hackathon in Milano with application deadline September 13, 2026.",
+            date_str="",
+            location="Milano",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "duplicato" in reason
+        assert keyword_filter(ev) is False
+
+    @pytest.mark.parametrize(
+        "title,url",
+        [
+            (
+                "Harvard HSIL Hackathon 2026",
+                "https://www.gsom.polimi.it/knowledge/harvard-hsil-hackathon-2026",
+            ),
+            ("AI Agent Olympics Hackathon", "https://luma.com/5fxlxfl5"),
+        ],
+    )
+    def test_rejects_user_reported_expired_undated_events(self, title, url):
+        from filters.keyword_filter import keyword_filter
+        from main import _passes_quality_gate
+
+        ev = HackathonEvent(
+            title=title,
+            url=url,
+            source="web_search",
+            description="Hackathon specifico a Milano nel 2026.",
+            date_str="",
+            location="Milano",
+        )
+
+        ok, reason = _passes_quality_gate(ev)
+        assert ok is False
+        assert "passato" in reason
+        assert keyword_filter(ev) is False
+
     def test_rejects_ctf_as_not_hackathon_format(self):
         from filters.keyword_filter import keyword_filter
 

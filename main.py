@@ -58,6 +58,7 @@ from collectors.camera_commercio import CameraCommercioCollector
 from collectors.regione_lombardia import RegioneLombardiaCollector
 from collectors.gdg import GDGCollector
 from collectors.telespazio import TelespazioCollector
+from filters.event_exclusions import event_exclusion_reason
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
@@ -143,10 +144,6 @@ _KNOWN_UNDATED_STALE_WEB_RESULT_RE = re.compile(
     r"luma\.com/k73gcr0t|"
     r"lu\.ma/ayybpg05|"
     r"healthmanagement\.org/c/icu/event/milan-critical-care-datathon-and-esicm-s-big-datatalk)",
-    re.I,
-)
-_KNOWN_DUPLICATE_URL_RE = re.compile(
-    r"(experiencedtalent\.bcg\.com/events/candidate/registration\?.*plannedEventId=aQnm026Vg)",
     re.I,
 )
 _ONLINE_ONLY_URL_RE = re.compile(
@@ -332,10 +329,11 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
 
 def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
+    exclusion_reason = event_exclusion_reason(event.url)
+    if exclusion_reason:
+        return False, exclusion_reason
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
         return False, "false positive noto"
-    if _KNOWN_DUPLICATE_URL_RE.search(event.url or ""):
-        return False, "duplicato noto"
     if _is_blacklisted_event(event):
         return False, "evento in blacklist manuale"
     if _has_conflicting_meetup_location(event):
