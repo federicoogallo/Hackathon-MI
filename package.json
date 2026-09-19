@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test:frontend": "node scripts/test-frontend-data.mjs && node scripts/test-event-filters.mjs"
   },
   "dependencies": {
     "3d-tiles-renderer": "^0.4.28",

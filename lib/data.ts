@@ -86,6 +86,16 @@ function readJson(file: string): unknown {
   }
 }
 
+function safeHttpUrl(value: unknown): string {
+  if (typeof value !== "string") return "";
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
 function todayRome(): string {
   // YYYY-MM-DD nel fuso di riferimento del progetto
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
@@ -93,7 +103,10 @@ function todayRome(): string {
 
 function parseIso(dateStr: string): string {
   const m = (dateStr || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? `${m[1]}-${m[2]}-${m[3]}` : "";
+  if (!m) return "";
+  const iso = `${m[1]}-${m[2]}-${m[3]}`;
+  const date = new Date(`${iso}T00:00:00Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === iso ? iso : "";
 }
 
 function fmtCompact(iso: string, raw: string): string {
@@ -140,7 +153,7 @@ export function getSiteData(): SiteData {
   const today = todayRome();
 
   const upcoming = all
-    .filter((e) => e && e.is_hackathon)
+    .filter((e) => e && e.is_hackathon && safeHttpUrl(e.url))
     .filter((e) => {
       const iso = parseIso(e.date_str || "");
       return !iso || iso >= today; // senza data = ancora valido (TBD)
@@ -154,7 +167,8 @@ export function getSiteData(): SiteData {
   const events: HackEvent[] = upcoming.map((e, i) => {
     const iso = parseIso(e.date_str || "");
     const [_, mo, d] = iso ? iso.split("-").map(Number) : [0, 0, 0];
-    let desc = String(e.description || "").trim().replace(/\n/g, " ");
+    const fullDescription = String(e.description || "").trim().replace(/\n/g, " ");
+    let desc = fullDescription;
     if (desc.length > 210) desc = desc.slice(0, 210).replace(/\s+\S*$/, "") + "...";
     const title = String(e.title || "Senza titolo").trim();
     const location = String(e.location || "Milano").trim() || "Milano";
@@ -162,7 +176,7 @@ export function getSiteData(): SiteData {
     return {
       id: String(e.id || i),
       title,
-      url: String(e.url || "#"),
+      url: safeHttpUrl(e.url),
       source,
       dateStr: String(e.date_str || ""),
       dateIso: iso,
@@ -175,7 +189,7 @@ export function getSiteData(): SiteData {
       reviewStatus: String(e.review_status || "ai_verified"),
       issueOk: issueUrl(e, "confirmed_ok"),
       issueDoubt: issueUrl(e, "confirmed_doubt"),
-      searchBlob: `${title} ${desc} ${location} ${source}`.toLowerCase(),
+      searchBlob: `${title} ${fullDescription} ${location} ${source}`.toLowerCase(),
     };
   });
 
@@ -183,7 +197,9 @@ export function getSiteData(): SiteData {
 
   // review queue
   const rq = dir ? (readJson(path.join(dir, "review_queue.json")) as any) : null;
-  const candidates: any[] = Array.isArray(rq?.candidates) ? rq.candidates : [];
+  const candidates: any[] = Array.isArray(rq?.candidates)
+    ? rq.candidates.filter((c: any) => c && safeHttpUrl(c.url))
+    : [];
 
   // scan status (last_report.json e' gitignored: assente in build = OK).
   // Un report piu' vecchio dell'ultimo scan riuscito non conta (parita' con html_export).
@@ -235,10 +251,10 @@ export function getReviewData(): { candidates: ReviewCandidate[]; lastScan: stri
   const { lastScan } = getSiteData();
   return {
     lastScan,
-    candidates: list.map((c) => ({
+    candidates: list.filter((c) => c && safeHttpUrl(c.url)).map((c) => ({
       id: String(c.id || "").slice(0, 12),
       title: String(c.title || "Senza titolo").trim(),
-      url: String(c.url || "#"),
+      url: safeHttpUrl(c.url),
       source: String(c.source || ""),
       reason: String(c.review_reason || "Motivazione non disponibile"),
       confidence: Math.round(Number(c.confidence || 0) * 100),

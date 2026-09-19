@@ -13,27 +13,27 @@ export const metadata: Metadata = {
   // risolvono da qui (l'host precedente rispondeva 404)
   metadataBase: new URL(SITE_URL),
   title: "Hackathon Milano",
-  description: "Hackathon in programma a Milano e dintorni, verificati da AI e review umana.",
+  description: "Trova hackathon a Milano e dintorni. Esplora date e fonti, filtra gli eventi e salva le tue prossime sfide in un unico posto.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Hackathon Milano",
-    description: "Hackathon in programma a Milano e dintorni.",
+    description: "Le grandi idee iniziano qui. Scopri gli hackathon a Milano, trova la tua prossima sfida e incontra il tuo team.",
     type: "website",
     url: SITE_URL,
     siteName: "Hackathon Milano",
     locale: "it_IT",
-    images: ["/hero-hackathon-milano.png"],
+    images: [{ url: "/milano-hero.webp", width: 1254, height: 1254, alt: "Un modello del Duomo e dello skyline di Milano attraversato da un’orbita arancio" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Hackathon Milano",
-    description: "Hackathon in programma a Milano e dintorni.",
-    images: ["/hero-hackathon-milano.png"],
+    description: "Le grandi idee iniziano qui. Scopri gli hackathon a Milano, trova la tua prossima sfida e incontra il tuo team.",
+    images: [{ url: "/milano-hero.webp", width: 1254, height: 1254, alt: "Un modello del Duomo e dello skyline di Milano attraversato da un’orbita arancio" }],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070a11",
+  themeColor: "#f5f4ee",
   width: "device-width",
   initialScale: 1,
 };
@@ -41,20 +41,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it" className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
-      <head>
-        {/* Intro orbitale solo alla prima visita della sessione: al reload (o
-            deep-link con hash) si salta e si va dritti alla pagina. Deciso
-            prima del primo paint per non far lampeggiare il globo. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var s=sessionStorage.getItem('hm_intro_seen');" +
-              "if(location.hash||s){document.documentElement.classList.add('skip-intro');}" +
-              "if(!s){sessionStorage.setItem('hm_intro_seen','1');}}catch(e){}})();",
-          }}
-        />
-      </head>
-      <body className="elite-shell">
+      <body>
         {/* skip-link: primo elemento focusabile, visibile solo da tastiera */}
         <a className="skip-link" href="#top">Salta al contenuto</a>
         {children}

@@ -1,125 +1,222 @@
 "use client";
-import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+
+import { Suspense, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { useSearchParams } from "next/navigation";
 import type { HackEvent } from "@/lib/data";
+import {
+  DEFAULT_EVENT_FILTERS, eventCalendar, filterEvents, readEventFilters, sourceLabel,
+  todayInRome, validEventDate, writeEventFilters, type EventFilters, type EventPeriod,
+} from "@/lib/event-filters";
+import "./events-deck.css";
 
-const SvgPin = (
-  <svg viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /></svg>
-);
-const SvgCal = (
-  <svg viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" /></svg>
-);
-const SvgArrow = (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
-);
+const SAVED_STORAGE_KEY = "hackathon-mi:saved-events";
+const PERIODS: Array<[EventPeriod, string]> = [["all", "Tutti gli eventi"], ["week", "Prossimi 7 giorni"], ["month", "Questo mese"], ["undated", "Data da definire"]];
 
-type Filter = "all" | "week" | "month" | "later";
-
-function inFilter(e: HackEvent, f: Filter): boolean {
-  if (f === "all") return true;
-  if (!e.dateIso) return f === "later";
-  const d = new Date(e.dateIso + "T12:00:00");
-  const now = new Date();
-  const diff = (d.getTime() - now.getTime()) / 86400000;
-  if (f === "week") return diff >= 0 && diff <= 7;
-  if (f === "month") return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  return diff > 31;
+function Icon({ name, className = "" }: { name: "search" | "bookmark" | "arrow" | "pin" | "calendar" | "grid" | "list" | "close" | "check"; className?: string }) {
+  const paths = {
+    search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></>,
+    bookmark: <path d="M7 3.5h10a1 1 0 0 1 1 1v16l-6-4-6 4v-16a1 1 0 0 1 1-1Z" />,
+    arrow: <path d="M6 18 18 6M6 6h12v12" />,
+    pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
+    calendar: <><rect x="4" y="5" width="16" height="16" rx="2" /><path d="M8 3v4m8-4v4M4 11h16m-8 3v4m-2-2h4" /></>,
+    grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
+    list: <path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" />,
+    close: <path d="m6 6 12 12M6 18 18 6" />,
+    check: <path d="m5 12 4 4L19 6" />,
+  };
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
 
-function onSpot(ev: React.PointerEvent<HTMLElement>) {
-  const el = ev.currentTarget;
-  const r = el.getBoundingClientRect();
-  el.style.setProperty("--mx", `${((ev.clientX - r.left) / r.width) * 100}%`);
-  el.style.setProperty("--my", `${((ev.clientY - r.top) / r.height) * 100}%`);
+function readSavedIds(value: string | null): string[] {
+  if (!value) return [];
+  const parsed: unknown = JSON.parse(value);
+  if (!Array.isArray(parsed)) throw new Error("Invalid saved events");
+  return [...new Set(parsed.filter((id): id is string => typeof id === "string"))];
+}
+
+function safeLink(value: string): string | undefined {
+  try { const url = new URL(value); return url.protocol === "https:" || url.protocol === "http:" ? url.href : undefined; }
+  catch { return undefined; }
+}
+
+// Keep the server-rendered event collection outside the query hook's Suspense
+// boundary, while also observing Next client navigations and native history.
+function QuerySync({ onChange }: { onChange: Dispatch<SetStateAction<EventFilters>> }) {
+  const params = useSearchParams();
+  const search = params.toString();
+  useEffect(() => { onChange(readEventFilters(search)); }, [search, onChange]);
+  return null;
 }
 
 export default function EventsDeck({ events }: { events: HackEvent[] }) {
-  const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filters, setFilters] = useState<EventFilters>(DEFAULT_EVENT_FILTERS);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [today, setToday] = useState("");
+  const [notice, setNotice] = useState("");
+  const [storageError, setStorageError] = useState("");
 
-  const reduce = useReducedMotion();
+  useEffect(() => {
+    const readUrl = () => setFilters(readEventFilters(window.location.search));
+    const updateDay = () => setToday(todayInRome());
+    readUrl();
+    updateDay();
+    try { setSavedIds(readSavedIds(window.localStorage.getItem(SAVED_STORAGE_KEY))); }
+    catch { setStorageError("Non è possibile leggere i salvati in questo browser. Puoi comunque creare una lista per questa visita."); }
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== SAVED_STORAGE_KEY) return;
+      try { setSavedIds(readSavedIds(event.newValue)); setStorageError(""); }
+      catch { setStorageError("Non è stato possibile sincronizzare i salvati. La lista attuale resta disponibile."); }
+    };
+    window.addEventListener("popstate", readUrl);
+    window.addEventListener("storage", onStorage);
+    document.addEventListener("visibilitychange", updateDay);
+    const dayTimer = window.setInterval(updateDay, 60_000);
+    return () => {
+      window.removeEventListener("popstate", readUrl);
+      window.removeEventListener("storage", onStorage);
+      document.removeEventListener("visibilitychange", updateDay);
+      window.clearInterval(dayTimer);
+    };
+  }, []);
 
-  const shown = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    return events.filter((e) => e.searchBlob.includes(query) && inFilter(e, filter));
-  }, [events, q, filter]);
+  const sources = useMemo(() => [...new Set(events.map((event) => event.source))].sort((a, b) => sourceLabel(a).localeCompare(sourceLabel(b), "it")), [events]);
+  const shown = useMemo(() => filterEvents(events, filters, savedIds, today), [events, filters, savedIds, today]);
+  const savedCount = events.filter((event) => savedIds.includes(event.id)).length;
+  const hasFilters = !!filters.q.trim() || filters.period !== "all" || filters.source !== "all" || filters.saved;
 
-  const pills: Array<[Filter, string]> = [["all", "Tutti"], ["week", "Settimana"], ["month", "Mese"], ["later", "Prossimi"]];
+  function updateFilters(patch: Partial<EventFilters>, replace = false) {
+    const next = { ...filters, ...patch };
+    setFilters(next);
+    const url = writeEventFilters(new URL(window.location.href), next);
+    if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== url) {
+      window.history[replace ? "replaceState" : "pushState"](window.history.state, "", url);
+    }
+  }
+
+  function resetFilters() { updateFilters({ ...DEFAULT_EVENT_FILTERS, view: filters.view, order: filters.order }); }
+
+  function toggleSaved(event: HackEvent) {
+    const wasSaved = savedIds.includes(event.id);
+    const next = wasSaved ? savedIds.filter((id) => id !== event.id) : [...savedIds, event.id];
+    setSavedIds(next);
+    try {
+      window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(next));
+      setStorageError("");
+      setNotice(wasSaved ? `${event.title}: rimosso dai salvati.` : `${event.title}: aggiunto ai salvati.`);
+    } catch {
+      setStorageError("Il browser non consente il salvataggio permanente. La tua lista è disponibile per questa visita.");
+      setNotice(wasSaved ? "Evento rimosso dalla lista di questa visita." : "Evento salvato nella lista di questa visita.");
+    }
+  }
+
+  function downloadCalendar(event: HackEvent) {
+    const contents = eventCalendar(event);
+    if (!contents) return;
+    try {
+      const url = URL.createObjectURL(new Blob([contents], { type: "text/calendar;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${event.title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "hackathon"}.ics`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setNotice(`Calendario scaricato per ${event.title}. Contiene la data di inizio: verifica orari e durata sul sito dell’organizzatore.`);
+    } catch { setNotice("Non è stato possibile scaricare il calendario. Riprova o consulta la data sul sito dell’evento."); }
+  }
 
   return (
-    <>
-      <div className="toolbar" aria-label="Filtri eventi">
-        <div className="search">
-          <label className="sr-only" htmlFor="search">Cerca eventi</label>
-          <svg className="search-icon" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" /></svg>
-          <input type="text" id="search" placeholder="Cerca hackathon, fonte o luogo..." autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
+    <div className="explorer">
+      <Suspense fallback={null}><QuerySync onChange={setFilters} /></Suspense>
+      <div className="explorer-heading">
+        <div>
+          <p className="explorer-eyebrow"><span />Il radar degli hackathon</p>
+          <h2>Trova la tua<br className="explorer-heading-break" /> prossima sfida.</h2>
+          <p className="explorer-intro">Un’idea, un team, un weekend diverso. Il prossimo passo inizia qui.</p>
         </div>
-        <div className="pills">
-          {pills.map(([f, label]) => (
-            <button key={f} type="button" aria-pressed={filter === f} className={`pill${filter === f ? " active" : ""}`} onClick={() => setFilter(f)}>{label}</button>
-          ))}
-        </div>
+        <div className="explorer-total"><span>{String(events.length).padStart(2, "0")}</span><p>eventi nel radar<br /><strong>Milano e dintorni</strong></p></div>
       </div>
-      <div className="deck-head">
-        <strong>Prossimi eventi verificati</strong>
-        <span id="count-label" aria-live="polite" aria-atomic="true">{shown.length} {shown.length === 1 ? "evento" : "eventi"}</span>
-      </div>
-      <div className="grid" id="grid">
-        {events.length === 0 && (
-          <div className="empty" data-reveal>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 3v3M17 3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
-              <path d="m9 14 2 2 4-4" />
-            </svg>
-            <h3>Nessun hackathon in programma</h3>
-            <p>Non ci sono hackathon futuri confermati a Milano al momento.<br />La lista si aggiorna ogni giorno automaticamente.</p>
+      <div className="explorer-controls" role="search" aria-label="Cerca e filtra gli hackathon">
+        <div className="explorer-main-controls">
+          <div className="explorer-search-field">
+            <label htmlFor="event-search">Cerca un hackathon</label>
+            <div className="explorer-search-input">
+              <Icon name="search" />
+              <input id="event-search" type="search" placeholder="Nome, argomento o luogo…" autoComplete="off" value={filters.q} onChange={(event) => updateFilters({ q: event.target.value }, true)} aria-controls="event-results" />
+              {filters.q && <button type="button" className="explorer-clear" onClick={() => { updateFilters({ q: "" }, true); document.getElementById("event-search")?.focus(); }} aria-label="Cancella la ricerca"><Icon name="close" /></button>}
+            </div>
           </div>
-        )}
-        {/* Niente AnimatePresence/exit: con questo set-up le card filtrate
-            restavano appese nel DOM (uscita mai avviata). Entrata a molla +
-            `layout` per il riordino fluido: robusto e senza stati fantasma. */}
-        {shown.map((e, i) => (
-          <motion.article
-            key={e.id}
-            layout={!reduce}
-            initial={reduce ? false : { opacity: 0, y: 18, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: "spring", stiffness: 320, damping: 34, delay: reduce ? 0 : Math.min(i * 0.035, 0.2) }}
-            className="card"
-            onPointerMove={onSpot}
-          >
-            <div className="date">
-              <div>
-                <strong>{e.day || "TBD"}</strong>
-                <span>{e.month || "DATA"}</span>
-              </div>
-            </div>
-            <div className="card-body">
-              <h3 className="card-title"><a href={e.url} target="_blank" rel="noopener noreferrer">{e.title}</a></h3>
-              <div className="card-meta">
-                <span>{SvgPin}{e.location}</span>
-                {e.dateCompact && <span>{SvgCal}{e.dateCompact}</span>}
-              </div>
-              <div className="chips">
-                {e.reviewStatus === "manual_approved"
-                  ? <span className="chip manual">Verifica manuale</span>
-                  : e.confidence > 0 && <span className="chip ai">AI {Math.round(e.confidence * 100)}%</span>}
-                {!e.dateIso && <span className="chip tbd">Data da confermare</span>}
-              </div>
-              {e.description && <p className="card-desc">{e.description}</p>}
-              <div className="card-foot">
-                <span className="source">{e.source}</span>
-                <div className="actions">
-                  <a href={e.issueOk} className="act" target="_blank" rel="noopener noreferrer">Valuta OK</a>
-                  <a href={e.issueDoubt} className="act" target="_blank" rel="noopener noreferrer">Segnala dubbio</a>
-                  <a href={e.url} className="act go" target="_blank" rel="noopener noreferrer">Vedi evento{SvgArrow}</a>
-                </div>
-              </div>
-            </div>
-          </motion.article>
-        ))}
+          <div className="explorer-source-field">
+            <label htmlFor="event-source">Fonte</label>
+            <select id="event-source" value={filters.source} onChange={(event) => updateFilters({ source: event.target.value })} aria-controls="event-results">
+              <option value="all">Tutte le fonti</option>
+              {filters.source !== "all" && !sources.includes(filters.source) && <option value={filters.source}>{sourceLabel(filters.source)}</option>}
+              {sources.map((source) => <option key={source} value={source}>{sourceLabel(source)}</option>)}
+            </select>
+          </div>
+          <button className={`explorer-saved-toggle${filters.saved ? " is-active" : ""}`} type="button" aria-pressed={filters.saved} onClick={() => updateFilters({ saved: !filters.saved })}>
+            <Icon name="bookmark" /><span>I miei salvati</span><span className="explorer-saved-count">{savedCount}</span>
+          </button>
+        </div>
+        <div className="explorer-filter-row">
+          <div className="explorer-periods" role="group" aria-label="Periodo dell’evento">
+            {PERIODS.map(([period, label]) => <button key={period} type="button" aria-pressed={filters.period === period} className={filters.period === period ? "is-active" : ""} onClick={() => updateFilters({ period })}>{label}</button>)}
+          </div>
+          <div className="explorer-view-toggle" role="group" aria-label="Visualizzazione eventi">
+            <button type="button" aria-label="Visualizza a griglia" aria-pressed={filters.view === "grid"} onClick={() => updateFilters({ view: "grid" })}><Icon name="grid" /></button>
+            <button type="button" aria-label="Visualizza come elenco" aria-pressed={filters.view === "list"} onClick={() => updateFilters({ view: "list" })}><Icon name="list" /></button>
+          </div>
+        </div>
       </div>
-      {events.length > 0 && shown.length === 0 && <p className="no-results">Nessun risultato trovato.</p>}
-    </>
+      <div className="explorer-result-bar">
+        <p role="status" aria-live="polite" aria-atomic="true"><strong>{shown.length} {shown.length === 1 ? "evento" : "eventi"}</strong>{hasFilters ? " per la tua ricerca" : " da scoprire"}</p>
+        <div className="explorer-result-actions">
+          {hasFilters && <button type="button" className="explorer-reset" onClick={resetFilters}>Azzera filtri<Icon name="close" /></button>}
+          <div className="explorer-order"><label htmlFor="event-order">Ordina per</label><select id="event-order" value={filters.order} onChange={(event) => updateFilters({ order: event.target.value === "name" ? "name" : "date" })}><option value="date">Data più vicina</option><option value="name">Nome A–Z</option></select></div>
+        </div>
+      </div>
+      {storageError && <p className="explorer-storage-error" role="alert">{storageError}</p>}
+      <div className={`explorer-results explorer-results--${filters.view}`} id="event-results">
+        {shown.map((event) => {
+          const saved = savedIds.includes(event.id);
+          const date = validEventDate(event.dateIso);
+          const url = safeLink(event.url);
+          const issueUrl = safeLink(event.issueDoubt);
+          return (
+            <article key={event.id} className="explorer-card" aria-labelledby={`event-${event.id}`}>
+              <div className="explorer-card-top">
+                <div className={`explorer-date${date ? "" : " explorer-date--unknown"}`} aria-label={date ? `Data di inizio: ${event.dateCompact}` : "Data da definire"}>
+                  <span>{date ? event.day : "—"}</span><span>{date ? event.month : "TBD"}</span>
+                </div>
+                <div className="explorer-card-source" title={`Trovato tramite ${sourceLabel(event.source)}`}><span>Fonte</span><strong>{url ? new URL(url).hostname.replace(/^www\./, "") : sourceLabel(event.source)}</strong></div>
+                <button className={`explorer-save${saved ? " is-saved" : ""}`} type="button" aria-label={`${saved ? "Rimuovi dai salvati" : "Salva"}: ${event.title}`} aria-pressed={saved} title={saved ? "Rimuovi dai salvati" : "Salva evento"} onClick={() => toggleSaved(event)}><Icon name="bookmark" /></button>
+              </div>
+              <div className="explorer-card-content">
+                <div className="explorer-card-meta"><span><Icon name="pin" />{event.location}</span><span>{date ? date.slice(0, 4) : "Data da definire"}</span></div>
+                <h3 id={`event-${event.id}`}>{url ? <a href={url} target="_blank" rel="noopener noreferrer">{event.title}<span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : event.title}</h3>
+                <p className="explorer-description">{event.description || "Tutti i dettagli, il programma e le modalità di partecipazione sul sito dell’evento."}</p>
+                <span className={`explorer-verification${event.reviewStatus === "manual_approved" ? " explorer-verification--manual" : ""}`}><Icon name="check" />{event.reviewStatus === "manual_approved" ? "Verifica manuale" : "Selezionato dal monitor"}</span>
+              </div>
+              <div className="explorer-card-bottom">
+                <div className="explorer-card-actions">
+                  {url ? <a className="explorer-discover" href={url} target="_blank" rel="noopener noreferrer">Scopri evento<Icon name="arrow" /><span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : <span className="explorer-unavailable">Link da verificare</span>}
+                  {date && <button type="button" className="explorer-calendar" onClick={() => downloadCalendar(event)} title="Aggiunge il giorno di inizio; verifica durata e orari alla fonte" aria-label={`Aggiungi la data di inizio al calendario: ${event.title}`}><Icon name="calendar" /><span>Calendario</span></button>}
+                </div>
+                {issueUrl && <a className="explorer-report" href={issueUrl} target="_blank" rel="noopener noreferrer">Segnala un dubbio<span className="explorer-sr-only"> su {event.title} (GitHub, nuova scheda)</span><Icon name="arrow" /></a>}
+              </div>
+            </article>
+          );
+        })}
+        {shown.length === 0 && <div className="explorer-empty">
+          <div className="explorer-empty-icon"><Icon name={filters.saved ? "bookmark" : "search"} /></div>
+          <p className="explorer-eyebrow">Un nuovo punto di partenza</p>
+          <h3>{events.length === 0 ? "Il radar è in ascolto." : filters.saved && savedCount === 0 ? "Le prossime idee, tutte qui." : "Nessuna sfida con questi filtri."}</h3>
+          <p>{events.length === 0 ? "Al momento non ci sono hackathon in programma nel radar. Torna dopo la prossima scansione per scoprire nuove opportunità." : filters.saved && savedCount === 0 ? "Salva gli eventi che ti interessano con l’icona segnalibro. Li ritroverai qui, in questo browser, senza creare un account." : "Prova un altro nome, amplia il periodo o cambia la fonte. Il tuo prossimo hackathon potrebbe essere a un filtro di distanza."}</p>
+          {events.length > 0 && <button type="button" onClick={resetFilters}>Esplora tutti gli eventi<Icon name="arrow" /></button>}
+        </div>}
+      </div>
+      <div className="explorer-footnote"><span><Icon name="bookmark" />I salvati restano nel tuo browser.</span><span>Date e iscrizioni? L’ultima parola è dell’organizzatore.</span></div>
+      <p className="explorer-sr-only" aria-live="polite" aria-atomic="true">{notice}</p>
+    </div>
   );
 }
