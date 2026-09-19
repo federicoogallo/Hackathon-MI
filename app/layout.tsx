@@ -40,7 +40,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
+    <html lang="it" data-scroll-behavior="smooth" className={`${inter.variable} ${mono.variable} ${grotesk.variable} ${serif.variable}`}>
       <body>
         {/* skip-link: primo elemento focusabile, visibile solo da tastiera */}
         <a className="skip-link" href="#top">Salta al contenuto</a>

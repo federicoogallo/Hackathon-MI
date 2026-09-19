@@ -2,7 +2,9 @@
 
 import { Suspense, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { useSearchParams } from "next/navigation";
+import { motion } from "motion/react";
 import type { HackEvent } from "@/lib/data";
+import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 import {
   DEFAULT_EVENT_FILTERS, eventCalendar, filterEvents, readEventFilters, sourceLabel,
   todayInRome, validEventDate, writeEventFilters, type EventFilters, type EventPeriod,
@@ -39,6 +41,30 @@ function safeLink(value: string): string | undefined {
   catch { return undefined; }
 }
 
+// An event keeps its cover when it is filtered, sorted or saved. These abstract
+// forms are decoration, rather than inferred categories or organiser branding.
+function coverVariant(id: string): number {
+  return [...id].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0) % 3;
+}
+
+function EventCover({ variant }: { variant: number }) {
+  return <svg className="explorer-cover-art" viewBox="0 0 280 170" fill="none" aria-hidden="true">
+    {variant === 0 ? <g transform="translate(176 93) rotate(-24)">
+      {Array.from({ length: 12 }, (_, index) => <ellipse key={index} cx="0" cy="0" rx={23 + index * 5.3} ry={16 + index * 3.7} stroke="currentColor" strokeWidth={index === 11 ? "1.4" : ".8"} />)}
+      <path d="M-108 0H108M0-78V78" stroke="currentColor" strokeOpacity=".35" />
+      <circle cx="83" cy="0" r="4" fill="currentColor" />
+    </g> : variant === 1 ? <g transform="translate(176 100)">
+      {Array.from({ length: 15 }, (_, index) => <path key={index} d={`M${-70 + index * 5} 73 Q${-98 + index * 9} ${-115 + index * 5} ${73 + index * 4} -60`} stroke="currentColor" strokeWidth=".9" />)}
+      <circle cx="48" cy="-14" r="41" stroke="currentColor" strokeOpacity=".5" />
+      <circle cx="48" cy="-14" r="5" fill="currentColor" />
+    </g> : <g transform="translate(181 91) rotate(-35)">
+      {Array.from({ length: 11 }, (_, index) => <rect key={index} x={-62 + index * 4} y={-62 + index * 4} width={124 - index * 8} height={124 - index * 8} rx={17 - index} stroke="currentColor" strokeWidth=".85" />)}
+      <path d="M-99 0H99M0-92V92" stroke="currentColor" strokeOpacity=".3" />
+      <circle cx="89" cy="0" r="4" fill="currentColor" />
+    </g>}
+  </svg>;
+}
+
 // Keep the server-rendered event collection outside the query hook's Suspense
 // boundary, while also observing Next client navigations and native history.
 function QuerySync({ onChange }: { onChange: Dispatch<SetStateAction<EventFilters>> }) {
@@ -54,6 +80,23 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
   const [today, setToday] = useState("");
   const [notice, setNotice] = useState("");
   const [storageError, setStorageError] = useState("");
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [savedPulse, setSavedPulse] = useState("");
+  const [visibleNotice, setVisibleNotice] = useState(false);
+  const reducedMotion = useReducedMotionPreference();
+
+  useEffect(() => {
+    if (!notice) return;
+    setVisibleNotice(true);
+    const timeout = window.setTimeout(() => setVisibleNotice(false), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [notice]);
+
+  useEffect(() => {
+    if (!savedPulse) return;
+    const timeout = window.setTimeout(() => setSavedPulse(""), 260);
+    return () => window.clearTimeout(timeout);
+  }, [savedPulse]);
 
   useEffect(() => {
     const readUrl = () => setFilters(readEventFilters(window.location.search));
@@ -85,6 +128,7 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
   const hasFilters = !!filters.q.trim() || filters.period !== "all" || filters.source !== "all" || filters.saved;
 
   function updateFilters(patch: Partial<EventFilters>, replace = false) {
+    setHasInteracted(true);
     const next = { ...filters, ...patch };
     setFilters(next);
     const url = writeEventFilters(new URL(window.location.href), next);
@@ -96,6 +140,7 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
   function resetFilters() { updateFilters({ ...DEFAULT_EVENT_FILTERS, view: filters.view, order: filters.order }); }
 
   function toggleSaved(event: HackEvent) {
+    setSavedPulse(event.id);
     const wasSaved = savedIds.includes(event.id);
     const next = wasSaved ? savedIds.filter((id) => id !== event.id) : [...savedIds, event.id];
     setSavedIds(next);
@@ -177,21 +222,25 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
       </div>
       {storageError && <p className="explorer-storage-error" role="alert">{storageError}</p>}
       <div className={`explorer-results explorer-results--${filters.view}`} id="event-results">
-        {shown.map((event) => {
+        {shown.map((event, index) => {
           const saved = savedIds.includes(event.id);
           const date = validEventDate(event.dateIso);
           const url = safeLink(event.url);
           const issueUrl = safeLink(event.issueDoubt);
+          const variant = coverVariant(event.id);
+          const isNext = index === 0 && !hasFilters && filters.order === "date" && !!date && !!today && date >= today;
           return (
-            <article key={event.id} className="explorer-card" aria-labelledby={`event-${event.id}`}>
-              <div className="explorer-card-top">
+            <motion.article key={event.id} layout={reducedMotion ? false : "position"} initial={hasInteracted && !reducedMotion ? { opacity: .4, y: 10 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: reducedMotion ? 0 : .22, ease: [.22, 1, .36, 1] }} className={`explorer-card${isNext ? " explorer-card--next" : ""}`} aria-labelledby={`event-${event.id}`}>
+              <div className={`explorer-card-top explorer-cover--${variant}`}>
+                <EventCover variant={variant} />
                 <div className={`explorer-date${date ? "" : " explorer-date--unknown"}`} aria-label={date ? `Data di inizio: ${event.dateCompact}` : "Data da definire"}>
                   <span>{date ? event.day : "—"}</span><span>{date ? event.month : "TBD"}</span>
                 </div>
-                <div className="explorer-card-source" title={`Trovato tramite ${sourceLabel(event.source)}`}><span>Fonte</span><strong>{url ? new URL(url).hostname.replace(/^www\./, "") : sourceLabel(event.source)}</strong></div>
-                <button className={`explorer-save${saved ? " is-saved" : ""}`} type="button" aria-label={`${saved ? "Rimuovi dai salvati" : "Salva"}: ${event.title}`} aria-pressed={saved} title={saved ? "Rimuovi dai salvati" : "Salva evento"} onClick={() => toggleSaved(event)}><Icon name="bookmark" /></button>
+                <span className={`explorer-cover-caption${isNext ? " explorer-next-label" : ""}`}>{isNext ? "Prossimo in calendario" : date ? "Segna la data" : "La prossima idea"}</span>
+                <button className={`explorer-save${saved ? " is-saved" : ""}${savedPulse === event.id ? " is-pulsing" : ""}`} type="button" aria-label={`${saved ? "Rimuovi dai salvati" : "Salva"}: ${event.title}`} aria-pressed={saved} title={saved ? "Rimuovi dai salvati" : "Salva evento"} onClick={() => toggleSaved(event)}><Icon name="bookmark" /></button>
               </div>
               <div className="explorer-card-content">
+                <div className="explorer-card-source" title={`Trovato tramite ${sourceLabel(event.source)}`}><span>Fonte</span><strong>{url ? new URL(url).hostname.replace(/^www\./, "") : sourceLabel(event.source)}</strong></div>
                 <div className="explorer-card-meta"><span><Icon name="pin" />{event.location}</span><span>{date ? date.slice(0, 4) : "Data da definire"}</span></div>
                 <h3 id={`event-${event.id}`}>{url ? <a href={url} target="_blank" rel="noopener noreferrer">{event.title}<span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : event.title}</h3>
                 <p className="explorer-description">{event.description || "Tutti i dettagli, il programma e le modalità di partecipazione sul sito dell’evento."}</p>
@@ -204,7 +253,7 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
                 </div>
                 {issueUrl && <a className="explorer-report" href={issueUrl} target="_blank" rel="noopener noreferrer">Segnala un dubbio<span className="explorer-sr-only"> su {event.title} (GitHub, nuova scheda)</span><Icon name="arrow" /></a>}
               </div>
-            </article>
+            </motion.article>
           );
         })}
         {shown.length === 0 && <div className="explorer-empty">
@@ -216,6 +265,7 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
         </div>}
       </div>
       <div className="explorer-footnote"><span><Icon name="bookmark" />I salvati restano nel tuo browser.</span><span>Date e iscrizioni? L’ultima parola è dell’organizzatore.</span></div>
+      <div className={`explorer-feedback${visibleNotice ? " is-visible" : ""}`} aria-hidden="true"><Icon name="check" /><p>{notice}</p></div>
       <p className="explorer-sr-only" aria-live="polite" aria-atomic="true">{notice}</p>
     </div>
   );
