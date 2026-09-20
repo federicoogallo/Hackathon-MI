@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-19T16:12:04.075255+02:00",
+  "last_check": "2026-09-20T16:31:10.122720+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -183,7 +183,10 @@
         "https://www.meetup.com/becomebreathwork-boulder/events/316569886/?recId=cd60212b-3478-4713-8448-7a4a5e757fbd&recSource=event-search&searchId=824f73b3-7176-41ea-a1ba-9e192170247e&eventOrigin=find_page%24all",
         "https://www.meetup.com/aittg-denver/events/315936329/?recId=cd60212b-3478-4713-8448-7a4a5e757fbd&recSource=event-search&searchId=824f73b3-7176-41ea-a1ba-9e192170247e&eventOrigin=find_page%24all",
         "https://www.meetup.com/platform-engineers-denver/events/316600497/?recId=06087b3b-3b50-45af-ab6a-2d0de27fc53b&recSource=event-search&searchId=2b5cd45e-ac30-4ed6-b268-03366c556e2f&eventOrigin=find_page%24all",
-        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=06087b3b-3b50-45af-ab6a-2d0de27fc53b&recSource=event-search&searchId=2b5cd45e-ac30-4ed6-b268-03366c556e2f&eventOrigin=find_page%24all"
+        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=06087b3b-3b50-45af-ab6a-2d0de27fc53b&recSource=event-search&searchId=2b5cd45e-ac30-4ed6-b268-03366c556e2f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=f61d5763-458a-4b04-831a-491b064a1037&recSource=event-search&searchId=18986935-d361-4aee-bc01-11f15ab39a9f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-ord/events/316528995/?recId=f61d5763-458a-4b04-831a-491b064a1037&recSource=event-search&searchId=18986935-d361-4aee-bc01-11f15ab39a9f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=d691f84a-0e57-4199-8cd3-91c8debf9cea&recSource=event-search&searchId=c01ebaf9-7914-4702-805e-bf1143751b3d&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -239,6 +242,25 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-09-16T15:21:03.686469"
+    },
+    {
+      "id": "9aa2ec17b2fc4eef256662ccc528461ff66d7dbb7b485257b0f4faf234860eb3",
+      "title": "Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI",
+      "url": "https://polimi.it/il-politecnico/eventi?tx_filterevent_newsfilterevent%5Bcontroller%5D=News&tx_filterevent_newsfilterevent%5BcurrentPage%5D=2&cHash=5b807b8396644197677d4ce88a500271",
+      "source": "universities",
+      "description": "21settembre2026",
+      "date_str": "21settembre2026",
+      "location": "Milano",
+      "organizer": "Politecnico di Milano",
+      "is_hackathon": true,
+      "confidence": 0.92,
+      "review_status": "ai_verified",
+      "review_reason": "Innovation Challenge 2026 è una competizione con data specifica 21 settembre 2026 a Milano, futuro e con location esplicita",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai"
+      ],
+      "discovered_at": "2026-09-20T14:31:13.380049+00:00"
     }
   ]
 }

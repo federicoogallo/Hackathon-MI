@@ -24,7 +24,7 @@ This table is generated from the same archive used by the website. Always check 
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: Sep 20, 2026 12:15 CEST
+> **10 hackathons** coming up in Milan · Last updated: Sep 20, 2026 16:38 CEST
 >
 > **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters and details.
 
@@ -39,6 +39,7 @@ This table is generated from the same archive used by the website. Always check 
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | Web search |
 | [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | Web search |
 | [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | Web search |
+| [Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI](https://polimi.it/il-politecnico/eventi?tx_filterevent_newsfilterevent%5Bcontroller%5D=News&tx_filterevent_newsfilterevent%5BcurrentPage%5D=2&cHash=5b807b8396644197677d4ce88a500271) | 21settembre2026 | Milano | Universities |
 
 <!-- HACKATHON_TABLE_END -->
 
