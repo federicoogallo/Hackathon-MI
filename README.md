@@ -1,442 +1,118 @@
-# 🏆 Hackathon Milan Monitor
+# Hackathon Milano
 
-**Live site → [hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)**
+Find upcoming hackathons in Milan, compare dates and sources, and save the events you want to attend.
 
-<sub>The GitHub Pages build at [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/) is a mirror; it declares a `canonical` link to the Vercel site so the two don't compete in search.</sub>
+**[Explore the website](https://hackathon-mi-ten.vercel.app/)** · [Report an event](https://github.com/federicoogallo/Hackathon-MI/issues/new)
 
-Automated aggregator for hackathon events in Milan from 28 heterogeneous sources.  
-Filters with LLM, routes uncertain candidates to manual review, notifies via Telegram Bot, and publishes a Next.js website on Vercel (plus a static GitHub Pages mirror). Runs locally or on GitHub Actions.
+The public site combines a Next.js interface with a Python collection pipeline. Events are collected from public platforms, communities and institutions, deduplicated, then checked with rules and an LLM. Uncertain candidates go to a separate review queue; maintainers can approve or reject them.
 
-<br>
+## Website features
 
-<p align="center">
-  <img src="docs/banner.svg" alt="Upcoming Hackathons in Milan" width="100%">
-</p>
+- Search across event titles, locations and descriptions, with date and source filters.
+- Shareable search URLs, grid and list views, and chronological or alphabetical ordering.
+- Saved events stored in your browser and calendar downloads for dated events.
+- Light, dark and system themes, with a persistent preference.
+- An interactive Milan scene connected to upcoming events. The radar advances every seven seconds, pauses on interaction and respects reduced-motion preferences.
+- Responsive layouts, keyboard navigation and visible links to each original source.
+- Weekly email signup with confirmation and unsubscribe support, available when the private delivery services are configured. See [newsletter setup](docs/newsletter.md).
+
+No account is required to browse or save events. Saved events and theme preferences stay on the current browser; they are not synchronized between devices. Newsletter signup is optional; the current prompt is shown to all visitors for evaluation.
+
+## Upcoming events
+
+This table is generated from the same archive used by the website. Always check the original event page for registration, eligibility and current details.
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: Sep 19, 2026 16:17
+> **9 hackathons** coming up in Milan · Last updated: Sep 20, 2026 12:15 CEST
 >
-> 🌐 **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters & details.
+> **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Milano Finanza Hackathon](https://it.linkedin.com/posts/milano-finanza_hackathon-activity-7504195623886274560-6lsh) | 28 Sep 2026 | Milano | web_search |
-| [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | web_search |
-| [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | web_search |
-| [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | web_search |
-| [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | web_search |
-| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | web_search |
-| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | web_search |
-| [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | web_search |
-| [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | web_search |
+| [Milano Finanza Hackathon](https://it.linkedin.com/posts/milano-finanza_hackathon-activity-7504195623886274560-6lsh) | 28 Sep 2026 | Milano | Web search |
+| [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | Web search |
+| [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | Web search |
+| [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | Web search |
+| [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | Web search |
+| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | Web search |
+| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | Web search |
+| [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | Web search |
+| [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | Web search |
 
 <!-- HACKATHON_TABLE_END -->
 
-<br>
+## Run the website locally
 
-<p align="center">
-  <img src="https://img.shields.io/badge/auto--updated-daily-blue?style=for-the-badge" alt="Auto-updated daily">
-  <img src="https://img.shields.io/badge/AI--verified-GPT--OSS_120B-purple?style=for-the-badge" alt="AI Verified">
-  <img src="https://img.shields.io/badge/sources-28-green?style=for-the-badge" alt="28 Sources">
-</p>
-
----
-
-## Architecture
-
-```
-Collectors (28 sources in parallel)
-        │
-        ▼
-  4-Level Deduplication
-    L1  SHA-256(URL) exact match + alternate_urls index
-    L2  Fuzzy title (SequenceMatcher ≥ 0.75)
-    L3  Same date + shared distinctive keywords
-    L4  Cross-reference (title words found in other event's text)
-        │
-        ▼
-  Keyword Pre-filter (117+ regex patterns, junk-URL blocklist, past-year check)
-        │
-        ▼
-  LLM Filter (Groq · GPT-OSS 120B + Qwen 3.6 27B fallback, batches of 5, threshold 0.7)
-        │  Only events PHYSICALLY in Milan — online/remote → discarded
-        ├── Low-confidence candidates → Manual Review Queue
-        │       data/review_queue.json + docs/review.html
-        ▼
-  Telegram Notification (summary + link to site)
-        │
-        ▼
-  Persistent Storage (data/events.json)
-        │
-        ▼
-  HTML Page (docs/index.html → GitHub Pages) + README Table
-```
-
-<details>
-<summary><strong>Registered Collectors</strong></summary>
-
-#### Original Sources
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
-| 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | Fallback without API key — works in CI |
-| 3 | **Web Search (DDG)** | DuckDuckGo DDGS | Free meta-aggregator, 21 queries (IT + EN + site-specific) |
-| 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
-| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
-| 6 | **Devpost** | HTML scraping | Low coverage for Milan |
-| 7 | **PoliHub** | HTML scraping | Blocked by WAF (covered by DDG web search) |
-| 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
-| 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
-| 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
-
-#### High-Impact New Sources
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 11 | **Meetup** | GraphQL API + HTML fallback | Milan geo-search (30 km). Optional `MEETUP_API_KEY` |
-| 12 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
-| 13 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
-| 14 | **Codemotion** | HTML scraping | community.codemotion.com — largest Italian tech community |
-| 15 | **Talent Garden** | HTML scraping | TAG Milano campuses (Calabiana, Isola). IT + EN pages |
-| 16 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
-| 17 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
-
-#### International Platforms
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 18 | **DoraHacks** | REST API | Web3/blockchain hackathons. Italy geo-filter |
-| 19 | **HackerEarth** | HTML scraping | hackerearth.com/challenges — online + onsite |
-| 20 | **Devfolio** | `__NEXT_DATA__` + HTML fallback | Growing EU platform. Italy geo-filter |
-| 21 | **ChallengeRocket** | HTML scraping | EU/CEE hackathons + challenges |
-| 22 | **Unstop** | HTML + Angular JSON | Ex-Dare2Compete. Italy geo-filter |
-| 23 | **Lablab.ai** | `__NEXT_DATA__` + HTML | AI hackathons — LLM filters for Milan relevance |
-
-#### Institutional Sources
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 24 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
-| 25 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
-| 26 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
-
-#### Community Platforms
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 27 | **GDG Community** | HTML scraping + JSON-LD | gdg.community.dev — Google Developer Groups Milan chapters |
-
-#### Focus Sources
-
-| # | Source | Method | Notes |
-|---|--------|--------|-------|
-| 28 | **Telespazio** | HTML scraping | Leonardo/Telespazio career hackathon pages |
-
-</details>
-
----
-
-<details>
-<summary><strong>Local Setup</strong></summary>
-
-### 1. Clone and create virtual environment
+Use Node.js 22 LTS and npm. The checked-in event archive is enough to run the website; collection API keys are not required.
 
 ```bash
 git clone https://github.com/federicoogallo/Hackathon-MI.git
 cd Hackathon-MI
-
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+npm ci
+npm run dev
 ```
 
-### 2. Configure API keys
+Open [localhost:3000](http://localhost:3000). To test a production build, run `npm run build` followed by `npm run start`.
+
+## How data reaches the site
+
+```text
+Source collectors → deduplication → rules and LLM classification
+                                      ├─ uncertain → review queue
+                                      └─ accepted → event archive
+                                                         ├─ Next.js website
+                                                         ├─ static mirror and README
+                                                         └─ Telegram scan summary
+```
+
+The daily [collection workflow](.github/workflows/check_hackathons.yml) runs at **11:00 UTC**: 12:00 in Milan during standard time, 13:00 during daylight saving time. It tests the pipeline before collecting and commits updated public data and generated pages. GitHub Actions can delay scheduled jobs.
+
+The primary site is deployed on Vercel from this repository. The optional [GitHub Pages mirror](https://federicoogallo.github.io/Hackathon-MI/) uses a separate static template and points its canonical URLs to the primary site.
+
+- [Pipeline setup and deployment](docs/setup.md)
+- [Event review and maintenance](docs/admin.md)
+- [Frontend design and accessibility](design-system/README.md)
+- [Security and vulnerability reporting](SECURITY.md)
+
+## Project structure
+
+| Path | Purpose |
+| --- | --- |
+| `app/`, `components/`, `lib/` | Next.js pages, UI and frontend data handling |
+| `public/` | Website images and icons |
+| `collectors/`, `filters/` | Source integrations and event classification |
+| `storage/`, `notifiers/` | Archive persistence and Telegram notifications |
+| `main.py`, `bot.py`, `config.py` | Pipeline, optional Telegram bot and configuration |
+| `data/` | Versioned public event data and moderation decisions |
+| `utils/`, `scripts/` | Exporters and maintainer tools |
+| `docs/` | Maintainer documentation and generated static mirror |
+| `tests/`, `scripts/test-*.mjs` | Python and frontend regression checks |
+
+## Validation
 
 ```bash
-cp .env.example .env
+npm run test:frontend
+npm run build
+npm run typecheck
 ```
 
-Edit `.env` with your keys. The monitor can run without paid services, but `GROQ_API_KEY` is strongly recommended: without it, new candidates cannot be AI-verified and the pipeline preserves the existing archive instead of adding unverified events.
-
-| Variable | How to obtain |
-|----------|---------------|
-| `EVENTBRITE_API_KEY` | [eventbrite.com/platform/api](https://www.eventbrite.com/platform/api) → create an app → copy the Private token |
-| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) → API Keys → Create (free, no credit card required) |
-| `REDDIT_CLIENT_ID` | [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) → create "script" app → copy the ID below the name |
-| `REDDIT_CLIENT_SECRET` | Same Reddit page → copy the "secret" |
-| `TELEGRAM_BOT_TOKEN` | Talk to [@BotFather](https://t.me/BotFather) on Telegram → `/newbot` → copy the token |
-| `TELEGRAM_CHAT_ID` | Send a message to the bot, then visit `https://api.telegram.org/bot<TOKEN>/getUpdates` → grab `chat.id` |
-
-### 3. Run
+For the Python pipeline, install `requirements.txt` in a Python 3.12 virtual environment and run:
 
 ```bash
-# Dry-run (no notifications, logs only)
-python main.py --dry-run
-
-# Full run (with Telegram notifications)
-python main.py
+python -m pytest tests/ -q
 ```
 
-### 4. Tests
-
-```bash
-python -m pytest tests/ -v
-```
-
-### 5. Admin workflow
-
-The public site stays read-only. Admin actions are local maintainer commands that edit JSON,
-rebuild `docs/`, and can then be committed/pushed.
-
-```bash
-# Show published events
-python scripts/admin.py list-events
-
-# Show candidates waiting for manual review
-python scripts/admin.py list
-
-# Publish a candidate into data/events.json
-python scripts/admin.py approve <candidate-id> --reason "Verified Milan event"
-
-# Suppress a candidate from future queues (review queue only)
-python scripts/admin.py reject <candidate-id> --reason-code not_milan --reason "Munich venue"
-
-# Remove a candidate from review only; it may reappear on a future scan
-python scripts/admin.py dismiss <candidate-id>
-
-# Move a published event back to review
-python scripts/admin.py move-to-review <identifier> --note "Check venue"
-
-# Maintainer: remove an already published event (by id prefix, URL or title fragment)
-python scripts/admin.py remove <identifier>
-
-# Maintainer: remove and also add title to blacklist to prevent re-ingestion
-python scripts/admin.py remove <identifier> --blacklist --reason-code online_only --reason "Online jam"
-
-# Mark a high-signal admin decision as a regression case for pytest
-python scripts/admin.py remove <identifier> --reason-code known_false_positive --regression
-```
-
-Admin approvals/removals/review moves rebuild the static site and README immediately. Every admin action is logged in `data/admin_actions.json` with a free-text `reason` and a stable `reason_code`. Use `--regression` only for high-signal decisions worth preserving as tests; this avoids turning one-off judgement calls into brittle automated checks.
-
-The public review queue is available at `docs/review.html`. Public users can open issues (`Valuta OK` / `Segnala dubbio`) from the site, but only maintainers apply final actions.
-
-### 6. Pre-render static site (SSG)
-
-```bash
-python scripts/build_static_site.py
-```
-
-This generates `docs/index.html` and `docs/review.html` with content already embedded in HTML, then updates the README table from `data/events.json`, so content is visible before any JavaScript runs.
-
-</details>
-
----
-
-<details>
-<summary><strong>Deploy on GitHub Actions</strong></summary>
-
-### 1. Fork/push the repository
-
-### 2. Configure Secrets
-
-Go to **Settings → Secrets and variables → Actions → New repository secret** and add all keys from `.env`.
-
-### 3. Enable GitHub Pages (optional mirror)
-
-The primary site is the Next.js app deployed on **Vercel** ([hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)),
-which rebuilds on every push — including the daily data commit from the workflow.
-
-GitHub Pages is kept as an optional static mirror. To enable it, go to **Settings → Pages** and set:
-- **Source**: `Deploy from a branch`
-- **Branch**: `main` · **Folder**: `/docs`
-
-The mirror will be available at `https://<username>.github.io/<repo>/`. Its pages declare a
-`canonical` link to the Vercel site, so duplicate content is attributed to the primary host.
-
-### 4. Enable the workflow
-
-The workflow is in `.github/workflows/check_hackathons.yml`:
-- **Cron**: daily at 12:00 CET (`0 11 * * *` UTC)
-- **Manual**: from the "Actions" tab → "Run workflow"
-- Auto-commits `data/events.json`, `data/review_queue.json`, `data/review_decisions.json`, `docs/index.html`, `docs/review.html`, and `README.md` on each run
-
-</details>
-
----
-
-<details>
-<summary><strong>Telegram Bot</strong></summary>
-
-`bot.py` runs a long-polling bot with the following commands:
-
-| Command | Description |
-|---------|-------------|
-| `/scan` | Trigger a manual scan |
-| `/help` | List commands |
-
-The bot automatically sends a **summary** after each scan (number of new hackathons + link to site).  
-Full event details are available on the GitHub Pages site and in the README table above.
-
-Local start:
-
-```bash
-source .venv/bin/activate
-python bot.py
-```
-
-Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are automatically rejected.
-
-</details>
-
----
-
-<details>
-<summary><strong>Adding a New Collector</strong></summary>
-
-1. Create `collectors/my_collector.py`:
-
-```python
-from models import BaseCollector, HackathonEvent
-
-class MyCollector(BaseCollector):
-    @property
-    def name(self) -> str:
-        return "my_collector"
-
-    def collect(self) -> list[HackathonEvent]:
-        # Scraping/API logic here
-        return [
-            HackathonEvent(
-                title="...",
-                url="...",
-                source=self.name,
-            )
-        ]
-```
-
-2. Register it in `main.py` → `get_collectors()`:
-
-```python
-from collectors.my_collector import MyCollector
-
-def get_collectors():
-    return [
-        # ... existing collectors ...
-        MyCollector(),
-    ]
-```
-
-3. Add a test in `tests/test_collectors.py`.
-
-</details>
-
----
-
-<details>
-<summary><strong>Project Structure</strong></summary>
-
-```
-hackathon-monitor/
-├── main.py                  # Pipeline orchestrator
-├── bot.py                   # Telegram bot (long-polling)
-├── config.py                # Centralized configuration
-├── models.py                # HackathonEvent, BaseCollector
-├── requirements.txt
-├── .env.example
-├── .gitignore
-├── collectors/              # 28 source modules
-│   ├── eventbrite.py        # REST API
-│   ├── eventbrite_web.py    # HTML scraping (no API key, CI-friendly)
-│   ├── web_search.py        # DuckDuckGo meta-aggregator (21 queries)
-│   ├── luma.py              # __NEXT_DATA__ + HTML
-│   ├── meetup.py            # GraphQL API
-│   ├── ...                  # 20 more (see Registered Collectors above)
-│   └── regione_lombardia.py
-├── filters/
-│   ├── keyword_filter.py    # Regex pre-filter + junk-URL blocklist
-│   └── llm_filter.py        # Groq GPT-OSS + Qwen fallback classifier
-├── notifiers/
-│   └── telegram.py          # Telegram notifications
-├── storage/
-│   └── json_store.py        # Persistence + 4-level dedup
-├── utils/
-│   ├── admin_audit.py       # Structured admin action log + regression cases
-│   ├── http.py              # HTTP client with retry/backoff
-│   ├── html_export.py       # GitHub Pages generator
-│   ├── readme_export.py     # README table generator
-│   └── review_queue.py      # Manual review queue persistence
-├── scripts/
-│   ├── admin.py             # Local maintainer entrypoint
-│   ├── review_candidate.py  # Admin workflow implementation
-│   ├── slow_classify.py     # Recovery: classify one-by-one with rate-limit safety
-│   ├── collect_only.py      # Debug: collect + keyword filter, save candidates
-│   └── extract_dates.py     # Backfill missing event dates via LLM
-├── data/
-│   ├── events.json          # Event history (auto-generated)
-│   ├── admin_actions.json   # Admin audit/regression decisions
-│   ├── review_queue.json    # Low-confidence candidates
-│   └── review_decisions.json # Manual approve/reject decisions
-├── docs/
-│   ├── index.html           # GitHub Pages site (auto-generated)
-│   ├── review.html          # Public manual-review queue (auto-generated)
-│   └── banner.svg           # Header banner
-├── tests/
-│   ├── test_models.py
-│   ├── test_storage.py
-│   ├── test_filters.py
-│   ├── test_collectors.py
-│   └── test_pipeline.py
-└── .github/
-    └── workflows/
-        └── check_hackathons.yml
-```
-
-</details>
-
----
-
-<details>
-<summary><strong>Known Limitations</strong></summary>
-
-- **PoliHub**: blocked by WAF/Cloudflare (403). Indirectly covered by DDG web search.
-- **Twitter/X**: Free Tier API is write-only. Covered by DDG web search (`site:twitter.com`).
-- **LinkedIn**: no public API for events. Covered by DDG web search (`site:linkedin.com/events`).
-- **Groq LLM**: defaults to `openai/gpt-oss-120b`, then falls back to `qwen/qwen3.6-27b`. The decommissioned `llama-3.3-70b-versatile` is ignored even if it remains in an older environment configuration. Without `GROQ_API_KEY`, new candidates are not AI-verified; if candidates need LLM validation, the pipeline preserves the existing archive and records the issue in `data/last_report.json`.
-- **Manual review**: low-confidence candidates are not published automatically; they are written to `data/review_queue.json` and can be approved or rejected with `scripts/admin.py`.
-- **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
-- **Some collectors** may return 404/403 temporarily due to site changes — they fail gracefully and don't block the pipeline.
-
-</details>
-
----
-
-## Verified metrics
-
-See [reproducible metrics](docs/cv-metrics.md) for the 28-collector registry,
-249 passing tests (1 skipped), source hashes, limitations, and reproduction commands.
+The tests exercise parsing, deduplication, filtering, review actions, generated output and frontend behavior. CI also runs JavaScript and Python dependency vulnerability audits; see [security checks](SECURITY.md#dependency-checks) for local commands. External collector and LLM responses are mocked in the regression suite; passing tests do not establish live-source availability or classification accuracy.
 
 ## Contributing
 
-Contributions are warmly welcome!
+Report missing or incorrect events through [GitHub issues](https://github.com/federicoogallo/Hackathon-MI/issues), including the original source URL. For code changes, open a pull request with a clear description and relevant validation.
 
-- 🔌 **Add a new source** — write a collector and open a PR
-- 🐛 **Report a wrong entry** — open an issue with the event link
-- 🧠 **Improve LLM filtering** — better prompts, fewer false positives
-- 📍 **Spot a missing hackathon?** — [open an issue](https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Missing+hackathon)
+To add a source, implement `BaseCollector` from `models.py`, register it in `main.py::get_collectors`, and add representative parsing and failure-handling tests. Keep credentials in local environment files or deployment secrets. Do not include personal subscriber data in the repository or public issues.
 
----
+## Data limitations
 
-> [!WARNING]
-> **Early-stage project.** The dataset may contain inaccuracies — past events, duplicates, events outside Milan, or missing hackathons. Data is scraped and filtered automatically; false positives and false negatives are expected. Always verify details at the original source before making plans.
+The archive is collected and filtered automatically. Sources can change, become unavailable or publish incomplete information; dates, venues and eligibility may be missing or wrong. Manual review helps resolve uncertain cases but does not mean every published event has been checked by a person. Events without a confirmed date remain visible with an explicit unknown-date label.
 
----
-
-<div align="center">
-
-<sub>🧑‍💻 **vibe coded** — built with AI-assisted development to simplify the search for hackathons in Milan.<br>
-The goal is to remove the friction of manually browsing dozens of sites, so you can focus on hacking.</sub>
-
-</div>
+The website is an independent discovery service. Event names, descriptions and linked material belong to their respective organizers; registration takes place on the original event website.

@@ -106,3 +106,16 @@
 @media (prefers-reduced-motion: reduce) {
   .secondary-page * { transition: none !important; }
 }
+.privacy-copy { max-width: 760px; padding-bottom: 70px; }
+.privacy-copy section { margin-block: 32px; }
+.privacy-copy h2 { font-size: 24px; font-weight: 500; letter-spacing: -.6px; margin-bottom: 12px; }
+.privacy-copy p { color: var(--muted); margin-bottom: 14px; line-height: 1.85; font-size: 15px; }
+.privacy-copy p a { color: var(--orange-ink); text-decoration: underline; text-underline-offset: 3px; }
+.secondary-intro, .confirmation-page { padding-block: 80px 40px; }
+.secondary-intro h1, .confirmation-page h1 { margin-block: 24px; font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px); font-weight: 500; letter-spacing: -.05em; line-height: 1.1; }
+.secondary-intro h1 em, .confirmation-page h1 em { font-family: var(--font-serif); color: var(--orange-ink); font-weight: 400; }
+.secondary-intro > p:last-child, .confirmation-lead { color: var(--muted); line-height: 1.8; font-size: 15px; max-width: 60ch; }
+.confirmation-page { min-height: 70svh; padding-bottom: 100px; }
+.confirmation-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-block: 28px; }
+.confirmation-note { color: var(--muted); font-size: 12px; line-height: 1.8; }
+.confirmation-note a { color: var(--orange-ink); text-decoration: underline; text-underline-offset: 3px; }

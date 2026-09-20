@@ -33,6 +33,12 @@ Ricerca nella descrizione completa, filtri di periodo e fonte, ordinamento, grig
 
 La raccolta dei dati continua a essere quella della pipeline Python. Il frontend Next.js è il sito principale; il mirror in `docs/` è generato separatamente.
 
+## Identità nei browser e nelle anteprime
+
+La Madonnina è un segno vettoriale semplificato, oro su verde scuro, definito in `app/icon.svg`. Le varianti raster e ICO servono favicon, ricerca e icone dei dispositivi; la composizione sociale in `app/opengraph-image.png` mantiene palette e tipografia del sito. Questi elementi devono restare leggibili anche a dimensioni ridotte.
+
+Nome del sito, descrizione e dati strutturati sono definiti in `lib/seo.ts`; il dominio canonico proviene da `NEXT_PUBLIC_SITE_URL`. Titoli e favicon nei risultati di ricerca possono aggiornarsi dopo una successiva scansione del motore.
+
 ## Immagine originale
 
 Asset: `public/milano-hero.webp` (1254 × 1254, circa 168 KiB), generato con lo strumento integrato ImageGen e ottimizzato in WebP. È un'illustrazione architettonica, non una mappa geografica o una fotografia documentaria.
@@ -43,16 +49,18 @@ Prompt finale:
 
 Linee guida ricavate dalla skill UI/UX Pro Max: directory con ricerca primaria, separazione delle gerarchie, rendering server per i contenuti statici, accessibilità e movimento ridotto. Palette e tipografia adattate al contesto editoriale milanese.
 
-## Verifiche finali
+## Validazione e controlli visivi
 
-- `npm run build`: build statica completata; pagina principale 61,4 kB, first load JavaScript 167 kB, incluse le interazioni Motion e il tema.
-- `npm run typecheck`: nessun errore TypeScript.
-- `npm run test:frontend`: 17 test superati, inclusi date/Roma/DST, filtri, ricerca completa, URL, preferiti, formato ICS e bootstrap del tema (preferenza di sistema, override, valori non validi e storage indisponibile).
+- `npm run build`: verifica la compilazione di produzione e mostra le dimensioni aggiornate delle route.
+- `npm run typecheck`: controlla i tipi TypeScript, dopo la generazione dei tipi delle route durante la build.
+- `npm run test:frontend`: esegue i controlli di regressione, inclusi date/Roma/DST, filtri, ricerca completa, URL, preferiti, formato ICS e bootstrap del tema (preferenza di sistema, override, valori non validi e storage indisponibile).
 - Verifica nel browser della build di produzione: ricerca dall'hero, URL condivisibili e reset dalla home, preferiti e rimozione, filtri periodo, indietro, ordinamento, griglia/elenco, export calendario, review e 404.
 - Layout controllato a 320, 375, 768, 1024 e 1440 px; nessun overflow orizzontale. Menu mobile verificato anche a 568 × 320, con scorrimento interno e chiusura Escape che ripristina il focus.
 - Contrasto: testo secondario su avorio 4,93:1; accento testuale 5,88:1; testo hero 9,30:1. Movimento ridotto gestito da media query CSS e hook reattivo per Motion.
 - Secondo passaggio: radar, titoli lunghi, pausa della scena, ricerca, feedback preferiti, elenco e nuova composizione illustrata verificati nel browser sui breakpoint indicati.
 - Tema: scelta manuale, persistenza dopo reload e ritorno a Sistema verificati nel browser; controllo visivo di home, ricerca, FAQ, footer e revisione in scuro. Radar verificato in avanzamento automatico, ripresa esplicita e arresto dopo l'interazione.
-- Console della sessione di produzione pulita.
+- Controllare la console della build di produzione dopo le modifiche alle interazioni.
+
+Per la newsletter, configurazione privata, consenso e invio settimanale sono documentati in [docs/newsletter.md](../docs/newsletter.md). Il prompt deve rimanere utilizzabile da tastiera e non deve mostrare conferme di iscrizione quando i servizi non sono configurati.
 
 Per aprire localmente: `npm run dev`. Per verificare la versione compilata: `npm run build` e `npm run start`.

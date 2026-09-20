@@ -13,7 +13,7 @@ import re
 import string
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from typing import Any, Optional
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
@@ -79,7 +79,7 @@ class HackathonEvent:
     review_reason: str = ""
     reviewed_at: str = ""
     alternate_urls: list[str] = field(default_factory=list)
-    discovered_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    discovered_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def parsed_date(self) -> Optional[date]:
         """Prova a parsare `date_str` in un `date`.

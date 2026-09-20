@@ -15,7 +15,7 @@ import json
 import logging
 import os
 import re
-from datetime import datetime, date, timezone
+from datetime import datetime, date
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -88,6 +88,18 @@ def _escape_md(s: str) -> str:
     return s.replace("|", "\\|").replace("\n", " ").strip()
 
 
+def _source_label(source: str) -> str:
+    """Keep provenance readable without exposing internal identifier formatting."""
+    labels = {
+        "web_search": "Web search",
+        "eventbrite_web": "Eventbrite",
+        "manual_approved": "Manual review",
+        "gdg": "GDG",
+        "mlh": "MLH",
+    }
+    return labels.get(source, source.replace("_", " ").strip().title())
+
+
 def _build_table(upcoming: list[dict]) -> str:
     """Costruisce la tabella Markdown degli hackathon."""
     lines: list[str] = []
@@ -101,7 +113,7 @@ def _build_table(upcoming: list[dict]) -> str:
         url = (e.get("url") or "").strip()
         date_str = _fmt_date(e.get("date_str", ""))
         location = _escape_md((e.get("location") or "Milano").strip())
-        source = _escape_md((e.get("source") or "").strip())
+        source = _escape_md(_source_label((e.get("source") or "").strip()))
 
         # Nome con link
         if url:
@@ -137,14 +149,14 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
     upcoming.sort(key=_sort_key)
 
     # Costruisci tabella
-    now_str = datetime.now(ZoneInfo("Europe/Rome")).strftime("%b %d, %Y %H:%M")
+    now_str = datetime.now(ZoneInfo("Europe/Rome")).strftime("%b %d, %Y %H:%M %Z")
     table_section = _build_table(upcoming) if upcoming else "_No upcoming hackathons at this time._"
 
     new_content = f"""{TABLE_START}
 
 > **{len(upcoming)} hackathon{'s' if len(upcoming) != 1 else ''}** coming up in Milan \u00b7 Last updated: {now_str}
 >
-> \U0001f310 **[View the full website]({SITE_URL}/)** for search, filters & details.
+> **[View the full website]({SITE_URL}/)** for search, filters and details.
 
 {table_section}
 
@@ -160,17 +172,17 @@ def generate_readme_table(events_path=None, readme_path=None) -> Path:
             re.DOTALL,
         )
         if pattern.search(old_text):
-            updated = pattern.sub(new_content, old_text)
+            updated = pattern.sub(lambda _match: new_content, old_text)
         else:
             # Marker non trovati: aggiungi dopo il primo heading
             updated = old_text + "\n\n" + new_content + "\n"
     else:
         # No existing README: create a minimal one
-        updated = f"""# \U0001f3c6 Hackathon Milan
+        updated = f"""# Hackathon Milano
 
-Hackathons, coding challenges & tech competitions in Milan \u2014 updated daily with AI.
+Find upcoming hackathons in Milan and verify details with their original sources.
 
-**Full website \u2192 [{SITE_URL.replace("https://", "")}]({SITE_URL}/)**
+**[Explore the website]({SITE_URL}/)**
 
 {new_content}
 """

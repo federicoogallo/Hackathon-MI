@@ -1,4 +1,6 @@
-# Reproducible project metrics
+# Historical verification snapshot
+
+This is a historical snapshot, not the current test count. Re-run the commands below for current results.
 
 Measured on 2026-09-19 against clean source revision
 `295ca6eef2916f60106352aeb341111b7efee04b`, Python 3.12.7.
@@ -43,13 +45,7 @@ and this documentation commit. The original pytest run took 42.72 seconds,
 including deliberate sleeps in the mocked web-search collector; this duration is
 not an ingestion-performance benchmark.
 
-## Defensible resume wording
-
-- Built a daily Milan hackathon feed from **28 source integrations** by combining
-  concurrent API/RSS/web collectors with a Next.js site and scheduled publishing.
-- Guarded event publishing with **249 passing automated checks** covering parsing,
-  deduplication, filters, and review workflows, with pytest running before scheduled
-  ingestion and publishing.
+## Implementation references
 
 Supporting implementation: `main.py::get_collectors`, `main.py::run_collectors`,
 `storage/json_store.py::EventStore`, the `tests/` directory, and

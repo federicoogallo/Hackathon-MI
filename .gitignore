@@ -1,5 +1,10 @@
-# Secrets — MAI pubblicare
+# Local credentials; only the documented template is versioned.
 .env
+.env.*
+!.env.example
+!.env.newsletter.example
+*.pem
+*.key
 
 # Dati runtime (generati localmente, non necessari in repo)
 # NOTA: data/events.json è tracciato intenzionalmente per
@@ -34,6 +39,3 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .vercel
-
-# Next.js local env (chiavi client-side, mai in repo)
-.env*.local
