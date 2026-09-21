@@ -4,3 +4,8 @@ logs/
 __pycache__/
 .pytest_cache/
 .venv/
+design-system/
+docs/cv-metrics.md
+docs/metrics/
+scripts/cv_metrics.py
+docs/hero-hackathon-milano.png

@@ -35,6 +35,9 @@ MEETUP_API_KEY = os.getenv("MEETUP_API_KEY", "")  # opzionale — migliora Meetu
 GITHUB_REPO_URL = os.getenv(
     "GITHUB_REPO_URL", "https://github.com/federicoogallo/Hackathon-MI"
 )
+PUBLIC_SITE_URL = (
+    os.getenv("NEXT_PUBLIC_SITE_URL") or "https://hackathon-milano.vercel.app"
+).rstrip("/")
 
 # ─── Parametri ricerca ─────────────────────────────────────────────────────
 SEARCH_LOCATION = "Milano"

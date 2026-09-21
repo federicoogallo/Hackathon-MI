@@ -4,7 +4,7 @@
 
 Il codice è pronto, ma **la newsletter non è attiva finché non vengono collegati i servizi qui sotto**. Il messaggio “Anteprima” e i campi disabilitati indicano questa situazione: nessun indirizzo viene raccolto e nessuna email viene inviata.
 
-1. Crea il tuo account Resend e aggiungi un dominio che controlli. Inserisci i record DNS indicati da Resend e attendi la verifica. Il sottodominio pubblico `hackathon-mi-ten.vercel.app` non è un tuo dominio mittente. [Guida Resend ai domini](https://resend.com/docs/dashboard/domains/introduction).
+1. Crea il tuo account Resend e aggiungi un dominio che controlli. Inserisci i record DNS indicati da Resend e attendi la verifica. Il sottodominio pubblico `hackathon-milano.vercel.app` non è un tuo dominio mittente. [Guida Resend ai domini](https://resend.com/docs/dashboard/domains/introduction).
 2. Nel tuo account Resend crea un segmento dedicato, ad esempio “Hackathon Milano”, e una chiave API con accesso a email, contatti e broadcast. Scegli un mittente sul dominio verificato e un recapito reale per rispondere alle richieste degli iscritti.
 3. Crea un account Upstash e un database Redis. Nella pagina del database trovi l’URL REST e il token REST. [Guida Upstash](https://upstash.com/docs/redis/overall/getstarted).
 4. Nel progetto Vercel apri **Settings → Environment Variables** e inserisci i valori elencati nella tabella sotto per l’ambiente Production. Aggiungi anche identità del gestore, recapito pubblico e un `CRON_SECRET` casuale di almeno 32 caratteri. Non inserire le chiavi in chat, nel README o in GitHub. [Guida Vercel](https://vercel.com/docs/environment-variables).

@@ -3,16 +3,23 @@ Test suite per notifiers/telegram.py e per la pipeline completa.
 """
 
 import json
+from html import unescape
+import re
 from datetime import date
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 import pytest
+import requests
 
 from models import HackathonEvent
 from notifiers.telegram import (
     _escape_html,
+    _format_duration,
+    _format_run_summary,
+    _safe_http_url,
     _send_message,
+    notify_run_summary,
 )
 from storage.json_store import EventStore
 
@@ -63,11 +70,128 @@ class TestSendMessage:
 
     @patch("notifiers.telegram.requests.post")
     @patch("notifiers.telegram.config")
+    def test_adds_inline_button_for_valid_url(self, mock_config, mock_post):
+        mock_config.TELEGRAM_BOT_TOKEN = "token"
+        mock_config.TELEGRAM_CHAT_ID = "123"
+        mock_post.return_value = MagicMock(status_code=200)
+
+        assert _send_message("test", button_url="https://example.com/events") is True
+
+        payload = mock_post.call_args.kwargs["json"]
+        button = payload["reply_markup"]["inline_keyboard"][0][0]
+        assert button["text"] == "Apri il calendario"
+        assert button["url"] == "https://example.com/events"
+
+    @patch("notifiers.telegram.requests.post")
+    @patch("notifiers.telegram.config")
     def test_api_error(self, mock_config, mock_post):
         mock_config.TELEGRAM_BOT_TOKEN = "token"
         mock_config.TELEGRAM_CHAT_ID = "123"
         mock_post.return_value = MagicMock(status_code=400, text="Bad request")
         assert _send_message("test") is False
+
+    @patch("notifiers.telegram.requests.post")
+    @patch("notifiers.telegram.config")
+    def test_network_error_does_not_log_bot_token(self, mock_config, mock_post, caplog):
+        mock_config.TELEGRAM_BOT_TOKEN = "test-private-token"
+        mock_config.TELEGRAM_CHAT_ID = "123"
+        mock_post.side_effect = requests.ConnectionError(
+            "https://api.telegram.org/bottest-private-token/sendMessage failed"
+        )
+
+        assert _send_message("test") is False
+        assert "test-private-token" not in caplog.text
+        assert "ConnectionError" in caplog.text
+
+    @pytest.mark.parametrize("url", ["javascript:alert(1)", "https://[invalid", "https://user:password@example.com", "https://example.com/a b"])
+    def test_rejects_unsafe_or_malformed_link(self, url):
+        assert _safe_http_url(url) == ""
+
+
+class TestRunSummary:
+    @patch("notifiers.telegram.requests.post")
+    @patch("notifiers.telegram.config")
+    def test_sends_updated_summary_and_calendar_button(self, mock_config, mock_post):
+        mock_config.TELEGRAM_BOT_TOKEN = "test-token"
+        mock_config.TELEGRAM_CHAT_ID = "123"
+        mock_post.return_value = MagicMock(status_code=200)
+
+        assert notify_run_summary(0, 3, 65, [], "https://hackathon-milano.vercel.app", collectors_ok=28, collectors_total=28)
+
+        payload = mock_post.call_args.kwargs["json"]
+        assert "Hackathon Milano · aggiornamento" in payload["text"]
+        assert payload["reply_markup"]["inline_keyboard"][0][0]["url"] == "https://hackathon-milano.vercel.app"
+
+    def test_empty_scan_has_operational_summary(self):
+        text = _format_run_summary(0, 3, 65, [], [], 28, 28)
+
+        assert "Hackathon Milano · aggiornamento" in text
+        assert "Nessun nuovo evento trovato questa volta" in text
+        assert "<b>3</b> eventi futuri confermati" in text
+        assert "28/28" in text
+        assert "<b>Nuovi hackathon</b>" not in text
+
+    def test_long_scraped_content_stays_within_telegram_message_limit(self):
+        event = {"title": "Title & " * 1000, "location": "Milano " * 1000, "date_str": "Data " * 1000}
+        text = _format_run_summary(4, 4, 30, [], [event] * 4)
+        visible_text = unescape(re.sub(r"<[^>]+>", "", text))
+
+        assert len(visible_text) < 4096
+        assert "…" in visible_text
+
+    def test_formats_event_details_and_operational_status(self):
+        event = HackathonEvent(
+            title="AI & Data <Hackathon>",
+            url="https://example.com/event?a=1&b=2",
+            source="test",
+            date_str="2026-11-20",
+            location="Milano & Rho",
+        )
+
+        text = _format_run_summary(
+            new_events=1,
+            total_upcoming=6,
+            elapsed_seconds=83,
+            failed_collectors=[],
+            events=[event],
+            collectors_ok=28,
+            collectors_total=28,
+            is_test=True,
+        )
+
+        assert "Anteprima" in text
+        assert "AI &amp; Data &lt;Hackathon&gt;" in text
+        assert "20 nov 2026" in text
+        assert "Milano &amp; Rho" in text
+        assert "28/28" in text
+        assert "1 min 23 s" in text
+        assert "nessun dato è stato modificato" in text
+
+    def test_limits_event_previews_and_reports_hidden_count(self):
+        events = [
+            HackathonEvent(title=f"Hackathon {i}", url=f"https://example.com/{i}", source="test")
+            for i in range(6)
+        ]
+
+        text = _format_run_summary(
+            new_events=6,
+            total_upcoming=10,
+            elapsed_seconds=10,
+            failed_collectors=["Meetup"],
+            events=events,
+        )
+
+        assert "Hackathon 3" in text
+        assert "Hackathon 4" not in text
+        assert "+2 altri nel calendario" in text
+        assert "Non disponibili: Meetup" in text
+
+    @pytest.mark.parametrize(
+        ("seconds", "expected"),
+        [(8, "8 s"), (65, "1 min 5 s"), (3725, "1 h 2 min")],
+    )
+    def test_formats_duration(self, seconds, expected):
+        assert _format_duration(seconds) == expected
 
 
 # =============================================================================
@@ -77,6 +201,9 @@ class TestSendMessage:
 class TestPipelineIntegration:
     """Test del flusso pipeline con collector e filtri mockati."""
 
+    @pytest.mark.parametrize("dry_run", [True, False])
+    @patch("main.notify_run_summary")
+    @patch("main.get_collectors", return_value=["s"])
     @patch("main.generate_readme_table")
     @patch("main.generate_html")
     @patch("main.llm_dedup")
@@ -84,7 +211,7 @@ class TestPipelineIntegration:
     @patch("main.keyword_filter_batch")
     @patch("main.run_collectors")
     @patch("main.EventStore")
-    def test_dry_run_pipeline(
+    def test_pipeline_summary_delivery(
         self,
         MockStore,
         mock_run_coll,
@@ -93,9 +220,12 @@ class TestPipelineIntegration:
         mock_llm_dedup,
         mock_generate_html,
         mock_generate_readme_table,
+        mock_get_collectors,
+        mock_notify,
         tmp_path,
+        dry_run,
     ):
-        """Pipeline dry-run: nessuna notifica reale e nessun export nel repo."""
+        """La pipeline passa eventi e stato al riepilogo, salvo in dry-run."""
         from main import run_pipeline
 
         # Setup mocks
@@ -125,8 +255,9 @@ class TestPipelineIntegration:
             patch("main.config.DATA_DIR", tmp_path),
             patch("main.config.REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"),
             patch("main.config.REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"),
+            patch("main.config.PUBLIC_SITE_URL", "https://hackathon-milano.vercel.app"),
         ):
-            run_pipeline(dry_run=True)
+            run_pipeline(dry_run=dry_run)
 
         report = json.loads((tmp_path / "last_report.json").read_text())
         assert report["status"] == "completed"
@@ -137,6 +268,15 @@ class TestPipelineIntegration:
         mock_llm_dedup.assert_called_once_with(events)
         mock_generate_html.assert_called_once()
         mock_generate_readme_table.assert_called_once()
+        if dry_run:
+            mock_notify.assert_not_called()
+        else:
+            mock_notify.assert_called_once()
+            summary = mock_notify.call_args.kwargs
+            assert summary["new_events"] == 2
+            assert summary["events"] == events
+            assert summary["collectors_ok"] == summary["collectors_total"] == 1
+            assert summary["page_url"] == "https://hackathon-milano.vercel.app"
 
     @patch("main.generate_readme_table")
     @patch("main.generate_html")

@@ -16,10 +16,8 @@ export const REPO_URL = "https://github.com/federicoogallo/Hackathon-MI";
  * Per passare a un dominio custom basta impostare NEXT_PUBLIC_SITE_URL su
  * Vercel (Settings -> Environment Variables) e rifare il deploy: lo stesso
  * valore e' letto anche dai generatori Python del mirror e del README.
- * Nota: va cambiato PRIMA che Google consolidi l'indicizzazione su questo
- * host, altrimenti l'autorita' accumulata si perde.
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://hackathon-mi-ten.vercel.app")
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://hackathon-milano.vercel.app")
   .trim()
   .replace(/\/+$/, ""); // niente slash finale: gli URL si compongono con `${SITE_URL}/...`
 

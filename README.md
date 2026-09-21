@@ -1,6 +1,6 @@
 # 🏆 Hackathon Milan Monitor
 
-**Live site → [hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)**
+**Live site → [hackathon-milano.vercel.app](https://hackathon-milano.vercel.app/)**
 
 <sub>The GitHub Pages build at [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/) is a mirror; it declares a `canonical` link to the Vercel site so search engines can identify the primary version.</sub>
 
@@ -17,9 +17,9 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **10 hackathons** coming up in Milan · Last updated: Sep 21, 2026 02:00 CEST
+> **10 hackathons** coming up in Milan · Last updated: Sep 21, 2026 02:29 CEST
 >
-> **[View the full website](https://hackathon-mi-ten.vercel.app/)** for search, filters and details.
+> **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
@@ -57,7 +57,7 @@ The frontend is built with **Next.js 15, React 19 and Motion**, using a responsi
 - **Identity and search:** a vector Madonnina icon with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
 - **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The prompt currently appears to all visitors for evaluation; actual subscriptions remain disabled without complete Resend/Redis configuration.
 
-See the [frontend design notes](design-system/README.md), [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
+See the [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
 
 ---
 
@@ -295,13 +295,13 @@ This generates `docs/index.html`, `docs/review.html` and supporting assets, then
 
 Go to **Settings → Secrets and variables → Actions → New repository secret** and add the collection and Telegram credentials required by the workflow. Enable Actions and allow the collection workflow to commit generated public data.
 
-Import the repository into Vercel with the repository root as the project directory. `vercel.json` configures Next.js, `npm ci`, `npm run build` and the weekly newsletter cron. Set `NEXT_PUBLIC_SITE_URL` when using a custom domain, consistently across the Next.js deployment and Python generators.
+Import the repository into Vercel with the repository root as the project directory. `vercel.json` configures Next.js, `npm ci`, `npm run build` and the weekly newsletter cron. The canonical origin defaults to `https://hackathon-milano.vercel.app`. To override it, set `NEXT_PUBLIC_SITE_URL` to the same value in Vercel and the GitHub Actions repository variables so the website, generated pages and Telegram links stay aligned.
 
 GitHub Actions secrets and a local Python `.env` do not automatically configure Vercel. Newsletter service credentials belong in the Vercel environment; never prefix secrets with `NEXT_PUBLIC_`.
 
 ### 3. Enable GitHub Pages (optional mirror)
 
-The primary site is the Next.js app deployed on **Vercel** ([hackathon-mi-ten.vercel.app](https://hackathon-mi-ten.vercel.app/)),
+The primary site is the Next.js app deployed on **Vercel** ([hackathon-milano.vercel.app](https://hackathon-milano.vercel.app/)),
 which rebuilds on pushes to its connected production branch, including generated data commits.
 
 GitHub Pages is kept as an optional static mirror. To enable it, go to **Settings → Pages** and set:
@@ -337,8 +337,8 @@ The separate [test workflow](.github/workflows/tests.yml) checks pull requests a
 | `/scan` | Trigger a manual scan |
 | `/help` | List commands |
 
-The bot automatically sends a **summary** after each scan (number of new hackathons + link to site).
-Full event details are available on the [main website](https://hackathon-mi-ten.vercel.app/), the static mirror and the README table above.
+The bot sends a **summary after each scan** with up to four new event previews, dates and locations, the number of upcoming events, source availability, elapsed time and a button opening the public calendar. Scans with no new events still send a status summary.
+Full event details are available on the [main website](https://hackathon-milano.vercel.app/), the static mirror and the README table above.
 
 Local start:
 
@@ -434,7 +434,6 @@ hackathon-monitor/
 │   ├── brand/                 # Madonnina SVG/ICO/PNG and Apple touch icon
 │   ├── favicon.ico            # Browser fallback icon
 │   └── milano-hero.webp       # Architectural hero illustration
-├── design-system/README.md    # Visual design, movement and accessibility notes
 ├── package.json               # Frontend scripts and dependency constraints
 ├── package-lock.json          # Locked JavaScript dependency tree
 ├── vercel.json                # Next.js deployment and weekly cron
@@ -471,7 +470,6 @@ hackathon-monitor/
 │   ├── slow_classify.py      # Classification recovery tool
 │   ├── collect_only.py       # Collection diagnostics
 │   ├── extract_dates.py      # Backfill dates with the classifier
-│   ├── cv_metrics.py         # Reproducible source/test evidence
 │   ├── generate-brand-assets.mjs # Generate favicon and identity variants
 │   └── test-*.mjs            # Frontend and newsletter regression tests
 ├── data/
@@ -486,8 +484,7 @@ hackathon-monitor/
 │   ├── banner.svg            # README banner
 │   ├── setup.md              # Environments and deployment
 │   ├── admin.md              # Moderation and maintenance
-│   ├── newsletter.md         # Email activation and operations
-│   └── cv-metrics.md         # Dated historical verification snapshot
+│   └── newsletter.md         # Email activation and operations
 ├── tests/                    # Python regression suite
 └── .github/workflows/
     ├── check_hackathons.yml  # Daily collection and generated-data publishing
@@ -515,11 +512,9 @@ hackathon-monitor/
 
 ---
 
-## Verified metrics
+## Validation
 
-The [historical verification snapshot](docs/cv-metrics.md) records **249 passing Python tests and 1 skipped test on 19 September 2026**, against revision `295ca6eef2916f60106352aeb341111b7efee04b`. Its source hashes and [machine-readable evidence](docs/metrics/2026-09-19.json) make that dated result reproducible; it is not the current suite count.
-
-Use the commands in Local Setup and the latest CI run for the current result. Tests exercise models, deduplication, filters, moderation, generated output and frontend behavior. Mocked integrations do not establish classification accuracy, uptime or inbox delivery; no unsupported coverage or performance percentage is claimed.
+Use the commands in Local Setup and the latest CI run for current results. Tests cover models, deduplication, filters, moderation, generated output, frontend behavior and newsletter logic. Source integrations and email delivery use mocks in tests; live availability and delivery require separate checks with configured services.
 
 ## Contributing
 

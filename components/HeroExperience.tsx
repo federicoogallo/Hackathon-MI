@@ -1,11 +1,33 @@
 "use client";
 
-import { useEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import type { HackEvent } from "@/lib/data";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 import "./hero-experience.css";
+
+const radarLayouts = {
+  wide: [[35, 32], [62, 20], [86, 40]],
+  medium: [[53, 33], [72, 22], [87, 41]],
+  small: [[16, 18], [50, 18], [84, 18]],
+} as const;
+
+function radarCurve(points: readonly (readonly [number, number])[]) {
+  return points.map(([x, y], index) => {
+    if (index === 0) return `M${x} ${y}`;
+    const [previousX, previousY] = points[index - 1];
+    const middleX = (previousX + x) / 2;
+    return `C${middleX} ${previousY} ${middleX} ${y} ${x} ${y}`;
+  }).join(" ");
+}
+
+function radarPosition(index: number) {
+  return Object.fromEntries(Object.entries(radarLayouts).flatMap(([size, points]) => [
+    [`--${size}-x`, `${points[index][0]}%`],
+    [`--${size}-y`, `${points[index][1]}%`],
+  ])) as CSSProperties;
+}
 
 function Arrow({ direction = "right" }: { direction?: "left" | "right" | "up" }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{direction === "up" ? <path d="M6 18 18 6M6 6h12v12" /> : <path d={direction === "left" ? "M20 12H4m6 6-6-6 6-6" : "M4 12h16m-6-6 6 6-6 6"} />}</svg>;
@@ -87,16 +109,16 @@ export default function HeroExperience({ events, children }: { events: HackEvent
           </motion.div>
           <div className="stage-fade" />
           <svg className="stage-orbits" viewBox="0 0 700 620" fill="none">
-            <ellipse className="orbit-construction" cx="365" cy="357" rx="265" ry="219" transform="rotate(-19 365 357)" />
-            <ellipse className="orbit-construction orbit-dashed" cx="365" cy="357" rx="299" ry="244" transform="rotate(-19 365 357)" />
-            <motion.path d="M145 170C250 55 518 62 610 238" stroke="#ffad85" strokeWidth="1.4" initial={false} animate={{ pathLength: reduce || paused ? 1 : .35 + selected * .3 }} transition={{ duration: reduce || paused ? 0 : .4 }} />
             <path className="orbit-guideline" d="M82 350h20m540 0h20M370 54v20m0 505v20" />
           </svg>
           <span className="stage-watermark">MILANO.</span>
         </motion.div>
         {event && <>
           <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar" onFocusCapture={stopOnInteraction}>
-            {upcoming.map((item, index) => <button key={item.id} type="button" className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}><span className="radar-node-dot" /><span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span></button>)}
+            {upcoming.length > 1 && <svg className="radar-connection" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
+              {Object.entries(radarLayouts).map(([size, points]) => <path key={size} className={`radar-route radar-route-${size}`} d={radarCurve(points.slice(0, upcoming.length))} vectorEffect="non-scaling-stroke" />)}
+            </svg>}
+            {upcoming.map((item, index) => <button key={item.id} type="button" style={radarPosition(index)} className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}><span className="radar-node-dot" /><span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span></button>)}
           </div>
           <div className="radar-preview" data-autoplay={autoplayRunning ? "running" : "paused"} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction} onPointerEnter={pointer => setHoveringRadar(pointer.pointerType === "mouse")} onPointerLeave={() => setHoveringRadar(false)}>
             <div className="radar-preview-head"><span><i />PROSSIMI NEL RADAR</span><span>{String(selected + 1).padStart(2, "0")} / {String(upcoming.length).padStart(2, "0")}</span></div>

@@ -20,7 +20,7 @@ npm run typecheck
 npm run start
 ```
 
-`NEXT_PUBLIC_SITE_URL` sets the canonical public origin. Its default is `https://hackathon-mi-ten.vercel.app`. If using a custom domain, set the same value in the website and Python build environments before rebuilding both outputs. Public environment variables must never contain secrets.
+`NEXT_PUBLIC_SITE_URL` sets the canonical public origin. Its default is `https://hackathon-milano.vercel.app`. If using a custom domain, set the same value in Vercel and the GitHub Actions repository variable `NEXT_PUBLIC_SITE_URL` before rebuilding both outputs. Local builds read the same environment variable. Leave it unset to use the default. Public environment variables must never contain secrets.
 
 CI runs the frontend checks and audits the installed dependencies. Python dependencies use patched minimum versions and major-version bounds rather than a complete lockfile. See [security checks](../SECURITY.md#dependency-checks) for both audit commands.
 

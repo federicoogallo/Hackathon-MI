@@ -39,3 +39,10 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .vercel
+
+# Local design notes, historical measurements and unused artwork
+design-system/
+docs/cv-metrics.md
+docs/metrics/
+scripts/cv_metrics.py
+docs/hero-hackathon-milano.png

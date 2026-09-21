@@ -803,13 +803,15 @@ def run_pipeline(dry_run: bool = False) -> None:
                     1 for ev in store.all_events()
                     if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)
                 )
-                page_url = "https://federicoogallo.github.io/Hackathon-MI/"
                 notify_run_summary(
                     new_events=0,
                     total_upcoming=total_upcoming,
                     elapsed_seconds=elapsed,
                     failed_collectors=_failed_collector_names(failed_collectors),
-                    page_url=page_url,
+                    page_url=config.PUBLIC_SITE_URL,
+                    events=[],
+                    collectors_ok=len(ok_collectors),
+                    collectors_total=len(collectors),
                 )
             logger.info("=" * 60)
             logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
@@ -921,13 +923,15 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 11. Invia sempre il summary Telegram (anche se 0 nuovi eventi)
     elapsed = (_now() - start_time).total_seconds()
     if not dry_run:
-        page_url = "https://federicoogallo.github.io/Hackathon-MI/"
         notify_run_summary(
             new_events=notified_count,
             total_upcoming=total_upcoming,
             elapsed_seconds=elapsed,
             failed_collectors=_failed_collector_names(failed_collectors),
-            page_url=page_url,
+            page_url=config.PUBLIC_SITE_URL,
+            events=llm_confirmed,
+            collectors_ok=len(ok_collectors),
+            collectors_total=len(collectors),
         )
 
     # Riepilogo finale nei log

@@ -34,7 +34,7 @@ _MONTHS_EN = [
 # NEXT_PUBLIC_SITE_URL.
 SITE_URL = (
     os.environ.get("NEXT_PUBLIC_SITE_URL", "").strip()
-    or "https://hackathon-mi-ten.vercel.app"
+    or "https://hackathon-milano.vercel.app"
 ).rstrip("/")
 
 TABLE_START = "<!-- HACKATHON_TABLE_START -->"

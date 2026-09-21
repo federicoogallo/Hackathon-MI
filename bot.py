@@ -2,7 +2,7 @@
 Bot Telegram per Hackathon Monitor.
 
 Comandi: /scan (avvia scansione), /help. Accetta solo il CHAT_ID configurato.
-I dettagli degli hackathon sono consultabili sul sito GitHub Pages.
+I dettagli degli hackathon sono consultabili sul sito pubblico.
 """
 
 import atexit
@@ -52,7 +52,7 @@ def _send(chat_id: str | int, text: str) -> bool:
         )
         return resp.status_code == 200
     except Exception as e:
-        logger.error("Errore invio messaggio: %s", e)
+        logger.error("Errore invio messaggio: %s", type(e).__name__)
         return False
 
 
@@ -77,7 +77,7 @@ _HELP_TEXT = (
     "/scan — Avvia una scansione ora\n"
     "/help — Questo messaggio\n"
     "\n"
-    '🌐 <a href="https://federicoogallo.github.io/Hackathon-MI/">Vedi tutti gli hackathon</a>'
+    f'🌐 <a href="{config.PUBLIC_SITE_URL}">Vedi tutti gli hackathon</a>'
 )
 
 
@@ -87,12 +87,6 @@ def _handle_start(chat_id: int) -> None:
 
 def _handle_help(chat_id: int) -> None:
     _send(chat_id, _HELP_TEXT)
-
-
-
-
-
-
 
 
 _scan_lock = threading.Lock()
@@ -128,10 +122,6 @@ def _handle_scan(chat_id: int) -> None:
             import main as _main
 
             _main.run_pipeline(dry_run=False)
-            _send(chat_id, (
-                "✅ <b>Scansione completata</b>\n"
-                "<i>Usa /report per il riepilogo o /eventi per gli hackathon in arrivo.</i>"
-            ))
         except Exception as e:
             logger.exception("Errore durante la scansione richiesta da bot: %s", e)
             _send(chat_id, (
@@ -190,11 +180,11 @@ def start_polling():
         if r.status_code == 200:
             logger.info("Connessione a Telegram OK")
         else:
-            logger.warning("getMe risposta %d: %s", r.status_code, r.text[:200])
+            logger.warning("getMe risposta %d", r.status_code)
     except requests.exceptions.RequestException as e:
         logger.error(
             "Impossibile raggiungere api.telegram.org — verifica internet/firewall/proxy: %s",
-            e,
+            type(e).__name__,
         )
 
     offset = 0
@@ -219,20 +209,11 @@ def start_polling():
         except requests.exceptions.Timeout:
             continue
         except requests.exceptions.ConnectionError as e:
-            logger.warning("Connessione persa — riprovo tra 5s: %s", e)
+            logger.warning("Connessione persa — riprovo tra 5s: %s", type(e).__name__)
             time.sleep(5)
         except Exception as e:
-            logger.error("Errore polling: %s", e)
+            logger.error("Errore polling: %s", type(e).__name__)
             time.sleep(5)
-
-
-if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-    start_polling()
 
 
 # ─── Message processing / dispatcher ──────────────────────────────────────
@@ -287,3 +268,12 @@ COMMANDS = {
     "/help": _handle_help,
     "/scan": _handle_scan,
 }
+
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    start_polling()
