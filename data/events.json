@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-20T16:31:10.122720+02:00",
+  "last_check": "2026-09-21T18:48:25.152589+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -186,7 +186,10 @@
         "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=06087b3b-3b50-45af-ab6a-2d0de27fc53b&recSource=event-search&searchId=2b5cd45e-ac30-4ed6-b268-03366c556e2f&eventOrigin=find_page%24all",
         "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=f61d5763-458a-4b04-831a-491b064a1037&recSource=event-search&searchId=18986935-d361-4aee-bc01-11f15ab39a9f&eventOrigin=find_page%24all",
         "https://www.meetup.com/ac-ord/events/316528995/?recId=f61d5763-458a-4b04-831a-491b064a1037&recSource=event-search&searchId=18986935-d361-4aee-bc01-11f15ab39a9f&eventOrigin=find_page%24all",
-        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=d691f84a-0e57-4199-8cd3-91c8debf9cea&recSource=event-search&searchId=c01ebaf9-7914-4702-805e-bf1143751b3d&eventOrigin=find_page%24all"
+        "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=d691f84a-0e57-4199-8cd3-91c8debf9cea&recSource=event-search&searchId=c01ebaf9-7914-4702-805e-bf1143751b3d&eventOrigin=find_page%24all",
+        "https://www.meetup.com/aittg-denver/events/315936329/?recId=2da36440-af83-4812-a659-d6955320d0a1&recSource=event-search&searchId=f8c9c5cf-3524-4151-9bc6-a61cdf59d1d8&eventOrigin=find_page%24all",
+        "https://www.meetup.com/platform-engineers-denver/events/316600497/?recId=5011bd8e-c735-4c1a-acfc-2c8882792162&recSource=event-search&searchId=19ba7518-b0d8-4424-888f-7f4e595dde8d&eventOrigin=find_page%24all",
+        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=5011bd8e-c735-4c1a-acfc-2c8882792162&recSource=event-search&searchId=19ba7518-b0d8-4424-888f-7f4e595dde8d&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
