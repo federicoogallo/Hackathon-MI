@@ -19,7 +19,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
   icons: {
-    icon: [{ url: "/favicon-96.png", sizes: "96x96", type: "image/png" }],
+    icon: [
+      { url: "/brand/madonnina.ico", sizes: "16x16 32x32 48x48 256x256", type: "image/x-icon" },
+      { url: "/brand/madonnina-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/brand/madonnina.svg", sizes: "any", type: "image/svg+xml" },
+    ],
+    shortcut: "/brand/madonnina.ico",
+    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: SITE_NAME,

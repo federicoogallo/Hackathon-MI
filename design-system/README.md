@@ -35,7 +35,7 @@ La raccolta dei dati continua a essere quella della pipeline Python. Il frontend
 
 ## Identità nei browser e nelle anteprime
 
-La Madonnina è un segno vettoriale semplificato, oro su verde scuro, definito in `app/icon.svg`. Le varianti raster e ICO servono favicon, ricerca e icone dei dispositivi; la composizione sociale in `app/opengraph-image.png` mantiene palette e tipografia del sito. Questi elementi devono restare leggibili anche a dimensioni ridotte.
+La Madonnina è un segno vettoriale semplificato, oro su verde scuro, definito in `public/brand/madonnina.svg`. Le varianti raster e ICO servono favicon, ricerca e icone dei dispositivi; la composizione sociale in `app/opengraph-image.png` mantiene palette e tipografia del sito. Questi elementi devono restare leggibili anche a dimensioni ridotte.
 
 Nome del sito, descrizione e dati strutturati sono definiti in `lib/seo.ts`; il dominio canonico proviene da `NEXT_PUBLIC_SITE_URL`. Titoli e favicon nei risultati di ricerca possono aggiornarsi dopo una successiva scansione del motore.
 

@@ -57,12 +57,15 @@ main:focus { outline: none; }
 .nav-link.is-current::after { content: ''; position: absolute; height: 3px; width: 3px; border-radius: 100%; left: 50%; bottom: 2px; background: var(--orange-ink); }
 .nav-saved { gap: 7px; }
 .nav-saved svg { width: 16px; height: 16px; }
+.nav-saved.is-current svg { fill: currentColor; color: var(--orange-ink); }
+.nav-saved.is-current::after { display: none; }
 .nav-cta { margin-left: auto; }
 .btn-nav { min-height: 44px; padding-inline: 16px; font-size: 12px; }
 .btn-nav span { font-size: 21px; line-height: 1; margin-left: 8px; }
 .mobile-menu-button { display: none; }
 .mobile-navigation { display: none; max-height: calc(100dvh - var(--nav-h)); overflow-y: auto; border-top: 1px solid var(--line); padding: 8px 24px 20px; background: var(--paper); }
 .mobile-navigation a { display: flex; align-items: center; justify-content: space-between; min-height: 50px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.mobile-navigation a[aria-current="location"] { color: var(--orange-ink); font-weight: 600; }
 .hero-section { padding: 22px 24px 0; }
 .hero-panel { max-width: 1440px; min-height: 638px; position: relative; isolation: isolate; overflow: hidden; margin-inline: auto; background: var(--forest); border-radius: 12px; color: var(--paper); }
 .hero-content { position: relative; z-index: 2; width: 55%; padding: 65px 0 90px; margin-left: max(32px, calc((100% - 1248px) / 2)); }

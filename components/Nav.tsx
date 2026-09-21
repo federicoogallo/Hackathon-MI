@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import ThemeControl from "./ThemeControl";
 
 export function Brand({ light = false }: { light?: boolean }) {
@@ -16,20 +16,55 @@ export function Brand({ light = false }: { light?: boolean }) {
   );
 }
 
+type NavLocation = { hash: string; search: string };
+
+function NavLocationSync({ onChange }: { onChange: Dispatch<SetStateAction<NavLocation | null>> }) {
+  const params = useSearchParams();
+  const search = params.toString();
+  useEffect(() => {
+    const sync = () => onChange({ hash: window.location.hash, search: window.location.search });
+    sync();
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener("popstate", sync);
+    };
+  }, [search, onChange]);
+  return null;
+}
+
 export default function Nav({ children }: { children?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState<NavLocation | null>(null);
   const path = usePathname();
+  const params = new URLSearchParams(location?.search);
+  const active = path !== "/" || !location ? null : location.hash === "#about" ? "about" : params.get("saved") === "1" ? "saved" : "events";
+  params.delete("saved");
+  const query = path === "/" ? params.toString() : "";
+  const eventsHref = `/${query ? `?${query}` : ""}#events`;
+  const aboutHref = path === "/" ? "#about" : "/#about";
+  const current = (item: string) => active === item ? "location" as const : undefined;
   return (
-    <header className="site-header">
+    <header className="site-header" onClick={event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest("a") : null;
+      if (!link || link.target === "_blank") return;
+      const url = new URL(link.href);
+      if (url.origin === window.location.origin && url.pathname === "/") {
+        setLocation({ hash: url.hash, search: url.search });
+      }
+    }}>
+      <Suspense fallback={null}><NavLocationSync onChange={setLocation} /></Suspense>
       <div className="container nav-inner">
         <Brand />
         <nav className="desktop-nav" aria-label="Navigazione principale">
-          <a href={path === "/" ? "#events" : "/#events"} className={path === "/" ? "nav-link is-current" : "nav-link"}>Esplora gli eventi</a>
-          <a href={path === "/" ? "#about" : "/#about"} className="nav-link">Come funziona</a>
-          <a href="/?saved=1#events" className="nav-link nav-saved">
+          <Link href={eventsHref} aria-current={current("events")} className={`nav-link${active === "events" ? " is-current" : ""}`}>Esplora gli eventi</Link>
+          <a href={aboutHref} aria-current={current("about")} className={`nav-link${active === "about" ? " is-current" : ""}`}>Come funziona</a>
+          <Link href="/?saved=1#events" aria-current={current("saved")} className={`nav-link nav-saved${active === "saved" ? " is-current" : ""}`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg>
             Salvati
-          </a>
+          </Link>
         </nav>
         <div className="nav-cta">
           {children || <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon&body=Nome%20evento%3A%0AData%3A%0ALuogo%3A%0ALink%20ufficiale%3A" target="_blank" rel="noopener noreferrer" className="btn btn-nav">Segnala un evento <span aria-hidden="true">↗</span></a>}
@@ -40,9 +75,9 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
         </button>
       </div>
       {open && <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navigazione mobile" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); document.querySelector<HTMLButtonElement>(".mobile-menu-button")?.focus(); } }}>
-        <a href={path === "/" ? "#events" : "/#events"} onClick={() => setOpen(false)}>Esplora gli eventi <span aria-hidden="true">↗</span></a>
-        <a href="/?saved=1#events" onClick={() => setOpen(false)}>I tuoi eventi salvati <span aria-hidden="true">↗</span></a>
-        <a href={path === "/" ? "#about" : "/#about"} onClick={() => setOpen(false)}>Come funziona <span aria-hidden="true">↗</span></a>
+        <Link href={eventsHref} aria-current={current("events")} onClick={() => setOpen(false)}>Esplora gli eventi <span aria-hidden="true">↗</span></Link>
+        <Link href="/?saved=1#events" className={`nav-saved${active === "saved" ? " is-current" : ""}`} aria-current={current("saved")} onClick={() => setOpen(false)}>I tuoi eventi salvati <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg></Link>
+        <a href={aboutHref} aria-current={current("about")} onClick={() => setOpen(false)}>Come funziona <span aria-hidden="true">↗</span></a>
         <Link href="/review" onClick={() => setOpen(false)}>Eventi in revisione <span aria-hidden="true">↗</span></Link>
         <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon" target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Segnala un evento <span aria-hidden="true">↗</span></a>
       </nav>}

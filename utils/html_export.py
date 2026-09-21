@@ -409,7 +409,7 @@ def _head(
         '<meta property="og:site_name" content="Hackathon Milano">\n'
         '<meta property="og:locale" content="it_IT">\n'
         f'<meta property="og:image" content="{SITE_URL}/opengraph-image.png">\n'
-        f'<link rel="icon" href="{SITE_URL}/favicon-96.png" type="image/png" sizes="96x96">\n'
+        f'<link rel="icon" href="{SITE_URL}/brand/madonnina-96.png" type="image/png" sizes="96x96">\n'
         '<meta name="theme-color" content="#070a11">\n'
         f'<title>{_escape(title)}</title>\n'
         f'{_FONTS_LINK}'
