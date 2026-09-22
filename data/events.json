@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-21T18:48:25.152589+02:00",
+  "last_check": "2026-09-22T17:25:59.566950+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -94,7 +94,8 @@
       "review_reason": "Game jam (hackathon) con data 3‑4 oct 2026, venue concreto a Milano (Morel Milano)",
       "reviewed_at": "",
       "alternate_urls": [
-        "https://mantovauno.it/home-page/il-team-di-lto-sul-podio-dellhackathon-di-open-fiber-alla-milano-digital-week/"
+        "https://mantovauno.it/home-page/il-team-di-lto-sul-podio-dellhackathon-di-open-fiber-alla-milano-digital-week/",
+        "https://living.corriere.it/design/eventi/combo-festival-pedine-dadi-carte-milano-2026-giochi-da-tavolo/"
       ],
       "discovered_at": "2026-07-22T12:25:16.026677"
     },
@@ -189,7 +190,11 @@
         "https://www.meetup.com/code-and-coffee-chicago/events/316422497/?recId=d691f84a-0e57-4199-8cd3-91c8debf9cea&recSource=event-search&searchId=c01ebaf9-7914-4702-805e-bf1143751b3d&eventOrigin=find_page%24all",
         "https://www.meetup.com/aittg-denver/events/315936329/?recId=2da36440-af83-4812-a659-d6955320d0a1&recSource=event-search&searchId=f8c9c5cf-3524-4151-9bc6-a61cdf59d1d8&eventOrigin=find_page%24all",
         "https://www.meetup.com/platform-engineers-denver/events/316600497/?recId=5011bd8e-c735-4c1a-acfc-2c8882792162&recSource=event-search&searchId=19ba7518-b0d8-4424-888f-7f4e595dde8d&eventOrigin=find_page%24all",
-        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=5011bd8e-c735-4c1a-acfc-2c8882792162&recSource=event-search&searchId=19ba7518-b0d8-4424-888f-7f4e595dde8d&eventOrigin=find_page%24all"
+        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=5011bd8e-c735-4c1a-acfc-2c8882792162&recSource=event-search&searchId=19ba7518-b0d8-4424-888f-7f4e595dde8d&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/314431811/?recId=7d286ff2-f64d-4f2c-863d-6fd293d2a747&recSource=event-search&searchId=e71e5187-3c46-4272-afa2-c92dfe941075&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-sjc/events/316530161/?recId=7d286ff2-f64d-4f2c-863d-6fd293d2a747&recSource=event-search&searchId=e71e5187-3c46-4272-afa2-c92dfe941075&eventOrigin=find_page%24all",
+        "https://www.meetup.com/hackerdojo/events/314431811/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all",
+        "https://www.meetup.com/southbayfriends/events/316505841/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
