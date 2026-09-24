@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-23T17:18:15.345885+02:00",
+  "last_check": "2026-09-24T17:43:16.123443+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -195,7 +195,8 @@
         "https://www.meetup.com/hackerdojo/events/314431811/?recId=7d286ff2-f64d-4f2c-863d-6fd293d2a747&recSource=event-search&searchId=e71e5187-3c46-4272-afa2-c92dfe941075&eventOrigin=find_page%24all",
         "https://www.meetup.com/ac-sjc/events/316530161/?recId=7d286ff2-f64d-4f2c-863d-6fd293d2a747&recSource=event-search&searchId=e71e5187-3c46-4272-afa2-c92dfe941075&eventOrigin=find_page%24all",
         "https://www.meetup.com/hackerdojo/events/314431811/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all",
-        "https://www.meetup.com/southbayfriends/events/316505841/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all"
+        "https://www.meetup.com/southbayfriends/events/316505841/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all",
+        "https://www.meetup.com/mission-creatives-engineers/events/316447066/?recId=52c17265-18b5-45cc-8aef-020c61083757&recSource=event-search&searchId=7321c436-d5fa-4d1a-acb6-a4272b5a407a&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
