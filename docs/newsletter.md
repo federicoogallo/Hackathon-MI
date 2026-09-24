@@ -2,7 +2,7 @@
 
 ## Attivazione da zero
 
-La newsletter usa **Brevo Free** e l’identità **Hackathon Milano**. I link portano a [hackathon-milano.vercel.app](https://hackathon-milano.vercel.app). Finché mancano account e credenziali, il modulo mostra “Anteprima”, rimane disabilitato e non raccoglie indirizzi.
+La newsletter usa **Brevo Free** e l’identità **Hackathon Milano**. I link portano a [hackathon-milano.vercel.app](https://hackathon-milano.vercel.app). Finché mancano account e credenziali, il sito indica che le iscrizioni non sono ancora aperte, non mostra campi email né inviti automatici e non raccoglie indirizzi.
 
 Il sottodominio `hackathon-milano.vercel.app` ospita il sito: **non crea una casella email e non permette di autenticare un dominio mittente che controlli**. Non usare indirizzi inventati come `newsletter@hackathon-milano.vercel.app`. Senza acquistare un dominio, usa una casella reale che controlli, verificata in Brevo, con nome mittente “Hackathon Milano”. Brevo documenta la sostituzione temporanea del dominio delle caselle gratuite con un proprio dominio di invio; disponibilità e recapitabilità dipendono dal servizio. [Requisiti ufficiali del mittente](https://help.brevo.com/hc/en-us/articles/14925263522578-Comply-with-Gmail-Yahoo-and-Microsoft-s-requirements-for-email-senders).
 
@@ -13,7 +13,7 @@ Il sottodominio `hackathon-milano.vercel.app` ospita il sito: **non crea una cas
 5. Attiva **Anonymous email tracking** sia per le campagne sia per le email transazionali, seguendo la [guida Brevo](https://help.brevo.com/hc/it/articles/11643306229906-Posso-rendere-anonimo-il-tracciamento-delle-aperture-e-dei-clic-per-le-mie-email). Le impostazioni sono separate: verifica entrambe prima di abilitare il modulo. Non raccogliamo un consenso al tracciamento individuale delle aperture.
 6. Crea un database **Upstash Redis Free**, senza upgrade o ricariche. Copia URL REST e token REST nella configurazione privata. Redis conserva conferme, limiti e stato degli invii: non può essere sostituito con file nel repository o memoria temporanea del server. [Guida Upstash](https://upstash.com/docs/redis/overall/getstarted).
 7. Nel progetto Vercel apri **Settings → Environment Variables** e inserisci le variabili sotto per Production, inclusi nome del gestore, recapito e un `CRON_SECRET` casuale di almeno 32 caratteri. I secret Python/GitHub non configurano automaticamente Vercel. [Guida Vercel](https://vercel.com/docs/environment-variables).
-8. Imposta `NEWSLETTER_ENABLED=true`, effettua un nuovo deploy e verifica l’intero percorso con un indirizzo che controlli. In locale usa `.env.local`, escluso da Git, e riavvia il server. Attivare il flag non verifica credenziali, mittente o consegna: il test reale resta necessario.
+8. Imposta `NEWSLETTER_ENABLED=true` e `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE=first-visit`, effettua un nuovo deploy e verifica l’intero percorso con un indirizzo che controlli. In locale usa `.env.local`, escluso da Git, e riavvia il server. Attivare il flag non verifica credenziali, mittente o consegna: il test reale resta necessario.
 
 Account, recapito mittente e credenziali devono essere forniti dal gestore. Il repository non contiene un account già attivo. Non inviare chiavi API o token di conferma in chat, issue o commit.
 
@@ -71,7 +71,11 @@ I contatti già disiscritti, bloccati o presenti in altre liste non vengono riat
 
 Gli HMAC restano dati privati riconducibili agli iscritti, non dati anonimi pubblicabili. Quando cancelli i dati di un iscritto, tratta anche la prenotazione e la prova del consenso in Redis, riconciliando il contatore senza riaprire posti occupati o incerti. La scadenza Redis non cancella email già consegnate, registri o backup dei fornitori. Il database non deve comparire in Git, file pubblici, esportazioni o issue.
 
-Il prompt resta temporaneamente su `always` per la verifica su ogni visita. `first-visit` lo mostra una volta per browser; `off` lascia l’iscrizione manuale. La preferenza non riconosce una persona su browser diversi e non sostituisce mai il consenso.
+La modalità predefinita è `first-visit`: il prompt appare una sola volta per browser, solo quando il servizio è configurato. `off` lascia l’iscrizione manuale; `always` è riservato alle prove. Dopo una conferma riuscita, nessuna modalità mostra inviti automatici su quel browser. Il pulsante manuale resta disponibile, anche per iscrivere un altro indirizzo.
+
+Il browser conserva soltanto due preferenze: invito già visto e iscrizione confermata, senza email né token. Una semplice richiesta o una conferma fallita non segnano l’iscrizione come confermata. Le schede aperte sulla stessa origine condividono gli aggiornamenti. Se lo storage è bloccato, il sito continua a funzionare, ma il ricordo può durare solo fino alla ricarica.
+
+La preferenza non identifica una persona, non si trasferisce fra browser o dispositivi, non sostituisce il consenso e non viene sincronizzata con eventuali disiscrizioni su Brevo. Cancellare i dati del sito rimuove il riconoscimento. Il vecchio segnale di anteprima non impedisce il primo invito dopo l’apertura reale delle iscrizioni.
 
 ## Invio settimanale e recupero
 

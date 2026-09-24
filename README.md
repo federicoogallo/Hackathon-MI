@@ -56,7 +56,7 @@ The frontend is built with **Next.js 15, React 19 and Motion**, using a responsi
 - **Themes and accessibility:** System, Light and Dark themes with a persistent choice, keyboard navigation, visible focus and responsive layouts.
 - **Identity and search:** an abstract radar mark with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
 - **Usage metrics:** optional Vercel Web Analytics for page views and estimated visitors, disabled until enabled on a free Hobby team. Local project reports stay outside Git.
-- **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The prompt currently appears to all visitors for evaluation; actual subscriptions remain disabled without complete Brevo Free/Redis configuration.
+- **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The invitation appears once per browser while subscriptions are available, and stops after a successful confirmation on that browser. Manual signup remains available. Without complete Brevo Free/Redis configuration, the site shows an unavailable state rather than a disabled form.
 
 See the [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
 
@@ -357,7 +357,7 @@ Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are autom
 <details>
 <summary><strong>Weekly Email Newsletter</strong></summary>
 
-The newsletter integration uses **Brevo Free** for confirmation emails, subscriber contacts and weekly campaigns, and **Upstash Redis Free** for pending confirmations, rate limits, consent evidence and delivery state. **It is not active until all required services and environment variables are configured.** Without them, the interface displays a preview notice and disables email submission.
+The newsletter integration uses **Brevo Free** for confirmation emails, subscriber contacts and weekly campaigns, and **Upstash Redis Free** for pending confirmations, rate limits, consent evidence and delivery state. **It is not active until all required services and environment variables are configured.** Without them, the interface explains that subscriptions are not open, hides the email form and does not display automatic invitations.
 
 1. Create a dedicated Brevo Free account, verify an existing sender email and create a dedicated subscriber list. The website URL `hackathon-milano.vercel.app` is not an email domain you can authenticate through DNS. Brevo can rewrite a verified free-email sender to its own domain; the sender display name is **Hackathon Milano**.
 2. Create Upstash Redis on its Free plan and configure private REST access. Do not enable paid upgrades or automatic billing.
@@ -368,7 +368,7 @@ The integration accepts only a verified Free account with enough remaining email
 
 Signup requires explicit consent, an email link that expires after 24 hours, and a confirmation button on the website. Every digest includes an unsubscribe link. Existing unsubscribed contacts are not silently reactivated. Subscriber addresses never belong in this repository.
 
-The current prompt mode is `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE=always` for repeat-visit evaluation. Choose `first-visit` to show it once per browser or `off` to retain only the manual signup button. This controls the invitation, not subscription consent.
+The default prompt mode is `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE=first-visit`: one automatic invitation per browser when subscriptions are available. `off` retains manual signup; `always` is reserved for testing. All modes suppress automatic invitations after a successful confirmation on that browser. Only local flags are stored, without addresses or tokens. These flags do not identify a person or synchronize provider unsubscribe status; clearing site data or changing browser removes this recognition. This controls the invitation, not subscription consent.
 
 The authorized Vercel Cron runs on **Mondays at 08:00 UTC** (09:00 CET / 10:00 CEST). It selects accepted events discovered or approved during the completed weekly interval and excludes dated events that have passed. No eligible new events means no digest. Delivery state prevents repeated broadcasts; uncertain provider outcomes require maintainer review instead of automatic resending.
 
@@ -510,7 +510,7 @@ hackathon-monitor/
 - **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
 - **Some collectors** may return errors while the remaining sources complete. A successful overall run does not imply every source was healthy.
 - **Publication timing:** the Next.js site reads the archive bundled with its deployment. Data changes become visible after the production build, not immediately after a local command.
-- **Newsletter:** real subscriptions and delivery require configured private services; unconfigured deployments only show the preview interface. Email-provider errors or uncertain sends can require maintainer intervention.
+- **Newsletter:** real subscriptions and delivery require configured private services; unconfigured deployments show the unavailable state without an email form. Email-provider errors or uncertain sends can require maintainer intervention.
 - **Search visibility:** metadata, canonical URLs and icons help describe the site to crawlers but do not guarantee indexing, rankings or an immediate change in the displayed search result.
 
 </details>

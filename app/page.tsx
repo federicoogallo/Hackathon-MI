@@ -53,7 +53,7 @@ export default function Home() {
           <p className="source-disclaimer">Una buona idea merita informazioni chiare. Controlla date, requisiti e disponibilità sul sito dell’organizzatore.</p>
         </section>
         <DiscoveryStory />
-        <Newsletter available={newsletterConfigured()} promptMode={process.env.NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE || "always"} />
+        <Newsletter available={newsletterConfigured()} promptMode={process.env.NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE || "first-visit"} />
         <section className="faq-section container" aria-labelledby="faq-title"><div className="faq-intro"><span className="section-label">PRIMA DI INIZIARE</span><h2 id="faq-title">Qualche domanda?<br /><em>Ci sta.</em></h2><p>Le cose utili da sapere prima<br />del tuo prossimo hackathon.</p></div><div className="faq-list">{FAQS.map(([question, answer]) => <details key={question}><summary>{question}<span className="faq-plus" aria-hidden="true" /></summary><p>{answer}</p></details>)}</div></section>
         <section className="contribute-section container"><div className="contribute-card"><div className="contribute-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="4"><path d="M24 2v44M2 24h44M8.5 8.5l31 31m-31 0 31-31" /></svg></div><div><span className="section-label">LE IDEE BELLE SI CONDIVIDONO</span><h2>Un hackathon fuori dal radar?</h2><p>Aiutaci a far incontrare le persone e le opportunità giuste.</p></div><a className="btn btn-dark" href={`${REPO_URL}/issues/new?title=Segnalazione%20hackathon&body=Nome%20evento%3A%0AData%3A%0ALuogo%3A%0ALink%20ufficiale%3A`} target="_blank" rel="noopener noreferrer">Segnala un evento<Arrow diagonal /></a></div></section>
       </main>

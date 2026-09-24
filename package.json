@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:frontend": "node scripts/test-frontend-data.mjs && node scripts/test-event-filters.mjs && node scripts/test-theme.mjs && node scripts/test-newsletter.mjs && node scripts/test-analytics.mjs"
+    "test:frontend": "node scripts/test-frontend-data.mjs && node scripts/test-event-filters.mjs && node scripts/test-theme.mjs && node scripts/test-newsletter.mjs && node scripts/test-analytics.mjs && node scripts/test-newsletter-preferences.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",

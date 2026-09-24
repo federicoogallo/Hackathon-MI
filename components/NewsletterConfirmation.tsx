@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { markNewsletterConfirmed } from "@/lib/newsletter-preferences";
 
 export default function NewsletterConfirmation() {
   const token = useRef("");
@@ -25,6 +26,7 @@ export default function NewsletterConfirmation() {
       const response = await fetch("/api/newsletter/confirm", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: token.current }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Non è stato possibile confermare l’iscrizione. Riprova fra poco.");
+      markNewsletterConfirmed();
       token.current = "";
       setMessage("Riceverai il riepilogo settimanale quando troveremo nuovi hackathon. Puoi disiscriverti da ogni email.");
       setStatus("success");
