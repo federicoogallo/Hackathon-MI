@@ -83,6 +83,10 @@ python scripts/build_static_site.py
 
 This refreshes `docs/index.html`, `docs/review.html`, supporting assets and the generated README table from stored data, without collecting new events. Do not hand-edit generated pages. To publish the mirror, select **GitHub → Settings → Pages → Deploy from a branch → main → /docs**. The mirror points canonical links to the primary Vercel site.
 
+## Usage metrics
+
+Website analytics are optional and disabled by default. Follow [the free Analytics setup](analytics.md) to enable page views and estimated visitors on Vercel Hobby. Local project measurements are generated under ignored `.local/metrics/`; do not add reports or runtime audit logs to the public repository.
+
 ## Optional Telegram bot
 
 ```bash

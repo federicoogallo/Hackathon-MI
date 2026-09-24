@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <title>Hackathon Milano — Radar</title>
+  <rect width="128" height="128" rx="30" fill="#17241e"/>
+  <path d="M97 83A38 38 0 1 1 83 31" stroke="#f5f4ee" stroke-width="9" stroke-linecap="round"/>
+  <path d="m81 33 8 17 17 8-17 8-8 17-8-17-17-8 17-8Z" fill="#ff9f72"/>
+  <circle cx="43" cy="85" r="6" fill="#ff9f72"/>
+</svg>

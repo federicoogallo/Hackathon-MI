@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Space_Grotesk, Instrument_Serif } from "next/fon
 import { SITE_URL } from "@/lib/data";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/seo";
 import { THEME_BOOTSTRAP } from "@/lib/theme";
+import SiteAnalytics from "@/components/SiteAnalytics";
 import "./globals.css";
 import "./theme.css";
 
@@ -20,12 +21,12 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
   icons: {
     icon: [
-      { url: "/brand/madonnina.ico", sizes: "16x16 32x32 48x48 256x256", type: "image/x-icon" },
-      { url: "/brand/madonnina-96.png", sizes: "96x96", type: "image/png" },
-      { url: "/brand/madonnina.svg", sizes: "any", type: "image/svg+xml" },
+      { url: "/brand/radar-mark.ico", sizes: "16x16 32x32 48x48 256x256", type: "image/x-icon" },
+      { url: "/brand/radar-mark-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/brand/radar-mark.svg", sizes: "any", type: "image/svg+xml" },
     ],
-    shortcut: "/brand/madonnina.ico",
-    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/brand/radar-mark.ico",
+    apple: [{ url: "/brand/radar-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: SITE_NAME,
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip-link" href="#top">Salta al contenuto</a>
         {children}
+        {process.env.VERCEL_ENV === "production" && process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && <SiteAnalytics origin={new URL(SITE_URL).origin} />}
       </body>
     </html>
   );

@@ -89,7 +89,7 @@ export function confirmationEmail(link: string, owner: string, contact: string) 
 }
 
 export function digestEmail(events: DigestEvent[], siteUrl: string, owner: string, contact: string) {
-  const unsubscribe = "{{{RESEND_UNSUBSCRIBE_URL}}}";
+  const unsubscribe = "{{ unsubscribe }}";
   const heading = events.length === 1 ? "Una nuova sfida da scoprire." : `${events.length} nuove sfide da scoprire.`;
   const cards = events.map(event => `<article style="border-top:1px solid #d7d9ce;padding:24px 0"><p style="font-size:13px;color:#596156">${escapeHtml(dateLabel(event.date))} · ${escapeHtml(event.location)}</p><h2 style="font-size:22px;line-height:1.3;margin:12px 0"><a style="color:#17241e;text-decoration:none" href="${escapeHtml(event.url)}">${escapeHtml(event.title)} ↗</a></h2></article>`).join("");
   return {

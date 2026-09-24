@@ -46,3 +46,7 @@ docs/cv-metrics.md
 docs/metrics/
 scripts/cv_metrics.py
 docs/hero-hackathon-milano.png
+
+# Private reports, local evidence and moderation audit trail
+.local/
+data/admin_actions.json

@@ -5,14 +5,14 @@ import test from "node:test";
 import vm from "node:vm";
 import ts from "typescript";
 
-const PREFIX = "hackathon-mi:newsletter:";
+const PREFIX = "hackathon-mi:newsletter:brevo:";
 const baseEvent = { id: "event-one", title: "Una sfida", url: "https://organizer.test/event", is_hackathon: true, review_status: "ai_verified", date_str: "2026-10-01", discovered_at: "2026-09-17T12:00:00Z", location: "Milano" };
 
 function harness(options = {}) {
   let now = Date.parse(options.now || "2026-09-21T08:30:00Z");
   const env = {
-    NEWSLETTER_ENABLED: "true", RESEND_API_KEY: "test-api", RESEND_SEGMENT_ID: "test-segment",
-    NEWSLETTER_FROM: "Hackathon Milano <news@example.test>", NEWSLETTER_CONTACT_EMAIL: "hello@example.test",
+    NEWSLETTER_ENABLED: "true", BREVO_API_KEY: "test-api", BREVO_LIST_ID: "12",
+    NEWSLETTER_FROM: "news@example.test", NEWSLETTER_CONTACT_EMAIL: "hello@example.test",
     NEWSLETTER_OWNER: "Test owner", UPSTASH_REDIS_REST_URL: "https://redis.test", UPSTASH_REDIS_REST_TOKEN: "test-redis",
     CRON_SECRET: "a-test-secret-with-at-least-32-characters", NODE_ENV: "production", VERCEL: "1", ...options.env,
   };
@@ -22,7 +22,7 @@ function harness(options = {}) {
   }
   const store = new Map();
   const calls = [];
-  const broadcasts = new Map();
+  const campaigns = new Map();
   const contacts = new Map(options.contacts || []);
   let providerFailure = options.providerFailure;
   const get = key => {
@@ -44,6 +44,18 @@ function harness(options = {}) {
     const [script, count, ...rest] = values;
     const keys = rest.slice(0, count);
     const argv = rest.slice(count);
+    if (script.includes("'ZREMRANGEBYSCORE'")) {
+      const entries = new Map(get(keys[0]) || []);
+      for (const [id, time] of entries) if (time <= Number(argv[0])) entries.delete(id);
+      if (entries.size >= Number(argv[1])) return 0;
+      entries.set(argv[3], Number(argv[2])); set(keys[0], [...entries], argv[4]); return 1;
+    }
+    if (script.includes("math.max")) {
+      let n = Math.max(Number(get(keys[0]) || 0), Number(argv[0])); set(keys[0], n);
+      if (get(keys[1])) return 1;
+      if (Number(argv[2]) === 1) { if (n >= Number(argv[1])) return 0; n++; }
+      set(keys[0], n); set(keys[1], "1"); return 1;
+    }
     if (script.includes("'INCR'")) { const n = Number(get(keys[0]) || 0) + 1; const expiry = store.get(keys[0])?.expires; set(keys[0], n, argv[0]); if (n > 1) store.get(keys[0]).expires = expiry; return n; }
     if (script.startsWith("if redis.call('GET'")) { if (get(keys[0]) === argv[0]) { store.delete(keys[0]); return 1; } return 0; }
     if (script.includes("#KEYS")) { set(keys[0], argv[0]); store.delete(keys[1]); keys.slice(2).forEach(key => set(key, "1")); return 1; }
@@ -54,8 +66,8 @@ function harness(options = {}) {
   const mockedFetch = async (url, init = {}) => {
     const payload = init.body ? JSON.parse(init.body) : undefined;
     if (url === "https://redis.test") return Response.json({ result: command(payload) });
-    assert.ok(String(url).startsWith("https://api.resend.com/"), "Tests cannot contact a real service");
-    const path = new URL(url).pathname;
+    assert.ok(String(url).startsWith("https://api.brevo.com/v3/"), "Tests cannot contact a real service");
+    const path = new URL(url).pathname.slice(3);
     const method = init.method || "GET";
     calls.push({ path, method, payload, headers: init.headers });
     if (providerFailure) {
@@ -63,13 +75,17 @@ function harness(options = {}) {
       if (failure === "timeout") throw new Error("Simulated timeout with private test address");
       if (typeof failure === "number") return Response.json({ message: "provider-private@example.test" }, { status: failure });
     }
-    if (path === "/emails") return Response.json({ id: "email-one" });
-    if (path === "/contacts" && method === "POST") { contacts.set(payload.email, { email: payload.email, unsubscribed: false }); return Response.json({ id: "contact-one" }); }
-    if (path.includes("/segments/")) return Response.json({ id: "segment-membership" });
+    if (path === "/account") return Response.json(options.account || { plan: [{ type: "free", creditsType: "sendLimit", credits: options.credits ?? 300 }], relay: { enabled: true } });
+    if (path === "/smtp/email") return Response.json({ messageId: "email-one" });
+    if (path === "/contacts/lists/12") return Response.json({ id: 12, totalSubscribers: options.audience ?? [...contacts.values()].filter(c => c.listIds?.includes(12)).length });
+    if (path === "/contacts" && method === "POST") {
+      if (contacts.has(payload.email)) return Response.json({ code: "duplicate_parameter" }, { status: 400 });
+      contacts.set(payload.email, { email: payload.email, emailBlacklisted: false, listIds: payload.listIds }); return Response.json({ id: contacts.size }, { status: 201 });
+    }
     if (path.startsWith("/contacts/") && method === "GET") { const contact = contacts.get(decodeURIComponent(path.slice(10))); return Response.json(contact || {}, { status: contact ? 200 : 404 }); }
-    if (path === "/broadcasts" && method === "POST") { const id = `broadcast-${broadcasts.size + 1}`; broadcasts.set(id, { id, status: "draft", ...payload }); return Response.json({ id }); }
-    if (path.endsWith("/send")) { broadcasts.get(path.split("/")[2]).status = "sent"; return Response.json({ id: path.split("/")[2] }); }
-    if (path.startsWith("/broadcasts/")) return Response.json(broadcasts.get(path.split("/")[2]) || {}, { status: broadcasts.has(path.split("/")[2]) ? 200 : 404 });
+    if (path === "/emailCampaigns" && method === "POST") { const id = campaigns.size + 1; campaigns.set(id, { id, status: "draft", ...payload }); return Response.json({ id }, { status: 201 }); }
+    if (path.endsWith("/sendNow")) { campaigns.get(Number(path.split("/")[2])).status = options.sentStatus || "sent"; return new Response(null, { status: 204 }); }
+    if (path.startsWith("/emailCampaigns/")) return Response.json(campaigns.get(Number(path.split("/")[2])) || {}, { status: campaigns.has(Number(path.split("/")[2])) ? 200 : 404 });
     throw new Error(`Unhandled provider route: ${path}`);
   };
   const cache = new Map();
@@ -95,14 +111,14 @@ function harness(options = {}) {
     method: "POST", headers: { "Content-Type": "application/json", Origin: "https://example.test", "x-forwarded-for": "192.0.2.1", ...extra.headers }, body: typeof body === "string" ? body : JSON.stringify(body),
   });
   const signup = (email = "reader@example.test", extra = {}) => api.subscribe(request({ email, consent: true, website: "" }, extra));
-  const token = () => calls.findLast(call => call.path === "/emails")?.payload.text.match(/#token=([a-f0-9]{64})/)[1];
+  const token = () => calls.findLast(call => call.path === "/smtp/email")?.payload.textContent.match(/#token=([a-f0-9]{64})/)[1];
   const confirm = value => api.confirm(request({ token: value || token() }));
   const weekly = authorization => api.weekly(new Request("https://example.test/api/newsletter/weekly", { headers: { authorization: authorization ?? `Bearer ${env.CRON_SECRET}` } }));
-  return { api, core, env, calls, broadcasts, contacts, store, get, set, request, signup, token, confirm, weekly, fail: fn => { providerFailure = fn; }, advance: milliseconds => { now += milliseconds; } };
+  return { api, core, env, calls, campaigns, contacts, store, get, set, request, signup, token, confirm, weekly, fail: fn => { providerFailure = fn; }, advance: milliseconds => { now += milliseconds; } };
 }
 
 test("readiness fails closed and cron authorization never reaches providers", async () => {
-  for (const env of [{ NEWSLETTER_ENABLED: "false" }, { RESEND_API_KEY: "" }, { CRON_SECRET: "short" }, { NEWSLETTER_CONTACT_EMAIL: "invalid" }]) {
+  for (const env of [{ NEWSLETTER_ENABLED: "false" }, { BREVO_API_KEY: "" }, { CRON_SECRET: "short" }, { NEWSLETTER_CONTACT_EMAIL: "invalid" }]) {
     const h = harness({ env });
     assert.equal((await h.signup()).status, 503);
     assert.equal(h.calls.length, 0);
@@ -142,7 +158,7 @@ test("double opt-in stores only a hashed token, consumes it once and retains min
   const evidence = [...h.store.entries()].find(([key]) => key.includes(":consent:"));
   assert.ok(evidence);
   assert.ok(!evidence[1].value.includes("reader@example.test"));
-  assert.equal(JSON.parse(evidence[1].value).version, "2026-09-19");
+  assert.equal(JSON.parse(evidence[1].value).version, "2026-09-24");
 });
 
 test("pending confirmations expire, provider errors are redacted and recoverable", async () => {
@@ -165,22 +181,22 @@ test("pending confirmations expire, provider errors are redacted and recoverable
 });
 
 test("resubscription cannot silently reactivate a globally unsubscribed contact", async () => {
-  const h = harness({ contacts: [["reader@example.test", { email: "reader@example.test", unsubscribed: true }]] });
+  const h = harness({ contacts: [["reader@example.test", { email: "reader@example.test", emailBlacklisted: true }]] });
   await h.signup();
   assert.equal((await h.confirm()).status, 409);
   assert.ok(!h.calls.some(call => call.path.startsWith("/contacts") && call.method !== "GET"));
-  assert.equal(h.contacts.get("reader@example.test").unsubscribed, true);
+  assert.equal(h.contacts.get("reader@example.test").emailBlacklisted, true);
 });
 
 test("persistent quotas block repeated emails and IP abuse", async () => {
   const h = harness();
   assert.equal((await h.signup()).status, 202);
   assert.equal((await h.signup()).status, 202);
-  assert.equal(h.calls.filter(call => call.path === "/emails").length, 1);
+  assert.equal(h.calls.filter(call => call.path === "/smtp/email").length, 1);
   for (let index = 0; index < 3; index++) assert.equal((await h.signup(`reader${index}@example.test`)).status, 202);
   assert.equal((await h.signup("sixth@example.test")).status, 429);
   const quota = harness();
-  quota.set(`${PREFIX}limit:send-daily`, 100, 86400);
+  quota.set(`${PREFIX}confirmation-quota`, Array.from({ length: 40 }, (_, i) => [`confirmation-${i}`, Date.parse("2026-09-21T08:00:00Z")]), 86400);
   assert.equal((await quota.signup()).status, 429);
   assert.equal(quota.calls.length, 0);
 });
@@ -229,18 +245,19 @@ test("email rendering escapes untrusted content and includes provider unsubscrib
   assert.ok(email.html.includes("&lt;img"));
   assert.ok(email.html.includes("&amp;b=2"));
   assert.ok(email.html.includes("&lt;Milano&gt;"));
-  assert.ok(email.html.includes("{{{RESEND_UNSUBSCRIBE_URL}}}"));
-  assert.ok(email.text.includes("{{{RESEND_UNSUBSCRIBE_URL}}}"));
+  assert.ok(email.html.includes("{{ unsubscribe }}"));
+  assert.ok(email.text.includes("{{ unsubscribe }}"));
   assert.ok(email.text.includes("Data da confermare"));
 });
 
 test("weekly delivery drafts then sends once, persists event IDs and skips empty weeks", async () => {
-  const h = harness();
+  const h = harness({ audience: 1 });
   assert.equal((await h.weekly()).status, 200);
   assert.equal((await h.weekly()).status, 200);
-  assert.equal(h.calls.filter(call => call.path === "/broadcasts" && call.method === "POST").length, 1);
-  assert.equal(h.calls.find(call => call.path === "/broadcasts").payload.send, false);
-  assert.equal(h.calls.filter(call => call.path.endsWith("/send")).length, 1);
+  assert.equal(h.calls.filter(call => call.path === "/emailCampaigns" && call.method === "POST").length, 1);
+  assert.equal(h.calls.find(call => call.path === "/emailCampaigns").payload.scheduledAt, undefined);
+  assert.deepEqual(h.calls.find(call => call.path === "/emailCampaigns").payload.recipients, { listIds: [12] });
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 1);
   assert.ok([...h.store.keys()].some(key => key.includes(":sent-event:")));
   assert.equal(h.get(`${PREFIX}weekly-active`), null);
   const empty = harness({ events: [] });
@@ -248,31 +265,163 @@ test("weekly delivery drafts then sends once, persists event IDs and skips empty
   assert.equal(empty.calls.length, 0);
 });
 
-test("ambiguous broadcast creation fails closed instead of creating another broadcast", async () => {
-  const h = harness({ providerFailure: ({ path, method }) => path === "/broadcasts" && method === "POST" ? "timeout" : undefined });
+test("ambiguous campaign creation fails closed instead of creating another campaign", async () => {
+  const h = harness({ audience: 1, providerFailure: ({ path, method }) => path === "/emailCampaigns" && method === "POST" ? "timeout" : undefined });
   assert.equal((await h.weekly()).status, 503);
   h.fail(undefined);
   assert.equal((await (await h.weekly()).json()).status, "needs_review");
-  assert.equal(h.calls.filter(call => call.path === "/broadcasts").length, 1);
-  assert.equal(h.calls.filter(call => call.path.endsWith("/send")).length, 0);
+  assert.equal(h.calls.filter(call => call.path === "/emailCampaigns").length, 1);
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 0);
 });
 
 test("uncertain delivery reconciles the same ID and never resends a draft automatically", async () => {
-  const h = harness({ providerFailure: ({ path }) => path.endsWith("/send") ? "timeout" : undefined });
+  const h = harness({ audience: 1, providerFailure: ({ path }) => path.endsWith("/sendNow") ? "timeout" : undefined });
   assert.equal((await h.weekly()).status, 503);
   h.fail(undefined);
   assert.equal((await (await h.weekly()).json()).status, "needs_review");
-  h.broadcasts.get("broadcast-1").status = "sent";
+  h.campaigns.get(1).status = "sent";
   assert.equal((await (await h.weekly()).json()).status, "sent");
-  assert.equal(h.calls.filter(call => call.path === "/broadcasts" && call.method === "POST").length, 1);
-  assert.equal(h.calls.filter(call => call.path.endsWith("/send")).length, 1);
+  assert.equal(h.calls.filter(call => call.path === "/emailCampaigns" && call.method === "POST").length, 1);
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 1);
 });
 
-test("an unresolved previous broadcast blocks the next week rather than risking duplicate delivery", async () => {
-  const h = harness({ providerFailure: ({ path }) => path.endsWith("/send") ? "timeout" : undefined });
+test("an unresolved previous campaign blocks the next week rather than risking duplicate delivery", async () => {
+  const h = harness({ audience: 1, providerFailure: ({ path }) => path.endsWith("/sendNow") ? "timeout" : undefined });
   await h.weekly();
   h.advance(7 * 86400_000);
   h.fail(undefined);
   assert.equal((await (await h.weekly()).json()).status, "needs_review");
-  assert.equal(h.calls.filter(call => call.path === "/broadcasts" && call.method === "POST").length, 1);
+  assert.equal(h.calls.filter(call => call.path === "/emailCampaigns" && call.method === "POST").length, 1);
+});
+
+test("configuration rejects invented Vercel senders and nonnumeric list IDs", async () => {
+  for (const env of [
+    { NEWSLETTER_FROM: "newsletter@hackathon-milano.vercel.app" },
+    { NEWSLETTER_FROM: "newsletter@vercel.app" },
+    { NEWSLETTER_FROM: "Hackathon Milano <hello@example.test>" },
+    { BREVO_LIST_ID: "not-a-list" }, { BREVO_LIST_ID: "0" },
+  ]) {
+    const h = harness({ env });
+    assert.equal((await h.signup()).status, 503);
+    assert.equal(h.calls.length, 0);
+  }
+});
+
+test("free-only delivery stops on paid, unknown, exhausted or disabled account state", async () => {
+  for (const account of [
+    {},
+    { plan: [{ type: "subscription", creditsType: "sendLimit", credits: 300 }], relay: { enabled: true } },
+    { plan: [{ type: "free", creditsType: "sendLimit", credits: "300" }], relay: { enabled: true } },
+    { plan: [{ type: "free", creditsType: "sendLimit", credits: 0 }], relay: { enabled: true } },
+    { plan: [{ type: "free", creditsType: "sendLimit", credits: 300 }], relay: { enabled: false } },
+    { plan: [{ type: "free", creditsType: "sendLimit", credits: 300 }, { type: "payAsYouGo", credits: 1000 }], relay: { enabled: true } },
+  ]) {
+    const h = harness({ account, audience: 1 });
+    assert.equal((await h.signup()).status, 503);
+    assert.equal((await h.weekly()).status, 503);
+    assert.ok(h.calls.every(call => call.method === "GET"));
+  }
+});
+
+test("last subscriber slot is reserved atomically despite concurrent confirms and stale list totals", async () => {
+  const h = harness({ audience: 249 });
+  await h.signup("first@example.test");
+  const first = h.token();
+  await h.signup("second@example.test");
+  const second = h.token();
+  const responses = await Promise.all([h.confirm(first), h.confirm(second)]);
+  assert.deepEqual(responses.map(response => response.status).sort(), [200, 503]);
+  assert.equal(h.get(`${PREFIX}subscriber-slots`), 250);
+  assert.equal(h.calls.filter(call => call.path === "/contacts" && call.method === "POST").length, 1);
+  assert.equal(h.calls.find(call => call.path === "/contacts" && call.method === "POST").payload.updateEnabled, false);
+});
+
+test("an uncertain contact create reuses its slot after provider reconciliation", async () => {
+  const h = harness({ audience: 249 });
+  await h.signup();
+  h.fail(({ path, payload }) => {
+    if (path !== "/contacts") return;
+    h.contacts.set(payload.email, { email: payload.email, emailBlacklisted: false, listIds: [12] });
+    return "timeout";
+  });
+  assert.equal((await h.confirm()).status, 503);
+  h.fail(undefined);
+  assert.equal((await h.confirm()).status, 200);
+  assert.equal(h.get(`${PREFIX}subscriber-slots`), 250);
+  assert.equal(h.calls.filter(call => call.path === "/contacts" && call.method === "POST").length, 1);
+});
+
+test("existing list-specific opt-outs and unrelated contacts are never overwritten", async () => {
+  for (const record of [
+    { emailBlacklisted: false, listIds: [12], listUnsubscribed: [12] },
+    { emailBlacklisted: false, listIds: [99] },
+    { listIds: [12] },
+  ]) {
+    const h = harness({ contacts: [["reader@example.test", record]] });
+    await h.signup();
+    assert.equal((await h.confirm()).status, 409);
+    assert.ok(!h.calls.some(call => call.path.startsWith("/contacts") && call.method !== "GET"));
+  }
+});
+
+test("the global confirmation quota covers every rolling 24-hour interval under concurrency", async () => {
+  const h = harness();
+  const requests = Array.from({ length: 41 }, (_, i) => h.signup(`reader-${i}@example.test`, { headers: { "x-forwarded-for": `192.0.2.${i + 1}` } }));
+  const results = await Promise.all(requests);
+  assert.equal(results.filter(response => response.status === 202).length, 40);
+  assert.equal(results.filter(response => response.status === 429).length, 1);
+  assert.equal(h.calls.filter(call => call.path === "/smtp/email").length, 40);
+  h.advance(86401_000);
+  assert.equal((await h.signup("next-day@example.test")).status, 202);
+});
+
+test("campaign creation is paused with no subscribers, an oversized list or insufficient credits", async () => {
+  const empty = harness();
+  assert.equal((await (await empty.weekly()).json()).status, "no_subscribers");
+  assert.ok(!empty.calls.some(call => call.method !== "GET"));
+  for (const options of [{ audience: 251 }, { audience: "1" }, { audience: 250, credits: 259 }]) {
+    const h = harness(options);
+    assert.equal((await h.weekly()).status, 503);
+    assert.ok(!h.calls.some(call => call.method !== "GET"));
+  }
+  const atLimit = harness({ audience: 250, credits: 260 });
+  assert.equal((await atLimit.weekly()).status, 200);
+});
+
+test("queued campaigns are checked without resending or prematurely recording successful delivery", async () => {
+  const h = harness({ audience: 1, sentStatus: "queued" });
+  assert.equal((await (await h.weekly()).json()).status, "processing");
+  assert.equal((await (await h.weekly()).json()).status, "processing");
+  assert.ok(![...h.store.keys()].some(key => key.includes(":sent-event:")));
+  h.advance(7 * 86400_000);
+  assert.equal((await (await h.weekly()).json()).status, "processing");
+  h.campaigns.get(1).status = "sent";
+  assert.equal((await (await h.weekly()).json()).status, "empty");
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 1);
+  assert.ok([...h.store.keys()].some(key => key.includes(":sent-event:")));
+});
+
+test("a week-boundary retry cannot start two campaigns within a day", async () => {
+  const h = harness({
+    now: "2026-09-21T07:30:00Z", audience: 1,
+    events: [baseEvent, { ...baseEvent, id: "previous-week", discovered_at: "2026-09-10T12:00:00Z" }],
+  });
+  assert.equal((await h.weekly()).status, 200);
+  h.advance(3600_000);
+  assert.equal((await h.weekly()).status, 503);
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 1);
+  h.advance(86401_000);
+  assert.equal((await h.weekly()).status, 200);
+  assert.equal(h.calls.filter(call => call.path.endsWith("/sendNow")).length, 2);
+});
+
+
+test("a saved draft with a remote review state cannot proceed to sendNow", async () => {
+  for (const status of ["suspended", "archive", "cancelled", "unknown"]) {
+    const h = harness({ audience: 1 });
+    h.set(`${PREFIX}week:2026-09-21`, JSON.stringify({ week: "2026-09-21", status: "draft", eventIds: ["event-one"], campaignId: 1 }));
+    h.campaigns.set(1, { id: 1, status });
+    assert.equal((await (await h.weekly()).json()).status, "needs_review");
+    assert.ok(!h.calls.some(call => call.method !== "GET"));
+  }
 });

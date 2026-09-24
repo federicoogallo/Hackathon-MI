@@ -54,8 +54,9 @@ The frontend is built with **Next.js 15, React 19 and Motion**, using a responsi
 - **Personal tools:** share searches through their URLs, save events locally and download a calendar entry for dated events. No account is required; saved events stay in the current browser.
 - **Visual experience:** an architectural Milan scene and a radar connected to the next events. It advances every seven seconds, stops on interaction and can be resumed explicitly. Motion respects reduced-motion preferences.
 - **Themes and accessibility:** System, Light and Dark themes with a persistent choice, keyboard navigation, visible focus and responsive layouts.
-- **Identity and search:** a vector Madonnina icon with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
-- **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The prompt currently appears to all visitors for evaluation; actual subscriptions remain disabled without complete Resend/Redis configuration.
+- **Identity and search:** an abstract radar mark with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
+- **Usage metrics:** optional Vercel Web Analytics for page views and estimated visitors, disabled until enabled on a free Hobby team. Local project reports stay outside Git.
+- **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The prompt currently appears to all visitors for evaluation; actual subscriptions remain disabled without complete Brevo Free/Redis configuration.
 
 See the [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
 
@@ -270,9 +271,9 @@ python scripts/admin.py remove <identifier> --blacklist --reason-code online_onl
 python scripts/admin.py remove <identifier> --reason-code known_false_positive --regression
 ```
 
-Admin approvals/removals/review moves rebuild the static site and README immediately. Every admin action is logged in `data/admin_actions.json` with a free-text `reason` and a stable `reason_code`. Use `--regression` only for high-signal decisions worth preserving as tests; this avoids turning one-off judgement calls into brittle automated checks.
+Admin approvals/removals/review moves rebuild the static site and README immediately. Every admin action is logged locally in `data/admin_actions.json`, which is excluded from Git and deployment. `--regression` marks a local decision for consideration; reproducible public cases are curated separately in `tests/fixtures/admin-regressions.json` without operational notes, operator details or timestamps.
 
-The public review queue is available at `/review` on the main site and `docs/review.html` on the mirror. Visitors can open issues from the site, but only maintainers apply final actions. Audit reasons and review decisions are public: do not include credentials, subscriber addresses or private correspondence. See the [maintainer guide](docs/admin.md).
+The public review queue is available at `/review` on the main site and `docs/review.html` on the mirror. Visitors can open issues from the site, but only maintainers apply final actions. Review queue entries and suppression decisions are public: do not include credentials, subscriber addresses or private correspondence. See the [maintainer guide](docs/admin.md).
 
 ### 7. Pre-render the static mirror (SSG)
 
@@ -289,7 +290,7 @@ This generates `docs/index.html`, `docs/review.html` and supporting assets, then
 <details>
 <summary><strong>Deploy on GitHub Actions</strong></summary>
 
-### 1. Fork/push the repository
+### 1. Configure the maintained repository
 
 ### 2. Configure GitHub Actions and Vercel
 
@@ -356,12 +357,14 @@ Restricted to the configured `TELEGRAM_CHAT_ID` — all other messages are autom
 <details>
 <summary><strong>Weekly Email Newsletter</strong></summary>
 
-The newsletter integration uses **Resend** for email and confirmed contacts, and **Upstash Redis** for pending confirmations, rate limits, consent evidence and delivery state. **It is not active until all required services and environment variables are configured.** Without them, the interface displays a preview notice and disables email submission.
+The newsletter integration uses **Brevo Free** for confirmation emails, subscriber contacts and weekly campaigns, and **Upstash Redis Free** for pending confirmations, rate limits, consent evidence and delivery state. **It is not active until all required services and environment variables are configured.** Without them, the interface displays a preview notice and disables email submission.
 
-1. Verify a sending domain with Resend and create a dedicated segment for confirmed subscribers.
-2. Configure private Upstash Redis REST access.
+1. Create a dedicated Brevo Free account, verify an existing sender email and create a dedicated subscriber list. The website URL `hackathon-milano.vercel.app` is not an email domain you can authenticate through DNS. Brevo can rewrite a verified free-email sender to its own domain; the sender display name is **Hackathon Milano**.
+2. Create Upstash Redis on its Free plan and configure private REST access. Do not enable paid upgrades or automatic billing.
 3. Copy the settings from [`.env.newsletter.example`](.env.newsletter.example) into the Vercel environment (or a Git-ignored `.env.local` for development).
 4. Set the sender, public owner/contact details and a random `CRON_SECRET` of at least 32 characters; enable `NEWSLETTER_ENABLED=true` only when setup is complete, then redeploy.
+
+The integration accepts only a verified Free account with enough remaining email credits. It caps the list at 250 reserved subscriber slots and confirmation requests at 40 per rolling 24 hours, within Brevo’s 300-email daily allowance. Shared account activity and provider approval can still prevent delivery; there is no automatic paid fallback.
 
 Signup requires explicit consent, an email link that expires after 24 hours, and a confirmation button on the website. Every digest includes an unsubscribe link. Existing unsubscribed contacts are not silently reactivated. Subscriber addresses never belong in this repository.
 
@@ -431,7 +434,7 @@ hackathon-monitor/
 ├── components/                # Search, event cards, radar, themes and newsletter UI
 ├── lib/                       # Frontend data, filters, SEO and newsletter logic
 ├── public/                    # Hero artwork and public identity assets
-│   ├── brand/                 # Madonnina SVG/ICO/PNG and Apple touch icon
+│   ├── brand/                 # Abstract radar SVG/ICO/PNG and Apple touch icon
 │   ├── favicon.ico            # Browser fallback icon
 │   └── milano-hero.webp       # Architectural hero illustration
 ├── package.json               # Frontend scripts and dependency constraints
@@ -444,6 +447,7 @@ hackathon-monitor/
 ├── requirements.txt           # Python dependencies
 ├── .env.example               # Blank collection configuration example
 ├── .env.newsletter.example    # Blank private newsletter configuration example
+├── LICENSE                    # All rights reserved; third-party rights preserved
 ├── SECURITY.md                # Vulnerability reporting and security checks
 ├── collectors/                # 28 registered source integrations
 │   ├── eventbrite.py          # REST API
@@ -470,11 +474,11 @@ hackathon-monitor/
 │   ├── slow_classify.py      # Classification recovery tool
 │   ├── collect_only.py       # Collection diagnostics
 │   ├── extract_dates.py      # Backfill dates with the classifier
+│   ├── project_metrics.py    # Aggregate reports in ignored .local/metrics/
 │   ├── generate-brand-assets.mjs # Generate favicon and identity variants
 │   └── test-*.mjs            # Frontend and newsletter regression tests
 ├── data/
 │   ├── events.json           # Public event archive
-│   ├── admin_actions.json    # Public admin audit and regression decisions
 │   ├── review_queue.json     # Uncertain candidates
 │   └── review_decisions.json # Manual approve/reject decisions
 ├── docs/
@@ -484,7 +488,8 @@ hackathon-monitor/
 │   ├── banner.svg            # README banner
 │   ├── setup.md              # Environments and deployment
 │   ├── admin.md              # Moderation and maintenance
-│   └── newsletter.md         # Email activation and operations
+│   ├── newsletter.md         # Email activation and operations
+│   └── analytics.md          # Free usage metrics and local measurement
 ├── tests/                    # Python regression suite
 └── .github/workflows/
     ├── check_hackathons.yml  # Daily collection and generated-data publishing
@@ -512,13 +517,21 @@ hackathon-monitor/
 
 ---
 
+## Project measurement
+
+Run `python scripts/project_metrics.py` to generate aggregate archive and scan measurements in `.local/metrics/`, excluded from Git and deployment. These describe the available data, not classification accuracy or the number of people using the site.
+
+Website traffic requires enabling **Vercel Web Analytics on Hobby** and setting `NEXT_PUBLIC_ANALYTICS_ENABLED=true` before redeployment. No visitor count is invented before data exists. See [the setup and interpretation guide](docs/analytics.md).
+
 ## Validation
 
 Use the commands in Local Setup and the latest CI run for current results. Tests cover models, deduplication, filters, moderation, generated output, frontend behavior and newsletter logic. Source integrations and email delivery use mocks in tests; live availability and delivery require separate checks with configured services.
 
-## Contributing
+## Rights and contributions
 
-Contributions are welcome. Include the original event URL for data reports, and a clear description with relevant validation for code changes.
+Copyright © 2026 Federico Gallo. **All rights reserved.** The current original project materials are not offered under an open-source license; see [LICENSE](LICENSE). Public visibility permits inspection under GitHub’s terms, not unrestricted reuse. Third-party materials retain their own rights. This notice does not revoke any permissions previously granted for earlier revisions.
+
+For proposed code contributions, contact the maintainer to agree on permission and terms before proceeding. Include the original event URL for data reports, and a clear description with relevant validation for code changes.
 
 - 🔌 **Add a new source** — write a collector and open a PR
 - 🐛 **Report a wrong entry** — open an issue with the event link

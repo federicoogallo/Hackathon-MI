@@ -35,11 +35,11 @@ Use `--blacklist` only when future matching entries should also be excluded. Rev
 
 Actions rebuild the static pages and README table where applicable. The Next.js site reflects committed data after its next deployment. Inspect the diff before committing: a local maintainer action does not itself publish a Vercel deployment.
 
-## Public audit data
+## Local audit and public regression cases
 
-Actions are recorded in `data/admin_actions.json` with a reason and a stable reason code. Review decisions and blacklist entries are also versioned. These files are public: keep reasons factual and avoid personal information, credentials, subscriber addresses or private correspondence.
+Actions are recorded locally in `data/admin_actions.json`, excluded from Git and deployment. Review decisions, queue entries and blacklist entries remain versioned because the pipeline needs them. Keep those public fields factual and free of personal information, credentials, subscriber addresses or private correspondence.
 
-For a decision that captures a useful regression case, supported commands accept `--regression`. Reserve this for behavior that can be checked reproducibly; some editorial judgments require human review rather than an automated filter assertion.
+For a decision that captures a useful regression case, supported commands accept `--regression`. This marks the local audit record only. Add a minimal, sanitized case to `tests/fixtures/admin-regressions.json` when it can be checked reproducibly; tests do not read the local audit trail. Some editorial judgments require human review rather than an automated filter assertion.
 
 ## Adding a collector
 

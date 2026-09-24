@@ -6,11 +6,11 @@ import sharp from "sharp";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const brand = path.join(root, "public/brand");
 await fs.mkdir(brand, { recursive: true });
-const icon = await fs.readFile(path.join(brand, "madonnina.svg"));
+const icon = await fs.readFile(path.join(brand, "radar-mark.svg"));
 
 await sharp(icon).resize(96, 96).png().toFile(path.join(root, "public/favicon-96.png"));
-await sharp(icon).resize(96, 96).png().toFile(path.join(brand, "madonnina-96.png"));
-await sharp(icon).resize(180, 180).png().toFile(path.join(brand, "apple-touch-icon.png"));
+await sharp(icon).resize(96, 96).png().toFile(path.join(brand, "radar-mark-96.png"));
+await sharp(icon).resize(180, 180).png().toFile(path.join(brand, "radar-touch-icon.png"));
 
 const sizes = [16, 32, 48, 256];
 const frames = await Promise.all(sizes.map((size) => sharp(icon).resize(size, size).png().toBuffer()));
@@ -29,7 +29,7 @@ for (let i = 0; i < sizes.length; i += 1) {
   offset += frames[i].length;
 }
 await fs.writeFile(path.join(root, "public/favicon.ico"), Buffer.concat([header, ...frames]));
-await fs.writeFile(path.join(brand, "madonnina.ico"), Buffer.concat([header, ...frames]));
+await fs.writeFile(path.join(brand, "radar-mark.ico"), Buffer.concat([header, ...frames]));
 
 const city = await sharp(path.join(root, "public/milano-hero.webp"))
   .resize(650, 630, { fit: "cover", position: "centre" })

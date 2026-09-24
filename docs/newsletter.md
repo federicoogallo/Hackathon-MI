@@ -1,87 +1,94 @@
-# Weekly email
+# Newsletter settimanale · Brevo Free
 
 ## Attivazione da zero
 
-Il codice è pronto, ma **la newsletter non è attiva finché non vengono collegati i servizi qui sotto**. Il messaggio “Anteprima” e i campi disabilitati indicano questa situazione: nessun indirizzo viene raccolto e nessuna email viene inviata.
+La newsletter usa **Brevo Free** e l’identità **Hackathon Milano**. I link portano a [hackathon-milano.vercel.app](https://hackathon-milano.vercel.app). Finché mancano account e credenziali, il modulo mostra “Anteprima”, rimane disabilitato e non raccoglie indirizzi.
 
-1. Crea il tuo account Resend e aggiungi un dominio che controlli. Inserisci i record DNS indicati da Resend e attendi la verifica. Il sottodominio pubblico `hackathon-milano.vercel.app` non è un tuo dominio mittente. [Guida Resend ai domini](https://resend.com/docs/dashboard/domains/introduction).
-2. Nel tuo account Resend crea un segmento dedicato, ad esempio “Hackathon Milano”, e una chiave API con accesso a email, contatti e broadcast. Scegli un mittente sul dominio verificato e un recapito reale per rispondere alle richieste degli iscritti.
-3. Crea un account Upstash e un database Redis. Nella pagina del database trovi l’URL REST e il token REST. [Guida Upstash](https://upstash.com/docs/redis/overall/getstarted).
-4. Nel progetto Vercel apri **Settings → Environment Variables** e inserisci i valori elencati nella tabella sotto per l’ambiente Production. Aggiungi anche identità del gestore, recapito pubblico e un `CRON_SECRET` casuale di almeno 32 caratteri. Non inserire le chiavi in chat, nel README o in GitHub. [Guida Vercel](https://vercel.com/docs/environment-variables).
-5. Imposta `NEWSLETTER_ENABLED=true` e fai un nuovo deploy. Per provare in locale servono gli stessi valori in `.env.local` e il riavvio del server. Completa una prova di iscrizione con un indirizzo che controlli prima di considerare il servizio operativo.
+Il sottodominio `hackathon-milano.vercel.app` ospita il sito: **non crea una casella email e non permette di autenticare un dominio mittente che controlli**. Non usare indirizzi inventati come `newsletter@hackathon-milano.vercel.app`. Senza acquistare un dominio, usa una casella reale che controlli, verificata in Brevo, con nome mittente “Hackathon Milano”. Brevo documenta la sostituzione temporanea del dominio delle caselle gratuite con un proprio dominio di invio; disponibilità e recapitabilità dipendono dal servizio. [Requisiti ufficiali del mittente](https://help.brevo.com/hc/en-us/articles/14925263522578-Comply-with-Gmail-Yahoo-and-Microsoft-s-requirements-for-email-senders).
 
-La creazione degli account, l’eventuale acquisto del dominio e la scelta dei piani restano operazioni da svolgere con i tuoi dati. Il repository non contiene account o credenziali già pronti.
+1. Crea un account **Brevo Free** dedicato al progetto. Non attivare piani a pagamento, crediti aggiuntivi o ricariche automatiche. Completa le verifiche richieste da Brevo per campagne ed email transazionali.
+2. Aggiungi una casella reale nella sezione mittenti e confermala dal messaggio ricevuto. Inserisci solo quell’indirizzo in `NEWSLETTER_FROM`; il nome visibile “Hackathon Milano” è già impostato dal codice. Usa un recapito controllato per `NEWSLETTER_CONTACT_EMAIL`.
+3. Crea una lista **vuota e dedicata** “Hackathon Milano” e annota il suo ID numerico (`BREVO_LIST_ID`). Non importare contatti o aggiungerli manualmente: il sito inserisce solo indirizzi confermati, rispettando il limite gratuito.
+4. Genera una chiave API Brevo per invii, contatti, campagne e lettura account. Conservala come `BREVO_API_KEY`; non serve un SDK o un piano Automations a pagamento.
+5. Attiva **Anonymous email tracking** sia per le campagne sia per le email transazionali, seguendo la [guida Brevo](https://help.brevo.com/hc/it/articles/11643306229906-Posso-rendere-anonimo-il-tracciamento-delle-aperture-e-dei-clic-per-le-mie-email). Le impostazioni sono separate: verifica entrambe prima di abilitare il modulo. Non raccogliamo un consenso al tracciamento individuale delle aperture.
+6. Crea un database **Upstash Redis Free**, senza upgrade o ricariche. Copia URL REST e token REST nella configurazione privata. Redis conserva conferme, limiti e stato degli invii: non può essere sostituito con file nel repository o memoria temporanea del server. [Guida Upstash](https://upstash.com/docs/redis/overall/getstarted).
+7. Nel progetto Vercel apri **Settings → Environment Variables** e inserisci le variabili sotto per Production, inclusi nome del gestore, recapito e un `CRON_SECRET` casuale di almeno 32 caratteri. I secret Python/GitHub non configurano automaticamente Vercel. [Guida Vercel](https://vercel.com/docs/environment-variables).
+8. Imposta `NEWSLETTER_ENABLED=true`, effettua un nuovo deploy e verifica l’intero percorso con un indirizzo che controlli. In locale usa `.env.local`, escluso da Git, e riavvia il server. Attivare il flag non verifica credenziali, mittente o consegna: il test reale resta necessario.
 
-## Implementation
+Account, recapito mittente e credenziali devono essere forniti dal gestore. Il repository non contiene un account già attivo. Non inviare chiavi API o token di conferma in chat, issue o commit.
 
-The newsletter sends newly discovered, upcoming hackathons to confirmed subscribers once a week. It is separate from the Telegram scan summaries.
+## Configurazione
 
-The signup interface can be previewed without email credentials, but real subscriptions and delivery require the private services below. Without complete configuration, the form displays an explicit preview notice and disables email submission. No subscriber list is included in the repository.
+Copia i valori del modello [`.env.newsletter.example`](../.env.newsletter.example) nelle impostazioni private.
 
-## Services and configuration
-
-1. Configure a sending domain in Resend and complete the domain verification it requires. Choose a recognizable sender on that domain.
-2. Create a dedicated Resend segment for confirmed newsletter subscribers and record its ID. Do not import unconfirmed addresses or reuse a segment with unrelated contacts.
-3. Create an Upstash Redis database and obtain its REST endpoint and token. Pending email confirmations and rate limits belong in this private store, not Git or public JSON files.
-4. Add the variables from [`.env.newsletter.example`](../.env.newsletter.example) to the appropriate Vercel environment. Use separate credentials or resources for testing when available.
-5. Set `NEWSLETTER_ENABLED=true` only when the configuration and public contact details are complete, then redeploy.
-
-| Variable | Purpose |
+| Variabile | Utilizzo |
 | --- | --- |
-| `RESEND_API_KEY` | Server-side Resend API access |
-| `RESEND_SEGMENT_ID` | Segment containing confirmed subscribers |
-| `NEWSLETTER_FROM` | Sender identity using a verified domain |
-| `NEWSLETTER_CONTACT_EMAIL` | Public contact address for newsletter inquiries |
-| `NEWSLETTER_OWNER` | Public identity responsible for the newsletter |
-| `UPSTASH_REDIS_REST_URL` | Private Redis REST endpoint |
-| `UPSTASH_REDIS_REST_TOKEN` | Server-side Redis credential |
-| `CRON_SECRET` | Random secret of at least 32 characters, used for cron authorization and keyed identifiers |
-| `NEWSLETTER_ENABLED` | Enables configured signup and delivery |
-| `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE` | `always` for repeat-visit evaluation, `first-visit` for once per browser, `off` to disable automatic prompting |
-| `NEXT_PUBLIC_SITE_URL` | Public origin used in confirmation and website links |
+| `NEWSLETTER_ENABLED` | `true` solo dopo aver configurato i servizi |
+| `BREVO_API_KEY` | Chiave server Brevo |
+| `BREVO_LIST_ID` | ID numerico della lista dedicata agli iscritti confermati |
+| `NEWSLETTER_FROM` | Email reale verificata in Brevo, senza nome o parentesi angolari |
+| `NEWSLETTER_CONTACT_EMAIL` | Recapito pubblico per risposte e richieste sui dati |
+| `NEWSLETTER_OWNER` | Identità pubblica del gestore |
+| `UPSTASH_REDIS_REST_URL` | Endpoint HTTPS del database privato |
+| `UPSTASH_REDIS_REST_TOKEN` | Credenziale server Redis |
+| `CRON_SECRET` | Segreto casuale di almeno 32 caratteri, anche per identificativi HMAC |
+| `NEXT_PUBLIC_SITE_URL` | `https://hackathon-milano.vercel.app`, origine dei link e delle richieste |
+| `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE` | `always`, `first-visit` oppure `off` |
 
-Set credentials in Vercel environment settings, never in variables prefixed `NEXT_PUBLIC_`. For local development, copy the needed values into a Git-ignored `.env.local`. The Python `.env` file and GitHub Actions secrets do not automatically configure Vercel.
+Le credenziali non devono mai avere prefisso `NEXT_PUBLIC_`. La newsletter accetta richieste dalla propria origine; un deploy di anteprima su un’origine diversa richiede configurazione coerente. HTTP è consentito solo in sviluppo su localhost.
 
-The API requires an HTTPS Redis endpoint, a valid contact email and a secret at least 32 characters long. The canonical site must use HTTPS in production; development also permits HTTP on localhost. Confirmation links use that configured origin. A production preview on a different origin must use matching configuration to accept signup requests.
+## Gratuità e limiti
 
-## Subscriber flow
+Brevo Free comprende attualmente **300 invii al giorno**, condivisi tra conferme e campagne, con marchio Brevo nelle email e statistiche di base. Gli invii inutilizzati non si accumulano. [Limiti ufficiali](https://help.brevo.com/hc/en-us/articles/208580669-FAQs-What-are-the-limits-of-the-Free-plan).
 
-A visitor enters an email address and checks the consent box. The server validates and rate-limits the request, then sends a confirmation link. The link expires after 24 hours. The address joins the subscriber segment only after confirmation; opening the site or dismissing the prompt does not subscribe anyone.
+Il sito applica limiti più prudenti:
 
-Confirmation links use `/newsletter/confirm#token=…`: the token is carried in the URL fragment rather than the server request URL. Loading the confirmation page does not subscribe the visitor; the visitor presses the confirmation button, which submits the token by POST. This also avoids activating a subscription when an email scanner opens the link automatically. Do not share confirmation links, even though the token is not part of the initial request URL.
+- **250 posti** per la lista. Il conteggio include contatti bloccati e prenotazioni il cui esito è incerto; non si libera automaticamente cancellando un contatto nel pannello. Una prenotazione atomica Redis evita di superare il limite con conferme simultanee o conteggi Brevo in ritardo.
+- **40 tentativi di email di conferma nelle ultime 24 ore**, anche con richieste simultanee. Le richieste fallite consumano comunque il limite, per non rischiare reinvii dopo risposte incerte.
+- Cinque richieste per connessione/ora, venti/giorno e un’ora di attesa per lo stesso indirizzo. Fuori da Vercel le connessioni condividono un limite prudente.
+- Prima degli invii, `/account` deve attestare il piano email **Free**, crediti residui numerici sufficienti e servizio transazionale abilitato. Piani a pagamento, crediti sconosciuti o risposte anomale sospendono l’invio. Prima di una campagna serve almeno il numero totale di contatti della lista più dieci crediti di margine.
+- Al massimo una campagna avviata in 24 ore, anche se due esecuzioni manuali attraversano il cambio di settimana. Il codice non acquista crediti e non cambia piani.
 
-The prompt is temporarily configured for all visitors with `NEXT_PUBLIC_NEWSLETTER_PROMPT_MODE=always`, so the interface can be evaluated on repeat visits. It opens after a short delay, unless the page is hidden or the visitor is using an input. Change this to `first-visit` and redeploy when first-visit behavior is desired. That choice uses local browser storage; it cannot recognize the same person on another browser or after clearing site data. `off` leaves only the page's manual signup button. These settings change prompt visibility, not consent requirements or who receives email.
+Usa un account dedicato: invii manuali o automazioni esterne consumano la stessa quota. Se la lista viene modificata manualmente, le quote sono insufficienti o uno dei servizi gratuiti si sospende, l’invio si ferma; controlla lo stato prima di riprovare. Non abilitare servizi a pagamento per aggirare il blocco. I limiti e le condizioni dei piani gratuiti restano soggetti ai rispettivi fornitori.
 
-Confirmed subscribers receive the weekly digest through Resend. Delivery uses its unsubscribe mechanism. If an existing Resend contact is globally unsubscribed, confirmation returns an instruction to contact the maintainer; the application does not silently reactivate it.
+## Iscrizione e dati privati
 
-Signup is limited to five requests per connection per hour and twenty per day, with a one-hour cooldown per address and a service-wide cap of one hundred confirmation emails per day. Responses avoid exposing whether an address is already subscribed. IP-derived identifiers use HMAC; raw IP addresses are not stored in Redis. Outside Vercel, requests share a conservative rate-limit bucket because forwarded IP headers are not trusted.
+Il visitatore inserisce email e consenso. Riceve un link valido 24 ore e completa la conferma premendo un pulsante sul sito. Solo allora il contatto entra nella lista Brevo. Una semplice visita o il caricamento automatico del link da parte di uno scanner email non iscrive nessuno.
 
-## Weekly delivery
+Il token usa `/newsletter/confirm#token=…`: il frammento non viene inviato nella prima richiesta al server; la conferma usa POST. Nel database si conserva l’hash del token, non il token originale. Il codice non registra indirizzi, token o errori completi dei fornitori nei log.
 
-Vercel Cron is scheduled for Mondays at **08:00 UTC**: 09:00 in Milan during standard time, 10:00 during daylight saving time. Selection uses the latest completed weekly interval ending on Monday at 08:00 UTC, so a delayed invocation uses the same interval. The digest includes accepted events newly discovered or newly approved during that interval, excluding dated events that have already passed in `Europe/Rome`. Events with no confirmed date remain explicitly labeled as such. If no eligible new events exist, no digest is sent.
+I contatti già disiscritti, bloccati o presenti in altre liste non vengono riattivati automaticamente. Un contatto già attivo nella lista non subisce aggiornamenti. I casi che richiedono reiscrizione vengono rimandati al gestore. La creazione usa `updateEnabled: false` per evitare che una richiesta concorrente sovrascriva un blocco.
 
-Set `CRON_SECRET` to a strong random value and keep the delivery endpoint private to authorized requests. Check production deployment and cron logs after activation; previewing the signup form does not verify email delivery, domain reputation or inbox placement.
+| Dati | Conservazione |
+| --- | --- |
+| Richiesta in attesa: email, data, versione informativa | Redis, 24 ore |
+| Indicatore di token già utilizzato | Redis, 24 ore |
+| Limiti connessione/email e quota conferme | Redis, massimo 24 ore; IP ed email identificati con HMAC |
+| Prova consenso: HMAC email, date e versione | Redis, 365 giorni |
+| Prenotazione posto: HMAC email e contatore | Redis, fino alla riconciliazione/cancellazione da parte del gestore |
+| Stato campagna, ID eventi già inviati | Redis, senza scadenza automatica; nessun indirizzo iscritto |
+| Email confermata e stato disiscrizione | Brevo, gestiti secondo le impostazioni del servizio e le richieste al gestore |
 
-The route is `/api/newsletter/weekly`; authorization uses `Authorization: Bearer <CRON_SECRET>`. It reads the event archive bundled with the deployment, so newly committed data must be deployed before it is available to the digest. Successfully submitted event IDs are retained in private delivery state to avoid repeating them in later digests. Older timestamps without a timezone are interpreted as UTC, matching the earlier GitHub Actions archives.
+Gli HMAC restano dati privati riconducibili agli iscritti, non dati anonimi pubblicabili. Quando cancelli i dati di un iscritto, tratta anche la prenotazione e la prova del consenso in Redis, riconciliando il contatore senza riaprire posti occupati o incerti. La scadenza Redis non cancella email già consegnate, registri o backup dei fornitori. Il database non deve comparire in Git, file pubblici, esportazioni o issue.
 
-### Delivery state and recovery
+Il prompt resta temporaneamente su `always` per la verifica su ogni visita. `first-visit` lo mostra una volta per browser; `off` lascia l’iscrizione manuale. La preferenza non riconosce una persona su browser diversi e non sostituisce mai il consenso.
 
-The server records the weekly job before creating a Resend draft and records the send attempt before submitting it. Repeated invocations reuse the saved state. A provider response indicating that the broadcast is queued, scheduled, sending or sent is treated as accepted for delivery; it does not prove receipt by every subscriber.
+## Invio settimanale e recupero
 
-When creation or sending has an uncertain outcome, automatic retries stop with `needs_review` rather than creating another broadcast. An unresolved previous job also blocks subsequent weeks. Inspect the private Redis weekly record, the saved broadcast ID when available and the corresponding broadcast in Resend. Reconcile the provider's actual status before changing stored job state or initiating any new send. Do not delete uncertain state just to rerun the cron: the provider may already have accepted the message.
+Vercel Cron richiama `/api/newsletter/weekly` il **lunedì alle 08:00 UTC**, con `Authorization: Bearer <CRON_SECRET>`. A Milano sono le 09:00 d’inverno e le 10:00 d’estate. Il riepilogo usa l’ultima settimana completa chiusa lunedì alle 08:00 UTC; eventuali ritardi usano la stessa finestra.
 
-## Private data and retention
+Vengono selezionati hackathon accettati, scoperti o approvati nella finestra, con data futura o esplicitamente da confermare. Gli eventi passati, rifiutati o già inviati vengono esclusi. Con zero novità non parte nessuna email; con zero iscritti non viene creata una campagna. L’archivio è quello incluso nel deploy: nuovi dati in Git richiedono il relativo deploy.
 
-Unconfirmed requests and completed-token markers expire from Redis after 24 hours. Rate-limit counters and address cooldowns expire within 24 hours. Confirmed addresses and unsubscribe status are managed in Resend. Redis also retains consent evidence identified by a keyed HMAC of the address for 365 days; this evidence records confirmation and the version of the consent text without storing the address in clear text. HMAC identifiers are still related to a subscriber and must be treated as private data. Weekly delivery records and sent-event identifiers have no automatic expiry and do not contain subscriber addresses.
+Le conferme usano l’[API email transazionali](https://developers.brevo.com/reference/send-transac-email). Il digest crea una [campagna marketing](https://developers.brevo.com/reference/create-email-campaign) in bozza per la lista dedicata, poi chiama `sendNow`. Il link `{{ unsubscribe }}` usa la disiscrizione Brevo. Il corpo HTML viene passato alla campagna; Brevo gestisce la versione di testo della campagna. Le conferme includono HTML e testo espliciti.
 
-Keep the public privacy page and the configured owner/contact information aligned with the actual service settings. Resend contact retention, provider logs and backups are governed by the provider configuration and policies; expiration of a pending Redis entry does not erase a delivered confirmation email or provider records.
+Prima della creazione e prima dell’invio il server salva lo stato. Le esecuzioni ripetute riusano sempre lo stesso ID. `processing` significa in coda/in elaborazione/in verifica; **non equivale a consegna**. Solo lo stato Brevo `sent` conclude il lavoro e memorizza gli eventi come inviati; neppure questo garantisce che ogni email sia arrivata nella posta in entrata.
 
-## Verification before activation
+Un esito ambiguo, una campagna sospesa o un tentativo rimasto in bozza dopo l’invio restituisce `needs_review`: l’automatismo non reinvia. Anche una settimana precedente irrisolta blocca i nuovi invii. Controlla il record privato Redis e la campagna Brevo prima di intervenire. Non cancellare semplicemente lo stato per riprovare: il messaggio potrebbe essere già partito. Se mancano crediti, riprova il cron autenticato dopo il ripristino della quota e prima che cambi la finestra settimanale; il blocco non acquista crediti né invia recuperi arretrati automaticamente.
 
-- Use an address you control to verify the confirmation email and link expiry behavior.
-- Confirm that an unverified address does not receive the digest.
-- Check the sender, event links, layout and unsubscribe action in a delivered email.
-- Verify that a repeat invocation does not create duplicate deliveries for the same digest.
-- Confirm that subscriber addresses and tokens are absent from repository files and application logs.
+La migrazione usa il namespace Redis `hackathon-mi:newsletter:brevo:`. Eventuali vecchi contatti o job del provider precedente non vengono importati né reinviati: un’installazione già attiva richiederebbe una migrazione privata esplicita di consensi, disiscrizioni e stato.
 
-The repository contains no subscriber list. Do not paste API credentials, confirmation tokens or subscriber exports into GitHub issues.
+## Verifica prima di considerarla attiva
+
+Esegui `node scripts/test-newsletter.mjs` e `npm run typecheck`: i test sono offline e simulano Brevo/Redis, comprese quote, concorrenza, disiscrizione, timeout e ripetizioni del cron.
+
+Dopo la configurazione privata, usa un indirizzo che controlli per verificare conferma, mittente reale, link e disiscrizione. Controlla entrambe le impostazioni di tracciamento anonimo e i log di cron/deploy, senza esportare dati degli iscritti. I test simulati e l’anteprima del modulo non verificano l’account esterno o l’arrivo in posta.

@@ -10,9 +10,10 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:frontend": "node scripts/test-frontend-data.mjs && node scripts/test-event-filters.mjs && node scripts/test-theme.mjs && node scripts/test-newsletter.mjs"
+    "test:frontend": "node scripts/test-frontend-data.mjs && node scripts/test-event-filters.mjs && node scripts/test-theme.mjs && node scripts/test-newsletter.mjs && node scripts/test-analytics.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "2.0.1",
     "motion": "^12.43.0",
     "next": "^15.5.25",
     "react": "^19.3.0",
@@ -29,5 +30,6 @@
     "next": {
       "postcss": "^8.5.28"
     }
-  }
+  },
+  "license": "UNLICENSED"
 }

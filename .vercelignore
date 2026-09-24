@@ -9,3 +9,6 @@ docs/cv-metrics.md
 docs/metrics/
 scripts/cv_metrics.py
 docs/hero-hackathon-milano.png
+
+.local/
+data/admin_actions.json

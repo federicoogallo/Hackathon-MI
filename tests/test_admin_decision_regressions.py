@@ -1,8 +1,16 @@
+import json
+from pathlib import Path
+
 import pytest
 
 from filters.keyword_filter import keyword_filter
 from main import _passes_quality_gate
-from utils.admin_audit import admin_regression_cases, event_from_admin_action
+from utils.admin_audit import event_from_admin_action
+
+
+REGRESSION_CASES = json.loads(
+    (Path(__file__).parent / "fixtures" / "admin-regressions.json").read_text(encoding="utf-8")
+)
 
 
 DETERMINISTIC_REJECT_CODES = {
@@ -23,7 +31,7 @@ def _case_id(case: dict) -> str:
     return f"{case.get('expected', 'review')}:{case.get('reason_code', 'other')}:{title[:40]}"
 
 
-@pytest.mark.parametrize("case", admin_regression_cases(), ids=_case_id)
+@pytest.mark.parametrize("case", REGRESSION_CASES, ids=_case_id)
 def test_admin_decision_regressions(case: dict):
     event = event_from_admin_action(case)
     expected = case.get("expected")
