@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-24T17:43:16.123443+02:00",
+  "last_check": "2026-09-25T17:44:34.934508+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -196,7 +196,11 @@
         "https://www.meetup.com/ac-sjc/events/316530161/?recId=7d286ff2-f64d-4f2c-863d-6fd293d2a747&recSource=event-search&searchId=e71e5187-3c46-4272-afa2-c92dfe941075&eventOrigin=find_page%24all",
         "https://www.meetup.com/hackerdojo/events/314431811/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all",
         "https://www.meetup.com/southbayfriends/events/316505841/?recId=1cfeca6a-c471-4287-9a47-46c0ace3e4a9&recSource=event-search&searchId=92308bad-5019-46a9-98c5-2fe71c25a640&eventOrigin=find_page%24all",
-        "https://www.meetup.com/mission-creatives-engineers/events/316447066/?recId=52c17265-18b5-45cc-8aef-020c61083757&recSource=event-search&searchId=7321c436-d5fa-4d1a-acb6-a4272b5a407a&eventOrigin=find_page%24all"
+        "https://www.meetup.com/mission-creatives-engineers/events/316447066/?recId=52c17265-18b5-45cc-8aef-020c61083757&recSource=event-search&searchId=7321c436-d5fa-4d1a-acb6-a4272b5a407a&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-rdu/events/316528107/?recId=64f67647-2093-4005-b2b4-29a2d161242d&recSource=event-search&searchId=fa775d14-0923-4f82-a06c-0961597a46fc&eventOrigin=find_page%24all",
+        "https://www.meetup.com/riserichmond/events/316528259/?recId=1c157b39-2876-4dfd-aa66-7210925b9d6e&recSource=event-search&searchId=03aff44c-29f6-444c-af59-e24eeed144e2&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-rdu/events/316528107/?recId=1c157b39-2876-4dfd-aa66-7210925b9d6e&recSource=event-search&searchId=03aff44c-29f6-444c-af59-e24eeed144e2&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-rdu/events/316528107/?recId=c3b0e137-cfea-4e2f-8bd7-b2c6449e4877&recSource=event-search&searchId=d5cdc0a1-d185-4089-8844-acc64400bd29&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
