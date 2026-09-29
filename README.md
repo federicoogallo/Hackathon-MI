@@ -17,13 +17,12 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **10 hackathons** coming up in Milan · Last updated: Sep 28, 2026 20:35 CEST
+> **9 hackathons** coming up in Milan · Last updated: Sep 29, 2026 18:54 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Milano Finanza Hackathon](https://it.linkedin.com/posts/milano-finanza_hackathon-activity-7504195623886274560-6lsh) | 28 Sep 2026 | Milano | Web search |
 | [Italian Game Jam](https://italiangamejam.it/) | 3 Oct 2026 | Milano | Web search |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | Web search |
 | [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | Web search |
