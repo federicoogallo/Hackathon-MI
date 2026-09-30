@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-09-29T18:48:17.642864+02:00",
+  "last_check": "2026-09-30T18:40:26.488422+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -208,7 +208,8 @@
         "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=0b4a5895-eb5f-4c7c-8b3b-884b98d818fa&recSource=event-search&searchId=ca69a4c4-f3dc-46b8-8aa4-1e000055b383&eventOrigin=find_page%24all",
         "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=b59008a0-9802-4557-afac-52e15c0798be&recSource=event-search&searchId=5ed32d15-e95b-494a-8ebc-0352982c2d61&eventOrigin=find_page%24all",
         "https://www.meetup.com/age-40-plus-looking-for-friends-des-moines/events/316149006/?recId=b59008a0-9802-4557-afac-52e15c0798be&recSource=event-search&searchId=5ed32d15-e95b-494a-8ebc-0352982c2d61&eventOrigin=find_page%24all",
-        "https://www.meetup.com/ac-phx/events/316530156/?recId=ca6d21c1-ddf1-4740-b68d-f8c803b0a496&recSource=event-search&searchId=3018690b-b932-45c6-bd8c-dffb1323f0e8&eventOrigin=find_page%24all"
+        "https://www.meetup.com/ac-phx/events/316530156/?recId=ca6d21c1-ddf1-4740-b68d-f8c803b0a496&recSource=event-search&searchId=3018690b-b932-45c6-bd8c-dffb1323f0e8&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-phx/events/316530156/?recId=f2127a1f-c5c4-417a-8844-7f5b17b50ec0&recSource=event-search&searchId=3ccf0710-125c-4a59-8434-5a140d4eb225&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
