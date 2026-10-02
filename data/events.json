@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-01T19:17:03.870694+02:00",
+  "last_check": "2026-10-02T18:30:26.429555+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -213,7 +213,10 @@
         "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=85dcc2f3-e2f9-46d1-a0b1-0e3104014573&recSource=event-search&searchId=b96c8d6a-7984-4ae3-84f6-6f2edbc3c458&eventOrigin=find_page%24all",
         "https://www.meetup.com/des-moines-data-analytics/events/316665472/?recId=85dcc2f3-e2f9-46d1-a0b1-0e3104014573&recSource=event-search&searchId=b96c8d6a-7984-4ae3-84f6-6f2edbc3c458&eventOrigin=find_page%24all",
         "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=675f68c9-d1c3-4519-9d39-de5f156b8072&recSource=event-search&searchId=091fca7a-11fe-4acf-bd8c-c699c85546ea&eventOrigin=find_page%24all",
-        "https://www.meetup.com/age-40-plus-looking-for-friends-des-moines/events/316149006/?recId=675f68c9-d1c3-4519-9d39-de5f156b8072&recSource=event-search&searchId=091fca7a-11fe-4acf-bd8c-c699c85546ea&eventOrigin=find_page%24all"
+        "https://www.meetup.com/age-40-plus-looking-for-friends-des-moines/events/316149006/?recId=675f68c9-d1c3-4519-9d39-de5f156b8072&recSource=event-search&searchId=091fca7a-11fe-4acf-bd8c-c699c85546ea&eventOrigin=find_page%24all",
+        "https://www.meetup.com/ac-ord/events/316528995/?recId=ed7d54c1-d292-4b09-b7b7-873f885b7b7b&recSource=event-search&searchId=f6b294cc-9d21-4dc3-8b8f-019c7365b08f&eventOrigin=find_page%24all",
+        "https://www.meetup.com/chicago-c-cpp-users-group/events/316774222/?recId=df160075-1cd2-4236-8d3a-e8a6b0ac848c&recSource=event-search&searchId=a2f55cee-691d-41d4-8c93-9ad7706a4136&eventOrigin=find_page%24all",
+        "https://www.meetup.com/bitcoin-open-blockchain-community-chicago/events/316624452/?recId=b1f6b0c3-ab86-4a6c-a797-a1f852eb380c&recSource=event-search&searchId=3bb2a34b-652b-49e5-bec8-1928507ee452&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -231,7 +234,9 @@
       "review_status": "ai_verified",
       "review_reason": "NASA Space Apps Challenge a Milano, date 14-15 novembre 2026",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://www.telespazio.com/it/news-and-stories-detail/-/detail/nasa"
+      ],
       "discovered_at": "2026-08-29T15:30:53.633648"
     },
     {
