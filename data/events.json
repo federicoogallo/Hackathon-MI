@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-03T17:03:44.020238+02:00",
+  "last_check": "2026-10-04T17:40:50.641366+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -78,26 +78,6 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-07-21T12:23:57.829125"
-    },
-    {
-      "id": "69ad502aff5c5744b137a628f996f62a7b45543e2231f19c0b83bc57d5a34ac9",
-      "title": "Italian Game Jam",
-      "url": "https://italiangamejam.it/",
-      "source": "web_search",
-      "description": "November 17, 2025 - L’Italian Game Jam – Edizione speciale x Combo festival si svolgerà il 3 e 4 ottobre 2026 all’interno del COMBO Festival, presso Morel Milano. La partecipazione è aperta a tutti i maggiorenni, italiani e stranieri, sia individualmente sia in team composti da un massimo di due persone.",
-      "date_str": "2026-10-03",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.96,
-      "review_status": "ai_verified",
-      "review_reason": "Game jam (hackathon) con data 3‑4 oct 2026, venue concreto a Milano (Morel Milano)",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://mantovauno.it/home-page/il-team-di-lto-sul-podio-dellhackathon-di-open-fiber-alla-milano-digital-week/",
-        "https://living.corriere.it/design/eventi/combo-festival-pedine-dadi-carte-milano-2026-giochi-da-tavolo/"
-      ],
-      "discovered_at": "2026-07-22T12:25:16.026677"
     },
     {
       "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
@@ -219,7 +199,10 @@
         "https://www.meetup.com/bitcoin-open-blockchain-community-chicago/events/316624452/?recId=b1f6b0c3-ab86-4a6c-a797-a1f852eb380c&recSource=event-search&searchId=3bb2a34b-652b-49e5-bec8-1928507ee452&eventOrigin=find_page%24all",
         "https://www.meetup.com/des-moines-data-analytics/events/316665472/?recId=feeb3fcd-4857-43e8-8523-55e717aeb2b8&recSource=event-search&searchId=1e8777b4-cafe-44ee-8a1d-bbbae62611ae&eventOrigin=find_page%24all",
         "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=feeb3fcd-4857-43e8-8523-55e717aeb2b8&recSource=event-search&searchId=1e8777b4-cafe-44ee-8a1d-bbbae62611ae&eventOrigin=find_page%24all",
-        "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=304799a4-f284-402b-8028-1c32b981bab8&recSource=event-search&searchId=eb58e3ca-6006-4022-963a-ea8dcea03c63&eventOrigin=find_page%24all"
+        "https://www.meetup.com/iowa-ai-ml-and-computer-vision-meetup/events/316064674/?recId=304799a4-f284-402b-8028-1c32b981bab8&recSource=event-search&searchId=eb58e3ca-6006-4022-963a-ea8dcea03c63&eventOrigin=find_page%24all",
+        "https://www.meetup.com/chicago-rhug/events/316585470/?recId=b4214db5-4741-410b-890b-1b36798f6653&recSource=event-search&searchId=3d7228bc-7080-43ce-a436-2cd9b9a7dd07&eventOrigin=find_page%24all",
+        "https://www.meetup.com/chicago-c-cpp-users-group/events/316774222/?recId=478e1481-4604-4fac-94be-701a448285df&recSource=event-search&searchId=50a6e7b5-2302-4ff5-8309-b9d641be7012&eventOrigin=find_page%24all",
+        "https://www.meetup.com/bitcoin-open-blockchain-community-chicago/events/316624452/?recId=483027de-6760-489e-a23b-6a31ea8d35d8&recSource=event-search&searchId=b78d6635-a4cf-49ce-975b-1bf55e238f0d&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
