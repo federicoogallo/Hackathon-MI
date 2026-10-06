@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-05T21:35:59.745195+02:00",
+  "last_check": "2026-10-06T19:03:09.645410+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -204,7 +204,12 @@
         "https://www.meetup.com/chicago-c-cpp-users-group/events/316774222/?recId=478e1481-4604-4fac-94be-701a448285df&recSource=event-search&searchId=50a6e7b5-2302-4ff5-8309-b9d641be7012&eventOrigin=find_page%24all",
         "https://www.meetup.com/bitcoin-open-blockchain-community-chicago/events/316624452/?recId=483027de-6760-489e-a23b-6a31ea8d35d8&recSource=event-search&searchId=b78d6635-a4cf-49ce-975b-1bf55e238f0d&eventOrigin=find_page%24all",
         "https://www.meetup.com/platform-engineers-denver/events/316600497/?recId=5d7e6b56-01b8-4bbe-99d1-d1cd391ef75b&recSource=event-search&searchId=b1c99336-cfa0-4f9e-9d59-46ebfaf22427&eventOrigin=find_page%24all",
-        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=5d7e6b56-01b8-4bbe-99d1-d1cd391ef75b&recSource=event-search&searchId=b1c99336-cfa0-4f9e-9d59-46ebfaf22427&eventOrigin=find_page%24all"
+        "https://www.meetup.com/platform-engineers-denver/events/316419299/?recId=5d7e6b56-01b8-4bbe-99d1-d1cd391ef75b&recSource=event-search&searchId=b1c99336-cfa0-4f9e-9d59-46ebfaf22427&eventOrigin=find_page%24all",
+        "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=4a55ef79-5619-4bb8-8395-5127bb5323ac&recSource=event-search&searchId=781d77d8-64ff-40a0-8cb5-d0432f9d09a9&eventOrigin=find_page%24all",
+        "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=2add57f5-2d14-4040-8b6e-bb9e84576f50&recSource=event-search&searchId=11d8419f-934c-4cf4-be58-51779e5bd583&eventOrigin=find_page%24all",
+        "https://myaccount.microsoft.com/",
+        "https://myaccount.microsoft.com/login",
+        "https://mysignins.microsoft.com/"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -264,6 +269,23 @@
         "https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai"
       ],
       "discovered_at": "2026-09-20T14:31:13.380049+00:00"
+    },
+    {
+      "id": "f74f1b8b10c8617a054396d464d59767739b2aeea4d369ed0243ecff005dbf59",
+      "title": "AI Hackathon in Milan 24 October 2026 | Albert School",
+      "url": "https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/",
+      "source": "web_search",
+      "description": "Join a hands-on vibe coding with Lovable hackathon at Albert School Milan on 24 October 2026. Team up to build a product that improves learning.",
+      "date_str": "2026-10-24",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon specifico a Milano con data futura e venue indicata",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-10-06T17:03:15.838492+00:00"
     }
   ]
 }

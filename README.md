@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: Oct 05, 2026 21:37 CEST
+> **9 hackathons** coming up in Milan · Last updated: Oct 06, 2026 19:05 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
@@ -25,6 +25,7 @@ The source count describes implemented integrations, not a guarantee that all so
 | --- | --- | --- | --- |
 | [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | Web search |
 | [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | Web search |
+| [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | 24 Oct 2026 | Milano | Web search |
 | [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | Web search |
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | Web search |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | Web search |
