@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-06T19:03:09.645410+02:00",
+  "last_check": "2026-10-07T19:41:01.924008+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -209,7 +209,8 @@
         "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=2add57f5-2d14-4040-8b6e-bb9e84576f50&recSource=event-search&searchId=11d8419f-934c-4cf4-be58-51779e5bd583&eventOrigin=find_page%24all",
         "https://myaccount.microsoft.com/",
         "https://myaccount.microsoft.com/login",
-        "https://mysignins.microsoft.com/"
+        "https://mysignins.microsoft.com/",
+        "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=ec25b8bf-859d-49ce-b959-4ef879fd38f0&recSource=event-search&searchId=a14ce9f7-c705-41f4-9ea9-d9bf62da350c&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
@@ -284,7 +285,10 @@
       "review_status": "ai_verified",
       "review_reason": "Hackathon specifico a Milano con data futura e venue indicata",
       "reviewed_at": "",
-      "alternate_urls": [],
+      "alternate_urls": [
+        "https://gdg.community.dev/events/details/google-gdg-on-campus-polytechnic-university-of-milan-presents-road-to-hack-ai-in-the-browser-talk/",
+        "https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026"
+      ],
       "discovered_at": "2026-10-06T17:03:15.838492+00:00"
     }
   ]
