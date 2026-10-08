@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-07T19:41:01.924008+02:00",
+  "last_check": "2026-10-08T19:44:30.120049+02:00",
   "events": [
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
@@ -210,7 +210,9 @@
         "https://myaccount.microsoft.com/",
         "https://myaccount.microsoft.com/login",
         "https://mysignins.microsoft.com/",
-        "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=ec25b8bf-859d-49ce-b959-4ef879fd38f0&recSource=event-search&searchId=a14ce9f7-c705-41f4-9ea9-d9bf62da350c&eventOrigin=find_page%24all"
+        "https://www.meetup.com/phoenix-python-meetup-group/events/316642827/?recId=ec25b8bf-859d-49ce-b959-4ef879fd38f0&recSource=event-search&searchId=a14ce9f7-c705-41f4-9ea9-d9bf62da350c&eventOrigin=find_page%24all",
+        "https://www.meetup.com/des-moines-data-analytics/events/316665472/?recId=0f2346b6-e1d2-4c7d-b62c-ec292330f39f&recSource=event-search&searchId=7dac3b65-c7ed-42dc-bc90-b73d6ac0b335&eventOrigin=find_page%24all",
+        "https://www.meetup.com/meetup-group-cmsdyvjx/events/316657097/?recId=0064658f-d433-4e44-ae4d-bab86f0327fb&recSource=event-search&searchId=c67168e6-7182-4ce9-9999-2f30d22417f8&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-08-29T15:30:53.633602"
     },
