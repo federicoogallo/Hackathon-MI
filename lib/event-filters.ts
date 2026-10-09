@@ -67,7 +67,7 @@ function foldCalendarLine(line: string): string {
 
 export function eventCalendar(event: HackEvent, now = new Date()): string | null {
   const date = validEventDate(event.dateIso);
-  if (!date) return null;
+  if (!date || event.dateVerified === false) return null;
   const stamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   return [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hackathon Milano//Eventi//IT", "CALSCALE:GREGORIAN",

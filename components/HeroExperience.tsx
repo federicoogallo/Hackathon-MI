@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
@@ -124,11 +126,11 @@ export default function HeroExperience({ events, children }: { events: HackEvent
             <div className="radar-preview-head"><span><i />PROSSIMI NEL RADAR</span><span>{String(selected + 1).padStart(2, "0")} / {String(upcoming.length).padStart(2, "0")}</span></div>
             <div aria-live={autoplayEnabled ? "off" : "polite"} aria-atomic="true"><motion.div key={event.id} initial={quiet ? false : { opacity: .5, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: quiet ? 0 : .2 }} className="radar-event">
               <p className="radar-event-meta">{event.dateCompact} <span>·</span> {event.location}</p>
-              <h2><a href={event.url} target="_blank" rel="noopener noreferrer">{event.title}<Arrow direction="up" /><span className="sr-only"> (nuova scheda)</span></a></h2>
+              <h2>{event.detailPath ? <Link href={event.detailPath}>{event.title}<Arrow direction="up" /></Link> : <a href={event.url} target="_blank" rel="noopener noreferrer">{event.title}<Arrow direction="up" /><span className="sr-only"> (nuova scheda)</span></a>}</h2>
             </motion.div></div>
             <div className="radar-preview-foot">
               {autoplayRunning && <span key={selected} className="radar-countdown" aria-hidden="true" />}
-              <a href={event.url} target="_blank" rel="noopener noreferrer">Scopri <Arrow direction="up" /><span className="sr-only">la sfida (nuova scheda)</span></a>
+              {event.detailPath ? <Link href={event.detailPath}>La scheda <Arrow direction="up" /></Link> : <a href={event.url} target="_blank" rel="noopener noreferrer">Scopri <Arrow direction="up" /><span className="sr-only">la sfida (nuova scheda)</span></a>}
               <div>
                 <button type="button" aria-label="Evento precedente nel radar" onClick={() => selectEvent((selected + upcoming.length - 1) % upcoming.length)}><Arrow direction="left" /></button>
                 {!reduce && upcoming.length > 1 && <button type="button" data-radar-playback aria-label={autoplayEnabled ? "Metti in pausa lo scorrimento automatico" : "Riprendi lo scorrimento automatico"} title={autoplayEnabled ? "Avanza ogni 7 secondi · Metti in pausa" : "Riprendi lo scorrimento automatico"} onClick={() => { setAutoplayStopped(autoplayEnabled); if (paused) setPaused(false); }}><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">{autoplayEnabled ? <path d="M5 3v10m6-10v10" /> : <path d="m5 3 7 5-7 5V3Z" />}</svg></button>}

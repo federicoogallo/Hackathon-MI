@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import type { HackEvent } from "@/lib/data";
@@ -12,7 +13,7 @@ import {
 import "./events-deck.css";
 
 const SAVED_STORAGE_KEY = "hackathon-mi:saved-events";
-const PERIODS: Array<[EventPeriod, string]> = [["all", "Tutti gli eventi"], ["week", "Prossimi 7 giorni"], ["month", "Questo mese"], ["undated", "Data da definire"]];
+const PERIODS: Array<[EventPeriod, string]> = [["all", "Tutti gli eventi"], ["week", "Prossimi 7 giorni"], ["month", "Questo mese"], ["undated", "Data da verificare"]];
 
 function Icon({ name, className = "" }: { name: "search" | "bookmark" | "arrow" | "pin" | "calendar" | "grid" | "list" | "close" | "check"; className?: string }) {
   const paths = {
@@ -77,6 +78,7 @@ function QuerySync({ onChange }: { onChange: Dispatch<SetStateAction<EventFilter
 export default function EventsDeck({ events }: { events: HackEvent[] }) {
   const [filters, setFilters] = useState<EventFilters>(DEFAULT_EVENT_FILTERS);
   const [savedIds, setSavedIds] = useState<string[]>([]);
+  const sessionSavedIds = useRef<string[] | null>(null);
   const [today, setToday] = useState("");
   const [notice, setNotice] = useState("");
   const [storageError, setStorageError] = useState("");
@@ -103,21 +105,30 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
     const updateDay = () => setToday(todayInRome());
     readUrl();
     updateDay();
-    try { setSavedIds(readSavedIds(window.localStorage.getItem(SAVED_STORAGE_KEY))); }
-    catch { setStorageError("Non è possibile leggere i salvati in questo browser. Puoi comunque creare una lista per questa visita."); }
+    const refreshSaved = () => {
+      if (sessionSavedIds.current) { setSavedIds(sessionSavedIds.current); return; }
+      try { setSavedIds(readSavedIds(window.localStorage.getItem(SAVED_STORAGE_KEY))); }
+      catch { setStorageError("Non è possibile leggere i salvati in questo browser. Puoi comunque creare una lista per questa visita."); }
+    };
+    const refresh = () => { updateDay(); refreshSaved(); };
+    refreshSaved();
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== SAVED_STORAGE_KEY) return;
+      if (sessionSavedIds.current || (event.key !== null && event.key !== SAVED_STORAGE_KEY)) return;
       try { setSavedIds(readSavedIds(event.newValue)); setStorageError(""); }
       catch { setStorageError("Non è stato possibile sincronizzare i salvati. La lista attuale resta disponibile."); }
     };
     window.addEventListener("popstate", readUrl);
     window.addEventListener("storage", onStorage);
-    document.addEventListener("visibilitychange", updateDay);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("pageshow", refresh);
+    window.addEventListener("hackathon-mi:saved-events-changed", refreshSaved);
     const dayTimer = window.setInterval(updateDay, 60_000);
     return () => {
       window.removeEventListener("popstate", readUrl);
       window.removeEventListener("storage", onStorage);
-      document.removeEventListener("visibilitychange", updateDay);
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("pageshow", refresh);
+      window.removeEventListener("hackathon-mi:saved-events-changed", refreshSaved);
       window.clearInterval(dayTimer);
     };
   }, []);
@@ -141,14 +152,21 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
 
   function toggleSaved(event: HackEvent) {
     setSavedPulse(event.id);
-    const wasSaved = savedIds.includes(event.id);
-    const next = wasSaved ? savedIds.filter((id) => id !== event.id) : [...savedIds, event.id];
+    let current = sessionSavedIds.current || savedIds;
+    if (!sessionSavedIds.current) {
+      try { current = readSavedIds(window.localStorage.getItem(SAVED_STORAGE_KEY)); } catch { /* Keep this visit’s list. */ }
+    }
+    const wasSaved = current.includes(event.id);
+    const next = wasSaved ? current.filter((id) => id !== event.id) : [...current, event.id];
     setSavedIds(next);
     try {
       window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(next));
+      sessionSavedIds.current = null;
+      window.dispatchEvent(new Event("hackathon-mi:saved-events-changed"));
       setStorageError("");
       setNotice(wasSaved ? `${event.title}: rimosso dai salvati.` : `${event.title}: aggiunto ai salvati.`);
     } catch {
+      sessionSavedIds.current = next;
       setStorageError("Il browser non consente il salvataggio permanente. La tua lista è disponibile per questa visita.");
       setNotice(wasSaved ? "Evento rimosso dalla lista di questa visita." : "Evento salvato nella lista di questa visita.");
     }
@@ -176,8 +194,8 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
       <div className="explorer-heading">
         <div>
           <p className="explorer-eyebrow"><span />Il radar degli hackathon</p>
-          <h2>Trova la tua<br className="explorer-heading-break" /> prossima sfida.</h2>
-          <p className="explorer-intro">Un’idea, un team, un weekend diverso. Il prossimo passo inizia qui.</p>
+          <h2>Hackathon a Milano.<br className="explorer-heading-break" /> Il calendario.</h2>
+          <p className="explorer-intro">Date, requisiti e fonti per scegliere la tua prossima sfida. Cerca un tema, confronta gli eventi e salva quelli che ti interessano.</p>
         </div>
         <div className="explorer-total"><span>{String(events.length).padStart(2, "0")}</span><p>eventi nel radar<br /><strong>Milano e dintorni</strong></p></div>
       </div>
@@ -233,22 +251,22 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
             <motion.article key={event.id} layout={reducedMotion ? false : "position"} initial={hasInteracted && !reducedMotion ? { opacity: .4, y: 10 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: reducedMotion ? 0 : .22, ease: [.22, 1, .36, 1] }} className={`explorer-card${isNext ? " explorer-card--next" : ""}`} aria-labelledby={`event-${event.id}`}>
               <div className={`explorer-card-top explorer-cover--${variant}`}>
                 <EventCover variant={variant} />
-                <div className={`explorer-date${date ? "" : " explorer-date--unknown"}`} aria-label={date ? `Data di inizio: ${event.dateCompact}` : "Data da definire"}>
-                  <span>{date ? event.day : "—"}</span><span>{date ? event.month : "TBD"}</span>
+                <div className={`explorer-date${date ? "" : " explorer-date--unknown"}`} aria-label={date ? `Data di inizio: ${event.dateCompact}` : "Data da verificare"}>
+                  <span>{date ? event.day : "—"}</span><span>{date ? event.month : "DATA?"}</span>
                 </div>
                 <span className={`explorer-cover-caption${isNext ? " explorer-next-label" : ""}`}>{isNext ? "Prossimo in calendario" : date ? "Segna la data" : "La prossima idea"}</span>
                 <button className={`explorer-save${saved ? " is-saved" : ""}${savedPulse === event.id ? " is-pulsing" : ""}`} type="button" aria-label={`${saved ? "Rimuovi dai salvati" : "Salva"}: ${event.title}`} aria-pressed={saved} title={saved ? "Rimuovi dai salvati" : "Salva evento"} onClick={() => toggleSaved(event)}><Icon name="bookmark" /></button>
               </div>
               <div className="explorer-card-content">
                 <div className="explorer-card-source" title={`Trovato tramite ${sourceLabel(event.source)}`}><span>Fonte</span><strong>{url ? new URL(url).hostname.replace(/^www\./, "") : sourceLabel(event.source)}</strong></div>
-                <div className="explorer-card-meta"><span><Icon name="pin" />{event.location}</span><span>{date ? date.slice(0, 4) : "Data da definire"}</span></div>
-                <h3 id={`event-${event.id}`}>{url ? <a href={url} target="_blank" rel="noopener noreferrer">{event.title}<span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : event.title}</h3>
+                <div className="explorer-card-meta"><span><Icon name="pin" />{event.location || "Luogo da verificare"}</span><span>{date ? date.slice(0, 4) : "Data da verificare"}</span></div>
+                <h3 id={`event-${event.id}`}>{event.detailPath ? <Link href={event.detailPath}>{event.title}</Link> : url ? <a href={url} target="_blank" rel="noopener noreferrer">{event.title}<span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : event.title}</h3>
                 <p className="explorer-description">{event.description || "Tutti i dettagli, il programma e le modalità di partecipazione sul sito dell’evento."}</p>
-                <span className={`explorer-verification${event.reviewStatus === "manual_approved" ? " explorer-verification--manual" : ""}`}><Icon name="check" />{event.reviewStatus === "manual_approved" ? "Verifica manuale" : "Selezionato dal monitor"}</span>
+                <span className={`explorer-verification${event.reviewStatus === "manual_approved" ? " explorer-verification--manual" : ""}`}><Icon name="check" />{event.dateVerified ? "Dati controllati alla fonte" : "Selezionato dal monitor"}</span>
               </div>
               <div className="explorer-card-bottom">
                 <div className="explorer-card-actions">
-                  {url ? <a className="explorer-discover" href={url} target="_blank" rel="noopener noreferrer">Scopri evento<Icon name="arrow" /><span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : <span className="explorer-unavailable">Link da verificare</span>}
+                  {event.detailPath ? <Link className="explorer-discover" href={event.detailPath}>Leggi la scheda<Icon name="arrow" /></Link> : url ? <a className="explorer-discover" href={url} target="_blank" rel="noopener noreferrer">Scopri evento<Icon name="arrow" /><span className="explorer-sr-only"> (si apre in una nuova scheda)</span></a> : <span className="explorer-unavailable">Link da verificare</span>}
                   {date && <button type="button" className="explorer-calendar" onClick={() => downloadCalendar(event)} title="Aggiunge il giorno di inizio; verifica durata e orari alla fonte" aria-label={`Aggiungi la data di inizio al calendario: ${event.title}`}><Icon name="calendar" /><span>Calendario</span></button>}
                 </div>
                 {issueUrl && <a className="explorer-report" href={issueUrl} target="_blank" rel="noopener noreferrer">Segnala un dubbio<span className="explorer-sr-only"> su {event.title} (GitHub, nuova scheda)</span><Icon name="arrow" /></a>}

@@ -1,3 +1,4 @@
+import { getEventDetails } from "@/lib/event-details";
 import type { MetadataRoute } from "next";
 import { SITE_URL, getSiteData } from "@/lib/data";
 
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${SITE_URL}/`, lastModified, changeFrequency: "daily", priority: 1 },
     { url: `${SITE_URL}/review`, lastModified, changeFrequency: "daily", priority: 0.5 },
+    ...getEventDetails().map((event) => ({ url: `${SITE_URL}${event.detailPath}`, lastModified: new Date(`${event.checkedAt}T12:00:00Z`) })),
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.2 },
   ];
 }

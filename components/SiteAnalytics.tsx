@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { analyticsPageUrl } from "@/lib/analytics";
 
-export default function SiteAnalytics({ origin }: { origin: string }) {
+export default function SiteAnalytics({ origin, eventPaths }: { origin: string; eventPaths: string[] }) {
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
     setEnabled(window.location.origin === origin && navigator.doNotTrack !== "1" &&
@@ -13,7 +13,7 @@ export default function SiteAnalytics({ origin }: { origin: string }) {
   if (!enabled) return null;
   return <Analytics debug={false} beforeSend={event => {
     if (event.type !== "pageview") return null;
-    const url = analyticsPageUrl(event.url, origin);
+    const url = analyticsPageUrl(event.url, origin, eventPaths);
     return url ? { ...event, url } : null;
   }} />;
 }

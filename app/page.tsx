@@ -14,9 +14,9 @@ const Arrow = ({ diagonal = false }: { diagonal?: boolean }) => <svg viewBox="0 
 const Search = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>;
 
 const FAQS = [
-  ["Come vengono selezionati gli hackathon?", "Il monitor raccoglie eventi da fonti pubbliche, elimina i duplicati e usa l’intelligenza artificiale per selezionare quelli pertinenti a Milano. I casi incerti entrano in una coda di revisione. In ogni scheda trovi la fonte e il tipo di verifica."],
+  ["Come vengono selezionati gli hackathon?", "Il monitor raccoglie eventi da fonti pubbliche, elimina i duplicati e usa l’intelligenza artificiale per selezionare quelli pertinenti a Milano. I casi incerti entrano in una coda di revisione. Le schede di approfondimento riportano dati controllati sulle fonti, la data del controllo e le informazioni ancora da verificare. Le date mancanti non vengono completate dall’AI."],
   ["Posso partecipare anche se non so programmare?", "Dipende dall’evento: molti hackathon coinvolgono anche designer, persone con competenze di business e appassionati di innovazione. Apri la pagina dell’organizzatore per controllare i requisiti, la composizione dei team e le modalità di partecipazione."],
-  ["Come mi iscrivo a un evento?", "Il pulsante “Scopri evento” ti porta alla fonte originale. L’iscrizione avviene con l’organizzatore: verifica sempre scadenze, disponibilità, costi e luogo. Le informazioni raccolte automaticamente possono cambiare o contenere imprecisioni."],
+  ["Come mi iscrivo a un evento?", "Apri la scheda dell’evento e scegli “Sito ufficiale”. Per gli eventi senza approfondimento, “Scopri evento” porta direttamente alla fonte. L’iscrizione avviene con l’organizzatore: verifica sempre scadenze, disponibilità, costi e luogo. Le informazioni raccolte automaticamente possono cambiare o contenere imprecisioni."],
   ["Dove vengono salvati i miei preferiti?", "I preferiti restano nel browser di questo dispositivo, senza creare un account. Li ritrovi dalla voce “Salvati”. Non vengono sincronizzati tra dispositivi e possono essere rimossi cancellando i dati del browser. Gli eventi conclusi non compaiono nel calendario dei prossimi eventi."],
 ];
 
@@ -33,7 +33,7 @@ export default function Home() {
             <div className="hero-content">
               <div className="hero-eyebrow"><span className="status-dot" /> IL RADAR DEGLI HACKATHON A MILANO</div>
               <h1 id="hero-title">Le grandi idee<br />iniziano <em className="hero-dynamic-word"><span className="sr-only">qui.</span><span className="hero-word-glyphs" aria-hidden="true"><span>q</span><span>u</span><span>i</span><span>.</span></span><svg className="hero-word-flourish" viewBox="0 0 180 15" fill="none" aria-hidden="true"><path pathLength="1" d="M4 10C45 2 100 2 172 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg></em></h1>
-              <p className="hero-description">Trova la tua prossima sfida. Incontra il tuo team.<br className="desktop-break" /> Costruisci qualcosa che prima non c’era.</p>
+              <p className="hero-description">Scopri gli hackathon a Milano e dintorni.<br className="desktop-break" /> Confronta le sfide, trova il tuo team e costruisci qualcosa di nuovo.</p>
               <form className="hero-search" action="/#events" method="get" role="search">
                 <label htmlFor="hero-query">Cosa vuoi costruire?</label>
                 <div className="hero-search-field"><Search /><input id="hero-query" name="q" type="search" placeholder="Cerca per tema, nome o luogo" autoComplete="off" /><button type="submit" aria-label="Cerca hackathon"><Arrow /></button></div>

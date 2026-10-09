@@ -21,3 +21,16 @@ test("analytics retains only public paths without search terms or fragments", ()
     assert.equal(analyticsPageUrl(`${origin}${path}?q=person%40example.org&saved=1#token=secret`, origin), `${origin}${path}`);
   }
 });
+
+test("analytics accepts only known event page paths and removes queries and fragments", () => {
+  const eventPaths = ["/hackathon/documented-milano-2026", "/hackathon/past-edition-2025"];
+  for (const path of eventPaths) {
+    assert.equal(analyticsPageUrl(`${origin}${path}?email=person%40example.org&q=private#token=secret`, origin, eventPaths), `${origin}${path}`);
+    assert.equal(analyticsPageUrl(`${origin}${path}`, origin), null);
+    assert.equal(analyticsPageUrl(`https://preview.vercel.app${path}`, origin, eventPaths), null);
+  }
+  for (const path of ["/hackathon/unknown", "/hackathon/person@example.org", "/hackathon/documented-milano-2026/extra", "/newsletter/confirm"]) {
+    assert.equal(analyticsPageUrl(`${origin}${path}?token=secret`, origin, eventPaths), null);
+  }
+  assert.equal(analyticsPageUrl(`${origin}/?q=private`, origin, eventPaths), `${origin}/`);
+});

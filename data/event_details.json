@@ -1,0 +1,244 @@
+[
+  {
+    "id": "d91b1a3a31ddc1b7f133d6d380085a12873789e90ce84c209ea14a7c96446aab",
+    "slug": "bcg-platinion-milano-2026",
+    "title": "BCG Platinion Hackathon — Fighting World Hunger",
+    "url": "https://www.bcgplatinion.com/hackathon",
+    "sourceLabel": "BCG Platinion",
+    "checkedAt": "2026-10-10",
+    "startDate": "2026-10-16",
+    "endDate": "2026-10-17",
+    "location": "Milano · in presenza",
+    "organizer": "BCG Platinion",
+    "facts": [
+      {
+        "label": "Tema",
+        "value": "Tecnologia e contrasto alla fame nel mondo",
+        "sourceUrl": "https://www.bcgplatinion.com/hackathon"
+      },
+      {
+        "label": "Partecipazione",
+        "value": "Gratuita; spese di viaggio e alloggio approvate coperte dall’organizzatore",
+        "sourceUrl": "https://www.bcgplatinion.com/hackathon"
+      },
+      {
+        "label": "A chi si rivolge",
+        "value": "Profili tecnologici con competenze di base nella programmazione",
+        "sourceUrl": "https://www.bcgplatinion.com/hackathon"
+      },
+      {
+        "label": "Candidature",
+        "value": "Chiuse il 14 settembre 2026",
+        "sourceUrl": "https://www.bcgplatinion.com/hackathon"
+      },
+      {
+        "label": "Team",
+        "value": "Candidature individuali; gruppi formati durante l’evento",
+        "sourceUrl": "https://www.bcgplatinion.com/hackathon"
+      }
+    ],
+    "missing": [
+      "Indirizzo della sede di Milano",
+      "Orari esatti di inizio e fine"
+    ]
+  },
+  {
+    "id": "a858d0761c2e4263c0fe2859e04e6b0c7e7feb1f50763d2d024e617281413d42",
+    "slug": "servicenow-milano-2026",
+    "title": "Hackathon ServiceNow Milano",
+    "url": "https://rsvp.servicenow.com/hackathon-milano/begin",
+    "sourceLabel": "ServiceNow",
+    "checkedAt": "2026-10-10",
+    "startDate": "2026-10-20",
+    "endDate": "2026-10-20",
+    "location": "PLB WORLD · Viale Francesco Restelli 3, Milano",
+    "organizer": "ServiceNow",
+    "facts": [
+      {
+        "label": "Orario",
+        "value": "09:30–18:00",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      },
+      {
+        "label": "Tema",
+        "value": "Sviluppo di un agente AI per una sfida di business",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      },
+      {
+        "label": "A chi si rivolge",
+        "value": "Clienti ServiceNow",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      },
+      {
+        "label": "Team",
+        "value": "3 partecipanti per squadra",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      },
+      {
+        "label": "Partecipazione",
+        "value": "Gratuita; registrazione sul sito ufficiale",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      },
+      {
+        "label": "Preparazione",
+        "value": "È prevista una sessione prima dell’hackathon",
+        "sourceUrl": "https://rsvp.servicenow.com/hackathon-milano/begin"
+      }
+    ],
+    "missing": [
+      "Scadenza delle iscrizioni"
+    ],
+    "venue": {
+      "name": "PLB WORLD",
+      "streetAddress": "Viale Francesco Restelli 3",
+      "addressLocality": "Milano",
+      "addressCountry": "IT"
+    }
+  },
+  {
+    "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
+    "slug": "talenti-stem-innovazione-sociale-2026",
+    "title": "Talenti STEM per l’Innovazione Sociale",
+    "url": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/",
+    "sourceLabel": "Fondazione Triulza",
+    "checkedAt": "2026-10-10",
+    "startDate": "2026-10-29",
+    "endDate": "2026-10-29",
+    "location": "Social Innovation Academy · MIND, Milano",
+    "organizer": "Fondazione Triulza, con il supporto di Fondazione Cariplo",
+    "facts": [
+      {
+        "label": "Tema",
+        "value": "Progettazione di spazi, servizi e comunità attraverso le STEM",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      },
+      {
+        "label": "A chi si rivolge",
+        "value": "Studenti di università e ITS in Lombardia e nelle province di Novara e Verbano-Cusio-Ossola",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      },
+      {
+        "label": "Team",
+        "value": "Da 2 a 4 persone; è possibile candidarsi anche singolarmente",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      },
+      {
+        "label": "Partecipazione",
+        "value": "Gratuita, con posti limitati",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      },
+      {
+        "label": "Scadenza candidature",
+        "value": "19 ottobre 2026",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      },
+      {
+        "label": "Premi",
+        "value": "Voucher o gift card: 1.200 € al primo team e 600 € al secondo",
+        "sourceUrl": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/"
+      }
+    ],
+    "missing": [
+      "Orari della giornata"
+    ]
+  },
+  {
+    "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
+    "slug": "ntt-data-ikigaiverse-milano-2026",
+    "title": "NTT DATA IkigAIverse — Milano",
+    "url": "https://www.bo-om.it/nttdata_hackathon/",
+    "sourceLabel": "BOOM / NTT DATA",
+    "checkedAt": "2026-10-10",
+    "startDate": "2026-12-03",
+    "endDate": "2026-12-03",
+    "location": "Sede NTT DATA · Milano",
+    "organizer": "NTT DATA, in collaborazione con BOOM",
+    "facts": [
+      {
+        "label": "Tema",
+        "value": "Dati e intelligenza artificiale",
+        "sourceUrl": "https://www.bo-om.it/nttdata_hackathon/"
+      },
+      {
+        "label": "A chi si rivolge",
+        "value": "Studenti di ingegneria informatica e profili IT in ingresso nel mondo del lavoro",
+        "sourceUrl": "https://www.bo-om.it/nttdata_hackathon/"
+      },
+      {
+        "label": "Posti",
+        "value": "25–30 studenti per tappa",
+        "sourceUrl": "https://www.bo-om.it/nttdata_hackathon/"
+      },
+      {
+        "label": "Scadenza candidature",
+        "value": "Da confermare: la pagina indica 25 novembre, il regolamento 16 novembre 2026",
+        "sourceUrl": "https://www.bo-om.it/nttdata_hackathon/"
+      },
+      {
+        "label": "Data e città",
+        "value": "3 dicembre 2026 · Milano, come riportato nel regolamento",
+        "sourceUrl": "https://www.bo-om.it/media/anyf15ea/regolamento_hackathon-ntt-data-milano-2026.pdf"
+      }
+    ],
+    "missing": [
+      "Indirizzo della sede",
+      "Orari della giornata",
+      "Scadenza definitiva: verifica con l’organizzatore"
+    ]
+  },
+  {
+    "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
+    "slug": "oliver-wyman-data-analytics-milano-2026",
+    "title": "Oliver Wyman Data & Analytics Hackathon Challenge Milan",
+    "url": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan",
+    "sourceLabel": "Oliver Wyman / Marsh",
+    "checkedAt": "2026-10-10",
+    "startDate": "2026-11-20",
+    "endDate": "2026-11-20",
+    "location": "Oliver Wyman S.R.L. · Via Broletto 16, Milano",
+    "organizer": "Oliver Wyman",
+    "facts": [
+      {
+        "label": "Tema",
+        "value": "Analisi dati e sviluppo di una soluzione per un caso di consulenza reale",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      },
+      {
+        "label": "A chi si rivolge",
+        "value": "Studenti all’ultimo anno e neolaureati in ingegneria, matematica, Data Analytics, Data Science o discipline affini",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      },
+      {
+        "label": "Requisiti",
+        "value": "Italiano e inglese fluenti; capacità di analizzare dati con un linguaggio di programmazione, per esempio Python o R",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      },
+      {
+        "label": "Orario",
+        "value": "09:00–23:00 CET, secondo i dati evento della pagina ufficiale",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      },
+      {
+        "label": "Scadenza candidature",
+        "value": "15 ottobre",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      },
+      {
+        "label": "Selezione",
+        "value": "Colloqui e discussione di casi in ottobre 2026; comunicazione ai candidati selezionati all’inizio di novembre",
+        "sourceUrl": "https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan"
+      }
+    ],
+    "missing": [
+      "Composizione dei team",
+      "Condizioni economiche di partecipazione",
+      "Dettaglio del premio per il team vincitore"
+    ],
+    "venue": {
+      "name": "Oliver Wyman S.R.L.",
+      "streetAddress": "Via Broletto 16",
+      "addressLocality": "Milano",
+      "addressCountry": "IT"
+    }
+  }
+]

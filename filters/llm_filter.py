@@ -58,30 +58,25 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
    NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti.
    ATTENZIONE: Non fidarti ciecamente del dominio/URL per la data. Aggregatori come hackathon.com possono mostrare eventi vecchi con URL fuorvianti.
 
-ESTRAZIONE DATA — Se l'evento è approvato (is_hackathon: true), estrai la data di inizio nel campo "event_date" in formato YYYY-MM-DD.
-- Cerca la data nel titolo, descrizione, URL (es. "10-11 April 2026" → "2026-04-10")
-- Se ci sono più giorni (es. "26-27 febbraio 2026"), usa il PRIMO giorno
-- Se l'evento ha più fasi/tappe (es. hackathon nazionali + finale internazionale), usa la data della PRIMA fase futura che si svolge A MILANO — non la finale o altre tappe
-- Se trovi solo mese/anno ma non il giorno, usa il primo del mese (es. "maggio 2026" → "2026-05-01")
-- Se non riesci a determinare la data → event_date: null
-- Per eventi scartati (is_hackathon: false) → event_date: null
+Classifica soltanto: non completare, riscrivere o restituire titolo, date, luogo o descrizione.
+I dati dell'evento vengono conservati come ricevuti dalla fonte; le informazioni mancanti restano mancanti.
 
 ESEMPI:
-1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento", "event_date": null}}
-2. Titolo: "HSIL Hackathon 2026" | URL: linkedin.com/posts/... | Desc: "Global Hackathon on AI in Medicine, 10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Post LinkedIn annuncia hackathon reale a Milano con data", "event_date": "2026-04-10"}}
-3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico", "event_date": null}}
-4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)", "event_date": null}}
-5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano", "event_date": null}}
-6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" | Desc: "30 Gennaio - 1 Febbraio 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro", "event_date": "2026-01-30"}}
-7. Titolo: "Excited about my hackathon win!" | URL: linkedin.com/posts/... | Desc: "Great experience last weekend" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Racconto personale, non annuncio evento futuro", "event_date": null}}
-8. Titolo: "HSIL Hackathon 2026" | Desc: "10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro", "event_date": "2026-04-10"}}
-9. Titolo: "GameDev.tv Game Jam 2026" | URL: itch.io/jam/... | Desc: "Hosted online, submit web build" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Game jam online senza venue milanese", "event_date": null}}
-10. Titolo: "The TUM.ai Makeathon" | Desc: "in-person on TUM's campus in Munich" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento a Monaco/Munich, non Milano", "event_date": null}}
-11. Titolo: "Hack The Boot" | Desc: "Spring 2026, TBD Italy, pre-register" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Data e venue non concrete", "event_date": null}}
+1. Titolo: "PoliHack 2026" | URL: lu.ma/polihack26 | Loc: "Politecnico Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro, pagina evento"}}
+2. Titolo: "HSIL Hackathon 2026" | URL: linkedin.com/posts/... | Desc: "Global Hackathon on AI in Medicine, 10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Post LinkedIn annuncia hackathon reale a Milano con data"}}
+3. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca/listing, non evento specifico"}}
+4. Titolo: "Hackathon recap 2024" | URL: blog.com/hackathon-2024 → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento passato (2024)"}}
+5. Titolo: "Global Hackathon Online" | URL: hackathon.com/virtual → {{"is_hackathon": false, "confidence": 0.90, "reason": "Evento online, non a Milano"}}
+6. Titolo: "Milan Game Jam 2026" | URL: globalgamejam.org/jam-sites/2026/milan | Loc: "SAE Institute Milano" | Desc: "30 Gennaio - 1 Febbraio 2026" → {{"is_hackathon": true, "confidence": 0.90, "reason": "Game jam fisico a Milano, futuro"}}
+7. Titolo: "Excited about my hackathon win!" | URL: linkedin.com/posts/... | Desc: "Great experience last weekend" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Racconto personale, non annuncio evento futuro"}}
+8. Titolo: "HSIL Hackathon 2026" | Desc: "10-11 April 2026 at MIND Milano" → {{"is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano, futuro"}}
+9. Titolo: "GameDev.tv Game Jam 2026" | URL: itch.io/jam/... | Desc: "Hosted online, submit web build" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Game jam online senza venue milanese"}}
+10. Titolo: "The TUM.ai Makeathon" | Desc: "in-person on TUM's campus in Munich" → {{"is_hackathon": false, "confidence": 0.95, "reason": "Evento a Monaco/Munich, non Milano"}}
+11. Titolo: "Hack The Boot" | Desc: "Spring 2026, TBD Italy, pre-register" → {{"is_hackathon": false, "confidence": 0.90, "reason": "Data e venue non concrete"}}
 
 NEL DUBBIO → is_hackathon: false.
 
-Rispondi SOLO con JSON: {{"results": [{{"index": 0, "is_hackathon": bool, "confidence": float, "reason": "stringa breve", "event_date": "YYYY-MM-DD o null"}}]}}"""
+Rispondi SOLO con JSON: {{"results": [{{"index": 0, "is_hackathon": bool, "confidence": float, "reason": "stringa breve"}}]}}"""
 
 
 def _get_system_prompt() -> str:
@@ -95,11 +90,10 @@ def _get_system_prompt() -> str:
 
 @dataclass
 class LLMResult:
-    """Risultato della classificazione LLM per un singolo evento."""
+    """Giudizio di classificazione, senza dati fattuali da applicare all'evento."""
     is_hackathon: bool
     confidence: float
     reason: str
-    event_date: str = ""  # Data estratta dal LLM in formato YYYY-MM-DD
 
 
 def _build_user_prompt(events: list[HackathonEvent]) -> str:
@@ -183,7 +177,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
         ritorna risultati di default con is_hackathon=False (scarta per
         sicurezza — meglio perdere un evento dubbio che approvare rumore).
     """
-    default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error", event_date="") for _ in range(count)]
+    default = [LLMResult(is_hackathon=False, confidence=0.0, reason="LLM parse error") for _ in range(count)]
 
     # Step 1: Pulisci markdown code blocks
     cleaned = content.strip()
@@ -213,7 +207,6 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     is_hackathon=bool(item.get("is_hackathon", True)),
                     confidence=float(item.get("confidence", 0.5)),
                     reason=str(item.get("reason", "")),
-                    event_date=str(item.get("event_date") or ""),
                 ))
             if len(results) != count:
                 logger.warning(
@@ -221,7 +214,7 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     len(results), count,
                 )
                 while len(results) < count:
-                    results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from LLM", event_date=""))
+                    results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from LLM"))
             return results[:count]
     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
         pass  # Prova il fallback
@@ -247,11 +240,10 @@ def _parse_llm_response(content: str, count: int) -> list[LLMResult]:
                     is_hackathon=bool(item.get("is_hackathon", True)),
                     confidence=float(item.get("confidence", 0.5)),
                     reason=str(item.get("reason", "")),
-                    event_date=str(item.get("event_date") or ""),
                 ))
             else:
                 # Evento mancante — scarta per sicurezza
-                results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from truncated LLM response", event_date=""))
+                results.append(LLMResult(is_hackathon=False, confidence=0.0, reason="missing from truncated LLM response"))
         return results
 
     # Step 4: Nessun oggetto estratto — usa default
@@ -390,7 +382,8 @@ def classify_batch(events: list[HackathonEvent]) -> list[LLMResult]:
 def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]:
     """Classifica tutti gli eventi con il LLM, in batch.
 
-    Aggiorna i campi `is_hackathon` e `confidence` di ogni evento.
+    Aggiorna classificazione, confidence e metadati di revisione.
+    Non completa né modifica i dati fattuali dell'evento.
 
     Returns:
         Tupla (eventi_confermati, conteggio_scartati).
@@ -421,15 +414,6 @@ def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]
                 event.review_status = "llm_error"
             else:
                 event.review_status = "needs_review"
-
-            # Popola date_str dal LLM se l'evento non ne ha già una
-            if result.event_date and result.event_date.lower() not in ("null", "none", ""):
-                if not event.date_str.strip():
-                    event.date_str = result.event_date
-                    logger.info(
-                        "LLM DATA ESTRATTA: '%s' → %s",
-                        event.title[:50], result.event_date,
-                    )
 
             if result.is_hackathon and result.confidence >= config.LLM_CONFIDENCE_THRESHOLD:
                 confirmed.append(event)
@@ -463,8 +447,8 @@ di un "AI Voice Agent Hackathon" va raggruppato con l'evento "AI Voice Agent Hac
 Raggruppali: restituisci un array JSON dove ogni elemento rappresenta UN evento unico.
 Ogni elemento ha:
 - "group": lista di indici (0-based) degli eventi che sono lo stesso evento
-- "best_title": il titolo migliore/piu' completo da usare (preferisci il NOME dell'hackathon, non il titolo dell'articolo)
-- "best_url": l'URL piu' utile (preferisci lu.ma, eventbrite, siti ufficiali DELL'EVENTO, non articoli di giornale)
+- "best_title": copia ESATTAMENTE uno dei titoli presenti nel gruppo (preferisci il NOME dell'hackathon, non il titolo dell'articolo). Non riscrivere, completare o inventare titoli.
+- "best_url": copia ESATTAMENTE uno degli URL presenti nel gruppo (preferisci lu.ma, eventbrite, siti ufficiali DELL'EVENTO, non articoli di giornale). Non inventare URL.
 
 Se un evento e' unico, il group conterra' solo il suo indice.
 Rispondi SOLO con l'array JSON."""
@@ -561,8 +545,10 @@ def llm_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
         best_idx = valid_indices[0]
         best_event = events[best_idx]
 
-        # Usa il best_title e best_url dal LLM se forniti
-        best_title = group.get("best_title", best_event.title)
+        # Il modello può scegliere soltanto valori già presenti nel gruppo.
+        # Valida l'output anche se il prompt vieta esplicitamente le riscritture.
+        group_titles = {events[i].title for i in valid_indices}
+        best_title = group.get("best_title")
         best_url = group.get("best_url", best_event.url)
 
         # Trova l'evento col best_url se esiste nel gruppo
@@ -571,8 +557,8 @@ def llm_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
                 best_event = events[i]
                 break
 
-        # Aggiorna titolo se il LLM ne ha scelto uno migliore
-        best_event.title = best_title
+        if isinstance(best_title, str) and best_title in group_titles:
+            best_event.title = best_title
 
         # Raccogli URL alternativi
         for i in valid_indices:

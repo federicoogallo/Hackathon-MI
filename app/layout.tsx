@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk, Instrument_Serif } from "next/font/google";
-import { SITE_URL } from "@/lib/data";
+import { SITE_URL, reviewedEvents } from "@/lib/data";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/seo";
 import { THEME_BOOTSTRAP } from "@/lib/theme";
 import SiteAnalytics from "@/components/SiteAnalytics";
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip-link" href="#top">Salta al contenuto</a>
         {children}
-        {process.env.VERCEL_ENV === "production" && process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && <SiteAnalytics origin={new URL(SITE_URL).origin} />}
+        {process.env.VERCEL_ENV === "production" && process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && <SiteAnalytics origin={new URL(SITE_URL).origin} eventPaths={reviewedEvents.map((event) => `/hackathon/${event.slug}`)} />}
       </body>
     </html>
   );

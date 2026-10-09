@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build static site pages from stored events data.
+"""Build GitHub Pages redirects and refresh the README event table.
 
-This script performs static pre-rendering (SSG) for GitHub Pages by writing
-`docs/index.html`, `docs/review.html`, and refreshing the README events table
-directly from `data/events.json`, without running the full collection pipeline.
+Writes `docs/index.html` and `docs/review.html` as redirects to the canonical
+Next.js site. The README table is refreshed from `data/events.json` without
+running collection, classification or notifications.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ logger = logging.getLogger("build-static-site")
 
 
 def main() -> int:
-    logger.info("Building static HTML from data/events.json")
+    logger.info("Building GitHub Pages redirects to the canonical site")
     html_path = generate_html()
     logger.info("Generated: %s", html_path)
 
@@ -36,7 +36,7 @@ def main() -> int:
     readme_path = generate_readme_table()
     logger.info("Generated: %s", readme_path)
 
-    logger.info("Static pre-render completed")
+    logger.info("Redirect pages and README table updated")
     return 0
 
 

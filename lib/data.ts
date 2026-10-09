@@ -5,17 +5,21 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import reviewedData from "@/data/event_details.json";
+import exclusions from "@/data/event_exclusions.json";
+import { calendarDate, cleanEventDescription, safeSourceUrl, validateEventRecords } from "./event-facts";
+
+export const reviewedEvents = validateEventRecords(reviewedData);
 
 export const REPO_URL = "https://github.com/federicoogallo/Hackathon-MI";
 
 /**
  * Host canonico del sito, unico punto di verita' per canonical/OG/sitemap.
- * GitHub Pages serve lo stesso contenuto come mirror e punta qui con
- * <link rel="canonical">, cosi' i due host non competono in SERP.
+ * GitHub Pages reindirizza qui: il catalogo pubblico vive su un solo host.
  *
  * Per passare a un dominio custom basta impostare NEXT_PUBLIC_SITE_URL su
  * Vercel (Settings -> Environment Variables) e rifare il deploy: lo stesso
- * valore e' letto anche dai generatori Python del mirror e del README.
+ * valore e' letto anche dai generatori Python dei rimandi e del README.
  */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://hackathon-milano.vercel.app")
   .trim()
@@ -38,6 +42,9 @@ export interface HackEvent {
   issueOk: string;
   issueDoubt: string;
   searchBlob: string;
+  detailPath?: string;
+  dateVerified?: boolean;
+  endDateIso?: string;
 }
 
 export interface ReviewCandidate {
@@ -84,28 +91,14 @@ function readJson(file: string): unknown {
   }
 }
 
-function safeHttpUrl(value: unknown): string {
-  if (typeof value !== "string") return "";
-  try {
-    const url = new URL(value.trim());
-    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
-  } catch {
-    return "";
-  }
-}
+const safeHttpUrl = safeSourceUrl;
 
 function todayRome(): string {
   // YYYY-MM-DD nel fuso di riferimento del progetto
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
 }
 
-function parseIso(dateStr: string): string {
-  const m = (dateStr || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (!m) return "";
-  const iso = `${m[1]}-${m[2]}-${m[3]}`;
-  const date = new Date(`${iso}T00:00:00Z`);
-  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === iso ? iso : "";
-}
+const parseIso = calendarDate;
 
 function fmtCompact(iso: string, raw: string): string {
   if (!iso) return (raw || "").trim().slice(0, 25);
@@ -150,46 +143,45 @@ export function getSiteData(): SiteData {
     : [];
   const today = todayRome();
 
+  const reviewed = new Map(reviewedEvents.map((e) => [e.id, e]));
+  const excluded = new Set(exclusions.map((e) => e.id));
   const upcoming = all
-    .filter((e) => e && e.is_hackathon && safeHttpUrl(e.url))
+    .filter((e) => e && e.is_hackathon && safeHttpUrl(e.url) && !excluded.has(e.id) && !["manual_rejected", "rejected"].includes(e.review_status))
     .filter((e) => {
-      const iso = parseIso(e.date_str || "");
-      return !iso || iso >= today; // senza data = ancora valido (TBD)
-    })
-    .sort((a, b) => {
-      const ia = parseIso(a.date_str || "") || "9999-12-31";
-      const ib = parseIso(b.date_str || "") || "9999-12-31";
-      return ia.localeCompare(ib);
+      const facts = reviewed.get(e.id);
+      const end = facts?.endDate || parseIso(e.date_str || "");
+      return !end || end >= today;
     });
 
   const events: HackEvent[] = upcoming.map((e, i) => {
-    const iso = parseIso(e.date_str || "");
-    const [_, mo, d] = iso ? iso.split("-").map(Number) : [0, 0, 0];
-    const fullDescription = String(e.description || "").trim().replace(/\n/g, " ");
+    const facts = reviewed.get(e.id);
+    const iso = facts?.startDate || "";
+    const [, mo, d] = iso ? iso.split("-").map(Number) : [0, 0, 0];
+    const fullDescription = facts
+      ? facts.facts.slice(0, 2).map((f) => `${f.label}: ${f.value}.`).join(" ")
+      : cleanEventDescription(e.description);
     let desc = fullDescription;
     if (desc.length > 210) desc = desc.slice(0, 210).replace(/\s+\S*$/, "") + "...";
-    const title = String(e.title || "Senza titolo").trim();
-    const location = String(e.location || "Milano").trim() || "Milano";
+    const title = facts?.title || String(e.title || "Senza titolo").trim();
+    const location = facts?.location || String(e.location || "").trim();
     const source = String(e.source || "").trim();
     return {
-      id: String(e.id || i),
-      title,
-      url: safeHttpUrl(e.url),
-      source,
-      dateStr: String(e.date_str || ""),
-      dateIso: iso,
+      id: String(e.id || i), title,
+      url: facts?.url || safeHttpUrl(e.url), source,
+      dateStr: iso, dateIso: iso, dateVerified: !!facts,
+      endDateIso: facts?.endDate || "",
       day: iso ? String(d) : "",
       month: iso ? MONTHS_IT[mo - 1].toUpperCase() : "",
-      dateCompact: fmtCompact(iso, e.date_str || ""),
-      location,
-      description: desc,
+      dateCompact: iso ? fmtCompact(iso, iso) : "Data da verificare",
+      location, description: desc,
       confidence: Number(e.confidence || 0),
       reviewStatus: String(e.review_status || "ai_verified"),
       issueOk: issueUrl(e, "confirmed_ok"),
       issueDoubt: issueUrl(e, "confirmed_doubt"),
+      detailPath: facts ? `/hackathon/${facts.slug}` : undefined,
       searchBlob: `${title} ${fullDescription} ${location} ${source}`.toLowerCase(),
     };
-  });
+  }).sort((a, b) => (a.dateIso || "9999-12-31").localeCompare(b.dateIso || "9999-12-31"));
 
   const months = new Set(events.map((e) => e.month).filter(Boolean));
 
@@ -256,7 +248,7 @@ export function getReviewData(): { candidates: ReviewCandidate[]; lastScan: stri
       source: String(c.source || ""),
       reason: String(c.review_reason || "Motivazione non disponibile"),
       confidence: Math.round(Number(c.confidence || 0) * 100),
-      location: String(c.location || "Milano"),
+      location: String(c.location || "").trim(),
       dateCompact: fmtCompact(parseIso(c.date_str || ""), c.date_str || "") || "TBD",
       issueOk: issueUrl(c, "review_ok"),
       issueDoubt: issueUrl(c, "review_doubt"),

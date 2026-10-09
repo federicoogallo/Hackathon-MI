@@ -2,10 +2,10 @@
 
 **Live site → [hackathon-milano.vercel.app](https://hackathon-milano.vercel.app/)**
 
-<sub>The GitHub Pages build at [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/) is a mirror; it declares a `canonical` link to the Vercel site so search engines can identify the primary version.</sub>
+<sub>The GitHub Pages build at [federicoogallo.github.io/Hackathon-MI](https://federicoogallo.github.io/Hackathon-MI/) redirects visitors to the main site, with matching `canonical` links for the calendar and review pages.</sub>
 
 Automated aggregator for hackathon events in Milan with **28 registered source integrations**.
-Collects and deduplicates candidates, applies rules and LLM classification, routes uncertain entries to manual review, and publishes a Next.js website on Vercel with an optional GitHub Pages mirror. Telegram delivers scan summaries; the weekly email integration is implemented but stays disabled until its private services are configured.
+Collects and deduplicates candidates, applies rules and LLM classification, routes uncertain entries to manual review, and publishes a Next.js website on Vercel with optional GitHub Pages redirects for older links. Telegram delivers scan summaries; the weekly email integration is implemented but stays disabled until its private services are configured.
 
 The source count describes implemented integrations, not a guarantee that all sources are available on every scan. Always check event details with the organizer.
 
@@ -17,21 +17,19 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: Oct 09, 2026 19:23 CEST
+> **7 hackathons** coming up in Milan · Last updated: Oct 10, 2026 00:24 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [BCG Platinion Hackathon - Fighting World Hunger \| October 16-17, 2026](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 | Milano | Web search |
-| [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | Milano | Web search |
-| [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | 24 Oct 2026 | Milano | Web search |
-| [Hackathon per universitari Talenti STEM per l'Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Milano | Web search |
-| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | 14 Nov 2026 | Milano | Web search |
-| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Milano | Web search |
-| [NTT DATA IkigAIverse](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Milano | Web search |
-| [GLAM Tool Hospital/Wikimedia Hackathon, Milan 2026](https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026) | TBD | Milano | Web search |
-| [Innovation Challenge 2026 – Soluzioni per evitare la disillusione dell’AI](https://polimi.it/il-politecnico/eventi?tx_filterevent_newsfilterevent%5Bcontroller%5D=News&tx_filterevent_newsfilterevent%5BcurrentPage%5D=2&cHash=5b807b8396644197677d4ce88a500271) | 21settembre2026 | Milano | Universities |
+| [BCG Platinion Hackathon — Fighting World Hunger](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 – 17 Oct 2026 | Milano · in presenza | BCG Platinion |
+| [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | PLB WORLD · Viale Francesco Restelli 3, Milano | ServiceNow |
+| [Talenti STEM per l’Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Social Innovation Academy · MIND, Milano | Fondazione Triulza |
+| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |
+| [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
+| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
+| [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | To verify | To verify | Web search |
 
 <!-- HACKATHON_TABLE_END -->
 
@@ -54,10 +52,11 @@ The frontend is built with **Next.js 15, React 19 and Motion**, using a responsi
 - **Visual experience:** an architectural Milan scene and a radar connected to the next events. It advances every seven seconds, stops on interaction and can be resumed explicitly. Motion respects reduced-motion preferences.
 - **Themes and accessibility:** System, Light and Dark themes with a persistent choice, keyboard navigation, visible focus and responsive layouts.
 - **Identity and search:** an abstract radar mark with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
+- **Event pages:** dedicated URLs with source-checked facts, documented gaps and stable slugs. The collector does not create factual descriptions or infer missing dates with the LLM. See the [source-review workflow](docs/event-pages.md).
 - **Usage metrics:** optional Vercel Web Analytics for page views and estimated visitors, disabled until enabled on a free Hobby team. Local project reports stay outside Git.
 - **Weekly email:** a consent-based signup with confirmation, unsubscribe support and a weekly digest of new events. The invitation appears once per browser while subscriptions are available, and stops after a successful confirmation on that browser. Manual signup remains available. Without complete Brevo Free/Redis configuration, the site shows an unavailable state rather than a disabled form.
 
-See the [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
+See the [event-page and source-review guide](docs/event-pages.md), [newsletter setup](docs/newsletter.md) and [security policy](SECURITY.md).
 
 ---
 
@@ -88,7 +87,7 @@ Collectors (28 registered integrations, parallel collection)
         ▼
   Persistent Archive (data/events.json)
         ├── Next.js website → Vercel build
-        ├── Static mirror → docs/index.html + docs/review.html
+        ├── GitHub Pages redirects → docs/index.html + docs/review.html
         ├── Generated README event table
         ├── Telegram scan summary (when configured)
         └── Weekly email digest (separate authorized Vercel Cron)
@@ -270,17 +269,17 @@ python scripts/admin.py remove <identifier> --blacklist --reason-code online_onl
 python scripts/admin.py remove <identifier> --reason-code known_false_positive --regression
 ```
 
-Admin approvals/removals/review moves rebuild the static site and README immediately. Every admin action is logged locally in `data/admin_actions.json`, which is excluded from Git and deployment. `--regression` marks a local decision for consideration; reproducible public cases are curated separately in `tests/fixtures/admin-regressions.json` without operational notes, operator details or timestamps.
+Admin approvals/removals/review moves rebuild the GitHub Pages redirects and README immediately. Every admin action is logged locally in `data/admin_actions.json`, which is excluded from Git and deployment. `--regression` marks a local decision for consideration; reproducible public cases are curated separately in `tests/fixtures/admin-regressions.json` without operational notes, operator details or timestamps.
 
-The public review queue is available at `/review` on the main site and `docs/review.html` on the mirror. Visitors can open issues from the site, but only maintainers apply final actions. Review queue entries and suppression decisions are public: do not include credentials, subscriber addresses or private correspondence. See the [maintainer guide](docs/admin.md).
+The public review queue is available at `/review` on the main site; the old `docs/review.html` page redirects there. Visitors can open issues from the site, but only maintainers apply final actions. Review queue entries and suppression decisions are public: do not include credentials, subscriber addresses or private correspondence. See the [maintainer guide](docs/admin.md).
 
-### 7. Pre-render the static mirror (SSG)
+### 7. Build the GitHub Pages redirects and README table
 
 ```bash
 python scripts/build_static_site.py
 ```
 
-This generates `docs/index.html`, `docs/review.html` and supporting assets, then updates the README table from `data/events.json`, without collecting new events. The Next.js site is built separately with `npm run build`. Do not hand-edit generated HTML; edit its templates or data instead. Further environment and deployment details are in [docs/setup.md](docs/setup.md).
+This generates `docs/index.html` and `docs/review.html` as immediate redirects to `/` and `/review` on the canonical site, then updates the README table from `data/events.json`, without collecting new events or sending notifications. Each page includes a manual link and matching canonical URL, and works without JavaScript. Existing assets are retained. The Next.js site is built separately with `npm run build`. Do not hand-edit generated HTML; edit `utils/html_export.py` instead. Further environment and deployment details are in [docs/setup.md](docs/setup.md).
 
 </details>
 
@@ -299,18 +298,17 @@ Import the repository into Vercel with the repository root as the project direct
 
 GitHub Actions secrets and a local Python `.env` do not automatically configure Vercel. Newsletter service credentials belong in the Vercel environment; never prefix secrets with `NEXT_PUBLIC_`.
 
-### 3. Enable GitHub Pages (optional mirror)
+### 3. Preserve older links with GitHub Pages redirects
 
 The primary site is the Next.js app deployed on **Vercel** ([hackathon-milano.vercel.app](https://hackathon-milano.vercel.app/)),
 which rebuilds on pushes to its connected production branch, including generated data commits.
 
-GitHub Pages is kept as an optional static mirror. To enable it, go to **Settings → Pages** and set:
+GitHub Pages serves transfer pages so older links lead to the main website. To keep those links available, go to **Settings → Pages** and set:
 
 - **Source**: `Deploy from a branch`
 - **Branch**: `main` · **Folder**: `/docs`
 
-The mirror will be available at `https://<username>.github.io/<repo>/`. Its pages declare a
-`canonical` link to the Vercel site, so duplicate content is attributed to the primary host.
+The older address remains `https://<username>.github.io/<repo>/`. The calendar and review pages use immediate HTML meta-refresh redirects, manual destination links and matching canonical URLs. These are static redirects, not HTTP 301 responses. Future collection and maintenance runs regenerate the same transfer pages instead of publishing a duplicate catalog.
 
 ### 4. Enable the workflow
 
@@ -318,7 +316,7 @@ The workflow is in [`.github/workflows/check_hackathons.yml`](.github/workflows/
 
 - **Cron:** daily at **11:00 UTC** (`0 11 * * *`): 12:00 CET in winter, 13:00 CEST in summer. Scheduled runs can be delayed by GitHub Actions.
 - **Manual:** from the Actions tab → Run workflow.
-- Tests run before collection. Updated public data, generated mirror pages/assets and the README table are committed when they change.
+- Tests run before collection. Updated public data, generated redirect pages and the README table are committed when they change.
 - The run report is uploaded as the `hackathon-monitor-report` artifact.
 
 The separate [test workflow](.github/workflows/tests.yml) checks pull requests and relevant code changes. The weekly email schedule is independent of the daily collection schedule.
@@ -338,7 +336,7 @@ The separate [test workflow](.github/workflows/tests.yml) checks pull requests a
 | `/help` | List commands |
 
 The bot sends a **summary after each scan** with up to four new event previews, dates and locations, the number of upcoming events, source availability, elapsed time and a button opening the public calendar. Scans with no new events still send a status summary.
-Full event details are available on the [main website](https://hackathon-milano.vercel.app/), the static mirror and the README table above.
+Find events on the [main website](https://hackathon-milano.vercel.app/) and in the README table above; older GitHub Pages links redirect to the main site.
 
 Local start:
 
@@ -463,16 +461,16 @@ hackathon-monitor/
 ├── utils/
 │   ├── admin_audit.py        # Structured admin audit and regression cases
 │   ├── http.py               # HTTP retry and timeout utilities
-│   ├── html_export.py        # Static mirror generator
+│   ├── html_export.py        # GitHub Pages redirect generator
 │   ├── readme_export.py      # README table generator
 │   └── review_queue.py       # Manual review persistence
 ├── scripts/
 │   ├── admin.py              # Local maintainer entrypoint
 │   ├── review_candidate.py   # Admin workflow implementation
-│   ├── build_static_site.py  # Generate mirror and README from stored data
+│   ├── build_static_site.py  # Generate redirects and README from stored data
 │   ├── slow_classify.py      # Classification recovery tool
 │   ├── collect_only.py       # Collection diagnostics
-│   ├── extract_dates.py      # Backfill dates with the classifier
+│   ├── extract_dates.py      # Read-only diagnosis of missing dates
 │   ├── project_metrics.py    # Aggregate reports in ignored .local/metrics/
 │   ├── generate-brand-assets.mjs # Generate favicon and identity variants
 │   └── test-*.mjs            # Frontend and newsletter regression tests
@@ -481,9 +479,9 @@ hackathon-monitor/
 │   ├── review_queue.json     # Uncertain candidates
 │   └── review_decisions.json # Manual approve/reject decisions
 ├── docs/
-│   ├── index.html            # Generated GitHub Pages mirror
-│   ├── review.html           # Generated review queue
-│   ├── assets/               # Static mirror assets
+│   ├── index.html            # Redirect to the canonical calendar
+│   ├── review.html           # Redirect to the canonical review page
+│   ├── assets/               # Retained legacy static assets
 │   ├── banner.svg            # README banner
 │   ├── setup.md              # Environments and deployment
 │   ├── admin.md              # Moderation and maintenance

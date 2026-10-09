@@ -119,3 +119,8 @@ test("sources are readable without inventing verification claims", () => {
   assert.equal(sourceLabel("community_feed"), "Community feed");
   assert.equal(sourceLabel(""), "Fonte esterna");
 });
+
+test("a syntactically valid but unverified date cannot create a calendar entry", () => {
+  assert.equal(eventCalendar(event("unverified", { dateVerified: false })), null);
+  assert.ok(eventCalendar(event("reviewed", { dateVerified: true })).includes("DTSTART;VALUE=DATE:20260919"));
+});

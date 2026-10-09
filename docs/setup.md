@@ -73,15 +73,17 @@ Import the repository into Vercel with the repository root as the project direct
 
 Weekly email requires additional private services and environment variables; follow [newsletter setup](newsletter.md). Browsing and saved events do not require those services.
 
-The website supplies canonical links, Italian metadata, `WebSite` structured data, branded icons, social preview images, `robots.txt` and a sitemap. These describe the site to crawlers; they do not guarantee a particular ranking, title or appearance in search results. Keep the canonical host consistent across deployments and the static mirror. Search engines can continue to show older titles and icons until they crawl the site again.
+The website supplies canonical links, Italian metadata, `WebSite` structured data, branded icons, social preview images, `robots.txt` and a sitemap. These describe the site to crawlers; they do not guarantee a particular ranking, title or appearance in search results. Keep the canonical host consistent across deployments and the GitHub Pages redirects. Search engines can continue to show older titles and icons until they crawl the site again.
 
-The optional GitHub Pages mirror is generated separately:
+The GitHub Pages transfer pages are generated separately:
 
 ```bash
 python scripts/build_static_site.py
 ```
 
-This refreshes `docs/index.html`, `docs/review.html`, supporting assets and the generated README table from stored data, without collecting new events. Do not hand-edit generated pages. To publish the mirror, select **GitHub → Settings → Pages → Deploy from a branch → main → /docs**. The mirror points canonical links to the primary Vercel site.
+This writes `docs/index.html` and `docs/review.html` as immediate HTML meta-refresh redirects to `/` and `/review` on the canonical site, and refreshes the README table from stored data. It does not collect events or send notifications. Each transfer page includes a visible manual link and a matching canonical URL, without requiring JavaScript. Existing static assets remain in place. The pipeline regenerates these redirects on subsequent runs, so older links no longer serve a duplicate catalog.
+
+Do not hand-edit generated pages; their template is `utils/html_export.py`. To preserve older GitHub Pages links, select **GitHub → Settings → Pages → Deploy from a branch → main → /docs**. GitHub Pages serves these static transfer pages rather than HTTP 301 responses. Changing files locally does not update either public site; publication requires the usual repository and deployment steps.
 
 ## Usage metrics
 

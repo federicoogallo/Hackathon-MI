@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="0 candidati hackathon da rivedere.">
-<link rel="canonical" href="https://hackathon-milano.vercel.app/review">
-<meta property="og:url" content="https://hackathon-milano.vercel.app/review">
-<meta property="og:title" content="Review queue - Hackathon Milano">
-<meta property="og:description" content="0 candidati hackathon da rivedere.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Hackathon Milano">
-<meta property="og:locale" content="it_IT">
-<meta property="og:image" content="https://hackathon-milano.vercel.app/opengraph-image.png">
-<link rel="icon" href="https://hackathon-milano.vercel.app/brand/radar-mark-96.png" type="image/png" sizes="96x96">
-<meta name="theme-color" content="#070a11">
-<title>Review queue - Hackathon Milano</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=45c81e2ad4">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apri la revisione eventi | Hackathon Milano</title>
+  <meta name="description" content="Consulta i candidati da verificare e segnala informazioni utili dalla pagina di revisione.">
+  <meta http-equiv="refresh" content="0; url=https://hackathon-milano.vercel.app/review">
+  <link rel="canonical" href="https://hackathon-milano.vercel.app/review">
+  <meta property="og:url" content="https://hackathon-milano.vercel.app/review">
+  <meta name="color-scheme" content="dark light">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; display: grid; place-items: center;
+      padding: 32px 20px; color: #ecf2ef; background: #101b19;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { width: min(100%, 620px); padding: clamp(28px, 6vw, 56px);
+      border: 1px solid #3d514b; border-radius: 24px; background: #182822; }
+    .brand { margin: 0 0 32px; color: #b6d4c6; font-size: .875rem;
+      font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 0 0 20px; font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: -.04em; line-height: 1.1; }
+    p { margin: 0 0 24px; color: #c4d4cc; line-height: 1.65; }
+    a { display: inline-block; padding: 14px 20px; border-radius: 10px;
+      color: #10241b; background: #c5e7b7; text-decoration: none; font-weight: 650; }
+    a:hover { background: #e0f4d7; }
+    a:focus-visible { outline: 3px solid #ecf2ef; outline-offset: 5px; }
+    .note { margin: 24px 0 0; font-size: .875rem; }
+    @media (prefers-color-scheme: light) {
+      body { background: #f1f4ef; color: #17271f; }
+      main { background: #fff; border-color: #cddbd1; }
+      p, .brand { color: #465c4e; }
+      a:focus-visible { outline-color: #17271f; }
+    }
+  </style>
 </head>
-<body class="elite-shell review-page">
-<div class="scroll-progress" id="scroll-progress"></div>
-<nav class="nav-fixed" id="nav" aria-label="Navigazione principale"><div class="container"><div class="nav"><a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 3 3.8 8.2 12 13.4l8.2-5.2L12 3Z"/><path d="m3.8 12.2 8.2 5.2 8.2-5.2"/><path d="m3.8 16.2 8.2 5.2 8.2-5.2"/></svg></span><span><b>Review queue</b><span>Manual confidence control</span></span></a><div class="nav-actions"><a class="btn btn-primary" href="index.html">Eventi confermati</a></div></div></div></nav>
-<header class="hero" id="top"><canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
-<div class="container">
-<div class="hero-grid"><div class="hero-copy">
-<div class="eyebrow"><span class="dot"></span>Manual review</div>
-<h1 class="hero-title" aria-label="Review queue"><span class="line"><span class="materialize" data-materialize="Review">Review</span></span><span class="line title-accent">queue</span></h1>
-<p class="hero-sub">0 eventi hanno abbastanza segnale per una revisione umana. Gli utenti possono solo aprire issue di conferma o dubbio: la rimozione resta ai maintainer.</p>
-<div class="hero-status"><span class="ops-dot"></span><strong>0</strong><span>Aggiornato: 09 Oct 2026 alle 19:20</span></div>
-</div></div>
-</div></header>
-<main class="section" id="events"><div class="container">
-<div class="deck-head" data-reveal><strong>Da rivedere</strong><span>Manual layer</span></div>
-<div class="review-list"><div class="empty" data-reveal><h3>Nessun candidato in revisione</h3><p>La coda si popola solo quando il filtro AI non ha confidenza sufficiente.</p></div></div>
-</div></main>
-<footer><div class="container"><div class="footer-inner"><div class="footer-brand"><b>Hackathon Milano</b>Review queue generata dalla pipeline</div><div class="footer-mid"></div><div class="footer-links"><a href="index.html">Calendario</a><a href="#top">Top</a></div></div></div></footer>
-<script src="assets/site.js?v=45c81e2ad4" defer></script>
+<body>
+  <main>
+    <p class="brand">Hackathon Milano</p>
+    <h1>La revisione eventi è sul sito principale.</h1>
+    <p>Consulta i candidati da verificare e segnala informazioni utili dalla pagina di revisione.</p>
+    <a href="https://hackathon-milano.vercel.app/review">Apri la revisione eventi</a>
+    <p class="note">Se il trasferimento automatico non parte, usa il collegamento qui sopra.</p>
+  </main>
 </body>
 </html>

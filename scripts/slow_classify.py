@@ -113,7 +113,7 @@ def _call_groq_no_retry(events: list[HackathonEvent]) -> list[LLMResult]:
 
 
 def slow_classify(events: list[HackathonEvent], delay: int) -> list[HackathonEvent]:
-    """Classifica eventi in micro-batch con pause lunghe."""
+    """Classifica in micro-batch senza completare o riscrivere dati dell'evento."""
     confirmed = []
     total = len(events)
     n_batches = (total + BATCH_SIZE - 1) // BATCH_SIZE
@@ -138,12 +138,6 @@ def slow_classify(events: list[HackathonEvent], delay: int) -> list[HackathonEve
         for event, result in zip(batch, results):
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
-
-            # Popola date_str dal LLM se l'evento non ne ha già una
-            if result.event_date and result.event_date.lower() not in ("null", "none", ""):
-                if not event.date_str.strip():
-                    event.date_str = result.event_date
-                    logger.info("    📅 Data estratta: %s", result.event_date)
 
             if result.confidence == 0.0 and result.reason == "API error":
                 logger.warning("    ⚠️  API ERROR: '%s'", event.title[:60])
