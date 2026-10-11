@@ -35,6 +35,8 @@ class EventbriteCollector(BaseCollector):
 
     def collect(self) -> list[HackathonEvent]:
         if not config.EVENTBRITE_API_KEY:
+            from utils.collector_health import record_issue
+            record_issue("disabled", "EVENTBRITE_API_KEY not configured")
             logger.warning("EVENTBRITE_API_KEY non configurata — skip collector")
             return []
 

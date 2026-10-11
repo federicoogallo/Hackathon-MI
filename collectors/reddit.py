@@ -41,7 +41,9 @@ class RedditCollector(BaseCollector):
         return "reddit"
 
     def collect(self) -> list[HackathonEvent]:
+        from utils.collector_health import record_issue
         if not _PRAW_AVAILABLE:
+            record_issue("disabled", "praw not installed")
             logger.warning(
                 "Reddit collector disattivato: praw non installato (%s). "
                 "Esegui: pip install praw",
@@ -49,6 +51,7 @@ class RedditCollector(BaseCollector):
             )
             return []
         if not config.REDDIT_CLIENT_ID or not config.REDDIT_CLIENT_SECRET:
+            record_issue("disabled", "Reddit credentials not configured")
             logger.warning("Reddit non configurato (manca CLIENT_ID o CLIENT_SECRET) — skip")
             return []
 
@@ -59,6 +62,7 @@ class RedditCollector(BaseCollector):
                 user_agent="hackathon-monitor/1.0 (by /u/hackathon-bot)",
             )
         except PrawcoreException as e:
+            record_issue("error", type(e).__name__)
             logger.error("Errore inizializzazione Reddit: %s", e)
             return []
 
@@ -70,6 +74,7 @@ class RedditCollector(BaseCollector):
                 events = self._search_subreddit(reddit, subreddit_name, seen_urls)
                 all_events.extend(events)
             except Exception as e:
+                record_issue("error", type(e).__name__)
                 logger.error("Reddit r/%s fallito: %s", subreddit_name, e)
 
         logger.info("Reddit: trovati %d post rilevanti", len(all_events))
@@ -120,6 +125,8 @@ class RedditCollector(BaseCollector):
                     ))
 
             except Exception as e:
+                from utils.collector_health import record_issue
+                record_issue("error", type(e).__name__)
                 logger.warning("Reddit search '%s' in r/%s: %s", query, subreddit_name, e)
 
         return events

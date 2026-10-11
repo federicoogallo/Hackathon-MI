@@ -19,7 +19,7 @@ python scripts/admin.py reject <candidate-id> --reason-code not_milan --reason "
 python scripts/admin.py dismiss <candidate-id>
 ```
 
-`reject` records a decision to suppress the candidate from future review queues. `dismiss` only removes the current queue entry; the candidate may appear again on a later scan.
+`reject` records a decision to suppress the candidate from future scans, automatic publication and review queues, including a matched alternate URL. `dismiss` only removes the current queue entry; the candidate may appear again on a later scan. Unresolved candidates persist even if a later search does not return them; known past events and entries without a date pending for over 60 days expire.
 
 ## Correct published events
 

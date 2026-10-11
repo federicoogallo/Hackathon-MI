@@ -21,7 +21,7 @@ import logging
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from time import perf_counter
@@ -69,7 +69,11 @@ from utils.review_queue import (
     build_review_queue,
     load_review_decisions,
     save_review_queue,
+    load_review_queue,
 )
+from utils.collector_health import CollectorHealth, record_issue, track_collector
+from utils.event_identity import deduplicate_events, deduplicate_event_dicts
+from utils.candidate_audit import CandidateAudit
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -91,6 +95,9 @@ class CollectorRun:
     event_count: int
     duration_seconds: float
     error: str = ""
+    status: str = "healthy"
+    requests_ok: int = 0
+    issues: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
@@ -99,6 +106,9 @@ class CollectorRun:
             "event_count": self.event_count,
             "duration_seconds": round(self.duration_seconds, 2),
             "error": self.error,
+            "status": self.status,
+            "requests_ok": self.requests_ok,
+            "issues": self.issues,
         }
 
 _YEAR_RE = re.compile(r"\b(20\d{2})\b")
@@ -351,103 +361,14 @@ def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
     return True, "ok"
 
 
-def _event_rank_for_dedup(event: HackathonEvent) -> int:
-    """Punteggio per scegliere il record migliore quando due eventi coincidono."""
-    score = 0
-    url_l = (event.url or "").lower()
-    if "lists." in url_l or "hyperkitty" in url_l:
-        score -= 2
-    if event.location and _text_has_milan(event.location):
-        score += 1
-    if len(event.description or "") >= 120:
-        score += 1
-    if event.source != "web_search":
-        score += 1
-    return score
-
-
 def _deterministic_semantic_dedup(events: list[HackathonEvent]) -> list[HackathonEvent]:
-    """Dedup di fallback (deterministico) per stessa data + keyword forti condivise."""
-    deduped: list[HackathonEvent] = []
-
-    for event in events:
-        event_date = (event.parsed_date().isoformat() if event.parsed_date() else "")
-        event_kw = EventStore._extract_distinctive_keywords(f"{event.title} {event.description}")
-
-        duplicate_idx: int | None = None
-        for i, kept in enumerate(deduped):
-            kept_date = kept.parsed_date().isoformat() if kept.parsed_date() else ""
-            if not event_date or event_date != kept_date:
-                continue
-
-            kept_kw = EventStore._extract_distinctive_keywords(f"{kept.title} {kept.description}")
-            overlap = event_kw & kept_kw
-            strong_overlap = any(len(k) >= 8 for k in overlap)
-            if len(overlap) >= 2 or (len(overlap) == 1 and strong_overlap):
-                duplicate_idx = i
-                break
-
-        if duplicate_idx is None:
-            deduped.append(event)
-            continue
-
-        kept = deduped[duplicate_idx]
-        if _event_rank_for_dedup(event) > _event_rank_for_dedup(kept):
-            logger.info("Dedup fallback: sostituito '%s' con '%s'", kept.title[:60], event.title[:60])
-            deduped[duplicate_idx] = event
-        else:
-            logger.info("Dedup fallback: scartato duplicato '%s'", event.title[:60])
-
-    return deduped
+    """Consolidate compatible identities, not generic shared description keywords."""
+    return deduplicate_events(events)
 
 
 def _deterministic_semantic_dedup_dicts(events: list[dict]) -> list[dict]:
-    """Versione dict-preserving della dedup semantica per cleanup dello storico."""
-    deduped: list[dict] = []
-
-    def _as_event(item: dict) -> HackathonEvent:
-        return HackathonEvent(
-            title=item.get("title", ""),
-            url=item.get("url", ""),
-            source=item.get("source", ""),
-            description=item.get("description", ""),
-            date_str=item.get("date_str", ""),
-            location=item.get("location", ""),
-            organizer=item.get("organizer", ""),
-        )
-
-    for item in events:
-        event = _as_event(item)
-        event_date = event.parsed_date().isoformat() if event.parsed_date() else ""
-        event_kw = EventStore._extract_distinctive_keywords(f"{event.title} {event.description}")
-
-        duplicate_idx: int | None = None
-        for i, kept_item in enumerate(deduped):
-            kept = _as_event(kept_item)
-            kept_date = kept.parsed_date().isoformat() if kept.parsed_date() else ""
-            if not event_date or event_date != kept_date:
-                continue
-
-            kept_kw = EventStore._extract_distinctive_keywords(f"{kept.title} {kept.description}")
-            overlap = event_kw & kept_kw
-            strong_overlap = any(len(k) >= 8 for k in overlap)
-            if len(overlap) >= 2 or (len(overlap) == 1 and strong_overlap):
-                duplicate_idx = i
-                break
-
-        if duplicate_idx is None:
-            deduped.append(item)
-            continue
-
-        kept_item = deduped[duplicate_idx]
-        kept = _as_event(kept_item)
-        if _event_rank_for_dedup(event) > _event_rank_for_dedup(kept):
-            logger.info("Dedup fallback: sostituito '%s' con '%s'", kept.title[:60], event.title[:60])
-            deduped[duplicate_idx] = item
-        else:
-            logger.info("Dedup fallback: scartato duplicato '%s'", event.title[:60])
-
-    return deduped
+    """Preserve reviewed facts while consolidating compatible stored identities."""
+    return deduplicate_event_dicts(events)
 
 
 def _event_from_dict(item: dict) -> HackathonEvent:
@@ -458,6 +379,8 @@ def _event_from_dict(item: dict) -> HackathonEvent:
         source=item.get("source", ""),
         description=item.get("description", ""),
         date_str=item.get("date_str", ""),
+        date_source=item.get("date_source", ""),
+        published_at=item.get("published_at", ""),
         location=item.get("location", ""),
         organizer=item.get("organizer", ""),
     )
@@ -577,29 +500,21 @@ def run_collectors(
         for future in as_completed(future_to_collector):
             collector = future_to_collector[future]
             try:
-                events, error, duration = future.result()
-                if error:
-                    failed_collectors.append(f"{collector.name}: {error}")
-                    collector_runs.append(CollectorRun(
-                        name=collector.name,
-                        ok=False,
-                        event_count=0,
-                        duration_seconds=duration,
-                        error=error,
-                    ).to_dict())
-                    logger.error("Collector %s fallito: %s", collector.name, error)
-                else:
+                events, health, duration = future.result()
+                status = health.outcome(len(events))
+                ok = status in {"healthy", "empty"}
+                error = "; ".join(item["detail"] or item["kind"] for item in health.issues)
+                all_events.extend(events)
+                if ok:
                     ok_collectors.append(collector.name)
-                    all_events.extend(events)
-                    collector_runs.append(CollectorRun(
-                        name=collector.name,
-                        ok=True,
-                        event_count=len(events),
-                        duration_seconds=duration,
-                    ).to_dict())
-                    logger.info(
-                        "Collector %s: %d eventi", collector.name, len(events)
-                    )
+                elif status != "disabled":
+                    failed_collectors.append(f"{collector.name}: {error}")
+                collector_runs.append(CollectorRun(
+                    name=collector.name, ok=ok, event_count=len(events),
+                    duration_seconds=duration, error=error, status=status,
+                    requests_ok=health.requests_ok, issues=health.issues,
+                ).to_dict())
+                logger.info("Collector %s: %s, %d eventi", collector.name, status, len(events))
             except Exception as e:
                 failed_collectors.append(f"{collector.name}: {e}")
                 collector_runs.append(CollectorRun(
@@ -608,6 +523,7 @@ def run_collectors(
                     event_count=0,
                     duration_seconds=0.0,
                     error=str(e),
+                    status="failed",
                 ).to_dict())
                 logger.error("Collector %s eccezione: %s", collector.name, e)
 
@@ -617,14 +533,16 @@ def run_collectors(
 
 def _safe_collect(
     collector: BaseCollector,
-) -> tuple[list[HackathonEvent], str | None, float]:
+) -> tuple[list[HackathonEvent], CollectorHealth, float]:
     """Wrapper per esecuzione sicura di un collector."""
     started = perf_counter()
-    try:
-        events = collector.collect() or []
-        return events, None, perf_counter() - started
-    except Exception as e:
-        return [], str(e), perf_counter() - started
+    with track_collector() as health:
+        try:
+            events = collector.collect() or []
+        except Exception as e:
+            record_issue("exception", type(e).__name__)
+            events = []
+    return events, health, perf_counter() - started
 
 
 def _event_is_upcoming_dict(e: dict) -> bool:
@@ -635,6 +553,7 @@ def _event_is_upcoming_dict(e: dict) -> bool:
             url=e.get("url", ""),
             source=e.get("source", ""),
             date_str=e.get("date_str", ""),
+            date_source=e.get("date_source", ""),
         )
         return ev.is_upcoming()
     except Exception:
@@ -646,6 +565,12 @@ def _all_llm_results_failed(events: list[HackathonEvent]) -> bool:
     return bool(events) and all(getattr(e, "confidence", 1.0) == 0.0 for e in events)
 
 
+def _manually_rejected(event: HackathonEvent, decisions: dict) -> bool:
+    identities = {event.id} | {HackathonEvent(title="", source="", url=url).id
+                               for url in event.alternate_urls}
+    return any(decisions.get(key, {}).get("decision") == "rejected" for key in identities)
+
+
 def _failed_collector_names(failed_collectors: list[str]) -> list[str]:
     """Estrae solo il nome collector da stringhe 'nome: errore'."""
     return [f.split(":", 1)[0] for f in failed_collectors]
@@ -653,6 +578,11 @@ def _failed_collector_names(failed_collectors: list[str]) -> list[str]:
 
 def _write_report(report: dict) -> Path:
     """Scrive il report dell'ultima run e ritorna il path."""
+    statuses = [item.get("status", "healthy" if item.get("ok") else "failed")
+                for item in report.get("collector_runs", [])]
+    report["collector_status_counts"] = {status: statuses.count(status) for status in sorted(set(statuses))}
+    report["disabled_collectors"] = [item["name"] for item in report.get("collector_runs", [])
+                                     if item.get("status") == "disabled"]
     report_path = Path(config.DATA_DIR) / "last_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
@@ -660,57 +590,24 @@ def _write_report(report: dict) -> Path:
     return report_path
 
 
+def _save_candidate_audit(audit: CandidateAudit) -> None:
+    try:
+        audit.save(config.CANDIDATE_AUDIT_DIR)
+    except OSError as exc:
+        logger.warning("Candidate audit could not be saved: %s", type(exc).__name__)
+
+
 def deduplicate_against_store(
     events: list[HackathonEvent], store: EventStore
 ) -> list[HackathonEvent]:
-    """Rimuove eventi già nello storico (dedup livello 1 + 2 + 3).
-
-    Include anche dedup intra-batch: eventi nuovi nella stessa run
-    vengono confrontati tra loro con fuzzy title matching.
-    """
-    from difflib import SequenceMatcher
-    from models import _normalize_title
-
-    new_events: list[HackathonEvent] = []
-    seen_in_batch: set[str] = set()
-
-    for event in events:
-        # Dedup intra-batch (stesso URL da collector diversi nella stessa run)
-        if event.id in seen_in_batch:
-            continue
-        seen_in_batch.add(event.id)
-
-        # Dedup vs storico (livello 1: URL esatto + livello 2: fuzzy + livello 3: date+keyword)
-        if store.is_duplicate(event):
-            continue
-
-        # Dedup intra-batch fuzzy (titoli simili nella stessa run)
-        is_intra_dup = False
-        for existing in new_events:
-            ratio = SequenceMatcher(
-                None, event.title_normalized, existing.title_normalized
-            ).ratio()
-            if ratio >= config.FUZZY_DEDUP_THRESHOLD:
-                if event.url not in existing.alternate_urls:
-                    existing.alternate_urls.append(event.url)
-                    logger.info(
-                        "Intra-batch fuzzy: '%s' ≈ '%s'",
-                        event.title, existing.title,
-                    )
-                is_intra_dup = True
-                break
-        if is_intra_dup:
-            continue
-
-        new_events.append(event)
-
-    return new_events
+    """Merge cross-source evidence before filtering and comparing against the archive."""
+    return [event for event in deduplicate_events(events) if not store.is_duplicate(event)]
 
 
 def deduplicate_post_llm_against_store(
     events: list[HackathonEvent], store: EventStore
 ) -> list[HackathonEvent]:
-    """Seconda passata di dedup vs storico dopo arricchimento LLM (date/titoli migliori)."""
+    """Seconda passata di dedup dello stesso evento dopo la classificazione."""
     unique: list[HackathonEvent] = []
     for event in events:
         if store.is_duplicate(event):
@@ -726,6 +623,7 @@ def deduplicate_post_llm_against_store(
 def run_pipeline(dry_run: bool = False) -> None:
     """Pipeline completa di raccolta, filtro e notifica."""
     start_time = _now()
+    audit = CandidateAudit()
     logger.info("=" * 60)
     logger.info("Hackathon Monitor — run iniziata: %s", start_time.isoformat())
     logger.info("=" * 60)
@@ -747,14 +645,30 @@ def run_pipeline(dry_run: bool = False) -> None:
     )
     raw_count = len(all_events)
     logger.info("Totale eventi raw: %d (da %d collector)", raw_count, len(ok_collectors))
+    if not all_events and collector_runs and not ok_collectors:
+        _write_report({
+            "date": start_time.strftime("%Y-%m-%d %H:%M"), "attempted_at": start_time.isoformat(),
+            "status": "collection_failed_preserved", "classification_completed": False,
+            "collectors_ok": 0, "collectors_total": len(collectors), "collector_runs": collector_runs,
+            "failed_collectors": _failed_collector_names(failed_collectors),
+            "raw_events": 0, "new_events": 0, "total_stored": store.count,
+        })
+        logger.error("No source completed successfully; preserving the archive and its timestamp")
+        return
 
     # 3. Deduplicazione vs storico
     new_events = deduplicate_against_store(all_events, store)
+    audit.stage("deduplication", all_events, new_events)
+    review_decisions = load_review_decisions()
+    before_manual_decisions = new_events
+    new_events = [event for event in new_events if not _manually_rejected(event, review_decisions)]
+    audit.stage("manual_decisions", before_manual_decisions, new_events)
     post_dedup_count = len(new_events)
     logger.info("Post dedup: %d nuovi candidati", post_dedup_count)
 
     # 4. Pre-filtro keyword
     keyword_passed, keyword_discarded = keyword_filter_batch(new_events)
+    audit.stage("keyword", new_events, keyword_passed)
     post_keyword_count = len(keyword_passed)
     logger.info(
         "Post keyword filter: %d passati, %d scartati",
@@ -763,7 +677,9 @@ def run_pipeline(dry_run: bool = False) -> None:
 
     # 4b. Filtra eventi passati rispetto alla data corrente
     pre_date_filter = len(keyword_passed)
+    before_date_filter = keyword_passed
     keyword_passed = [e for e in keyword_passed if e.is_upcoming()]
+    audit.stage("event_date", before_date_filter, keyword_passed)
     post_date_filter = len(keyword_passed)
     logger.info(
         "Post date filter: %d → %d (rimosse %d eventi passati)",
@@ -772,9 +688,14 @@ def run_pipeline(dry_run: bool = False) -> None:
 
     # 5. Filtro LLM
     llm_confirmed, llm_discarded = llm_filter(keyword_passed)
+    audit.stage("classification", keyword_passed, llm_confirmed)
+    classification_errors = sum(event.classification_status == "error" for event in keyword_passed)
     post_llm_count = len(llm_confirmed)
-    review_decisions = load_review_decisions()
-    review_queue = build_review_queue(keyword_passed, llm_confirmed, review_decisions)
+    review_queue = build_review_queue(
+        keyword_passed, llm_confirmed, review_decisions,
+        previous=load_review_queue(), ref_date=start_time.date(),
+        published_ids={item.get("id") for item in store.all_events() if item.get("is_hackathon")},
+    )
     logger.info(
         "Post LLM filter: %d confermati, %d scartati",
         post_llm_count, llm_discarded,
@@ -793,11 +714,9 @@ def run_pipeline(dry_run: bool = False) -> None:
                 post_keyword_count,
             )
 
-            # Aggiorna solo il timestamp: gli eventi restano quelli validati in precedenza.
-            try:
-                store.touch_last_check(start_time.isoformat())
-            except Exception as e:
-                logger.warning("Impossibile aggiornare timestamp storico: %s", e)
+            # A failed attempt must not advance the archive's last successful check.
+            save_review_queue(review_queue)
+            _save_candidate_audit(audit)
 
             # Rigenera comunque HTML e README (con dati dello storico esistente).
             try:
@@ -825,7 +744,11 @@ def run_pipeline(dry_run: bool = False) -> None:
                 "post_llm": post_llm_count,
                 "new_events": 0,
                 "total_stored": store.count,
-                "review_queue": 0,
+                "review_queue": len(review_queue),
+                "attempted_at": start_time.isoformat(),
+                "classification_completed": False,
+                "classification_errors": len(keyword_passed),
+                "candidate_stages": audit.summary(),
             })
             if not dry_run:
                 total_upcoming = sum(
@@ -850,7 +773,9 @@ def run_pipeline(dry_run: bool = False) -> None:
     save_review_queue(review_queue)
 
     # 5b. Dedup semantica con LLM (rimuove duplicati con titoli/URL diversi)
+    before_llm_dedup = list(llm_confirmed)
     llm_confirmed = llm_dedup(llm_confirmed)
+    audit.stage("llm_deduplication", before_llm_dedup, llm_confirmed)
     post_llm_dedup_count = len(llm_confirmed)
     if post_llm_dedup_count < post_llm_count:
         logger.info(
@@ -858,29 +783,36 @@ def run_pipeline(dry_run: bool = False) -> None:
             post_llm_count, post_llm_dedup_count,
         )
 
-    # 5c. Filtra eventi passati post-LLM (ora le date sono estratte dal LLM)
+    # 5c. Ricontrolla le date della fonte dopo la classificazione.
     pre_date_filter2 = len(llm_confirmed)
+    before_date_filter2 = llm_confirmed
     llm_confirmed = [e for e in llm_confirmed if e.is_upcoming()]
+    audit.stage("post_classification_date", before_date_filter2, llm_confirmed)
     post_date_filter2 = len(llm_confirmed)
     if pre_date_filter2 > post_date_filter2:
         logger.info(
-            "Post LLM date filter: %d → %d (rimossi %d eventi passati grazie a date LLM)",
+            "Post LLM date filter: %d → %d (rimossi %d eventi passati)",
             pre_date_filter2, post_date_filter2, pre_date_filter2 - post_date_filter2,
         )
 
     # 5d. Quality gate deterministico (non-Milano / chiaramente passato)
     quality_passed: list[HackathonEvent] = []
+    quality_reasons: dict[str, str] = {}
     for event in llm_confirmed:
         ok, reason = _passes_quality_gate(event)
+        quality_reasons[event.id] = reason
         if ok:
             quality_passed.append(event)
         else:
             logger.info("Quality gate: scartato '%s' (%s)", event.title[:70], reason)
+    audit.stage("quality", llm_confirmed, quality_passed, quality_reasons)
     llm_confirmed = quality_passed
 
     # 5e. Dedup fallback deterministico (anche se llm_dedup fallisce parsing)
     pre_fallback_dedup = len(llm_confirmed)
+    before_fallback_dedup = llm_confirmed
     llm_confirmed = _deterministic_semantic_dedup(llm_confirmed)
+    audit.stage("identity_deduplication", before_fallback_dedup, llm_confirmed)
     if len(llm_confirmed) < pre_fallback_dedup:
         logger.info(
             "Post fallback dedup: %d -> %d unici",
@@ -888,9 +820,11 @@ def run_pipeline(dry_run: bool = False) -> None:
             len(llm_confirmed),
         )
 
-    # 5f. Dedup finale contro storico usando date/titoli arricchiti dal LLM
+    # 5f. Dedup finale contro storico, conservando i fatti delle fonti.
     pre_store_dedup = len(llm_confirmed)
+    before_store_dedup = llm_confirmed
     llm_confirmed = deduplicate_post_llm_against_store(llm_confirmed, store)
+    audit.stage("archive_deduplication", before_store_dedup, llm_confirmed)
     if len(llm_confirmed) < pre_store_dedup:
         logger.info(
             "Post-LLM dedup vs store: %d -> %d unici",
@@ -900,6 +834,8 @@ def run_pipeline(dry_run: bool = False) -> None:
 
     # 6. Salva nuovi hackathon nello storico
     notified_count = len(llm_confirmed)
+    audit.stage("publication", keyword_passed, llm_confirmed)
+    _save_candidate_audit(audit)
     for event in llm_confirmed:
         event.is_hackathon = True
         store.add_event(event)
@@ -908,7 +844,7 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 7. Salva report su file (accessibile via /report dal bot)
     report = {
         "date": start_time.strftime("%Y-%m-%d %H:%M"),
-        "status": "completed",
+        "status": "degraded" if failed_collectors or classification_errors else "completed",
         "collectors_ok": len(ok_collectors),
         "collectors_total": len(collectors),
         "failed_collectors": _failed_collector_names(failed_collectors),
@@ -920,6 +856,10 @@ def run_pipeline(dry_run: bool = False) -> None:
         "new_events": notified_count,
         "total_stored": store.count,
         "review_queue": len(review_queue),
+        "attempted_at": start_time.isoformat(),
+        "classification_completed": classification_errors == 0,
+        "classification_errors": classification_errors,
+        "candidate_stages": audit.summary(),
     }
     _write_report(report)
 

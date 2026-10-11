@@ -226,8 +226,8 @@ class TestLLMDedup:
     @pytest.fixture
     def events(self):
         return [
-            _make_event("Milan AI Hackathon"),
-            _make_event("Milan AI Hackathon - official page"),
+            _make_event("Aurora AI Hackathon"),
+            _make_event("Aurora AI Hackathon - official page"),
             _make_event("Milan Game Jam"),
         ]
 
@@ -235,15 +235,16 @@ class TestLLMDedup:
     @patch("filters.llm_filter._call_llm")
     def test_normalizes_string_indices_from_llm(self, mock_call, mock_config, events):
         mock_config.GROQ_API_KEY = "test-key"
+        events[0].date_str = events[1].date_str = "2026-11-20"
         mock_call.return_value = json.dumps([
-            {"group": ["0", "1"], "best_title": "Milan AI Hackathon"},
+            {"group": ["0", "1"], "best_title": "Aurora AI Hackathon"},
             {"group": ["2"]},
         ])
 
         result = llm_dedup(events)
 
         assert len(result) == 2
-        assert result[0].title == "Milan AI Hackathon"
+        assert result[0].title == "Aurora AI Hackathon"
         assert result[0].alternate_urls == [events[1].url]
 
     @patch("filters.llm_filter.config")
@@ -260,8 +261,8 @@ class TestLLMDedup:
         result = llm_dedup(events)
 
         assert {event.title for event in result} == {
-            "Milan AI Hackathon",
-            "Milan AI Hackathon - official page",
+            "Aurora AI Hackathon",
+            "Aurora AI Hackathon - official page",
             "Milan Game Jam",
         }
         assert len(result) == 3

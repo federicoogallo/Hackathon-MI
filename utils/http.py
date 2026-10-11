@@ -13,6 +13,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 import config
+from utils.collector_health import public_endpoint, record_issue, record_success
 
 logger = logging.getLogger(__name__)
 
@@ -74,25 +75,30 @@ def safe_get(
     try:
         response = session.get(url, params=params, headers=headers, timeout=timeout)
         if response.status_code >= 400:
+            record_issue("blocked" if response.status_code in {401, 403, 405, 429} else "http_error",
+                         f"HTTP {response.status_code}", url)
             logger.warning(
-                "HTTP %d per %s (params=%s)",
+                "HTTP %d per %s",
                 response.status_code,
-                url,
-                params,
+                public_endpoint(url),
             )
             return None
+        record_success()
         return response
 
     except requests.exceptions.Timeout:
-        logger.error("Timeout (%ds) per %s", timeout, url)
+        record_issue("timeout", "request timed out", url)
+        logger.error("Timeout (%ds) per %s", timeout, public_endpoint(url))
         return None
 
     except requests.exceptions.ConnectionError:
-        logger.error("Connessione fallita per %s", url)
+        record_issue("connection_error", "connection failed", url)
+        logger.error("Connessione fallita per %s", public_endpoint(url))
         return None
 
     except requests.exceptions.RequestException as e:
-        logger.error("Errore HTTP per %s: %s", url, e)
+        record_issue("http_error", type(e).__name__, url)
+        logger.error("Errore HTTP per %s: %s", public_endpoint(url), type(e).__name__)
         return None
 
 
@@ -109,7 +115,8 @@ def safe_get_json(
     try:
         return response.json()
     except ValueError:
-        logger.error("JSON non valido da %s", url)
+        record_issue("parse_error", "invalid JSON", url)
+        logger.error("JSON non valido da %s", public_endpoint(url))
         return None
 
 

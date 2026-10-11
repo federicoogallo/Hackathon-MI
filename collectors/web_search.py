@@ -9,42 +9,71 @@ Query focalizzate e filtro URL per ridurre il rumore.
 import logging
 import re
 import time
+from datetime import date
 
-import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
+from utils.event_evidence import enrich_event_evidence, is_promising_result
 
 logger = logging.getLogger(__name__)
 
-# Query di ricerca — focalizzate su eventi reali e pagine evento
-SEARCH_QUERIES = [
-    # ── Query generiche ──
-    "hackathon Milano 2026",
-    "hackathon Milan Italy 2026",
-    "hackathon Milano 2025 2026",
-    # ── Varianti formato ──
-    "makeathon OR datathon OR ideathon Milano 2026",
-    "startup weekend Milano 2026",
-    "game jam Milano 2026",
-    "coding challenge Milano 2026",
-    "cybersecurity hackathon Milano 2026",
-    # ── Italian multi-lingua ──
-    "maratona di programmazione Milano 2026",
-    "sfida digitale innovazione Milano 2026",
-    "competizione coding Milano OR Lombardia 2026",
-    # ── Piattaforme evento ──
-    "site:eventbrite.it hackathon Milano",
-    "site:eventbrite.com hackathon Milan",
-    "site:lu.ma hackathon Milan",
-    "site:devpost.com hackathon Milan Italy",
-    "site:meetup.com hackathon Milano",
-    "site:bo-om.it/news-ed-eventi hackathon Milano 2026",
-    "site:bo-om.it/nttdata_hackathon IkigAIverse Milano 2026",
-    # ── Hub innovazione ──
-    "site:polihub.it hackathon",
-    "site:cariplofactory.it hackathon",
-    "site:fondazionetriulza.org hackathon",
-    "site:telespazio.com hackathon Milano 2026",
-]
+MAX_EVIDENCE_PAGES = 8
+
+
+def build_search_queries(today: date | None = None) -> list[str]:
+    """Keep broad discovery current and cover student/community announcements."""
+    year = (today or date.today()).year
+    return [
+        f"hackathon Milano {year}",
+        f"hackathon Milan Italy {year}",
+        f"hackathon Milano {year + 1}",
+        f"hackathon Milan Italy {year + 1}",
+        f"makeathon OR datathon OR ideathon Milano {year}",
+        f"startup weekend Milano {year}",
+        f"game jam Milano {year}",
+        f"coding challenge Milano {year}",
+        f"cybersecurity hackathon Milano {year}",
+        f"maratona di programmazione Milano {year}",
+        f"sfida digitale innovazione Milano {year}",
+        f"competizione coding Milano OR Lombardia {year}",
+        "site:eventbrite.it hackathon Milano",
+        "site:eventbrite.com hackathon Milan",
+        "site:lu.ma hackathon Milan",
+        "site:luma.com hackathon Milan",
+        "site:devpost.com hackathon Milan Italy",
+        "site:meetup.com hackathon Milano",
+        f"site:bo-om.it/news-ed-eventi hackathon Milano {year}",
+        "site:polihub.it hackathon",
+        "site:cariplofactory.it hackathon",
+        "site:fondazionetriulza.org hackathon",
+        f"site:telespazio.com hackathon Milano {year}",
+        f"site:unibocconi.it hackathon {year}",
+        f"Bocconi BAINSA hackathon {year}",
+        f"Anthropic Claude hackathon Milan {year}",
+        "site:luma.com Bocconi hackathon",
+        "site:lu.ma BAINSA hackathon",
+        f"associazioni studentesche hackathon Milano {year}",
+    ]
+
+
+def evidence_candidates(events: list[HackathonEvent], today: date | None = None) -> list[HackathonEvent]:
+    """Rotate the small fetch budget daily, reserving space for community sources."""
+    day = (today or date.today()).toordinal()
+    candidates = sorted((event for event in events if is_promising_result(event)), key=lambda event: event.url)
+    if not candidates:
+        return []
+    community = [event for event in candidates if re.search(
+        r"bocconi|bainsa|anthropic", f"{event.title} {event.description} {event.url}", re.I
+    )]
+    if community:
+        offset = day % len(community)
+        community = community[offset:] + community[:offset]
+    reserved = community[:2]
+    remaining = [event for event in candidates if event not in reserved]
+    if remaining:
+        offset = day % len(remaining)
+        remaining = remaining[offset:] + remaining[:offset]
+    return (reserved + remaining)[:MAX_EVIDENCE_PAGES]
 
 # URL che NON sono pagine evento (listing, profili, wiki, ...)
 # NOTA: NON blocchiamo post social (LinkedIn, Facebook) — possono contenere
@@ -103,17 +132,21 @@ class WebSearchCollector(BaseCollector):
             from ddgs import DDGS
         except ImportError:
             logger.warning("ddgs non installato — skip collector web_search")
+            record_issue("disabled", "ddgs is not installed")
             return []
 
         all_events: list[HackathonEvent] = []
         seen_urls: set[str] = set()
 
-        for i, query in enumerate(SEARCH_QUERIES):
+        for i, query in enumerate(build_search_queries()):
             if i > 0:
                 time.sleep(2)  # Pausa tra query per evitare rate limit
             events = self._search(query, seen_urls)
             all_events.extend(events)
 
+        candidates = evidence_candidates(all_events)
+        enriched = sum(enrich_event_evidence(event) for event in candidates)
+        logger.info("Web Search: pagine approfondite %d/%d", enriched, len(candidates))
         logger.info("Web Search: trovati %d risultati totali", len(all_events))
         return all_events
 
@@ -130,6 +163,7 @@ class WebSearchCollector(BaseCollector):
             ))
         except Exception as e:
             logger.warning("Errore DuckDuckGo per query '%s': %s", query, e)
+            record_issue("error", f"Search query failed: {query}")
             return []
 
         events: list[HackathonEvent] = []

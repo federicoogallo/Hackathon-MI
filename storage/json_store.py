@@ -1,22 +1,19 @@
 """
-Storage JSON con deduplicazione a tre livelli.
+Storage JSON con identità evento condivisa con la pipeline.
 
-Livello 1 — Esatto: SHA256(normalized_url) — stesso URL = stesso evento.
-Livello 2 — Fuzzy:  SequenceMatcher sul titolo normalizzato (ratio > 0.75)
-                     → stesso evento da fonti diverse con URL differenti.
-Livello 3 — Semantico: stessa data + keyword distintive condivise tra
-                        titolo/descrizione → stesso evento con titoli diversi
-                        (es. pagina ufficiale vs articolo/post che lo cita).
+URL e titoli distintivi identificano duplicati soltanto quando date ed
+edizioni sono compatibili. Le parole generiche non identificano un evento.
 """
 
 import json
 import logging
-import re
-from difflib import SequenceMatcher
 from pathlib import Path
 
 import config
-from models import HackathonEvent
+from models import HackathonEvent, _normalize_url
+from utils.event_identity import (
+    distinctive_keywords, merge_event_evidence, same_event, title_core_words,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,237 +78,61 @@ class EventStore:
         """Livello 1: check esatto per ID (hash URL)."""
         return event_id in self._events
 
-    def find_fuzzy_match(self, title_normalized: str) -> dict | None:
-        """Livello 2: cerca un evento con titolo simile (ratio > threshold).
-
-        Returns:
-            Il dict dell'evento matchato, o None.
-        """
-        for stored in self._events.values():
-            stored_title = stored.get("title", "")
-            # Normalizza il titolo stored con la stessa logica
-            from models import _normalize_title
-            stored_norm = _normalize_title(stored_title)
-
-            ratio = SequenceMatcher(None, title_normalized, stored_norm).ratio()
-            if ratio >= config.FUZZY_DEDUP_THRESHOLD:
-                return stored
-        return None
-
-    # ─── Keyword distintive per dedup semantico ─────────────────────────
-
-    # Parole troppo generiche per essere usate come keyword di dedup
-    _STOPWORDS = frozenset({
-        # Italiano
-        "del", "dei", "delle", "degli", "per", "con", "una", "uno", "alla",
-        "alle", "allo", "agli", "che", "nel", "nella", "sono", "come", "dal",
-        "dalla", "anche", "tra", "più", "suo", "suoi", "loro", "questo",
-        "questa", "essere", "fare", "dire", "non", "tutto", "tutti",
-        # Inglese
-        "the", "for", "and", "with", "from", "that", "this", "will", "have",
-        "has", "are", "was", "were", "been", "being", "about", "into",
-        "your", "our", "their", "which", "what", "when", "where", "how",
-        # Termini evento generici (non discriminanti)
-        "hackathon", "challenge", "event", "evento", "eventi", "competition",
-        "milano", "milan", "italy", "italia", "lombardia",
-        "università", "university", "politecnico",
-        "progetti", "iniziative", "open", "innovation", "innovazione",
-        "2024", "2025", "2026", "2027", "2028",
-    })
+    def find_fuzzy_match(self, title_normalized: str, event: HackathonEvent | None = None) -> dict | None:
+        """Compatibility wrapper; callers with a record retain date/edition guards."""
+        candidate = event or HackathonEvent(title=title_normalized, url="", source="")
+        return self._find_identity_match(candidate)
 
     @staticmethod
     def _extract_distinctive_keywords(text: str) -> set[str]:
-        """Estrae keyword distintive da un testo (titolo + descrizione).
-
-        Restituisce token significativi: acronimi (>=2 char MAIUSCOLI nel
-        testo originale) e parole ≥ 4 caratteri non nella stopword list.
-        """
-        if not text:
-            return set()
-        # Estrai acronimi dal testo originale (prima della normalizzazione)
-        acronyms = {m.lower() for m in re.findall(r"\b[A-Z]{2,}\b", text)}
-        # Normalizza e tokenizza
-        norm = re.sub(r"[^\w\s]", " ", text.lower())
-        words = set(norm.split())
-        # Tieni parole ≥ 4 char + acronimi ≥ 2 char, escluse stopwords
-        keywords = {w for w in words if len(w) >= 4 and w not in EventStore._STOPWORDS}
-        keywords |= {a for a in acronyms if len(a) >= 2 and a not in EventStore._STOPWORDS}
-        return keywords
-
-    @staticmethod
-    def _parse_date_prefix(date_str: str) -> str:
-        """Estrae YYYY-MM-DD dal campo date_str (può contenere timestamp ISO)."""
-        if not date_str:
-            return ""
-        return date_str[:10] if len(date_str) >= 10 else ""
-
-    def find_same_event_by_date_keywords(self, event: HackathonEvent) -> dict | None:
-        """Livello 3: stessa data + keyword distintive condivise.
-
-        Per eventi con la stessa data (non vuota), controlla se keyword
-        distintive del nuovo evento appaiono nel titolo+descrizione di
-        un evento nello storico (o viceversa).
-        Match se overlap ≥ 2 keyword, oppure 1 keyword molto lunga (≥8 char).
-
-        Returns:
-            Il dict dell'evento matchato, o None.
-        """
-        event_date = self._parse_date_prefix(event.date_str)
-        if not event_date:
-            return None
-
-        event_text = f"{event.title} {event.description}"
-        event_kw = self._extract_distinctive_keywords(event_text)
-        if len(event_kw) < 2:
-            return None
-
-        for stored in self._events.values():
-            stored_date = self._parse_date_prefix(stored.get("date_str", ""))
-            if stored_date != event_date:
-                continue
-
-            stored_text = f"{stored.get('title', '')} {stored.get('description', '')}"
-            stored_kw = self._extract_distinctive_keywords(stored_text)
-
-            overlap = event_kw & stored_kw
-            # ≥2 keyword qualsiasi, OPPURE 1 keyword molto distintiva (≥8 char)
-            # es. "wikimedia" (9 char) è sufficiente da sola come segnale forte
-            has_strong_kw = any(len(kw) >= 8 for kw in overlap)
-            if len(overlap) >= 2 or (len(overlap) == 1 and has_strong_kw):
-                logger.debug(
-                    "Date+keyword match: '%s' ≈ '%s' (date=%s, overlap=%s)",
-                    event.title[:60], stored.get("title", "")[:60],
-                    event_date, overlap,
-                )
-                return stored
-
-        return None
-
-    # ─── Livello 4: cross-reference (descrizione menziona titolo) ───────
-
-    _TITLE_STOPWORDS = frozenset({
-        # Parole generiche che compaiono in quasi tutti i titoli di hackathon
-        "hackathon", "hack", "challenge", "competition", "contest", "event",
-        "evento", "eventi", "league", "weekend", "day", "days", "jam",
-        "milano", "milan", "italy", "italia", "rome", "torino", "roma",
-        "powered", "the", "for", "and", "with", "from", "that",
-        "this", "will", "have", "are", "was", "del", "dei", "delle",
-        "per", "con", "una", "uno", "alla", "alle", "che", "nel", "nella",
-        "tre", "giorni", "sfida", "colpi", "coding", "ospita",
-        "2024", "2025", "2026", "2027", "2028",
-    })
+        return distinctive_keywords(text)
 
     @staticmethod
     def _extract_title_core_words(title: str) -> list[str]:
-        """Estrae le parole significative dal titolo (non stopword, ≥2 char)."""
-        cleaned = re.sub(r"[^\w\s]", " ", title.lower())
-        words = cleaned.split()
-        return [w for w in words if w not in EventStore._TITLE_STOPWORDS and len(w) >= 2]
+        return title_core_words(title)
+
+    def _find_identity_match(self, event: HackathonEvent) -> dict | None:
+        return next((stored for _, stored in sorted(self._events.items())
+                     if same_event(event, stored)), None)
+
+    def find_same_event_by_date_keywords(self, event: HackathonEvent) -> dict | None:
+        """Use the shared identity policy, never arbitrary description keywords."""
+        return self._find_identity_match(event)
 
     def find_cross_reference_match(self, event: HackathonEvent) -> dict | None:
-        """Livello 4: cross-reference — la descrizione di un evento cita un evento noto.
-
-        Controlla se ≥3 parole significative consecutive del titolo di un evento
-        nello storico compaiono TUTTE nel testo (titolo+descrizione) del nuovo evento,
-        o viceversa. Cattura articoli/news che parlano di hackathon già nel DB,
-        anche se con titolo e URL completamente diversi.
-
-        Returns:
-            Il dict dell'evento matchato, o None.
-        """
-        event_text_words = set(
-            re.sub(r"[^\w\s]", " ", f"{event.title} {event.description}".lower()).split()
-        )
-        new_core = self._extract_title_core_words(event.title)
-
-        min_consecutive = 3  # serve overlap di almeno 3 parole consecutive dal titolo
-
-        for stored in self._events.values():
-            stored_title = stored.get("title", "")
-            stored_core = self._extract_title_core_words(stored_title)
-
-            # Check A: parole del titolo stored nel testo del nuovo evento
-            if len(stored_core) >= min_consecutive:
-                for i in range(len(stored_core) - min_consecutive + 1):
-                    phrase = stored_core[i:i + min_consecutive]
-                    if all(w in event_text_words for w in phrase):
-                        logger.info(
-                            "Cross-reference match: '%s' cita '%s' (phrase=%s)",
-                            event.title[:60], stored_title[:60], phrase,
-                        )
-                        return stored
-
-            # Check B: parole del titolo nuovo nel testo dello stored
-            if len(new_core) >= min_consecutive:
-                stored_text_words = set(
-                    re.sub(r"[^\w\s]", " ",
-                           f"{stored_title} {stored.get('description', '')}".lower()).split()
-                )
-                for i in range(len(new_core) - min_consecutive + 1):
-                    phrase = new_core[i:i + min_consecutive]
-                    if all(w in stored_text_words for w in phrase):
-                        logger.info(
-                            "Cross-reference match: '%s' citato in '%s' (phrase=%s)",
-                            event.title[:60], stored_title[:60], phrase,
-                        )
-                        return stored
-
-        return None
+        """Cross-references obey the same edition and identity checks as all dedup."""
+        return self._find_identity_match(event)
 
     def is_duplicate(self, event: HackathonEvent) -> bool:
-        """Verifica se un evento è duplicato (livello 1 + 2 + 3).
+        """Check identity without letting titles or reused URLs collapse editions.
 
-        Se è un duplicato fuzzy o semantico (stesso evento, URL diverso),
-        aggiunge l'URL come alternate_url all'evento esistente.
-
-        Returns:
-            True se l'evento è duplicato, False se è nuovo.
+        An incompatible edition on a reused URL returns False so it undergoes
+        classification instead of being silently discarded as already known.
         """
-        # Livello 1a: URL esatto (ID = hash dell'URL)
-        if self.has_event(event.id):
-            return True
-
-        # Livello 1b: URL già noto come alternate_url di un evento esistente
-        if event.url in self._alt_url_index:
-            return True
-
-        # Livello 2: titolo fuzzy
-        match = self.find_fuzzy_match(event.title_normalized)
-        if match is not None:
-            self._add_alternate_url(match, event, "Fuzzy match")
-            return True
-
-        # Livello 3: stessa data + keyword distintive
-        match = self.find_same_event_by_date_keywords(event)
-        if match is not None:
-            self._add_alternate_url(match, event, "Date+keyword match")
-            return True
-
-        # Livello 4: cross-reference (descrizione cita titolo di evento noto)
-        match = self.find_cross_reference_match(event)
-        if match is not None:
-            self._add_alternate_url(match, event, "Cross-reference match")
-            return True
-
-        return False
+        match = self._find_identity_match(event)
+        if match is None:
+            return False
+        self._add_alternate_url(match, event, "Identity match")
+        return True
 
     def _add_alternate_url(self, match: dict, event: HackathonEvent, label: str) -> None:
-        """Aggiunge l'URL di un evento duplicato come alternate_url e aggiorna l'indice."""
-        alt_urls = match.setdefault("alternate_urls", [])
-        if event.url not in alt_urls:
-            alt_urls.append(event.url)
-            # Aggiorna l'indice alternate_urls
-            self._alt_url_index[event.url] = match.get("id", "")
-            logger.info(
-                "%s: '%s' ≈ '%s' — aggiunta URL alternativa",
-                label, event.title, match.get("title"),
-            )
+        primary = _normalize_url(match.get("url", ""))
+        urls = {*match.get("alternate_urls", []), event.url, *event.alternate_urls}
+        match["alternate_urls"] = sorted({_normalize_url(url) for url in urls if url} - {primary})
+        for url in match["alternate_urls"]:
+            self._alt_url_index[url] = match.get("id", "")
 
     # ─── Modifica ───────────────────────────────────────────────────────
 
     def add_event(self, event: HackathonEvent) -> None:
         """Aggiunge un evento allo storico (senza controllo duplicati)."""
-        self._events[event.id] = event.to_dict()
+        incoming = event.to_dict()
+        existing = self._events.get(event.id)
+        if existing is not None:
+            incoming = merge_event_evidence(existing, incoming)
+        self._events[event.id] = incoming
+        for url in incoming.get("alternate_urls", []):
+            self._alt_url_index[url] = event.id
 
     def replace_events(self, events: list[dict]) -> None:
         """Sostituisce completamente lo storico con una lista di eventi."""

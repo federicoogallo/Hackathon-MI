@@ -47,6 +47,7 @@ Configure only the integrations you need. `config.py` reads the local `.env`; ke
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Optional scan summaries and authorized bot commands |
 | `GITHUB_REPO_URL` | Repository used by generated contribution links |
 | `NEXT_PUBLIC_SITE_URL` | Canonical website origin and notification destination |
+| `CANDIDATE_AUDIT_DIR` | Optional private diagnostics directory; defaults to ignored `.local/discovery/`, empty disables it |
 
 Run the pipeline:
 
@@ -65,7 +66,9 @@ The [collection workflow](../.github/workflows/check_hackathons.yml) supports ma
 
 Set the required API credentials in **GitHub → Settings → Secrets and variables → Actions**. The workflow runs tests, collects events, rebuilds static output and commits the resulting public data. Review the workflow's explicit `file_pattern` before adding any new generated files.
 
-Per-source status, durations and failures are written to `data/last_report.json`. This local runtime file is ignored by Git and uploaded as the `hackathon-monitor-report` Actions artifact. Some source integrations can fail while the rest of the scan completes; inspect this report when diagnosing coverage.
+Per-source status, durations and failures are written to `data/last_report.json`. This local runtime file is ignored by Git and uploaded as the `hackathon-monitor-report` Actions artifact. Healthy empty sources are distinguished from disabled, blocked, failed or partly working sources. Partial classification errors mark the report degraded; total collection/classification failures preserve the archive and its previous check timestamp.
+
+The last 30 candidate traces are kept in `.local/discovery/` by default, excluded from Git. The existing public workflow does not upload these traces; they are ephemeral on GitHub-hosted runners. For cross-run retention in CI, configure a separate private destination and transport with appropriate access controls. Do not add raw candidate traces to public artifacts or the auto-commit pattern. See [discovery and diagnostics](discovery.md).
 
 ## Web deployment
 

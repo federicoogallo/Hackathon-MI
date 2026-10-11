@@ -68,11 +68,10 @@ See the [event-page and source-review guide](docs/event-pages.md), [newsletter s
 Collectors (28 registered integrations, parallel collection)
         │
         ▼
-  4-Level Store Deduplication
-    L1  SHA-256(URL) exact match + alternate_urls index
-    L2  Fuzzy title (SequenceMatcher ≥ 0.75)
-    L3  Same date + shared distinctive keywords
-    L4  Cross-reference (title words found in another event's text)
+  Source Evidence and Event Identity
+    Bounded official-page retrieval for promising search candidates
+    Merge same-URL evidence independently of collector completion order
+    Match distinctive identities only across compatible dates/editions
         │
         ▼
   Keyword and Date Pre-filters
@@ -81,7 +80,7 @@ Collectors (28 registered integrations, parallel collection)
         ▼
   LLM Classification (Groq · GPT-OSS 120B + Qwen 3.6 27B fallback)
     Batches of 5, confidence threshold 0.7; Milan relevance checks
-        ├── Uncertain candidates → Manual Review Queue
+        ├── Uncertain/incomplete candidates → Persistent Review Queue
         │       data/review_queue.json + public review page
         ▼
   Post-classification Quality Gates and Semantic Deduplication
@@ -97,6 +96,8 @@ Collectors (28 registered integrations, parallel collection)
 
 The pipeline targets in-person hackathons in Milan and the monitored surrounding area. These filters reduce irrelevant results; they do not establish that every event has been manually verified. The website reads the public archive, while email addresses and delivery state stay in private services.
 
+Editorial publication dates stay separate from event dates. LLM output is validated by candidate index and cannot supply new event facts; model-proposed duplicate groups also require deterministic identity checks. Source health, classification failures and stage counts are reported separately. See [discovery and diagnostics](docs/discovery.md) for coverage limits and private evidence retention.
+
 <details>
 <summary><strong>Registered Collectors</strong></summary>
 
@@ -108,9 +109,9 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 |---|--------|--------|-------|
 | 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
 | 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | JSON-LD fallback without an API key |
-| 3 | **Web Search (DDG)** | DuckDuckGo DDGS | 22 configured queries (IT + EN + site-specific) |
+| 3 | **Web Search (DDG)** | DuckDuckGo DDGS | Current/next-year queries, university associations and organizer searches; up to 8 official-page checks per scan |
 | 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
-| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | lu.ma |
+| 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | luma.com Milan calendar; historical lu.ma URLs remain compatible |
 | 6 | **Devpost** | HTML scraping | International listings filtered for Milan relevance |
 | 7 | **PoliHub** | HTML scraping | Direct collector; results may also be discovered through web search |
 | 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
@@ -125,7 +126,7 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 | 12 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
 | 13 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
 | 14 | **Codemotion** | HTML scraping | community.codemotion.com — developer community events |
-| 15 | **Talent Garden** | HTML scraping | TAG Milano campuses (Calabiana, Isola). IT + EN pages |
+| 15 | **Talent Garden** | Public agenda JSON + HTML fallback | talentgarden.com/it/agenda; venue comes from each event |
 | 16 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
 | 17 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
 
@@ -158,7 +159,7 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 28 | **Telespazio** | HTML scraping | Leonardo/Telespazio career hackathon pages |
+| 28 | **Telespazio** | HTML scraping | Careers and current media-hub news listings; article dates are not event dates |
 
 </details>
 
@@ -252,7 +253,7 @@ python scripts/admin.py list
 # Publish a candidate into data/events.json
 python scripts/admin.py approve <candidate-id> --reason "Verified Milan event"
 
-# Suppress a candidate from future queues (review queue only)
+# Suppress a candidate from future scans and review queues
 python scripts/admin.py reject <candidate-id> --reason-code not_milan --reason "Munich venue"
 
 # Remove a candidate from review only; it may reappear on a future scan
@@ -506,8 +507,8 @@ hackathon-monitor/
 - **Source coverage:** scraping can fail when websites change, block automated access or return incomplete data. Integrations such as PoliHub may be affected by access controls; web search can surface additional public pages but is not exhaustive.
 - **Social platforms:** LinkedIn and Twitter/X content is discovered through web-search queries in this project; no direct event API integration is implemented for them.
 - **Groq LLM:** the configured defaults are `openai/gpt-oss-120b` and the `qwen/qwen3.6-27b` fallback; legacy model IDs listed in `config.py` are ignored. Provider availability and account limits can change. Without working classification access, new candidates cannot be validated; a complete classification failure preserves the existing archive and records the issue in `data/last_report.json`.
-- **Manual review**: low-confidence candidates are not published automatically; they are written to `data/review_queue.json` and can be approved or rejected with `scripts/admin.py`.
-- **Run diagnostics**: `data/last_report.json` includes per-collector status, event counts, durations, and errors. GitHub Actions uploads it as the `hackathon-monitor-report` artifact.
+- **Manual review**: low-confidence, insufficient-evidence and failed-classification candidates stay pending until resolution or expiry; undated entries expire after 60 days. They can be approved or rejected with `scripts/admin.py`. Rejection also prevents automatic republication of the same candidate.
+- **Run diagnostics**: `data/last_report.json` distinguishes healthy, empty, degraded, blocked, disabled and failed sources, plus classification errors and stage counts. GitHub Actions uploads this aggregate report as the `hackathon-monitor-report` artifact. Candidate evidence stays in ignored local storage, not in that artifact.
 - **Some collectors** may return errors while the remaining sources complete. A successful overall run does not imply every source was healthy.
 - **Publication timing:** the Next.js site reads the archive bundled with its deployment. Data changes become visible after the production build, not immediately after a local command.
 - **Newsletter:** real subscriptions and delivery require configured private services; unconfigured deployments show the unavailable state without an email form. Email-provider errors or uncertain sends can require maintainer intervention.

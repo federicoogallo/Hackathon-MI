@@ -5,12 +5,13 @@ Utility per mantenere una coda di revisione manuale dei candidati dubbi.
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 import config
 from models import HackathonEvent
+from utils.event_identity import editions_compatible, merge_event_evidence
 
 
 REVIEW_MIN_CONFIDENCE = 0.45
@@ -44,6 +45,8 @@ def save_review_decisions(decisions: dict[str, dict[str, Any]], path: Path | Non
 
 def _needs_manual_review(event: HackathonEvent) -> bool:
     """Decide se un candidato LLM merita revisione umana."""
+    if event.classification_status in {"insufficient_evidence", "error"}:
+        return True
     if event.confidence <= 0.0:
         return False
     if event.is_hackathon and event.confidence < config.LLM_CONFIDENCE_THRESHOLD:
@@ -56,9 +59,10 @@ def _needs_manual_review(event: HackathonEvent) -> bool:
 def _candidate_dict(event: HackathonEvent) -> dict[str, Any]:
     item = event.to_dict()
     item["review_status"] = "needs_review"
-    item["queued_at"] = datetime.now().isoformat()
+    item["queued_at"] = datetime.now(timezone.utc).isoformat()
+    item["last_seen_at"] = item["queued_at"]
     item["review_note"] = (
-        "AI uncertain: approve to publish, reject to suppress future repeats."
+        "Evidence needs review: verify date, venue and event format before approval."
     )
     return item
 
@@ -67,24 +71,53 @@ def build_review_queue(
     candidates: list[HackathonEvent],
     confirmed: list[HackathonEvent],
     decisions: dict[str, dict[str, Any]] | None = None,
+    *,
+    previous: list[dict[str, Any]] | None = None,
+    ref_date: date | None = None,
+    published_ids: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Costruisce la coda da candidati passati al LLM ma non pubblicati."""
+    """Keep unresolved candidates until decision, event expiry or 60 days without a date."""
     decisions = decisions or {}
-    confirmed_ids = {event.id for event in confirmed}
-    queue: list[dict[str, Any]] = []
-    seen: set[str] = set()
+    today = ref_date or datetime.now(timezone.utc).date()
+    confirmed_ids = {event.id for event in confirmed} | (published_ids or set())
+    queue_by_id = {item["id"]: dict(item) for item in (previous or []) if item.get("id")}
 
     for event in candidates:
-        if event.id in seen or event.id in confirmed_ids:
-            continue
-        seen.add(event.id)
-
-        decision = decisions.get(event.id, {}).get("decision")
-        if decision in {"approved", "rejected"}:
-            continue
         if not _needs_manual_review(event):
+            if event.classification_status in {"confirmed", "rejected"}:
+                queue_by_id.pop(event.id, None)
             continue
-        queue.append(_candidate_dict(event))
+        item = _candidate_dict(event)
+        if event.id in queue_by_id:
+            prior = queue_by_id[event.id]
+            if editions_compatible(prior, item):
+                merged = merge_event_evidence(prior, item)
+                for key in ("confidence", "is_hackathon", "review_status", "review_reason",
+                            "classification_status", "review_note", "last_seen_at"):
+                    merged[key] = item[key]
+                merged["queued_at"] = prior.get("queued_at", item["queued_at"])
+                item = merged
+        queue_by_id[event.id] = item
+
+    queue: list[dict[str, Any]] = []
+    for event_id, item in queue_by_id.items():
+        if event_id in confirmed_ids or decisions.get(event_id, {}).get("decision") in {"approved", "rejected"}:
+            continue
+        event = HackathonEvent(
+            title=item.get("title", ""), url=item.get("url", ""), source=item.get("source", ""),
+            date_str=item.get("date_str", ""), date_source=item.get("date_source", ""),
+        )
+        if event.is_past(today):
+            continue
+        if event.parsed_date() is None:
+            try:
+                queued = datetime.fromisoformat(item.get("queued_at", "")).date()
+            except (TypeError, ValueError):
+                queued = today
+                item["queued_at"] = today.isoformat()
+            if queued < today - timedelta(days=60):
+                continue
+        queue.append(item)
 
     queue.sort(key=lambda item: (-float(item.get("confidence", 0.0)), item.get("title", "")))
     return queue

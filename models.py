@@ -80,6 +80,16 @@ class HackathonEvent:
     reviewed_at: str = ""
     alternate_urls: list[str] = field(default_factory=list)
     discovered_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    published_at: str = ""
+    date_source: str = ""
+    classification_status: str = ""
+
+    @property
+    def has_event_date(self) -> bool:
+        """Legacy dates remain compatible; editorial/unknown dates are not event dates."""
+        return bool(self.date_str.strip()) and self.date_source not in {
+            "publication", "unknown", "deadline",
+        }
 
     def parsed_date(self) -> Optional[date]:
         """Prova a parsare `date_str` in un `date`.
@@ -87,7 +97,7 @@ class HackathonEvent:
         Supporta ISO, alcuni formati comuni e pattern numerici. Restituisce
         `None` se non è possibile interpretare la data.
         """
-        s = (self.date_str or "").strip()
+        s = (self.date_str or "").strip() if self.has_event_date else ""
         if not s:
             return None
 
@@ -182,6 +192,9 @@ class HackathonEvent:
             "reviewed_at": self.reviewed_at,
             "alternate_urls": self.alternate_urls,
             "discovered_at": self.discovered_at,
+            "published_at": self.published_at,
+            "date_source": self.date_source,
+            "classification_status": self.classification_status,
         }
         return data
 
@@ -209,7 +222,8 @@ class BaseCollector(ABC):
 
         Ogni implementazione deve:
         - Gestire i propri errori di rete internamente
-        - Ritornare una lista vuota (mai None) in caso di problemi
+        - Segnalare errori non HTTP con utils.collector_health.record_issue
+        - Ritornare i record recuperati anche in caso di errore parziale
         - Loggare gli errori con logging standard
         """
         ...

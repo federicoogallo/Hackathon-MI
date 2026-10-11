@@ -102,7 +102,8 @@ class TestWebSearchCollector:
             import collectors.web_search as ws
             reload(ws)
             c = ws.WebSearchCollector()
-            events = c.collect()
+            with patch.object(ws.time, "sleep"), patch.object(ws, "enrich_event_evidence", return_value=False):
+                events = c.collect()
         assert len(events) >= 1
         assert events[0].source == "web_search"
         assert events[0].title == "Hackathon Milano 2026"
@@ -177,9 +178,9 @@ class TestLumaCollector:
         from collectors.luma import LumaCollector
         c = LumaCollector()
         events = c.collect()
-        # Potrebbe avere 0 se la struttura non matcha esattamente
-        # Il test verifica che non crashia
-        assert isinstance(events, list)
+        assert len(events) == 1
+        assert events[0].title == "Hack Milano"
+        assert events[0].location == "Milano, MI"
 
     @patch("collectors.luma.safe_get")
     def test_returns_empty_on_failure(self, mock_get):
@@ -231,16 +232,18 @@ class TestUniversitiesCollector:
     @patch("collectors.universities.safe_get")
     def test_filters_pagination_artifacts(self, mock_get):
         """Titoli numerici (come "10", "25") vengono filtrati."""
-        mock_get.return_value = """
+        mock_get.return_value = _mock_safe_get_response("""
         <html><body>
-        <a href="/event/1">Hackathon AI 2026</a>
-        <a href="/page/2">10</a>
-        <a href="/page/3">25</a>
+        <article><h3>Hackathon AI 2026</h3><a href="/event/1">Read more</a></article>
+        <article><h3>10</h3><a href="/page/2">10</a></article>
+        <article><h3>25</h3><a href="/page/3">25</a></article>
         </body></html>
-        """
+        """)
         from collectors.universities import UniversitiesCollector
         c = UniversitiesCollector()
         events = c.collect()
+        assert events
+        assert all(event.title == "Hackathon AI 2026" for event in events)
         # I titoli numerici non devono comparire
         for e in events:
             assert not e.title.strip().isdigit()

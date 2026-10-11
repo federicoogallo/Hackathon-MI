@@ -14,14 +14,22 @@ così se un sito cambia struttura gli altri continuano a funzionare.
 """
 
 import logging
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
 import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
+
+
+def _response_url(response, fallback: str) -> str:
+    """Use the final page URL when a university redirects its event hub."""
+    final_url = getattr(response, "url", None)
+    return final_url if isinstance(final_url, str) and final_url else fallback
 
 
 class UniversitiesCollector(BaseCollector):
@@ -49,6 +57,7 @@ class UniversitiesCollector(BaseCollector):
                 logger.info("Università %s: trovati %d eventi", name, len(events))
             except Exception as e:
                 logger.error("Università %s fallita: %s", name, e)
+                record_issue("parse_error", f"University parser failed: {name}")
 
         return all_events
 
@@ -67,7 +76,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "polimi.it", "Politecnico di Milano", seen
+                response.text, _response_url(response, url), "polimi.it", "Politecnico di Milano", seen
             ))
 
         return events
@@ -76,7 +85,7 @@ class UniversitiesCollector(BaseCollector):
 
     def _collect_bocconi(self) -> list[HackathonEvent]:
         urls = [
-            "https://www.unibocconi.it/en/events",
+            "https://www.unibocconi.it/en/news-and-events-hub/events",
         ]
         events: list[HackathonEvent] = []
         seen: set[str] = set()
@@ -86,7 +95,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "unibocconi.it", "Università Bocconi", seen
+                response.text, _response_url(response, url), "unibocconi.it", "Università Bocconi", seen
             ))
 
         return events
@@ -105,7 +114,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "unimib.it", "Università Bicocca", seen
+                response.text, _response_url(response, url), "unimib.it", "Università Bicocca", seen
             ))
 
         return events
@@ -125,7 +134,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "unicatt.it", "Università Cattolica", seen
+                response.text, _response_url(response, url), "unicatt.it", "Università Cattolica", seen
             ))
 
         return events
@@ -144,7 +153,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "iulm.it", "IULM", seen
+                response.text, _response_url(response, url), "iulm.it", "IULM", seen
             ))
 
         return events
@@ -163,7 +172,7 @@ class UniversitiesCollector(BaseCollector):
             if response is None:
                 continue
             events.extend(self._extract_events(
-                response.text, url, "unisr.it", "Uni Vita-Salute San Raffaele", seen
+                response.text, _response_url(response, url), "unisr.it", "Uni Vita-Salute San Raffaele", seen
             ))
 
         return events
@@ -176,6 +185,9 @@ class UniversitiesCollector(BaseCollector):
         """Parser generico che estrae eventi da una pagina universitaria."""
         soup = BeautifulSoup(html, "lxml")
         events: list[HackathonEvent] = []
+
+        if domain == "unibocconi.it":
+            return self._extract_bocconi_cards(soup, base_url, organizer, seen)
 
         # Cerca articoli, card, item di eventi
         containers = soup.find_all("article")
@@ -209,9 +221,10 @@ class UniversitiesCollector(BaseCollector):
                 # URL
                 link = container.find("a", href=True)
                 href = link.get("href", "") if link else ""
-                if href.startswith("/"):
-                    href = f"https://{domain}{href}"
+                href = urljoin(base_url, href) if href else ""
                 if not href or href in seen:
+                    continue
+                if urlparse(href).scheme not in {"http", "https"}:
                     continue
                 seen.add(href)
 
@@ -245,6 +258,42 @@ class UniversitiesCollector(BaseCollector):
                 logger.debug("Errore parsing container %s: %s", domain, e)
                 continue
 
+        return events
+
+    def _extract_bocconi_cards(
+        self, soup: BeautifulSoup, base_url: str, organizer: str, seen: set[str]
+    ) -> list[HackathonEvent]:
+        """Bocconi's cards have div titles; the outer article is the whole hub."""
+        events: list[HackathonEvent] = []
+        for card in soup.select("article.bds-component-event-card, article.bds-event-card-basic"):
+            title_el = card.select_one(
+                ".bds-component-event-card__title, .bds-event-card-basic__title"
+            )
+            link = card.find("a", href=True)
+            if title_el is None or link is None:
+                continue
+            title = title_el.get_text(" ", strip=True)
+            href = urljoin(base_url, link["href"])
+            if not title or href in seen or urlparse(href).scheme not in {"http", "https"}:
+                continue
+            seen.add(href)
+            date_el = card.select_one(
+                ".bds-component-event-card__date-el, .bds-event-card-basic__date-el"
+            )
+            location_el = card.select_one(
+                ".bds-component-event-card__location, .bds-event-card-basic__location"
+            )
+            abstract = card.select_one(".bds-event-card-basic__abstract, p")
+            events.append(HackathonEvent(
+                title=title,
+                url=href,
+                source=self.name,
+                description=abstract.get_text(" ", strip=True)[:500] if abstract else "",
+                date_str=date_el.get_text(" ", strip=True) if date_el else "",
+                date_source="event_card" if date_el else "",
+                location=location_el.get_text(" ", strip=True) if location_el else "",
+                organizer=organizer,
+            ))
         return events
 
 

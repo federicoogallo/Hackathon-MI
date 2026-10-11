@@ -296,7 +296,7 @@ class TestPipelineIntegration:
         mock_generate_readme_table,
         tmp_path,
     ):
-        """Se il LLM fallisce, non salva nuovi eventi ma aggiorna il timestamp scansione."""
+        """Se il LLM fallisce, non salva nuovi eventi né aggiorna il timestamp di verifica."""
         from main import run_pipeline
 
         store_instance = MagicMock()
@@ -334,7 +334,7 @@ class TestPipelineIntegration:
         mock_llm_dedup.assert_not_called()
         store_instance.add_event.assert_not_called()
         store_instance.save_with_timestamp.assert_not_called()
-        store_instance.touch_last_check.assert_called_once()
+        store_instance.touch_last_check.assert_not_called()
         mock_generate_html.assert_called_once()
         mock_generate_readme_table.assert_called_once()
 

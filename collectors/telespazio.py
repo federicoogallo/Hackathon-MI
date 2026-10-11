@@ -5,20 +5,20 @@ https://www.telespazio.com anche quando non emergono bene via web search.
 """
 
 import logging
-import re
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
 from models import BaseCollector, HackathonEvent
+from utils.event_evidence import enrich_from_html
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
 TELESPAZIO_INDEX_URLS = [
     "https://www.telespazio.com/en/careers",
-    "https://www.telespazio.com/en/news-and-stories",
-    "https://www.telespazio.com/it/news-and-stories",
+    "https://www.telespazio.com/en/media-hub/news-stories",
+    "https://www.telespazio.com/it/media-hub/news-storie",
 ]
 
 _DETAIL_KEYWORDS = (
@@ -29,18 +29,6 @@ _DETAIL_KEYWORDS = (
     "coding challenge",
     "innovation challenge",
 )
-
-_MONTHS = (
-    "january|february|march|april|may|june|july|august|september|"
-    "october|november|december|"
-    "gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|"
-    "settembre|ottobre|novembre|dicembre"
-)
-_DATE_PATTERN = re.compile(
-    rf"\b\d{{1,2}}(?:\s*[-/]\s*\d{{1,2}})?\s+(?:{_MONTHS})\s+20\d{{2}}\b",
-    re.I,
-)
-
 
 class TelespazioCollector(BaseCollector):
 
@@ -78,7 +66,8 @@ class TelespazioCollector(BaseCollector):
 
             abs_url = urljoin(base_url, href)
             parsed = urlparse(abs_url)
-            if "telespazio.com" not in parsed.netloc.lower():
+            host = (parsed.hostname or "").lower()
+            if parsed.scheme not in {"http", "https"} or not (host == "telespazio.com" or host.endswith(".telespazio.com")):
                 continue
 
             text = a.get_text(" ", strip=True).lower()
@@ -103,21 +92,18 @@ class TelespazioCollector(BaseCollector):
             return None
 
         description = self._extract_description(soup)
-        full_text = " ".join(soup.stripped_strings)
-        loc = "Milano" if re.search(r"\bmilan(?:o)?\b", full_text, re.I) else ""
-
-        date_match = _DATE_PATTERN.search(full_text)
-        date_str = date_match.group(0) if date_match else ""
-
-        return HackathonEvent(
+        event = HackathonEvent(
             title=title,
             url=url,
             source=self.name,
             description=description,
-            date_str=date_str,
-            location=loc,
+            date_source="unknown",
             organizer="Telespazio",
         )
+        # Article dates and Milan addresses in the global legal footer are not
+        # event facts. Accept structured Event data and retain prose as evidence.
+        enrich_from_html(event, response.text)
+        return event
 
     @staticmethod
     def _extract_title(soup: BeautifulSoup) -> str:

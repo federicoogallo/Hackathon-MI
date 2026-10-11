@@ -2,7 +2,7 @@
 Pre-filtro keyword per ridurre le chiamate al LLM.
 
 Logica:
-1. Se il testo contiene una keyword negativa → SCARTA (sicuramente non hackathon)
+1. Applica esclusioni e keyword negative, distinguendo premi/workshop accessori
 2. Se il testo contiene SOLO anni passati (es. 2024, 2023) → SCARTA (evento passato)
 3. Se il testo contiene una keyword positiva → PASSA al LLM (probabile hackathon)
 4. Se nessun match → SCARTA (risparmia le limitate chiamate LLM free tier)
@@ -60,6 +60,49 @@ _natural_date_pattern = re.compile(
     re.I,
 )
 _milan_pattern = re.compile(r"\bmilan(?:o)?\b", re.I)
+_building_event_pattern = re.compile(r"\b(?:hackathon|datathon|makeathon|buildathon|code\s*jam|game\s+jam)\b", re.I)
+_contextual_negative_patterns = {
+    r"\bvincitor[ei]\b",
+    r"\bworkshop\s+(?:gratuito|formativo|introduttivo)\b",
+}
+_past_event_context = re.compile(
+    r"\b(?:si\s+è\s+(?:svolt[oa]|tenut[oa])|(?:è|has)\s+(?:terminat[oa]|conclus[oa]|ended)|"
+    r"was\s+held|took\s+place|vincitor[ei]\s+(?:annunciat[oi]|premiat[oi])|"
+    r"(?:annunciat[oi]|premiat[oi])\s+(?:i\s+)?vincitor[ei])\b", re.I,
+)
+_month_numbers = {
+    name: index % 12 + 1
+    for index, name in enumerate(_month_names.split("|"))
+}
+
+
+def _has_future_building_event(event: HackathonEvent, text: str) -> bool:
+    """Allow incidental prizes/workshops through to classification, never publication."""
+    if not _building_event_pattern.search(text) or _past_event_context.search(text):
+        return False
+    today = datetime.now().date()
+    if event.has_event_date:
+        event_date = event.parsed_date()
+        if event_date is not None:
+            return event_date >= today
+
+    for match in _natural_date_pattern.finditer(text):
+        value = match.group(0)
+        day = re.match(r"\d{1,2}", value).group(0)
+        month = re.search(rf"\b({_month_names})\b", value, re.I).group(0).lower()
+        year = re.search(r"20\d{2}$", value).group(0)
+        try:
+            if datetime(int(year), _month_numbers[month], int(day)).date() >= today:
+                return True
+        except ValueError:
+            continue
+    for year, month, day in re.findall(r"\b(20\d{2})-(\d{2})-(\d{2})\b", text):
+        try:
+            if datetime(int(year), int(month), int(day)).date() >= today:
+                return True
+        except ValueError:
+            continue
+    return False
 
 # URL che sicuramente NON sono pagine evento
 _JUNK_URL_PATTERNS = [
@@ -205,7 +248,7 @@ def keyword_filter(event: HackathonEvent) -> bool:
 
     Returns:
         True → l'evento deve passare al LLM (o potrebbe essere un hackathon).
-        False → l'evento è sicuramente NON un hackathon (keyword negativa matchata).
+        False → candidato escluso dalle regole del pre-filtro.
     """
     text = f"{event.title} {event.description}".strip()
     text_lower = text.lower()
@@ -226,15 +269,18 @@ def keyword_filter(event: HackathonEvent) -> bool:
         logger.info("Scartato per URL non-evento: %s — %s", event.title[:60], event.url[:80])
         return False
 
-    # Step 1: keyword negative → scarta con certezza
+    # Prizes and introductory workshops can be part of a future hackathon.
+    # Only these incidental terms are contextual: explicit exclusions stay hard.
     for pattern in _negative_patterns:
         if pattern.search(text):
+            if pattern.pattern in _contextual_negative_patterns and _has_future_building_event(event, text):
+                continue
             logger.debug("Keyword negativa matchata per: %s", event.title)
             return False
 
     # Step 2: anno passato → scarta (es. "Hackathon Milano 2024" a febbraio 2026)
-    # Controlla anche date_str (es. pubDate RSS con anno vecchio)
-    text_with_date = f"{text} {event.date_str}" if event.date_str else text
+    # Una data editoriale non prova che l'evento annunciato sia passato.
+    text_with_date = f"{text} {event.date_str}" if event.has_event_date else text
     if _is_past_event(text_with_date):
         logger.info("Scartato evento passato: %s", event.title)
         return False

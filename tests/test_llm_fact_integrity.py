@@ -60,15 +60,15 @@ def test_truncated_llm_response_does_not_reintroduce_date_completion():
     results = _parse_llm_response(content, 2)
 
     assert results[0].is_hackathon is True
-    assert vars(results[0]) == {"is_hackathon": True, "confidence": 0.99, "reason": "ok"}
+    assert vars(results[0]) == {"is_hackathon": True, "confidence": 0.99, "reason": "ok", "status": "confirmed"}
     assert results[1].is_hackathon is False
 
 
 @pytest.mark.parametrize("best_title", ["Invented title", "Other event", None, {"title": "Injected"}])
 def test_dedup_rejects_titles_not_present_in_group(best_title):
-    article = _event("News headline")
+    article = _event("Aurora Accessibility Hackathon announcement")
     article.url = "https://example.com/news"
-    official = _event("Official hackathon title", "2026-11-20")
+    official = _event("Aurora Accessibility Hackathon", "2026-11-20")
     other = _event("Other event")
     other.url = "https://example.com/other"
     original = _facts(official)
@@ -86,9 +86,9 @@ def test_dedup_rejects_titles_not_present_in_group(best_title):
 
 
 def test_dedup_can_select_an_existing_title_but_cannot_invent_url_or_other_facts():
-    article = _event("News headline", "2026-11-20")
+    article = _event("Aurora Accessibility Hackathon announcement", "2026-11-20")
     article.url = "https://example.com/news"
-    official = _event("Official hackathon title")
+    official = _event("Aurora Accessibility Hackathon")
     original = _facts(article)
     response = json.dumps([{
         "group": [0, 1],

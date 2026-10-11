@@ -138,6 +138,16 @@ def slow_classify(events: list[HackathonEvent], delay: int) -> list[HackathonEve
         for event, result in zip(batch, results):
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
+            event.review_reason = result.reason
+            event.classification_status = result.status or (
+                "error" if result.confidence == 0.0
+                else "confirmed" if result.is_hackathon else "rejected"
+            )
+            event.review_status = (
+                "llm_error" if event.classification_status == "error"
+                else "ai_verified" if result.is_hackathon and result.confidence >= config.LLM_CONFIDENCE_THRESHOLD
+                else "needs_review"
+            )
 
             if result.confidence == 0.0 and result.reason == "API error":
                 logger.warning("    ⚠️  API ERROR: '%s'", event.title[:60])

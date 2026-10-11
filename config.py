@@ -23,6 +23,7 @@ EVENTS_FILE = DATA_DIR / "events.json"
 REVIEW_QUEUE_FILE = DATA_DIR / "review_queue.json"
 REVIEW_DECISIONS_FILE = DATA_DIR / "review_decisions.json"
 ADMIN_ACTIONS_FILE = DATA_DIR / "admin_actions.json"
+CANDIDATE_AUDIT_DIR = os.getenv("CANDIDATE_AUDIT_DIR", str(BASE_DIR / ".local" / "discovery"))
 
 # ─── API Keys ──────────────────────────────────────────────────────────────
 EVENTBRITE_API_KEY = os.getenv("EVENTBRITE_API_KEY", "")
