@@ -16,18 +16,60 @@ export function Brand({ light = false }: { light?: boolean }) {
   );
 }
 
-type NavLocation = { hash: string; search: string };
+type NavLocation = { search: string };
+type HomeSection = "events" | "about" | null;
+
+function useVisibleSection(path: string): HomeSection {
+  const [section, setSection] = useState<HomeSection>(null);
+
+  useEffect(() => {
+    if (path !== "/") return;
+    const events = document.getElementById("events");
+    const about = document.getElementById("about");
+    const header = document.querySelector(".nav-inner");
+    if (!events || !about) return;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const headerHeight = header?.getBoundingClientRect().height ?? 0;
+      const readingLine = Math.min(window.innerHeight - 1, headerHeight + 32);
+      const eventsBounds = events.getBoundingClientRect();
+      const aboutBounds = about.getBoundingClientRect();
+      // The hero introduces the event explorer; unlinked sections have no dot.
+      setSection(readingLine < eventsBounds.bottom ? "events"
+        : readingLine >= aboutBounds.top && readingLine < aboutBounds.bottom ? "about" : null);
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const resize = new ResizeObserver(schedule);
+    resize.observe(events);
+    resize.observe(about);
+    if (header) resize.observe(header);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      resize.disconnect();
+    };
+  }, [path]);
+
+  return path === "/" ? section : null;
+}
 
 function NavLocationSync({ onChange }: { onChange: Dispatch<SetStateAction<NavLocation | null>> }) {
   const params = useSearchParams();
   const search = params.toString();
   useEffect(() => {
-    const sync = () => onChange({ hash: window.location.hash, search: window.location.search });
+    const sync = () => onChange({ search: window.location.search });
     sync();
-    window.addEventListener("hashchange", sync);
     window.addEventListener("popstate", sync);
     return () => {
-      window.removeEventListener("hashchange", sync);
       window.removeEventListener("popstate", sync);
     };
   }, [search, onChange]);
@@ -38,8 +80,10 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState<NavLocation | null>(null);
   const path = usePathname();
+  const section = useVisibleSection(path);
   const params = new URLSearchParams(location?.search);
-  const active = path !== "/" || !location ? null : location.hash === "#about" ? "about" : params.get("saved") === "1" ? "saved" : "events";
+  const saved = path === "/" && params.get("saved") === "1";
+  const active = section === "events" && saved ? "saved" : section;
   params.delete("saved");
   const query = path === "/" ? params.toString() : "";
   const eventsHref = `/${query ? `?${query}` : ""}#events`;
@@ -52,7 +96,7 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
       if (!link || link.target === "_blank") return;
       const url = new URL(link.href);
       if (url.origin === window.location.origin && url.pathname === "/") {
-        setLocation({ hash: url.hash, search: url.search });
+        setLocation({ search: url.search });
       }
     }}>
       <Suspense fallback={null}><NavLocationSync onChange={setLocation} /></Suspense>
@@ -61,7 +105,7 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
         <nav className="desktop-nav" aria-label="Navigazione principale">
           <Link href={eventsHref} aria-current={current("events")} className={`nav-link${active === "events" ? " is-current" : ""}`}>Esplora gli eventi</Link>
           <a href={aboutHref} aria-current={current("about")} className={`nav-link${active === "about" ? " is-current" : ""}`}>Come funziona</a>
-          <Link href="/?saved=1#events" aria-current={current("saved")} className={`nav-link nav-saved${active === "saved" ? " is-current" : ""}`}>
+          <Link href="/?saved=1#events" aria-current={current("saved")} className={`nav-link nav-saved${saved ? " is-current" : ""}`} aria-label={saved ? "Salvati: filtro attivo" : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg>
             Salvati
           </Link>
@@ -76,7 +120,7 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
       </div>
       {open && <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navigazione mobile" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); document.querySelector<HTMLButtonElement>(".mobile-menu-button")?.focus(); } }}>
         <Link href={eventsHref} aria-current={current("events")} onClick={() => setOpen(false)}>Esplora gli eventi <span aria-hidden="true">↗</span></Link>
-        <Link href="/?saved=1#events" className={`nav-saved${active === "saved" ? " is-current" : ""}`} aria-current={current("saved")} onClick={() => setOpen(false)}>I tuoi eventi salvati <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg></Link>
+        <Link href="/?saved=1#events" className={`nav-saved${saved ? " is-current" : ""}`} aria-current={current("saved")} aria-label={saved ? "I tuoi eventi salvati: filtro attivo" : undefined} onClick={() => setOpen(false)}>I tuoi eventi salvati <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg></Link>
         <a href={aboutHref} aria-current={current("about")} onClick={() => setOpen(false)}>Come funziona <span aria-hidden="true">↗</span></a>
         <Link href="/review" onClick={() => setOpen(false)}>Eventi in revisione <span aria-hidden="true">↗</span></Link>
         <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon" target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Segnala un evento <span aria-hidden="true">↗</span></a>

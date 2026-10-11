@@ -51,6 +51,7 @@ The frontend is built with **Next.js 15, React 19 and Motion**, using a responsi
 - **Personal tools:** share searches through their URLs, save events locally and download a calendar entry for dated events. No account is required; saved events stay in the current browser.
 - **Visual experience:** an architectural Milan scene and a radar connected to the next events. It advances every seven seconds, stops on interaction and can be resumed explicitly. Motion respects reduced-motion preferences.
 - **Themes and accessibility:** System, Light and Dark themes with a persistent choice, keyboard navigation, visible focus and responsive layouts.
+- **Navigation:** the active section follows scrolling; the filled bookmark independently indicates the saved-events filter.
 - **Identity and search:** an abstract radar mark with favicon/device variants, social preview artwork, Italian metadata, canonical URLs, `WebSite` structured data, `robots.txt` and a sitemap. Search results may retain older titles or icons until the next crawl.
 - **Event pages:** dedicated URLs with source-checked facts, documented gaps and stable slugs. The collector does not create factual descriptions or infer missing dates with the LLM. See the [source-review workflow](docs/event-pages.md).
 - **Usage metrics:** optional Vercel Web Analytics for page views and estimated visitors, disabled until enabled on a free Hobby team. Local project reports stay outside Git.
@@ -444,7 +445,8 @@ hackathon-monitor/
 ├── requirements.txt           # Python dependencies
 ├── .env.example               # Blank collection configuration example
 ├── .env.newsletter.example    # Blank private newsletter configuration example
-├── LICENSE                    # All rights reserved; third-party rights preserved
+├── LICENSE                    # MIT license for source code and documentation
+├── ASSETS.md                  # Separate terms for original brand and artwork
 ├── SECURITY.md                # Vulnerability reporting and security checks
 ├── collectors/                # 28 registered source integrations
 │   ├── eventbrite.py          # REST API
@@ -524,11 +526,11 @@ Website traffic requires enabling **Vercel Web Analytics on Hobby** and setting 
 
 Use the commands in Local Setup and the latest CI run for current results. Tests cover models, deduplication, filters, moderation, generated output, frontend behavior and newsletter logic. Source integrations and email delivery use mocks in tests; live availability and delivery require separate checks with configured services.
 
-## Rights and contributions
+## License and contributions
 
-Copyright © 2026 Federico Gallo. **All rights reserved.** The current original project materials are not offered under an open-source license; see [LICENSE](LICENSE). Public visibility permits inspection under GitHub’s terms, not unrestricted reuse. Third-party materials retain their own rights. This notice does not revoke any permissions previously granted for earlier revisions.
+Copyright © 2026 Federico Gallo. The source code and documentation are open source under the [MIT License](LICENSE): you may use, modify and distribute them, including commercially, while preserving the copyright and license notice. The original brand and artwork have [separate terms](ASSETS.md); third-party materials retain their own rights.
 
-For proposed code contributions, contact the maintainer to agree on permission and terms before proceeding. Include the original event URL for data reports, and a clear description with relevant validation for code changes.
+Issues and pull requests are welcome. Include the original event URL for data reports, and a clear description with relevant validation for code changes. Code and documentation contributions are submitted under the same MIT License.
 
 - 🔌 **Add a new source** — write a collector and open a PR
 - 🐛 **Report a wrong entry** — open an issue with the event link

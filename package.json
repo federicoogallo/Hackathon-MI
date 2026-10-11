@@ -31,5 +31,5 @@
       "postcss": "^8.5.28"
     }
   },
-  "license": "UNLICENSED"
+  "license": "MIT"
 }
