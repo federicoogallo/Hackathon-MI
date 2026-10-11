@@ -15,7 +15,7 @@ import "./events-deck.css";
 const SAVED_STORAGE_KEY = "hackathon-mi:saved-events";
 const PERIODS: Array<[EventPeriod, string]> = [["all", "Tutti gli eventi"], ["week", "Prossimi 7 giorni"], ["month", "Questo mese"], ["undated", "Data da verificare"]];
 
-function Icon({ name, className = "" }: { name: "search" | "bookmark" | "arrow" | "pin" | "calendar" | "grid" | "list" | "close" | "check"; className?: string }) {
+function Icon({ name, className = "" }: { name: "search" | "bookmark" | "arrow" | "pin" | "calendar" | "grid" | "list" | "close" | "check" | "chevron"; className?: string }) {
   const paths = {
     search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></>,
     bookmark: <path d="M7 3.5h10a1 1 0 0 1 1 1v16l-6-4-6 4v-16a1 1 0 0 1 1-1Z" />,
@@ -26,6 +26,7 @@ function Icon({ name, className = "" }: { name: "search" | "bookmark" | "arrow" 
     list: <path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" />,
     close: <path d="m6 6 12 12M6 18 18 6" />,
     check: <path d="m5 12 4 4L19 6" />,
+    chevron: <path d="m6 9 6 6 6-6" />,
   };
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
@@ -211,31 +212,37 @@ export default function EventsDeck({ events }: { events: HackEvent[] }) {
           </div>
           <div className="explorer-source-field">
             <label htmlFor="event-source">Fonte</label>
-            <select id="event-source" value={filters.source} onChange={(event) => updateFilters({ source: event.target.value })} aria-controls="event-results">
-              <option value="all">Tutte le fonti</option>
-              {filters.source !== "all" && !sources.includes(filters.source) && <option value={filters.source}>{sourceLabel(filters.source)}</option>}
-              {sources.map((source) => <option key={source} value={source}>{sourceLabel(source)}</option>)}
-            </select>
+            <div className="explorer-select">
+              <select id="event-source" value={filters.source} onChange={(event) => updateFilters({ source: event.target.value })} aria-controls="event-results">
+                <option value="all">Tutte le fonti</option>
+                {filters.source !== "all" && !sources.includes(filters.source) && <option value={filters.source}>{sourceLabel(filters.source)}</option>}
+                {sources.map((source) => <option key={source} value={source}>{sourceLabel(source)}</option>)}
+              </select>
+              <Icon name="chevron" />
+            </div>
           </div>
           <button className={`explorer-saved-toggle${filters.saved ? " is-active" : ""}`} type="button" aria-pressed={filters.saved} onClick={() => updateFilters({ saved: !filters.saved })}>
-            <Icon name="bookmark" /><span>I miei salvati</span><span className="explorer-saved-count">{savedCount}</span>
+            <Icon name="bookmark" /><span>Salvati</span><span className="explorer-saved-count">{savedCount}</span>
           </button>
         </div>
         <div className="explorer-filter-row">
-          <div className="explorer-periods" role="group" aria-label="Periodo dell’evento">
-            {PERIODS.map(([period, label]) => <button key={period} type="button" aria-pressed={filters.period === period} className={filters.period === period ? "is-active" : ""} onClick={() => updateFilters({ period })}>{label}</button>)}
+          <div className="explorer-period-filter">
+            <span className="explorer-filter-label" id="event-period-label">Quando</span>
+            <div className="explorer-periods" role="group" aria-labelledby="event-period-label">
+              {PERIODS.map(([period, label]) => <button key={period} type="button" aria-pressed={filters.period === period} className={filters.period === period ? "is-active" : ""} onClick={() => updateFilters({ period })}>{label}</button>)}
+            </div>
           </div>
-          <div className="explorer-view-toggle" role="group" aria-label="Visualizzazione eventi">
-            <button type="button" aria-label="Visualizza a griglia" aria-pressed={filters.view === "grid"} onClick={() => updateFilters({ view: "grid" })}><Icon name="grid" /></button>
-            <button type="button" aria-label="Visualizza come elenco" aria-pressed={filters.view === "list"} onClick={() => updateFilters({ view: "list" })}><Icon name="list" /></button>
-          </div>
+          {hasFilters && <button type="button" className="explorer-reset" onClick={resetFilters}>Azzera filtri<Icon name="close" /></button>}
         </div>
       </div>
       <div className="explorer-result-bar">
         <p role="status" aria-live="polite" aria-atomic="true"><strong>{shown.length} {shown.length === 1 ? "evento" : "eventi"}</strong>{hasFilters ? " per la tua ricerca" : " da scoprire"}</p>
         <div className="explorer-result-actions">
-          {hasFilters && <button type="button" className="explorer-reset" onClick={resetFilters}>Azzera filtri<Icon name="close" /></button>}
-          <div className="explorer-order"><label htmlFor="event-order">Ordina per</label><select id="event-order" value={filters.order} onChange={(event) => updateFilters({ order: event.target.value === "name" ? "name" : "date" })}><option value="date">Data più vicina</option><option value="name">Nome A–Z</option></select></div>
+          <div className="explorer-order"><label htmlFor="event-order">Ordina per</label><div className="explorer-select"><select id="event-order" value={filters.order} onChange={(event) => updateFilters({ order: event.target.value === "name" ? "name" : "date" })}><option value="date">Data più vicina</option><option value="name">Nome A–Z</option></select><Icon name="chevron" /></div></div>
+          <div className="explorer-view-toggle" role="group" aria-label="Visualizzazione eventi">
+            <button type="button" aria-label="Visualizza schede" aria-pressed={filters.view === "grid"} onClick={() => updateFilters({ view: "grid" })}><Icon name="grid" /><span>Schede</span></button>
+            <button type="button" aria-label="Visualizza come elenco" aria-pressed={filters.view === "list"} onClick={() => updateFilters({ view: "list" })}><Icon name="list" /><span>Elenco</span></button>
+          </div>
         </div>
       </div>
       {storageError && <p className="explorer-storage-error" role="alert">{storageError}</p>}

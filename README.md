@@ -47,7 +47,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 The frontend is built with **Next.js 15, React 19 and Motion**, using a responsive interface centered on finding and comparing events.
 
-- **Discovery:** search titles, locations and complete descriptions; filter by date and source; choose chronological or alphabetical ordering and grid or list views.
+- **Discovery:** search titles, locations and complete descriptions; filter by date and source; choose chronological or alphabetical ordering. Switch between illustrated cards and a compact list, with touch-friendly controls on small screens.
 - **Personal tools:** share searches through their URLs, save events locally and download a calendar entry for dated events. No account is required; saved events stay in the current browser.
 - **Visual experience:** an architectural Milan scene and a radar connected to the next events. It advances every seven seconds, stops on interaction and can be resumed explicitly. Motion respects reduced-motion preferences.
 - **Themes and accessibility:** System, Light and Dark themes with a persistent choice, keyboard navigation, visible focus and responsive layouts.

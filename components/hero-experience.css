@@ -105,7 +105,7 @@
   .stage-fade { background: linear-gradient(180deg,#14221a,transparent 25%,transparent 65%,#14221a); }
   .stage-blueprint { left: 23px; top: 5px; right: 24px; font-size: 7px; }.stage-blueprint > span:first-child { width: 24px; height: 24px; font-size: 8px; }
   .stage-orbits { top: -35px; height: 400px; }.stage-watermark { font-size: 90px; bottom: 5px; left: 15px; }
-  .radar-node { left: var(--small-x); top: var(--small-y); min-height: 50px; transform: translateX(-50%); padding: 19px 4px 0; }.radar-node > span:last-child { min-height: 31px; font-size: 9px; padding-inline: 8px; gap: 7px; }
+  .radar-node { left: var(--small-x); top: var(--small-y); min-height: 55px; transform: translateX(-50%); padding: 19px 4px 0; }.radar-node > span:last-child { min-height: 36px; font-size: 10px; padding-inline: 9px; gap: 7px; }
   .radar-node .radar-node-dot { top: 0; }
   .radar-route-medium { display: none; }.radar-route-small { display: initial; }
   .radar-preview { right: 24px; bottom: 17px; width: min(285px,calc(100% - 48px)); padding: 15px 18px 5px; }

@@ -12,7 +12,7 @@ import "./hero-experience.css";
 const radarLayouts = {
   wide: [[35, 32], [62, 20], [86, 40]],
   medium: [[53, 33], [72, 22], [87, 41]],
-  small: [[16, 18], [50, 18], [84, 18]],
+  small: [[17, 27], [50, 13], [83, 24]],
 } as const;
 
 function radarCurve(points: readonly (readonly [number, number])[]) {

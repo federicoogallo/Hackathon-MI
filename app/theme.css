@@ -79,6 +79,9 @@ html[data-theme="dark"] .explorer-card-top :focus-visible { outline-color: #1724
 html[data-theme="dark"] .explorer-card-top.explorer-cover--1 :focus-visible { outline-color: #ffb690; }
 html[data-theme="dark"] .explorer-verification { background: #263225; color: #c4ceba; border-color: #4b5d40; }
 html[data-theme="dark"] .explorer-verification--manual { background: #293e25; color: #cce4b4; border-color: #587346; }
+@media (max-width: 900px) {
+  html[data-theme="dark"] .explorer-results--list .explorer-verification { background: transparent; }
+}
 html[data-theme="dark"] .explorer-discover { color: #17241e !important; }
 html[data-theme="dark"] .explorer-calendar { color: #d0d8c7; background: transparent; border-color: var(--theme-field-line); }
 html[data-theme="dark"] .explorer-storage-error { color: #ffb68e; background: var(--theme-soft-orange); border-color: var(--theme-orange-line); }
