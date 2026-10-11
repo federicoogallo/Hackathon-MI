@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: Oct 10, 2026 18:09 CEST
+> **8 hackathons** coming up in Milan · Last updated: Oct 11, 2026 18:38 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
@@ -28,8 +28,9 @@ The source count describes implemented integrations, not a guarantee that all so
 | [Talenti STEM per l’Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Social Innovation Academy · MIND, Milano | Fondazione Triulza |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |
 | [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
-| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
 | [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | To verify | To verify | Web search |
+| [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
+| [Hackathon di Natale!Thu, Dec 3 · 6:15 PM CETMia Platform Italia, Via Imbonati 18, MAC7 20159 Milano, Milano, ITQuesta data è provvisoria. Verrà aggiornata a breve.🎙️SpeakerGiulio Roggero, CTO di Mia-Platform25 anni di esperienza in software engineering, serial entrepreneur con oltre 10 iniziative imprenditoriali lanciate; oggi è co-founder e CTO di Mia-Platform, Internal Developer Platform nominata da Gartner “Cool Vendor” per le Software Engineering Technologies e nel Cloud Application Platforms Magic Quadrant.Aree di interesse principali: cloud native, platform engineering, data fabric e omnichannel experience. Ama dipingere miniature di Blood Bowl, costruire con i Lego, assemblare e guidare modellini di auto radiocomandate e imparare a suonare il pianoforte.📝 Agenda18.15: Accesso e Networking (iniziamo a conoscerci!)18:30:Welcome18:45: Talk19:30:Q&A19:45:Pizza and drinksNessun meetup è completo senza un momento conviviale. Durante la serata saranno offertebevande, birra e pizzaper facilitare il networking e continuare le discussioni in modo informale.⚠️ Nota importante:I posti sono limitati per garantire la qualità della conversazione durante la tavola rotonda. Assicurati di fare RSVP il prima possibile!Ti aspettiamo per dare forma insieme al futuro dello sviluppo software!8 attendees](https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events) | To verify | To verify | Meetup |
 
 <!-- HACKATHON_TABLE_END -->
 
