@@ -33,6 +33,14 @@ export function todayInRome(now = new Date()): string {
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
+export function selectRadarEvents(events: HackEvent[], today: string): HackEvent[] {
+  return events.filter((event) => {
+    const start = validEventDate(event.dateIso);
+    const end = validEventDate(event.endDateIso || "") || start;
+    return event.dateVerified === true && start && end && (!today || end >= today);
+  }).sort((a, b) => a.dateIso.localeCompare(b.dateIso) || a.id.localeCompare(b.id)).slice(0, 3);
+}
+
 export function matchesPeriod(dateIso: string, period: EventPeriod, today: string): boolean {
   if (period === "all") return true;
   const date = validEventDate(dateIso);

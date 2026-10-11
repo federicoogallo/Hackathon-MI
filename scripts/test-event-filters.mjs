@@ -17,7 +17,7 @@ vm.runInNewContext(compiled, {
   require(name) { throw new Error(`Client filter helpers must not import runtime server data: ${name}`); },
 }, { filename: "lib/event-filters.ts" });
 const { DEFAULT_EVENT_FILTERS, readEventFilters, writeEventFilters, validEventDate,
-  todayInRome, matchesPeriod, filterEvents, eventCalendar, sourceLabel } = module.exports;
+  todayInRome, matchesPeriod, filterEvents, selectRadarEvents, eventCalendar, sourceLabel } = module.exports;
 
 function event(id, overrides = {}) {
   const record = { id, title: `Hackathon ${id}`, url: `https://example.com/${id}`, source: "web_search",
@@ -31,6 +31,31 @@ test("Rome day changes at local midnight in summer and winter", () => {
   assert.equal(todayInRome(new Date("2026-09-18T22:30:00Z")), "2026-09-19");
   assert.equal(todayInRome(new Date("2026-12-31T23:15:00Z")), "2027-01-01");
   assert.equal(todayInRome(new Date("2026-03-28T23:30:00Z")), "2026-03-29");
+});
+
+test("radar replaces finished events, keeps multi-day events through their last day and requires verified dates", () => {
+  const records = [
+    event("december", { dateIso: "2026-12-03", dateVerified: true }),
+    event("bcg", { dateIso: "2026-10-16", endDateIso: "2026-10-17", dateVerified: true }),
+    event("unknown", { dateIso: "", dateVerified: true }),
+    event("stem", { dateIso: "2026-10-29", dateVerified: true }),
+    event("invalid", { dateIso: "2026-02-31", dateVerified: true }),
+    event("unreviewed", { dateIso: "2026-10-11", dateVerified: false }),
+    event("servicenow", { dateIso: "2026-10-20", dateVerified: true }),
+    event("november", { dateIso: "2026-11-20", dateVerified: true }),
+  ];
+  const originalOrder = records.map(entry => entry.id);
+  const ids = (today) => Array.from(selectRadarEvents(records, today), entry => entry.id);
+  assert.deepEqual(ids("2026-10-11"), ["bcg", "servicenow", "stem"]);
+  assert.deepEqual(ids("2026-10-17"), ["bcg", "servicenow", "stem"]);
+  assert.deepEqual(ids(todayInRome(new Date("2026-10-17T22:00:00Z"))), ["servicenow", "stem", "november"]);
+  assert.deepEqual(ids("2026-10-20"), ["servicenow", "stem", "november"]);
+  assert.deepEqual(ids("2026-10-21"), ["stem", "november", "december"]);
+  assert.deepEqual(ids("2026-10-29"), ["stem", "november", "december"]);
+  assert.deepEqual(ids("2026-10-30"), ["november", "december"]);
+  assert.deepEqual(ids("2026-11-21"), ["december"]);
+  assert.deepEqual(ids("2026-12-04"), []);
+  assert.deepEqual(records.map(entry => entry.id), originalOrder);
 });
 
 test("next seven days includes today through day six across daylight saving and year boundaries", () => {

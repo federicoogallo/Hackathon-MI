@@ -2,26 +2,30 @@
 
 import Link from "next/link";
 
-import { useEffect, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import type { HackEvent } from "@/lib/data";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
+import { selectRadarEvents, todayInRome } from "@/lib/event-filters";
 import "./hero-experience.css";
 
+const RADAR_INTERVAL_MS = 7000;
+
 const radarLayouts = {
-  wide: [[35, 32], [62, 20], [86, 40]],
-  medium: [[53, 33], [72, 22], [87, 41]],
-  small: [[17, 27], [50, 13], [83, 24]],
+  wide: [[31, 43], [54, 22], [87, 25]],
+  medium: [[48, 42], [65, 24], [86, 26]],
+  small: [[17, 31], [47, 19], [83, 17]],
 } as const;
 
-function radarCurve(points: readonly (readonly [number, number])[]) {
-  return points.map(([x, y], index) => {
-    if (index === 0) return `M${x} ${y}`;
-    const [previousX, previousY] = points[index - 1];
-    const middleX = (previousX + x) / 2;
-    return `C${middleX} ${previousY} ${middleX} ${y} ${x} ${y}`;
-  }).join(" ");
+function radarCurve(points: readonly (readonly [number, number])[], count: number) {
+  const [start, middle, end] = points;
+  // One quadratic curve passes through all markers; truncate it at the
+  // midpoint when only two events are available.
+  const control = middle.map((value, axis) => 2 * value - (start[axis] + end[axis]) / 2);
+  const target = count === 2 ? middle : end;
+  const handle = count === 2 ? control.map((value, axis) => (start[axis] + value) / 2) : control;
+  return `M${start.join(" ")} Q${handle.join(" ")} ${target.join(" ")}`;
 }
 
 function radarPosition(index: number) {
@@ -40,12 +44,14 @@ export default function HeroExperience({ events, children }: { events: HackEvent
   const reduce = useReducedMotionPreference();
   const [compact, setCompact] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [selected, setSelected] = useState(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [today, setToday] = useState("");
   const [autoplayStopped, setAutoplayStopped] = useState(false);
   const [hoveringRadar, setHoveringRadar] = useState(false);
   const [inView, setInView] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
-  const upcoming = events.filter(event => event.dateIso).slice(0, 3);
+  const upcoming = useMemo(() => selectRadarEvents(events, today), [events, today]);
+  const selected = Math.max(0, upcoming.findIndex(event => event.id === selectedId));
   const event = upcoming[selected];
   const quiet = reduce !== false || compact || paused;
   const autoplayEnabled = !autoplayStopped && !reduce && !paused && upcoming.length > 1;
@@ -71,6 +77,19 @@ export default function HeroExperience({ events, children }: { events: HackEvent
   useEffect(() => { if (quiet) { x.set(0); y.set(0); } }, [quiet, x, y]);
 
   useEffect(() => {
+    const updateDay = () => setToday(todayInRome());
+    updateDay();
+    const timer = window.setInterval(updateDay, 60_000);
+    document.addEventListener("visibilitychange", updateDay);
+    window.addEventListener("pageshow", updateDay);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", updateDay);
+      window.removeEventListener("pageshow", updateDay);
+    };
+  }, []);
+
+  useEffect(() => {
     const updateVisibility = () => setPageVisible(document.visibilityState === "visible");
     updateVisibility();
     document.addEventListener("visibilitychange", updateVisibility);
@@ -81,9 +100,9 @@ export default function HeroExperience({ events, children }: { events: HackEvent
 
   useEffect(() => {
     if (!autoplayRunning) return;
-    const timer = window.setTimeout(() => setSelected(index => (index + 1) % upcoming.length), 7000);
+    const timer = window.setTimeout(() => setSelectedId(upcoming[(selected + 1) % upcoming.length].id), RADAR_INTERVAL_MS);
     return () => window.clearTimeout(timer);
-  }, [autoplayRunning, selected, upcoming.length]);
+  }, [autoplayRunning, selected, upcoming]);
 
   function stopOnInteraction(interaction: PointerEvent<HTMLDivElement> | FocusEvent<HTMLDivElement>) {
     // The explicit playback button controls itself; all other interactions stop
@@ -91,7 +110,7 @@ export default function HeroExperience({ events, children }: { events: HackEvent
     if (!(interaction.target as Element).closest("[data-radar-playback]")) setAutoplayStopped(true);
   }
 
-  function selectEvent(index: number) { setAutoplayStopped(true); setSelected(index); }
+  function selectEvent(index: number) { setAutoplayStopped(true); setSelectedId(upcoming[index]?.id ?? null); }
 
   function move(pointer: PointerEvent<HTMLDivElement>) {
     if (quiet || pointer.pointerType !== "mouse" || !panel.current) return;
@@ -116,11 +135,19 @@ export default function HeroExperience({ events, children }: { events: HackEvent
           <span className="stage-watermark">MILANO.</span>
         </motion.div>
         {event && <>
-          <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar" onFocusCapture={stopOnInteraction}>
+          <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar" style={{ "--radar-duration": `${RADAR_INTERVAL_MS}ms` } as CSSProperties} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction}>
             {upcoming.length > 1 && <svg className="radar-connection" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
-              {Object.entries(radarLayouts).map(([size, points]) => <path key={size} className={`radar-route radar-route-${size}`} d={radarCurve(points.slice(0, upcoming.length))} vectorEffect="non-scaling-stroke" />)}
+              {Object.entries(radarLayouts).map(([size, points]) => <path key={size} className={`radar-route radar-route-${size}`} d={radarCurve(points, upcoming.length)} vectorEffect="non-scaling-stroke" />)}
             </svg>}
-            {upcoming.map((item, index) => <button key={item.id} type="button" style={radarPosition(index)} className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}><span className="radar-node-dot" /><span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span></button>)}
+            {upcoming.map((item, index) => <button key={item.id} type="button" style={radarPosition(index)} className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}>
+              <span className="radar-node-dot" aria-hidden="true">
+                {selected === index && <svg className="radar-node-timer" data-running={autoplayRunning} viewBox="0 0 32 32" fill="none">
+                  <circle className="radar-timer-track" cx="16" cy="16" r="14" />
+                  {autoplayRunning && <circle key={`${item.id}-${today}`} className="radar-timer-progress" cx="16" cy="16" r="14" pathLength="1" />}
+                </svg>}
+              </span>
+              <span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span>
+            </button>)}
           </div>
           <div className="radar-preview" data-autoplay={autoplayRunning ? "running" : "paused"} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction} onPointerEnter={pointer => setHoveringRadar(pointer.pointerType === "mouse")} onPointerLeave={() => setHoveringRadar(false)}>
             <div className="radar-preview-head"><span><i />PROSSIMI NEL RADAR</span><span>{String(selected + 1).padStart(2, "0")} / {String(upcoming.length).padStart(2, "0")}</span></div>
@@ -129,7 +156,6 @@ export default function HeroExperience({ events, children }: { events: HackEvent
               <h2>{event.detailPath ? <Link href={event.detailPath}>{event.title}<Arrow direction="up" /></Link> : <a href={event.url} target="_blank" rel="noopener noreferrer">{event.title}<Arrow direction="up" /><span className="sr-only"> (nuova scheda)</span></a>}</h2>
             </motion.div></div>
             <div className="radar-preview-foot">
-              {autoplayRunning && <span key={selected} className="radar-countdown" aria-hidden="true" />}
               {event.detailPath ? <Link href={event.detailPath}>La scheda <Arrow direction="up" /></Link> : <a href={event.url} target="_blank" rel="noopener noreferrer">Scopri <Arrow direction="up" /><span className="sr-only">la sfida (nuova scheda)</span></a>}
               <div>
                 <button type="button" aria-label="Evento precedente nel radar" onClick={() => selectEvent((selected + upcoming.length - 1) % upcoming.length)}><Arrow direction="left" /></button>

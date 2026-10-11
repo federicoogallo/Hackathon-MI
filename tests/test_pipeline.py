@@ -802,3 +802,75 @@ class TestPipelineQualityGate:
         out = _cleanup_existing_event_dicts([expired, duplicate, valid], ref_date=date(2026, 6, 30))
 
         assert [item["title"] for item in out] == [valid["title"]]
+
+    def test_cleanup_keeps_reviewed_multiday_event_until_its_last_day(self, tmp_path):
+        from main import _cleanup_existing_event_dicts
+
+        event = HackathonEvent(
+            title="BCG Platinion Hackathon 2026 — Milano",
+            url="https://www.bcgplatinion.com/hackathon",
+            source="web_search",
+            date_str="2026-10-16",
+            location="Milano",
+            is_hackathon=True,
+        ).to_dict()
+        registry = [{"id": event["id"], "startDate": "2026-10-16", "endDate": "2026-10-17"}]
+        (tmp_path / "event_details.json").write_text(json.dumps(registry), encoding="utf-8")
+
+        with patch("main.config.DATA_DIR", tmp_path):
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 10, 17)) == [event]
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 10, 18)) == []
+            assert _cleanup_existing_event_dicts([], ref_date=date(2026, 10, 17)) == []
+        assert event["date_str"] == "2026-10-16"
+
+    @pytest.mark.parametrize("registry", [
+        None,
+        "invalid JSON",
+        {"events": []},
+        [{"id": "event", "startDate": "2026-10-16", "endDate": "2026-10-32"}],
+        [{"id": "event", "startDate": "2026-10-18", "endDate": "2026-10-17"}],
+        [{"id": "event", "startDate": "2026-10-16", "endDate": "2026-10-17T12:00:00Z"}],
+        [{"id": "event", "startDate": None, "endDate": "2026-10-17"}],
+        [{"id": "another-event", "startDate": "2026-10-16", "endDate": "2026-10-17"}],
+    ])
+    def test_cleanup_falls_back_to_collected_date_without_valid_matching_review(self, tmp_path, registry):
+        from main import _cleanup_existing_event_dicts
+
+        event = HackathonEvent(
+            title="Hackathon Milano 2026",
+            url="https://example.com/milano-hackathon",
+            source="manual",
+            date_str="2026-10-16",
+            location="Milano",
+            is_hackathon=True,
+        ).to_dict()
+        event["id"] = "event"
+        if registry is not None:
+            content = registry if isinstance(registry, str) else json.dumps(registry)
+            (tmp_path / "event_details.json").write_text(content, encoding="utf-8")
+
+        with patch("main.config.DATA_DIR", tmp_path):
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 10, 16)) == [event]
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 10, 17)) == []
+
+    def test_reviewed_end_date_does_not_bypass_rejections_or_quality_exclusions(self, tmp_path):
+        from main import _cleanup_existing_event_dicts
+
+        records = [HackathonEvent(
+            title="Hackathon Milano 2026",
+            url=url,
+            source="manual",
+            date_str="2026-10-16",
+            location="Milano",
+            is_hackathon=True,
+            review_status=status,
+        ).to_dict() for url, status in [
+            ("https://example.com/rejected", "rejected"),
+            ("https://example.com/manual-rejected", "manual_rejected"),
+            ("https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg", "ai_verified"),
+        ]]
+        registry = [{"id": event["id"], "startDate": "2026-10-16", "endDate": "2026-10-17"} for event in records]
+        (tmp_path / "event_details.json").write_text(json.dumps(registry), encoding="utf-8")
+
+        with patch("main.config.DATA_DIR", tmp_path):
+            assert _cleanup_existing_event_dicts(records, ref_date=date(2026, 10, 17)) == []

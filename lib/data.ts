@@ -1,7 +1,7 @@
 /**
  * Data layer: legge i JSON prodotti dalla pipeline Python (../data/) al
- * momento della build (SSG). Vercel rebuilda ad ogni push, incluso il
- * commit giornaliero della GitHub Action che aggiorna events.json.
+ * momento della build e della rigenerazione oraria della home. Nuovi dati
+ * arrivano con il deploy del commit giornaliero della GitHub Action.
  */
 import fs from "node:fs";
 import path from "node:path";

@@ -463,14 +463,43 @@ def _event_from_dict(item: dict) -> HackathonEvent:
     )
 
 
+def _reviewed_event_end_dates() -> dict[str, date]:
+    """Date di fine documentate, condivise con il calendario del sito."""
+    try:
+        records = json.loads((Path(config.DATA_DIR) / "event_details.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(records, list):
+        return {}
+
+    result: dict[str, date] = {}
+    for record in records:
+        if not isinstance(record, dict) or not isinstance(record.get("id"), str) or not record["id"]:
+            continue
+        start, end = record.get("startDate"), record.get("endDate")
+        if any(not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) for value in (start, end)):
+            continue
+        try:
+            start_date, end_date = date.fromisoformat(start), date.fromisoformat(end)
+        except ValueError:
+            continue
+        if start_date <= end_date:
+            result[record["id"]] = end_date
+    return result
+
+
 def _cleanup_existing_event_dicts(events: list[dict], ref_date: date | None = None) -> list[dict]:
     """Rimuove dallo storico eventi scaduti, falsi positivi e duplicati legacy."""
     today = ref_date or _now().date()
+    reviewed_end_dates = _reviewed_event_end_dates()
     kept: list[dict] = []
 
     for item in events:
+        if item.get("review_status") in {"rejected", "manual_rejected"}:
+            continue
         event = _event_from_dict(item)
-        if event.is_past(today):
+        end_date = reviewed_end_dates.get(item.get("id"), event.parsed_date())
+        if end_date is not None and end_date < today:
             logger.info("Cleanup storico: rimosso '%s' (evento scaduto)", event.title[:70])
             continue
 
