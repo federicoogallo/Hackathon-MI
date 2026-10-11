@@ -13,25 +13,16 @@ import "./hero-experience.css";
 const RADAR_INTERVAL_MS = 7000;
 
 const radarLayouts = {
-  wide: [[31, 43], [54, 22], [87, 25]],
-  medium: [[48, 42], [65, 24], [86, 26]],
-  small: [[17, 31], [47, 19], [83, 17]],
+  wide: [[34, 57, 116], [44, 52, 176], [95, 49, 118]],
+  medium: [[36, 58, 98], [43, 48, 134], [95, 49, 112]],
+  small: [[20, 53, 94], [30, 43, 112], [94, 46, 114]],
 } as const;
-
-function radarCurve(points: readonly (readonly [number, number])[], count: number) {
-  const [start, middle, end] = points;
-  // One quadratic curve passes through all markers; truncate it at the
-  // midpoint when only two events are available.
-  const control = middle.map((value, axis) => 2 * value - (start[axis] + end[axis]) / 2);
-  const target = count === 2 ? middle : end;
-  const handle = count === 2 ? control.map((value, axis) => (start[axis] + value) / 2) : control;
-  return `M${start.join(" ")} Q${handle.join(" ")} ${target.join(" ")}`;
-}
 
 function radarPosition(index: number) {
   return Object.fromEntries(Object.entries(radarLayouts).flatMap(([size, points]) => [
     [`--${size}-x`, `${points[index][0]}%`],
     [`--${size}-y`, `${points[index][1]}%`],
+    [`--${size}-lift`, `${points[index][2]}px`],
   ])) as CSSProperties;
 }
 
@@ -135,20 +126,19 @@ export default function HeroExperience({ events, children }: { events: HackEvent
           <span className="stage-watermark">MILANO.</span>
         </motion.div>
         {event && <>
-          <div className="radar-nodes" role="group" aria-label="Scegli un evento nel radar" style={{ "--radar-duration": `${RADAR_INTERVAL_MS}ms` } as CSSProperties} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction}>
-            {upcoming.length > 1 && <svg className="radar-connection" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
-              {Object.entries(radarLayouts).map(([size, points]) => <path key={size} className={`radar-route radar-route-${size}`} d={radarCurve(points, upcoming.length)} vectorEffect="non-scaling-stroke" />)}
-            </svg>}
-            {upcoming.map((item, index) => <button key={item.id} type="button" style={radarPosition(index)} className={`radar-node radar-node-${index}${selected === index ? " is-selected" : ""}`} aria-pressed={selected === index} aria-label={`Mostra ${item.title}, ${item.dateCompact}`} onClick={() => selectEvent(index)}>
-              <span className="radar-node-dot" aria-hidden="true">
-                {selected === index && <svg className="radar-node-timer" data-running={autoplayRunning} viewBox="0 0 32 32" fill="none">
-                  <circle className="radar-timer-track" cx="16" cy="16" r="14" />
-                  {autoplayRunning && <circle key={`${item.id}-${today}`} className="radar-timer-progress" cx="16" cy="16" r="14" pathLength="1" />}
-                </svg>}
-              </span>
-              <span>{item.day} {item.month}<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6h6M6 3v6" stroke="currentColor" /></svg></span>
-            </button>)}
-          </div>
+          <motion.div className="radar-callouts" role="group" aria-label="Evento in evidenza nel radar" data-callout-motion={reduce !== false || paused ? "off" : "on"} style={{ ...({ "--radar-duration": `${RADAR_INTERVAL_MS}ms` } as CSSProperties), y: quiet ? 0 : scrollLift }} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction}>
+            <motion.div key={event.id} style={{ ...radarPosition(selected), ...(quiet ? {} : { x: offsetX, y: offsetY }) }} className={`radar-callout radar-callout-${selected}`}>
+              <span className="radar-callout-stem" aria-hidden="true" />
+              <svg className="radar-callout-origin" viewBox="0 0 18 18" fill="none" aria-hidden="true" data-running={autoplayRunning}>
+                <circle className="radar-timer-track" cx="9" cy="9" r="6.5" />
+                <circle className="radar-callout-dot" cx="9" cy="9" r="2" />
+                {autoplayRunning && <circle key={`${event.id}-${today}`} className="radar-timer-progress" cx="9" cy="9" r="6.5" pathLength="1" transform="rotate(-90 9 9)" />}
+              </svg>
+              <button type="button" className="radar-callout-label" aria-label={`Mantieni in evidenza ${event.title}, ${event.dateCompact}`} aria-pressed={!autoplayEnabled} onClick={() => selectEvent(selected)}>
+                <span>{event.day} {event.month}</span>
+              </button>
+            </motion.div>
+          </motion.div>
           <div className="radar-preview" data-autoplay={autoplayRunning ? "running" : "paused"} onPointerDownCapture={stopOnInteraction} onFocusCapture={stopOnInteraction} onPointerEnter={pointer => setHoveringRadar(pointer.pointerType === "mouse")} onPointerLeave={() => setHoveringRadar(false)}>
             <div className="radar-preview-head"><span><i />PROSSIMI NEL RADAR</span><span>{String(selected + 1).padStart(2, "0")} / {String(upcoming.length).padStart(2, "0")}</span></div>
             <div aria-live={autoplayEnabled ? "off" : "polite"} aria-atomic="true"><motion.div key={event.id} initial={quiet ? false : { opacity: .5, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: quiet ? 0 : .2 }} className="radar-event">
