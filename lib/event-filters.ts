@@ -54,12 +54,47 @@ export function matchesPeriod(dateIso: string, period: EventPeriod, today: strin
 
 function normalized(value: string): string { return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("it"); }
 
+const SEARCH_TOPICS = [
+  {
+    aliases: ["intelligenza artificiale", "artificial intelligence", "ai", "ia"],
+    // Preserve acronym case: Italian “ai partecipanti” is not an AI topic.
+    matches: (text: string) => /\b(?:AI|IA|LLMs?)\b/.test(text) || /\b(?:intelligenza artificiale|artificial intelligence|machine learning|deep learning|genai|generative ai|ai generativa)\b/i.test(text),
+  },
+  {
+    aliases: ["data science", "scienza dei dati", "dati", "data"],
+    matches: (text: string) => /\b(?:dati|data (?:science|analytics|analysis|engineering|visualization|mining)|open data|big data|analytics|datasets?)\b/i.test(text),
+  },
+  {
+    aliases: ["impatto sociale", "innovazione sociale", "social impact", "social good"],
+    matches: (text: string) => /\b(?:impatto sociale|innovazione sociale|social (?:impact|good|innovation)|tech for good|ai for good|accessibilita|accessibility|fame nel mondo|world hunger)\b/i.test(text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")),
+  },
+];
+
+function searchMatchers(query: string): ((text: string, normalizedText: string) => boolean)[] {
+  const words = normalized(query.trim()).split(/\s+/).filter(Boolean);
+  const matchers: ((text: string, normalizedText: string) => boolean)[] = [];
+  for (let index = 0; index < words.length;) {
+    const remaining = words.slice(index).join(" ");
+    const topic = SEARCH_TOPICS.find((entry) => entry.aliases.some((alias) => remaining === alias || remaining.startsWith(`${alias} `)));
+    const alias = topic?.aliases.find((entry) => remaining === entry || remaining.startsWith(`${entry} `));
+    if (topic && alias) {
+      matchers.push(topic.matches);
+      index += alias.split(" ").length;
+    } else {
+      const word = words[index++];
+      matchers.push((_text, normalizedText) => normalizedText.includes(word));
+    }
+  }
+  return matchers;
+}
+
 export function filterEvents(events: HackEvent[], filters: EventFilters, savedIds: readonly string[], today: string): HackEvent[] {
-  const words = normalized(filters.q.trim()).split(/\s+/).filter(Boolean);
+  const matchers = searchMatchers(filters.q);
   const saved = new Set(savedIds);
   return events.filter((event) => {
-    const haystack = normalized(`${event.searchBlob} ${sourceLabel(event.source)}`);
-    return words.every((word) => haystack.includes(word)) && matchesPeriod(event.dateIso, filters.period, today) && (filters.source === "all" || filters.source === event.source) && (!filters.saved || saved.has(event.id));
+    const text = `${event.searchBlob} ${sourceLabel(event.source)}`;
+    const haystack = normalized(text);
+    return matchers.every((matches) => matches(text, haystack)) && matchesPeriod(event.dateIso, filters.period, today) && (filters.source === "all" || filters.source === event.source) && (!filters.saved || saved.has(event.id));
   }).sort((a, b) => filters.order === "name" ? a.title.localeCompare(b.title, "it") : (validEventDate(a.dateIso) || "9999-12-31").localeCompare(validEventDate(b.dateIso) || "9999-12-31") || a.title.localeCompare(b.title, "it"));
 }
 

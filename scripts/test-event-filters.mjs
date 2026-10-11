@@ -24,7 +24,7 @@ function event(id, overrides = {}) {
     dateIso: "2026-09-19", dateStr: "2026-09-19", day: "19", month: "SET", dateCompact: "19 set 2026",
     location: "Milano", description: "Un laboratorio di creatività con dati aperti.", confidence: .9,
     reviewStatus: "ai_verified", issueOk: "https://example.com/ok", issueDoubt: "https://example.com/doubt", ...overrides };
-  return { searchBlob: `${record.title} ${record.description} ${record.location} ${record.source}`.toLowerCase(), ...record };
+  return { searchBlob: `${record.title} ${record.description} ${record.location} ${record.source}`, ...record };
 }
 
 test("Rome day changes at local midnight in summer and winter", () => {
@@ -103,6 +103,54 @@ test("search ignores accents and combines words, readable sources and saved filt
   assert.deepEqual(Array.from(filterEvents(records, filters, ["matching", "other-source", "no-match"], "2026-09-19"), (entry) => entry.id), ["matching"]);
   assert.equal(filterEvents(records, { ...DEFAULT_EVENT_FILTERS, q: "ricerca web" }, [], "2026-09-19").length, 3);
   assert.equal(filterEvents(records, { ...DEFAULT_EVENT_FILTERS, q: "inesistente" }, [], "2026-09-19").length, 0);
+});
+
+test("AI searches match Italian and English topics without matching email, training or Italian prepositions", () => {
+  const records = [
+    event("agents", { title: "Build AI agents", description: "Una sfida di sviluppo" }),
+    event("italian", { title: "Intelligenza artificiale per la città", description: "Una sfida di sviluppo" }),
+    event("learning", { title: "Machine learning challenge", description: "Una sfida di sviluppo" }),
+    event("unrelated", { title: "Retail design", description: "Training aperto ai partecipanti. Dettagli via email e premi ai team." }),
+  ];
+  for (const q of ["AI", "ai", "IA", "intelligenza artificiale", "artificial intelligence"]) {
+    assert.deepEqual(Array.from(filterEvents(records, { ...DEFAULT_EVENT_FILTERS, q }, [], "2026-09-19"), e => e.id).sort(), ["agents", "italian", "learning"], q);
+  }
+});
+
+test("data shortcuts find analytics and Italian data themes without matching dates or candidate text", () => {
+  const records = [
+    event("analytics", { title: "Data & Analytics Challenge", description: "Real-world challenges" }),
+    event("open", { title: "Civic challenge", description: "Esplora dati aperti" }),
+    event("date", { title: "Design challenge", description: "Data da verificare. Candidati entro ottobre." }),
+    event("brand", { title: "NTT DATA Design challenge", description: "Progettazione grafica" }),
+  ];
+  for (const q of ["dati", "data", "Data science", "scienza dei dati"]) {
+    assert.deepEqual(Array.from(filterEvents(records, { ...DEFAULT_EVENT_FILTERS, q }, [], "2026-09-19"), e => e.id).sort(), ["analytics", "open"], q);
+  }
+});
+
+test("social impact recognizes explicit themes without classifying social media as social good", () => {
+  const records = [
+    event("stem", { title: "Talenti STEM per l’Innovazione Sociale" }),
+    event("hunger", { title: "Fighting World Hunger" }),
+    event("access", { title: "AI Accessibility Hackathon" }),
+    event("unrelated", { title: "Social media marketing challenge" }),
+  ];
+  for (const q of ["Impatto sociale", "innovazione sociale", "social impact", "social good"]) {
+    assert.deepEqual(Array.from(filterEvents(records, { ...DEFAULT_EVENT_FILTERS, q }, [], "2026-09-19"), e => e.id).sort(), ["access", "hunger", "stem"], q);
+  }
+});
+
+test("topic phrases compose with other keywords, saved events, source and period filters", () => {
+  const records = [
+    event("matching", { description: "Dati aperti per intelligenza artificiale", dateIso: "2026-09-20" }),
+    event("wrong-source", { description: "Dati aperti per intelligenza artificiale", source: "eventbrite", dateIso: "2026-09-20" }),
+    event("later", { description: "Dati aperti per intelligenza artificiale", dateIso: "2026-10-20" }),
+    event("not-saved", { description: "Dati aperti per intelligenza artificiale", dateIso: "2026-09-20" }),
+    event("wrong-theme", { description: "Dati aperti", dateIso: "2026-09-20" }),
+  ];
+  const filters = { ...DEFAULT_EVENT_FILTERS, q: "  Milano DATA SCIENCE artificial intelligence  ", period: "week", source: "web_search", saved: true };
+  assert.deepEqual(Array.from(filterEvents(records, filters, ["matching", "wrong-source", "later", "wrong-theme"], "2026-09-19"), e => e.id), ["matching"]);
 });
 
 test("nearest date order puts unknown dates last and name order uses the Italian alphabet", () => {

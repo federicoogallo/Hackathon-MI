@@ -35,7 +35,7 @@ export function getEventDetails(): EventDetail[] {
     location: record.location, organizer: record.organizer,
     description: record.facts.slice(0, 2).map((fact) => `${fact.label}: ${fact.value}.`).join(" "),
     confidence: 0, reviewStatus: "source_checked", issueOk: "", issueDoubt: `${REPO_URL}/issues/new?${new URLSearchParams({ title: `[DUBBIO] ${record.title}`, body: `Scheda: /hackathon/${record.slug}\nFonte: ${record.url}\n\nInformazione da correggere:\n` })}`,
-    searchBlob: `${record.title} ${record.location} ${record.organizer}`.toLowerCase(),
+    searchBlob: `${record.title} ${record.location} ${record.organizer}`,
     facts: record.facts, missing: record.missing, venue: record.venue,
     isPast: record.endDate < today,
   })).sort((a, b) => a.dateIso.localeCompare(b.dateIso));

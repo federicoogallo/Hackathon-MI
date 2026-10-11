@@ -179,7 +179,7 @@ export function getSiteData(): SiteData {
       issueOk: issueUrl(e, "confirmed_ok"),
       issueDoubt: issueUrl(e, "confirmed_doubt"),
       detailPath: facts ? `/hackathon/${facts.slug}` : undefined,
-      searchBlob: `${title} ${fullDescription} ${location} ${source}`.toLowerCase(),
+      searchBlob: `${title} ${fullDescription} ${location} ${source}`,
     };
   }).sort((a, b) => (a.dateIso || "9999-12-31").localeCompare(b.dateIso || "9999-12-31"));
 

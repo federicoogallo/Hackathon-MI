@@ -107,13 +107,14 @@ function reviewedEvent(id, overrides = {}) {
 }
 
 test("search finds information beyond the compact card excerpt", () => {
-  const description = `${"Descrizione evento per chi vuole partecipare. ".repeat(9)}Google Arena, Isola; aperto ai maggiorenni.`;
+  const description = `${"Descrizione evento per chi vuole partecipare. ".repeat(9)}Google Arena, Isola; AI, aperto ai maggiorenni.`;
   const { getSiteData } = loadData({ events: [event("long", { description })] });
   const [result] = getSiteData().events;
   assert.ok(result.description.length <= 213);
   assert.ok(result.description.endsWith("..."));
   assert.ok(!result.description.includes("Google Arena"));
-  assert.ok(result.searchBlob.includes("google arena, isola"));
+  assert.ok(result.searchBlob.includes("Google Arena, Isola"));
+  assert.ok(result.searchBlob.includes("AI"));
   assert.ok(result.searchBlob.includes("maggiorenni"));
 });
 
