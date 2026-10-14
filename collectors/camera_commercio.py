@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 
 import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
@@ -44,8 +45,16 @@ class CameraCommercioCollector(BaseCollector):
 
     def _parse_html(self, html: str, base_url: str, seen_urls: set[str]) -> list[HackathonEvent]:
         """Parsa le pagine della Camera di Commercio."""
+        previous_urls = seen_urls
+        seen_urls = set()
         soup = BeautifulSoup(html, "lxml")
         events: list[HackathonEvent] = []
+
+        # Imperva may return HTTP 200 with an empty JS challenge instead of the
+        # public catalogue. Do not interpret that response as an empty source.
+        if soup.select_one('script[src*="_Incapsula_Resource"]') is not None:
+            record_issue("blocked", "public catalogue requires browser verification", base_url)
+            return []
 
         cards = soup.find_all("article")
         if not cards:
@@ -87,4 +96,9 @@ class CameraCommercioCollector(BaseCollector):
                 organizer="Camera di Commercio Milano",
             ))
 
-        return events
+        if not events and not any(marker in soup.get_text(" ", strip=True).lower()
+                                  for marker in ("nessun evento", "nessun risultato", "nessun bando")):
+            record_issue("parse_error", "Chamber catalogue records not found", base_url)
+        unique_events = [event for event in events if event.url not in previous_urls]
+        previous_urls.update(event.url for event in events)
+        return unique_events

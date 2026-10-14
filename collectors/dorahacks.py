@@ -1,94 +1,95 @@
-"""
-Collector DoraHacks — REST API pubblica.
+"""DoraHacks public listing; access challenges remain visible in source health."""
 
-DoraHacks è una piattaforma per hackathon web3/blockchain con
-un'API REST pubblica. Filtra per eventi in Italia/Milano.
-"""
-
+import json
 import logging
+from urllib.parse import urlsplit
 
-import config
+from bs4 import BeautifulSoup
+
 from models import BaseCollector, HackathonEvent
-from utils.http import safe_get_json
+from utils.collector_health import record_issue
+from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
-
-DORAHACKS_API_URL = "https://dorahacks.io/api/hackathon/list"
-
-ITALY_KEYWORDS = {"italy", "italia", "milan", "milano", "europe", "europa"}
+DORAHACKS_URL = "https://dorahacks.io/hackathon"
 
 
 class DoraHacksCollector(BaseCollector):
-
     @property
     def name(self) -> str:
         return "dorahacks"
 
     def collect(self) -> list[HackathonEvent]:
-        all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
-
-        # Fetch paginated results
-        for page in range(1, 4):  # Max 3 pagine
-            params = {
-                "page": page,
-                "page_size": 50,
-                "status": "active",
-            }
-            data = safe_get_json(DORAHACKS_API_URL, params=params)
-            if not data:
-                break
-
-            results = data if isinstance(data, list) else data.get("results", data.get("data", []))
-            if not isinstance(results, list) or not results:
-                break
-
-            for item in results:
-                event = self._parse_item(item, seen_urls)
-                if event:
-                    all_events.append(event)
-
-        logger.info("DoraHacks: trovati %d eventi (Italia/Milano)", len(all_events))
-        return all_events
+        # The former /api/hackathon/list endpoint no longer exists. Do not retry
+        # alternate hosts or imitate a browser when the public site denies access.
+        response = safe_get(DORAHACKS_URL)
+        if response is None:
+            return []
+        soup = BeautifulSoup(response.text, "lxml")
+        if soup.title and "human verification" in soup.title.get_text().lower():
+            record_issue("blocked", "public listing requires human verification", DORAHACKS_URL)
+            return []
+        events = []
+        seen = set()
+        recognised = False
+        for script in soup.find_all("script", type="application/ld+json"):
+            try:
+                data = json.loads(script.get_text())
+            except (ValueError, TypeError):
+                continue
+            nodes = data if isinstance(data, list) else [data]
+            while nodes:
+                node = nodes.pop(0)
+                if not isinstance(node, dict):
+                    continue
+                if isinstance(node.get("@graph"), list):
+                    nodes.extend(node["@graph"])
+                if node.get("@type") == "ItemList" and isinstance(node.get("itemListElement"), list):
+                    items = node["itemListElement"]
+                    readable = []
+                    for item in items:
+                        candidate = item.get("item", item) if isinstance(item, dict) else None
+                        if (isinstance(candidate, dict) and candidate.get("@type") == "Event"
+                                and self._parse_item(candidate, set())):
+                            readable.append(candidate)
+                    if items and not readable:
+                        record_issue("parse_error", "nonempty ItemList has no readable events", DORAHACKS_URL)
+                    else:
+                        recognised = True
+                    nodes.extend(readable)
+                if node.get("@type") == "ListItem" and isinstance(node.get("item"), dict):
+                    nodes.append(node["item"])
+                if node.get("@type") == "Event":
+                    event = self._parse_item(node, set())
+                    if event:
+                        recognised = True
+                        if event.url not in seen:
+                            seen.add(event.url)
+                            events.append(event)
+        if not recognised:
+            record_issue("parse_error", "public listing has no supported event data", DORAHACKS_URL)
+        logger.info("DoraHacks: trovati %d candidati", len(events))
+        return events
 
     def _parse_item(self, item: dict, seen_urls: set[str]) -> HackathonEvent | None:
-        """Parsa un hackathon dal JSON dell'API."""
-        try:
-            title = item.get("name", "") or item.get("title", "")
-            location = item.get("location", "") or item.get("city", "")
-            description = item.get("description", "") or item.get("intro", "")
-
-            # Filtro geo: solo Italia/Milano/Europe
-            text_to_check = f"{title} {location} {description}".lower()
-            if not any(kw in text_to_check for kw in ITALY_KEYWORDS):
-                return None
-
-            # URL
-            slug = item.get("slug", "") or item.get("id", "")
-            url = item.get("url", "") or item.get("link", "")
-            if not url and slug:
-                url = f"https://dorahacks.io/hackathon/{slug}"
-            if not url:
-                return None
-            if url in seen_urls:
-                return None
-            seen_urls.add(url)
-
-            if not title:
-                return None
-
-            # Date
-            date_str = item.get("start_time", "") or item.get("startDate", "") or item.get("start_date", "")
-
-            return HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=(description or "")[:500],
-                date_str=date_str,
-                location=location or "Online/Milano",
-                organizer=item.get("organizer", {}).get("name", "") if isinstance(item.get("organizer"), dict) else "",
-            )
-        except Exception as e:
-            logger.debug("DoraHacks parse error: %s", e)
+        title, url = item.get("name"), item.get("url")
+        if not isinstance(title, str) or not title.strip() or not isinstance(url, str):
             return None
+        parsed = urlsplit(url)
+        if parsed.scheme != "https" or parsed.hostname != "dorahacks.io" or not parsed.path.startswith("/hackathon/") or url in seen_urls:
+            return None
+        loc = item.get("location")
+        location = ""
+        if isinstance(loc, str):
+            location = loc
+        elif isinstance(loc, dict):
+            address = loc.get("address")
+            if isinstance(address, dict):
+                location = ", ".join(str(address[k]) for k in ("addressLocality", "addressCountry") if address.get(k))
+            if not location and isinstance(loc.get("name"), str):
+                location = loc["name"]
+        date = item.get("startDate") if isinstance(item.get("startDate"), str) else ""
+        description = item.get("description") if isinstance(item.get("description"), str) else ""
+        seen_urls.add(url)
+        return HackathonEvent(title=title.strip(), url=url, source=self.name, description=description[:500],
+                              date_str=date, date_source="event_jsonld" if date else "", location=location)

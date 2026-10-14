@@ -654,6 +654,17 @@ def run_pipeline(dry_run: bool = False) -> None:
             "raw_events": 0, "new_events": 0, "total_stored": store.count,
         })
         logger.error("No source completed successfully; preserving the archive and its timestamp")
+        if not dry_run:
+            notify_run_summary(
+                new_events=0,
+                total_upcoming=sum(1 for ev in store.all_events()
+                                   if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)),
+                elapsed_seconds=(_now() - start_time).total_seconds(),
+                failed_collectors=_failed_collector_names(failed_collectors),
+                page_url=config.PUBLIC_SITE_URL,
+                collector_runs=collector_runs,
+                scan_status="collection_failed_preserved",
+            )
         return
 
     # 3. Deduplicazione vs storico
@@ -764,6 +775,8 @@ def run_pipeline(dry_run: bool = False) -> None:
                     events=[],
                     collectors_ok=len(ok_collectors),
                     collectors_total=len(collectors),
+                    collector_runs=collector_runs,
+                    scan_status="llm_failed_preserved",
                 )
             logger.info("=" * 60)
             logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
@@ -901,6 +914,8 @@ def run_pipeline(dry_run: bool = False) -> None:
             events=llm_confirmed,
             collectors_ok=len(ok_collectors),
             collectors_total=len(collectors),
+            collector_runs=collector_runs,
+            scan_status=report["status"],
         )
 
     # Riepilogo finale nei log

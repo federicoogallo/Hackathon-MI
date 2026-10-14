@@ -184,7 +184,7 @@ class TestRunSummary:
         assert "Hackathon 3" in text
         assert "Hackathon 4" not in text
         assert "+2 altri nel calendario" in text
-        assert "Non disponibili: Meetup" in text
+        assert "Da verificare: Meetup" in text
 
     @pytest.mark.parametrize(
         ("seconds", "expected"),

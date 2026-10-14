@@ -1,90 +1,78 @@
-"""
-Collector Regione Lombardia — scraping Open Innovation portal.
-
-Recupera hackathon finanziati regionalmente e challenge d'innovazione.
-URL: https://www.openinnovation.regione.lombardia.it
-"""
+"""Collect public news and challenges from Regione Lombardia's Open Innovation portal."""
 
 import logging
+import re
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
 REGIONE_URLS = [
-    "https://www.openinnovation.regione.lombardia.it/it/opportunita",
-    "https://www.openinnovation.regione.lombardia.it/it/eventi",
-    "https://www.regione.lombardia.it/wps/portal/istituzionale/HP/bandi",
+    "https://www.openinnovation.regione.lombardia.it/news/news/all-news",
+    "https://www.openinnovation.regione.lombardia.it/it/iniziative/open-challenge/le-sfide",
 ]
 
 
 class RegioneLombardiaCollector(BaseCollector):
-
     @property
     def name(self) -> str:
         return "regione_lombardia"
 
     def collect(self) -> list[HackathonEvent]:
-        all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
-
+        events: list[HackathonEvent] = []
+        seen: set[str] = set()
         for url in REGIONE_URLS:
             response = safe_get(url)
-            if response is None:
-                continue
-            events = self._parse_html(response.text, url, seen_urls)
-            all_events.extend(events)
-
-        logger.info("Regione Lombardia: trovati %d eventi", len(all_events))
-        return all_events
+            if response is not None:
+                events.extend(self._parse_html(response.text, url, seen))
+        logger.info("Regione Lombardia: trovati %d eventi", len(events))
+        return events
 
     def _parse_html(self, html: str, base_url: str, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Parsa le pagine della Regione Lombardia."""
         soup = BeautifulSoup(html, "lxml")
-        events: list[HackathonEvent] = []
-
-        cards = soup.find_all("article")
+        cards = soup.select(".card.card-img, .icon-challenge")
         if not cards:
-            cards = soup.find_all("div", class_=lambda c: c and ("card" in str(c).lower() or "item" in str(c).lower() or "event" in str(c).lower() or "opportunity" in str(c).lower()))
-        if not cards:
-            cards = soup.find_all("li", class_=lambda c: c and ("item" in str(c).lower() or "result" in str(c).lower()))
-
+            text = soup.get_text(" ", strip=True).lower()
+            if not any(marker in text for marker in ("nessun risultato", "nessun elemento", "nessuna sfida")):
+                record_issue("parse_error", "Open Innovation listing not recognized", base_url)
+            return []
+        events = []
         for card in cards:
-            link = card.find("a", href=True)
-            if not link:
+            challenge = "icon-challenge" in card.get("class", [])
+            if challenge:
+                title_el = card.select_one(".content-icon-challenge .title")
+                link = card.select_one('a[href*="/open_challenge/open-challenge/"]')
+                date_el = card.select_one(".badge-deadline")
+                desc_el = None
+            else:
+                title_el = card.select_one(".card-title")
+                link = title_el.find_parent("a", href=True) if title_el else None
+                date_el = card.select_one(".card-calendar")
+                desc_el = card.select_one(".card-description")
+            if title_el is None or link is None:
                 continue
-
-            url = link.get("href", "").strip()
-            title_el = card.find(["h2", "h3", "h4"])
-            title = title_el.get_text(strip=True) if title_el else link.get_text(strip=True)
-
-            if not url or not title or len(title) < 5 or url in seen_urls:
+            title = title_el.get_text(" ", strip=True)
+            url = urljoin(base_url, link["href"])
+            parts = urlparse(url)
+            if (len(title) < 5 or url in seen_urls or parts.scheme not in {"http", "https"}
+                    or parts.hostname not in {"www.openinnovation.regione.lombardia.it", "openinnovation.regione.lombardia.it"}
+                    or not re.search(r"/(?:news/news|open_challenge/open-challenge)/\d+/", parts.path)):
                 continue
-            if not url.startswith("http"):
-                from urllib.parse import urljoin
-                url = urljoin(base_url, url)
+            date = date_el.get_text(" ", strip=True) if date_el else ""
+            description = desc_el.get_text(" ", strip=True) if desc_el else ""
+            # Neither an application deadline nor a publication date is the event date.
+            if challenge and date:
+                description = f"Scadenza candidature: {date}. {description}".strip()
             seen_urls.add(url)
-
-            date_el = card.find(["time"]) or card.find(class_=lambda c: c and "date" in str(c).lower())
-            date_str = ""
-            if date_el:
-                date_str = date_el.get("datetime", "") or date_el.get_text(strip=True)
-
-            desc_el = card.find(class_=lambda c: c and ("desc" in str(c).lower() or "text" in str(c).lower() or "abstract" in str(c).lower()))
-            description = desc_el.get_text(strip=True)[:500] if desc_el else ""
-
             events.append(HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=description,
-                date_str=date_str,
-                location="Lombardia",
-                organizer="Regione Lombardia",
+                title=title, url=url, source=self.name, description=description[:500],
+                date_str="", published_at="" if challenge else date,
+                date_source="deadline" if challenge else "publication",
+                location="", organizer="Regione Lombardia",
             ))
-
         return events

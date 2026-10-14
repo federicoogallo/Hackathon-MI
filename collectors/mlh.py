@@ -1,32 +1,23 @@
-"""
-Collector MLH (Major League Hacking) — JSON API pubblica.
+"""Major League Hacking season listings, including structured Event cards."""
 
-Endpoint: https://mlh.io/seasons/2026/events
-MLH pubblica i dati degli eventi in un endpoint JSON accessibile.
-Buona copertura per hackathon universitari EU.
-"""
-
-import json
 import logging
 from datetime import datetime
+from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
-from utils.http import safe_get, safe_get_json
+from utils.collector_health import record_issue
+from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
 # MLH pubblica le stagioni con anno accademico
 CURRENT_YEAR = datetime.now().year
 MLH_URLS = [
-    f"https://mlh.io/seasons/{CURRENT_YEAR}/events",
-    f"https://mlh.io/seasons/{CURRENT_YEAR + 1}/events",
+    f"https://www.mlh.com/seasons/{CURRENT_YEAR}/events",
+    f"https://www.mlh.com/seasons/{CURRENT_YEAR + 1}/events",
 ]
-
-# Filtro geo: solo eventi in Italia o con Milan/Milano nel nome/location
-ITALY_KEYWORDS = {"italy", "italia", "milan", "milano", "rome", "roma", "turin", "torino"}
 
 
 class MLHCollector(BaseCollector):
@@ -52,122 +43,57 @@ class MLHCollector(BaseCollector):
         if response is None:
             return []
 
-        # MLH può restituire JSON diretto o HTML con dati embedded
-        events: list[HackathonEvent] = []
-
-        # Prova parsing HTML (MLH rende la pagina con card)
-        events = self._parse_html(response.text, seen_urls)
-
-        return events
+        return self._parse_html(response.text, seen_urls)
 
     def _parse_html(self, html: str, seen_urls: set[str]) -> list[HackathonEvent]:
         """Parsa la pagina eventi MLH."""
         soup = BeautifulSoup(html, "lxml")
         events: list[HackathonEvent] = []
 
-        # MLH usa div.event-wrapper o simili per le card
-        cards = soup.find_all("div", class_=lambda c: c and "event" in str(c).lower())
-        if not cards:
-            cards = soup.find_all("article")
+        structured = soup.select('[itemscope][itemtype="https://schema.org/Event"]')
+        if structured:
+            for card in structured:
+                event = self._parse_structured_card(card, seen_urls)
+                if event:
+                    events.append(event)
+            return events
 
-        for card in cards:
-            event = self._parse_card(card, seen_urls)
-            if event:
-                events.append(event)
-
-        # Fallback: cerca __NEXT_DATA__ o script JSON
-        if not events:
-            script = soup.find("script", id="__NEXT_DATA__")
-            if script:
-                try:
-                    data = json.loads(script.string)
-                    events = self._extract_from_json(data, seen_urls)
-                except (json.JSONDecodeError, KeyError):
-                    pass
-
+        if "no events" not in soup.get_text(" ", strip=True).lower():
+            record_issue("parse_error", "MLH structured event listing not recognized")
         return events
 
-    def _parse_card(self, card, seen_urls: set[str]) -> HackathonEvent | None:
-        """Estrae un evento da una card MLH, filtra per Italia."""
-        try:
-            # Location check — solo Italia
-            loc_el = card.find(class_=lambda c: c and ("location" in str(c).lower() or "city" in str(c).lower()))
-            location = loc_el.get_text(strip=True) if loc_el else ""
+    def _parse_structured_card(self, card, seen_urls: set[str]) -> HackathonEvent | None:
+        def value(prop: str, root=None) -> str:
+            element = (root if root is not None else card).select_one(f'[itemprop="{prop}"]')
+            return (element.get("content") or element.get_text(" ", strip=True)) if element else ""
 
-            # Titolo
-            title_el = card.find(["h3", "h4", "h2", "h5"])
-            title = title_el.get_text(strip=True) if title_el else ""
-
-            # Filtro geografico: solo Italia/Milano
-            text_to_check = f"{title} {location}".lower()
-            if not any(kw in text_to_check for kw in ITALY_KEYWORDS):
-                return None
-
-            # URL
-            link = card.find("a", href=True)
-            if not link:
-                return None
-            url = link.get("href", "").strip()
-            if not url.startswith("http"):
-                url = f"https://mlh.io{url}"
-            if url in seen_urls:
-                return None
-            seen_urls.add(url)
-
-            if not title:
-                title = link.get_text(strip=True)
-            if not title:
-                return None
-
-            # Data
-            date_el = card.find(class_=lambda c: c and "date" in str(c).lower())
-            date_str = date_el.get_text(strip=True) if date_el else ""
-
-            return HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                date_str=date_str,
-                location=location or "Italia",
-                organizer="Major League Hacking",
-            )
-        except Exception as e:
-            logger.debug("MLH card parse error: %s", e)
+        location = card.select_one('[itemprop="location"]')
+        country = value("addressCountry", location) if location else ""
+        if value("eventAttendanceMode").endswith("OnlineEventAttendanceMode"):
             return None
-
-    def _extract_from_json(self, data: dict, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Estrae eventi da __NEXT_DATA__ JSON."""
-        events = []
+        # Location.name precedes Event.name in the markup; select the event heading explicitly.
+        title_el = card.select_one("h2, h3, h4")
+        title = title_el.get_text(" ", strip=True) if title_el else ""
+        url = value("url")
         try:
-            # Navigate the JSON structure to find events
-            page_props = data.get("props", {}).get("pageProps", {})
-            event_list = page_props.get("events", [])
-
-            for item in event_list:
-                location = item.get("location", "")
-                title = item.get("name", "") or item.get("title", "")
-                text_to_check = f"{title} {location}".lower()
-
-                if not any(kw in text_to_check for kw in ITALY_KEYWORDS):
-                    continue
-
-                url = item.get("url", "") or item.get("link", "")
-                if not url or url in seen_urls:
-                    continue
-                if not url.startswith("http"):
-                    url = f"https://mlh.io{url}"
-                seen_urls.add(url)
-
-                events.append(HackathonEvent(
-                    title=title,
-                    url=url,
-                    source=self.name,
-                    description=(item.get("description", "") or "")[:500],
-                    date_str=item.get("startDate", "") or item.get("date", ""),
-                    location=location or "Italia",
-                    organizer="Major League Hacking",
-                ))
-        except Exception as e:
-            logger.debug("MLH JSON extraction error: %s", e)
-
-        return events
+            parts = urlsplit(url)
+            valid_url = parts.scheme in {"https", "http"} and parts.hostname and not parts.username
+        except ValueError:
+            valid_url = False
+        if not title or not valid_url or not country:
+            record_issue("parse_error", "MLH event card missing title, URL or country")
+            return None
+        if country.lower() not in {"it", "italy", "italia"}:
+            return None
+        if url in seen_urls:
+            return None
+        seen_urls.add(url)
+        start, end = value("startDate"), value("endDate")
+        return HackathonEvent(
+            title=title, url=url, source=self.name,
+            date_str=f"{start} — {end}" if start and end and start != end else start,
+            date_source="structured_data" if start else "unknown",
+            location=", ".join(filter(None, [value("addressLocality", location),
+                                            value("addressRegion", location), country])),
+            organizer="Major League Hacking",
+        )

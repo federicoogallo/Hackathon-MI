@@ -7,11 +7,11 @@ hackathon, competition e challenge.
 """
 
 import logging
+import re
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
 from utils.http import safe_get
 from utils.collector_health import record_issue
@@ -19,13 +19,14 @@ from utils.collector_health import record_issue
 logger = logging.getLogger(__name__)
 
 STARTUP_ITALIA_URLS = [
-    "https://startupitalia.eu/eventi",
-    "https://startupitalia.eu/tag/hackathon",
+    "https://startupitalia.eu/eventi/",
+    "https://startupitalia.eu/tag/hackathon/",
 ]
 
 # RSS feed se disponibile
 RSS_URLS = [
-    "https://startupitalia.eu/feed",
+    "https://startupitalia.eu/tag/hackathon/feed/",
+    "https://startupitalia.eu/feed/",
 ]
 
 
@@ -76,8 +77,7 @@ class StartupItaliaCollector(BaseCollector):
 
                 # Filtra solo articoli rilevanti (hackathon/challenge/competition)
                 text_to_check = f"{title} {desc}".lower()
-                hackathon_keywords = ["hackathon", "hack", "challenge", "competition", "maratona", "coding", "makeathon"]
-                if not any(kw in text_to_check for kw in hackathon_keywords):
+                if not re.search(r"\b(?:hackathon|datathon|makeathon|buildathon|challenge|competition|maratona|coding)\b", text_to_check):
                     continue
 
                 seen_urls.add(link)
@@ -116,7 +116,10 @@ class StartupItaliaCollector(BaseCollector):
     def _parse_card(self, card, base_url: str, seen_urls: set[str]) -> HackathonEvent | None:
         """Estrae un evento/articolo da una card."""
         try:
-            link = card.find("a", href=True)
+            heading = card.find(["h2", "h3", "h4"])
+            link = heading.find("a", href=True) if heading else None
+            if link is None:
+                link = card.find("a", href=True)
             if not link:
                 return None
 
@@ -126,12 +129,11 @@ class StartupItaliaCollector(BaseCollector):
             if not url.startswith("http"):
                 from urllib.parse import urljoin
                 url = urljoin(base_url, url)
-            seen_urls.add(url)
-
             title_el = card.find(["h2", "h3", "h4"])
             title = title_el.get_text(strip=True) if title_el else link.get_text(strip=True)
-            if not title or len(title) < 3:
+            if not title or len(title) < 3 or url in seen_urls:
                 return None
+            seen_urls.add(url)
 
             # Data
             date_el = card.find(["time"]) or card.find(class_=lambda c: c and "date" in str(c).lower())

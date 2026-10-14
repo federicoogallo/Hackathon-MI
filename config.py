@@ -27,9 +27,14 @@ CANDIDATE_AUDIT_DIR = os.getenv("CANDIDATE_AUDIT_DIR", str(BASE_DIR / ".local" /
 
 # ─── API Keys ──────────────────────────────────────────────────────────────
 EVENTBRITE_API_KEY = os.getenv("EVENTBRITE_API_KEY", "")
+EVENTBRITE_ORGANIZATION_IDS = [
+    value.strip() for value in os.getenv("EVENTBRITE_ORGANIZATION_IDS", "").split(",")
+    if value.strip()
+]
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
+REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 MEETUP_API_KEY = os.getenv("MEETUP_API_KEY", "")  # opzionale — migliora Meetup collector

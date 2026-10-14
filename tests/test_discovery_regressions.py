@@ -59,12 +59,13 @@ def test_bocconi_div_titles_do_not_become_outer_section_headings():
 @patch("collectors.universities.safe_get")
 def test_university_relative_urls_use_redirect_destination(mock_get):
     mock_get.return_value = _response(
-        '<article><h3>Hackathon</h3><a href="../hackathon">Details</a></article>',
+        '<div class="card--editorial-photo"><h5 class="card-title">Hackathon</h5>'
+        '<a href="../dettaglio-evento/hackathon">Details</a></div>',
         "https://www.eventi.polimi.it/en/agenda/",
     )
     events = UniversitiesCollector()._collect_polimi()
     assert len(events) == 1
-    assert events[0].url == "https://www.eventi.polimi.it/en/hackathon"
+    assert events[0].url == "https://www.eventi.polimi.it/en/dettaglio-evento/hackathon"
 
 
 def test_luma_unknown_json_schema_uses_html_fallback():

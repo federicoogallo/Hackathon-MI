@@ -108,15 +108,15 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 1 | **Eventbrite** | REST API | Requires `EVENTBRITE_API_KEY` |
+| 1 | **Eventbrite** | Authorized organization API | Optional token + organization IDs; global search was retired |
 | 2 | **Eventbrite Web** | HTML scraping (JSON-LD) | JSON-LD fallback without an API key |
 | 3 | **Web Search (DDG)** | DuckDuckGo DDGS | Current/next-year queries, university associations and organizer searches; up to 8 official-page checks per scan |
 | 4 | **InnovUp** | HTML scraping | innovup.net/eventi |
 | 5 | **Luma** | `__NEXT_DATA__` JSON + HTML fallback | luma.com Milan calendar; historical lu.ma URLs remain compatible |
-| 6 | **Devpost** | HTML scraping | International listings filtered for Milan relevance |
+| 6 | **Devpost** | Public listing API | Milan/Italy queries; unrelated fuzzy suggestions excluded |
 | 7 | **PoliHub** | HTML scraping | Direct collector; results may also be discovered through web search |
 | 8 | **Universities** | HTML scraping | PoliMi, Bocconi, Bicocca, Cattolica, IULM, San Raffaele |
-| 9 | **Reddit** | PRAW (official API) | r/ItalyInformatica + r/italy. Requires `REDDIT_CLIENT_ID` + `REDDIT_CLIENT_SECRET` |
+| 9 | **Reddit** | PRAW (official API) | Optional existing approved access, credentials and actual user agent; API migration pending |
 | 10 | **Taikai** | HTML scraping | taikai.network — international tech hackathons |
 
 #### Local and Developer Ecosystems
@@ -125,8 +125,8 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 |---|--------|--------|-------|
 | 11 | **Meetup** | GraphQL API + HTML fallback | Milan geo-search (30 km). Optional `MEETUP_API_KEY` |
 | 12 | **Hackathon.com** | HTML scraping | hackathon.com/city/italy/milan + /country/italy |
-| 13 | **MLH** | HTML + `__NEXT_DATA__` + JSON | Major League Hacking seasons. Italy geo-filter |
-| 14 | **Codemotion** | HTML scraping | community.codemotion.com — developer community events |
+| 13 | **MLH** | HTML Event microdata | Current/following seasons; structured country filter |
+| 14 | **Codemotion** | HTML event cards | events.codemotion.com; dates without years remain unresolved |
 | 15 | **Talent Garden** | Public agenda JSON + HTML fallback | talentgarden.com/it/agenda; venue comes from each event |
 | 16 | **Cariplo Factory** | HTML scraping | cariplofactory.it/eventi — Fondazione Cariplo hub |
 | 17 | **Startup Italia** | RSS + HTML fallback | startupitalia.eu — Italian startup media |
@@ -135,18 +135,18 @@ This inventory matches `main.py::get_collectors`. Methods describe the implement
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 18 | **DoraHacks** | REST API | Web3/blockchain hackathons. Italy geo-filter |
-| 19 | **HackerEarth** | HTML scraping | hackerearth.com/challenges — online + onsite |
+| 18 | **DoraHacks** | Public listing | Access and supported event data checked; verification challenges are not bypassed |
+| 19 | **HackerEarth** | Public Compete API | Hackathon records from the current challenges page |
 | 20 | **Devfolio** | `__NEXT_DATA__` + HTML fallback | Platform listings with an Italy geo-filter |
 | 21 | **ChallengeRocket** | HTML scraping | EU/CEE hackathons + challenges |
-| 22 | **Unstop** | HTML + Angular JSON | Ex-Dare2Compete. Italy geo-filter |
+| 22 | **Unstop** | Public catalog API | Milan/Italy search terms; explicit foreign and online venues excluded |
 | 23 | **Lablab.ai** | `__NEXT_DATA__` + HTML | AI hackathons — LLM filters for Milan relevance |
 
 #### Institutional Sources
 
 | # | Source | Method | Notes |
 |---|--------|--------|-------|
-| 24 | **Comune di Milano** | HTML scraping | comune.milano.it innovation page — civic hackathons |
+| 24 | **Comune di Milano** | News cards | Current official news archive; access restrictions reported |
 | 25 | **Camera di Commercio** | HTML scraping | milomb.camcom.it — events + grants |
 | 26 | **Regione Lombardia** | HTML scraping | Open Innovation Lombardia portal |
 
@@ -202,10 +202,9 @@ Edit `.env` with the credentials needed by your integrations. Without working `G
 
 | Variable | How to obtain |
 |----------|---------------|
-| `EVENTBRITE_API_KEY` | [eventbrite.com/platform/api](https://www.eventbrite.com/platform/api) → create an app → copy the Private token |
+| `EVENTBRITE_API_KEY`, `EVENTBRITE_ORGANIZATION_IDS` | Optional token and comma-separated organization IDs authorized by it. This is not global discovery; see [source access](docs/discovery.md#optional-api-access) |
 | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) → API Keys → create a key for your account |
-| `REDDIT_CLIENT_ID` | [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) → create "script" app → copy the ID below the name |
-| `REDDIT_CLIENT_SECRET` | Same Reddit page → copy the "secret" |
+| `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` | Optional existing approved API client and a user agent identifying the actual app/account; see [migration limits](docs/discovery.md#optional-api-access) |
 | `TELEGRAM_BOT_TOKEN` | Talk to [@BotFather](https://t.me/BotFather) on Telegram → `/newbot` → copy the token |
 | `TELEGRAM_CHAT_ID` | ID of the chat authorized to receive summaries and control the bot |
 | `MEETUP_API_KEY` | Optional Meetup API access; HTML fallback is available |
@@ -214,6 +213,16 @@ Edit `.env` with the credentials needed by your integrations. Without working `G
 | `NEXT_PUBLIC_SITE_URL` | Canonical public origin; defaults to the current Vercel site |
 
 ### 4. Run the pipeline
+
+Check live source health without classification, catalog writes or notifications:
+
+```bash
+python scripts/check_sources.py --save
+# Optional subset:
+python scripts/check_sources.py universities devpost
+```
+
+Aggregate diagnostics stay in ignored `.local/audit/`. A nonzero exit code signals partial, blocked or failed collection. Optional disabled integrations remain explicitly listed.
 
 ```bash
 # Run collection without Telegram notifications
@@ -339,7 +348,7 @@ The separate [test workflow](.github/workflows/tests.yml) checks pull requests a
 | `/scan` | Trigger a manual scan |
 | `/help` | List commands |
 
-The bot sends a **summary after each scan** with up to four new event previews, dates and locations, the number of upcoming events, source availability, elapsed time and a button opening the public calendar. Scans with no new events still send a status summary.
+The bot sends a **summary after each scan** with up to four new event previews, dates and locations, upcoming event count, elapsed time and a calendar button. Sources with results, empty results, partial coverage, access blocks, errors and disabled integrations are distinguished. A failed collection/classification reports the preserved archive rather than claiming no new events exist. Scans with no new events still send a status summary.
 Find events on the [main website](https://hackathon-milano.vercel.app/) and in the README table above; older GitHub Pages links redirect to the main site.
 
 Local start:
@@ -452,7 +461,7 @@ hackathon-monitor/
 ├── ASSETS.md                  # Separate terms for original brand and artwork
 ├── SECURITY.md                # Vulnerability reporting and security checks
 ├── collectors/                # 28 registered source integrations
-│   ├── eventbrite.py          # REST API
+│   ├── eventbrite.py          # Authorized organization API
 │   ├── eventbrite_web.py      # HTML / JSON-LD fallback
 │   ├── web_search.py          # Web search queries
 │   ├── luma.py                # Embedded JSON and HTML

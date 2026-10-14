@@ -1,26 +1,23 @@
 """
-Collector Devpost — scraping pagina hackathon upcoming.
+Collector Devpost — API pubblica richiamata dalla pagina hackathon.
 
-URL: https://devpost.com/hackathons?search=milan&status=upcoming
-Copertura bassa per Milano ma costo implementativo minimo.
-HTML relativamente semplice con card per ogni hackathon.
+Endpoint: https://devpost.com/api/hackathons
+Le risposte fuzzy senza riferimenti geografici vengono escluse.
 """
 
+import json
 import logging
+import re
+from urllib.parse import urlsplit
 
-from bs4 import BeautifulSoup
-
-import config
 from models import BaseCollector, HackathonEvent
 from utils.http import safe_get
+from utils.collector_health import record_issue
 
 logger = logging.getLogger(__name__)
 
-DEVPOST_URLS = [
-    "https://devpost.com/hackathons?search=milan&status=upcoming",
-    "https://devpost.com/hackathons?search=milano&status=upcoming",
-    "https://devpost.com/hackathons?search=milan+italy&status=open",
-]
+DEVPOST_API_URL = "https://devpost.com/api/hackathons"
+DEVPOST_QUERIES = ("milan", "milano", "italy")
 
 
 class DevpostCollector(BaseCollector):
@@ -30,130 +27,58 @@ class DevpostCollector(BaseCollector):
         return "devpost"
 
     def collect(self) -> list[HackathonEvent]:
-        all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
-
-        for url in DEVPOST_URLS:
-            response = safe_get(url)
-            if response is None:
-                continue
-
-            events = self._parse_html(response.text, seen_urls)
-            all_events.extend(events)
-
-        logger.info("Devpost: trovati %d hackathon", len(all_events))
-        return all_events
-
-    def _parse_html(self, html: str, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Parsa la pagina listing di Devpost."""
-        soup = BeautifulSoup(html, "lxml")
         events: list[HackathonEvent] = []
-
-        # Devpost usa div.hackathon-tile o simili per ogni hackathon
-        tiles = soup.find_all("a", class_=lambda c: c and "hackathon" in str(c).lower())
-        if not tiles:
-            # Fallback: cerca le card/link principali
-            tiles = soup.find_all("div", class_=lambda c: c and ("challenge" in str(c).lower() or "tile" in str(c).lower()))
-
-        # Un altro pattern: Devpost mostra hackathon come link con titolo e info
-        if not tiles:
-            tiles = soup.select(".hackathons-container a, .challenge-listing a")
-
-        for tile in tiles:
-            event = self._parse_tile(tile, seen_urls)
-            if event:
-                events.append(event)
-
-        # Fallback generico se nessun tile matchato
-        if not events:
-            events = self._fallback_extraction(soup, seen_urls)
-
+        seen: set[str] = set()
+        for query in DEVPOST_QUERIES:
+            for page in range(1, 4):
+                response = safe_get(DEVPOST_API_URL, params={
+                    "search": query, "status[]": ["open", "upcoming"], "page": page,
+                })
+                if response is None:
+                    break
+                try:
+                    payload = json.loads(response.text)
+                except (ValueError, TypeError):
+                    record_issue("parse_error", "invalid hackathon API JSON", DEVPOST_API_URL)
+                    break
+                if not isinstance(payload, dict) or not isinstance(payload.get("hackathons"), list):
+                    record_issue("parse_error", "unexpected hackathon API schema", DEVPOST_API_URL)
+                    break
+                items = payload["hackathons"]
+                meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+                for item in items:
+                    event = self._parse_api_item(item, seen, fuzzy=meta.get("fuzzy") is True)
+                    if event:
+                        events.append(event)
+                total, per_page = meta.get("total_count"), meta.get("per_page")
+                if not items or (isinstance(total, int) and isinstance(per_page, int)
+                                 and per_page > 0 and page * per_page >= total):
+                    break
+        logger.info("Devpost: trovati %d candidati", len(events))
         return events
 
-    def _parse_tile(self, tile, seen_urls: set[str]) -> HackathonEvent | None:
-        """Estrae un evento da un tile Devpost."""
-        try:
-            # URL
-            if tile.name == "a":
-                url = tile.get("href", "")
-            else:
-                link = tile.find("a")
-                url = link.get("href", "") if link else ""
-
-            if not url:
-                return None
-            if not url.startswith("http"):
-                url = f"https://devpost.com{url}"
-            if url in seen_urls:
-                return None
-            seen_urls.add(url)
-
-            # Titolo
-            title_el = tile.find(["h2", "h3", "h4", "h5"])
-            if title_el:
-                title = title_el.get_text(strip=True)
-            else:
-                title = tile.get_text(strip=True)[:100]
-
-            if not title or len(title) < 3:
-                return None
-
-            # Descrizione e data
-            description = ""
-            date_str = ""
-            for p in tile.find_all("p"):
-                text = p.get_text(strip=True)
-                if text:
-                    description += text + " "
-
-            # Cerca date
-            date_el = tile.find(class_=lambda c: c and "date" in str(c).lower())
-            if date_el:
-                date_str = date_el.get_text(strip=True)
-
-            return HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=description.strip()[:500],
-                date_str=date_str,
-            )
-
-        except Exception as e:
-            logger.debug("Errore parsing tile Devpost: %s", e)
+    def _parse_api_item(self, item, seen_urls: set[str], *, fuzzy=False) -> HackathonEvent | None:
+        if not isinstance(item, dict):
             return None
-
-    def _fallback_extraction(self, soup: BeautifulSoup, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Fallback: estrae dai link che puntano a hackathon Devpost."""
-        events: list[HackathonEvent] = []
-
-        for link in soup.find_all("a", href=True):
-            href = link.get("href", "")
-            text = link.get_text(strip=True)
-
-            if not text or len(text) < 5:
-                continue
-
-            # Link a pagine hackathon specifiche
-            if "/hackathons/" in href or "devpost.com/hackathons" in href:
-                if href.startswith("/"):
-                    href = f"https://devpost.com{href}"
-                if href in seen_urls or href in [u.split("?")[0] for u in DEVPOST_URLS]:
-                    continue
-                seen_urls.add(href)
-
-                events.append(HackathonEvent(
-                    title=text,
-                    url=href,
-                    source=self.name,
-                ))
-
-        return events
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    collector = DevpostCollector()
-    events = collector.collect()
-    for e in events:
-        print(f"  [{e.source}] {e.title} — {e.url}")
+        title, url = item.get("title"), item.get("url")
+        if not isinstance(title, str) or not title.strip() or not isinstance(url, str):
+            return None
+        parsed = urlsplit(url)
+        if parsed.scheme != "https" or not (parsed.hostname or "").endswith(".devpost.com") or url in seen_urls:
+            return None
+        loc = item.get("displayed_location")
+        location = loc.get("location", "") if isinstance(loc, dict) else ""
+        organizer = item.get("organization_name", "")
+        # Devpost returns unrelated suggestions when no exact search matches exist.
+        if fuzzy and not re.search(r"\b(?:milan|milano|italy|italia)\b", f"{title} {location} {organizer}", re.I):
+            return None
+        themes = item.get("themes") if isinstance(item.get("themes"), list) else []
+        topics = ", ".join(t["name"] for t in themes if isinstance(t, dict) and isinstance(t.get("name"), str))
+        submission = item.get("submission_period_dates", "")
+        seen_urls.add(url)
+        return HackathonEvent(
+            title=title.strip(), url=url, source=self.name, location=location, organizer=organizer,
+            description=f"Hackathon. {topics}. Periodo di invio progetti: {submission}".strip(),
+            # Submission deadlines are not reliable physical event dates.
+            date_str=submission if isinstance(submission, str) else "", date_source="deadline",
+        )

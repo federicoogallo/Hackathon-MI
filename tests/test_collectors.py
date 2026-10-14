@@ -55,11 +55,14 @@ class TestEventbriteCollector:
     @patch("collectors.eventbrite.safe_get_json")
     def test_parses_events(self, mock_get, mock_config):
         mock_config.EVENTBRITE_API_KEY = "key-123"
+        mock_config.EVENTBRITE_ORGANIZATION_IDS = ["123"]
         mock_config.SEARCH_LOCATION = "Milano"
         mock_get.return_value = {
             "events": [
                 {
                     "name": {"text": "PoliHack 2026"},
+                    "listed": True,
+                    "status": "live",
                     "url": "https://eventbrite.it/polihack2026",
                     "description": {"text": "24h coding marathon"},
                     "start": {"local": "2026-03-15T09:00:00"},

@@ -1,24 +1,24 @@
 """
-Collector Unstop (ex-Dare2Compete) — scraping pagina hackathon.
+Collector Unstop (ex-Dare2Compete) — API pubblica del catalogo hackathon.
 
 Piattaforma di hackathon e competition con presenza crescente in EU.
-URL: https://unstop.com/hackathons
+Endpoint usato dal modulo GlobalSearchModule di https://unstop.com/hackathons.
 """
 
+import json
 import logging
+from urllib.parse import urljoin, urlsplit
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
-UNSTOP_URLS = [
-    "https://unstop.com/hackathons?oppstatus=open",
-    "https://unstop.com/hackathons?oppstatus=recent",
-]
+UNSTOP_API_URL = "https://unstop.com/api/public/opportunity/search-result"
+UNSTOP_QUERIES = ("milan", "milano", "italy")
 
 
 class UnstopCollector(BaseCollector):
@@ -31,115 +31,97 @@ class UnstopCollector(BaseCollector):
         all_events: list[HackathonEvent] = []
         seen_urls: set[str] = set()
 
-        for url in UNSTOP_URLS:
-            response = safe_get(url)
-            if response is None:
-                continue
-            events = self._parse_html(response.text, seen_urls)
-            all_events.extend(events)
+        for query in UNSTOP_QUERIES:
+            for page in range(1, 4):
+                response = safe_get(UNSTOP_API_URL, params={
+                    "opportunity": "hackathons", "oppstatus": "open",
+                    "searchTerm": query, "page": page, "per_page": 20,
+                })
+                if response is None:
+                    break
+                try:
+                    payload = json.loads(response.text)
+                except (ValueError, TypeError):
+                    record_issue("parse_error", "invalid public catalogue JSON", UNSTOP_API_URL)
+                    break
+                listing = payload.get("data") if isinstance(payload, dict) else None
+                if not isinstance(listing, dict) or not isinstance(listing.get("data"), list):
+                    record_issue("parse_error", "unexpected public catalogue schema", UNSTOP_API_URL)
+                    break
+                items = listing["data"]
+                readable = 0
+                for item in items:
+                    event = self._parse_api_item(item)
+                    if event:
+                        readable += 1
+                        if self._in_scope(item) and event.url not in seen_urls:
+                            seen_urls.add(event.url)
+                            all_events.append(event)
+                if items and not readable:
+                    record_issue("parse_error", "public catalogue has no readable events", UNSTOP_API_URL)
+                    break
+                last_page = listing.get("last_page")
+                if not items or (isinstance(last_page, int) and page >= last_page):
+                    break
 
         logger.info("Unstop: trovati %d eventi", len(all_events))
         return all_events
 
-    def _parse_html(self, html: str, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Parsa la pagina hackathon di Unstop."""
-        soup = BeautifulSoup(html, "lxml")
-        events: list[HackathonEvent] = []
-
-        cards = soup.find_all("div", class_=lambda c: c and ("card" in str(c).lower() or "hackathon" in str(c).lower() or "listing" in str(c).lower()))
-        if not cards:
-            cards = soup.find_all("article")
-        if not cards:
-            # Unstop potrebbe usare Angular e renderizzare lato client
-            # In tal caso, cerchiamo script con JSON
-            import json
-            for script in soup.find_all("script", type="application/json"):
-                try:
-                    data = json.loads(script.string)
-                    events.extend(self._extract_from_json(data, seen_urls))
-                except (json.JSONDecodeError, TypeError):
-                    continue
-            return events
-
-        for card in cards:
-            event = self._parse_card(card, seen_urls)
-            if event:
-                events.append(event)
-
-        return events
-
-    def _parse_card(self, card, seen_urls: set[str]) -> HackathonEvent | None:
-        """Estrae un evento da una card Unstop."""
-        try:
-            link = card.find("a", href=True)
-            if not link:
-                return None
-
-            url = link.get("href", "").strip()
-            if not url:
-                return None
-            if not url.startswith("http"):
-                url = f"https://unstop.com{url}"
-            if url in seen_urls:
-                return None
-            seen_urls.add(url)
-
-            title_el = card.find(["h2", "h3", "h4", "h5"])
-            title = title_el.get_text(strip=True) if title_el else link.get_text(strip=True)
-            if not title or len(title) < 3:
-                return None
-
-            date_el = card.find(class_=lambda c: c and ("date" in str(c).lower() or "deadline" in str(c).lower()))
-            date_str = date_el.get_text(strip=True) if date_el else ""
-
-            loc_el = card.find(class_=lambda c: c and "location" in str(c).lower())
-            location = loc_el.get_text(strip=True) if loc_el else ""
-
-            desc_el = card.find(class_=lambda c: c and ("desc" in str(c).lower() or "detail" in str(c).lower()))
-            description = desc_el.get_text(strip=True)[:500] if desc_el else ""
-
-            return HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=description,
-                date_str=date_str,
-                location=location or "",
-            )
-        except Exception as e:
-            logger.debug("Unstop card parse error: %s", e)
+    def _parse_api_item(self, item) -> HackathonEvent | None:
+        if not isinstance(item, dict) or item.get("type") != "hackathons":
             return None
+        title = item.get("title")
+        url = self._event_url(item.get("public_url"))
+        if not isinstance(title, str) or not title.strip() or not url:
+            return None
+        address = item.get("address_with_country_logo")
+        location = ""
+        if isinstance(address, dict):
+            country = address.get("country")
+            parts = [address.get("address"), address.get("city"), address.get("state"),
+                     country.get("name") if isinstance(country, dict) else None]
+            location = ", ".join(dict.fromkeys(value.strip() for value in parts if isinstance(value, str) and value.strip()))
+        if item.get("region") == "online":
+            location = "Online"
+        organisation = item.get("organisation")
+        organiser = organisation.get("name", "") if isinstance(organisation, dict) else ""
+        details = item.get("details") if isinstance(item.get("details"), str) else ""
+        description = BeautifulSoup(details, "lxml").get_text(" ", strip=True)[:500]
+        # The catalogue's end_date can be registration closure, not the event start.
+        deadline = item.get("end_date") if isinstance(item.get("end_date"), str) else ""
+        return HackathonEvent(
+            title=title.strip(), url=url, source=self.name, description=description,
+            location=location, organizer=organiser, date_str=deadline,
+            date_source="deadline" if deadline else "",
+        )
 
-    def _extract_from_json(self, data, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Estrae eventi da dati JSON embedded nella pagina."""
-        events = []
-        items = []
-        if isinstance(data, list):
-            items = data
-        elif isinstance(data, dict):
-            items = data.get("hackathons", data.get("data", data.get("results", [])))
+    @staticmethod
+    def _event_url(value) -> str:
+        if not isinstance(value, str):
+            return ""
+        url = urljoin("https://unstop.com/", value.strip())
+        try:
+            parsed = urlsplit(url)
+        except ValueError:
+            return ""
+        parts = parsed.path.strip("/").split("/")
+        if (parsed.scheme != "https" or parsed.hostname != "unstop.com"
+                or len(parts) != 2 or parts[0] != "hackathons" or not parts[1]):
+            return ""
+        return url
 
-        if not isinstance(items, list):
-            return events
-
-        for item in items:
-            if not isinstance(item, dict):
-                continue
-            title = item.get("title", "") or item.get("name", "")
-            url = item.get("url", "") or item.get("link", "")
-            if not title or not url or url in seen_urls:
-                continue
-            if not url.startswith("http"):
-                url = f"https://unstop.com{url}"
-            seen_urls.add(url)
-
-            events.append(HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=(item.get("description", "") or "")[:500],
-                date_str=item.get("start_date", "") or item.get("deadline", ""),
-                location=item.get("location", "") or "",
-            ))
-
-        return events
+    @staticmethod
+    def _in_scope(item: dict) -> bool:
+        """Ignore explicit remote/foreign venues, never the organiser's nationality."""
+        if item.get("region") == "online":
+            return False
+        address = item.get("address_with_country_logo")
+        country = address.get("country") if isinstance(address, dict) else None
+        if isinstance(country, dict):
+            code = country.get("alpha_2") or country.get("iso")
+            if isinstance(code, str) and code.strip():
+                return code.strip().lower() == "it"
+            name = country.get("name")
+            if isinstance(name, str) and name.strip():
+                return name.strip().lower() in {"italy", "italia"}
+        return True

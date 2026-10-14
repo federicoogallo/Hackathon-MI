@@ -78,6 +78,8 @@ def notify_run_summary(
     collectors_ok: int | None = None,
     collectors_total: int | None = None,
     is_test: bool = False,
+    collector_runs: list[dict] | None = None,
+    scan_status: str = "completed",
 ) -> bool:
     """Invia sempre un riepilogo a fine run, anche quando non ci sono novità."""
     text = _format_run_summary(
@@ -89,6 +91,8 @@ def notify_run_summary(
         collectors_ok=collectors_ok,
         collectors_total=collectors_total,
         is_test=is_test,
+        collector_runs=collector_runs,
+        scan_status=scan_status,
     )
     return _send_message(
         text,
@@ -106,6 +110,8 @@ def _format_run_summary(
     collectors_ok: int | None = None,
     collectors_total: int | None = None,
     is_test: bool = False,
+    collector_runs: list[dict] | None = None,
+    scan_status: str = "completed",
 ) -> str:
     """Costruisce il testo HTML del riepilogo senza effettuare chiamate di rete.
 
@@ -117,14 +123,23 @@ def _format_run_summary(
         "",
     ]
 
-    if new_events > 0:
+    interrupted = scan_status in {"collection_failed_preserved", "llm_failed_preserved"}
+    limited = scan_status == "degraded" or bool(failed_collectors)
+    if interrupted:
+        stage = "raccolta delle fonti" if scan_status == "collection_failed_preserved" else "classificazione"
+        lines.extend([
+            "⚠️ <b>Scansione non completata</b>",
+            f"Problema nella {stage}. Archivio precedente preservato.",
+        ])
+    elif new_events > 0:
         noun = "nuovo evento" if new_events == 1 else "nuovi eventi"
         verb = "trovato" if new_events == 1 else "trovati"
         lines.append(f"✨ <b>{new_events} {noun} {verb}</b>")
     else:
         lines.extend([
-            "✅ <b>Scansione completata</b>",
-            "<i>Nessun nuovo evento trovato questa volta.</i>",
+            "🟠 <b>Scansione con limitazioni</b>" if limited else "✅ <b>Scansione completata</b>",
+            "<i>Nessun nuovo evento confermato nelle fonti raccolte.</i>" if limited
+            else "<i>Nessun nuovo evento trovato questa volta.</i>",
         ])
 
     previews = events[:MAX_EVENT_PREVIEWS]
@@ -140,14 +155,16 @@ def _format_run_summary(
     event_label = "evento futuro confermato" if total_upcoming == 1 else "eventi futuri confermati"
     lines.append(f"📌 <b>{total_upcoming}</b> {event_label}")
 
-    if collectors_ok is not None and collectors_total is not None:
+    if collector_runs is not None:
+        lines.extend(_format_source_health(collector_runs))
+    elif collectors_ok is not None and collectors_total is not None:
         status_icon = "🟢" if not failed_collectors else "🟠"
         lines.append(
-            f"{status_icon} <b>{collectors_ok}/{collectors_total}</b> fonti operative"
+            f"{status_icon} <b>{collectors_ok}/{collectors_total}</b> fonti senza errori segnalati"
         )
 
-    if failed_collectors:
-        lines.append(f"⚠️ Non disponibili: {_escape_html(', '.join(failed_collectors))}")
+    if failed_collectors and collector_runs is None:
+        lines.append(f"⚠️ Da verificare: {_escape_html(', '.join(failed_collectors))}")
 
     lines.append(f"⏱ {_format_duration(elapsed_seconds)}")
 
@@ -155,6 +172,26 @@ def _format_run_summary(
         lines.extend(["", "<i>Messaggio di prova · nessun dato è stato modificato.</i>"])
 
     return "\n".join(lines)
+
+
+def _format_source_health(runs: list[dict]) -> list[str]:
+    """Keep partial coverage separate from unavailable and disabled integrations."""
+    groups: dict[str, list[str]] = {}
+    for run in runs:
+        groups.setdefault(run.get("status", "failed"), []).append(str(run.get("name", "?")))
+    healthy = len(groups.get("healthy", []))
+    empty = len(groups.get("empty", []))
+    lines = [f"📡 <b>{len(runs)} integrazioni</b> · {healthy} con risultati · {empty} senza risultati"]
+    for status, label in (
+        ("degraded", "🟠 Parziali / da verificare"),
+        ("blocked", "🔒 Accesso bloccato"),
+        ("failed", "⚠️ In errore"),
+        ("disabled", "⏸ Disattivate"),
+    ):
+        names = groups.get(status, [])
+        if names:
+            lines.append(f"{label} ({len(names)}): {_escape_html(', '.join(sorted(names)))}")
+    return lines
 
 
 def _format_event_preview(event: Any, index: int) -> str:

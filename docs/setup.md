@@ -41,13 +41,15 @@ Configure only the integrations you need. `config.py` reads the local `.env`; ke
 | --- | --- |
 | `GROQ_API_KEY` | LLM event classification; needed to validate new candidates |
 | `LLM_MODEL`, `LLM_MODEL_FALLBACKS` | Optional supported model IDs; defaults are defined in `config.py` |
-| `EVENTBRITE_API_KEY` | Eventbrite API collector; the separate web collector can run without it |
-| `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` | Reddit API collector |
+| `EVENTBRITE_API_KEY`, `EVENTBRITE_ORGANIZATION_IDS` | Optional authorized-organization API; no global search. The separate web collector needs no token |
+| `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` | Optional existing approved Reddit API access; see [migration limits](discovery.md#optional-api-access) |
 | `MEETUP_API_KEY` | Optional Meetup API access |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Optional scan summaries and authorized bot commands |
 | `GITHUB_REPO_URL` | Repository used by generated contribution links |
 | `NEXT_PUBLIC_SITE_URL` | Canonical website origin and notification destination |
 | `CANDIDATE_AUDIT_DIR` | Optional private diagnostics directory; defaults to ignored `.local/discovery/`, empty disables it |
+
+Check live collectors independently with `python scripts/check_sources.py --save` (or append collector names). This does not classify, modify the catalog or send notifications; its aggregate report stays in ignored `.local/audit/`.
 
 Run the pipeline:
 
@@ -64,7 +66,7 @@ Without a working LLM key, candidates requiring classification cannot be publish
 
 The [collection workflow](../.github/workflows/check_hackathons.yml) supports manual runs and a daily schedule at 11:00 UTC. In `Europe/Rome`, that is 12:00 during standard time and 13:00 during daylight saving time. Scheduled jobs are not guaranteed to start at the exact minute.
 
-Set the required API credentials in **GitHub → Settings → Secrets and variables → Actions**. The workflow runs tests, collects events, rebuilds static output and commits the resulting public data. Review the workflow's explicit `file_pattern` before adding any new generated files.
+Set the required API credentials in **GitHub → Settings → Secrets and variables → Actions**. Set optional `EVENTBRITE_ORGANIZATION_IDS` and `REDDIT_USER_AGENT` as Actions repository variables, keeping tokens in Secrets. The workflow runs tests, collects events, rebuilds static output and commits the resulting public data. Review the workflow's explicit `file_pattern` before adding any new generated files.
 
 Per-source status, durations and failures are written to `data/last_report.json`. This local runtime file is ignored by Git and uploaded as the `hackathon-monitor-report` Actions artifact. Healthy empty sources are distinguished from disabled, blocked, failed or partly working sources. Partial classification errors mark the report degraded; total collection/classification failures preserve the archive and its previous check timestamp.
 

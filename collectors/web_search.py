@@ -12,7 +12,7 @@ import time
 from datetime import date
 
 from models import BaseCollector, HackathonEvent
-from utils.collector_health import record_issue
+from utils.collector_health import record_issue, record_success
 from utils.event_evidence import enrich_event_evidence, is_promising_result
 
 logger = logging.getLogger(__name__)
@@ -44,6 +44,9 @@ def build_search_queries(today: date | None = None) -> list[str]:
         "site:meetup.com hackathon Milano",
         f"site:bo-om.it/news-ed-eventi hackathon Milano {year}",
         "site:polihub.it hackathon",
+        f"site:comune.milano.it hackathon {year}",
+        f"site:dorahacks.io/hackathon Milan {year}",
+        f"site:unstop.com hackathon Milan {year}",
         "site:cariplofactory.it hackathon",
         "site:fondazionetriulza.org hackathon",
         f"site:telespazio.com hackathon Milano {year}",
@@ -162,9 +165,18 @@ class WebSearchCollector(BaseCollector):
                 max_results=20,
             ))
         except Exception as e:
-            logger.warning("Errore DuckDuckGo per query '%s': %s", query, e)
-            record_issue("error", f"Search query failed: {query}")
+            # DDGS uses this exact base exception for a query with no matches.
+            # Timeouts, rate limits and other errors must still affect source health.
+            from ddgs.exceptions import DDGSException
+            if type(e) is DDGSException and str(e) == "No results found.":
+                logger.info("Nessun risultato per query '%s'", query)
+                record_success()
+                return []
+            logger.warning("Errore ricerca per query '%s': %s", query, type(e).__name__)
+            record_issue("error", f"Search query failed ({type(e).__name__}): {query}")
             return []
+
+        record_success()
 
         events: list[HackathonEvent] = []
 

@@ -3,6 +3,7 @@
 import json
 from datetime import date
 from unittest.mock import MagicMock, patch
+import pytest
 
 from bs4 import BeautifulSoup
 
@@ -134,7 +135,8 @@ def test_audit_is_bounded_private_and_contains_stage_evidence(tmp_path):
     assert audit.summary() == [{"stage": "keyword", "input": 1, "output": 0}]
 
 
-def test_total_collection_failure_preserves_archive_and_last_check(tmp_path, monkeypatch):
+@pytest.mark.parametrize("dry_run", [True, False])
+def test_total_collection_failure_preserves_archive_and_last_check(tmp_path, monkeypatch, dry_run):
     archive = tmp_path / "events.json"
     archive.write_text(json.dumps({"last_check": "2026-10-09T12:00:00Z", "events": []}))
     original = archive.read_bytes()
@@ -144,10 +146,15 @@ def test_total_collection_failure_preserves_archive_and_last_check(tmp_path, mon
          patch("main.run_collectors", return_value=([], [], ["broken: HTTP 404"],
                [{"name": "broken", "ok": False, "status": "failed"}])), \
          patch("main.llm_filter") as classify, patch("main.notify_run_summary") as notify:
-        run_pipeline(dry_run=True)
+        run_pipeline(dry_run=dry_run)
     assert archive.read_bytes() == original
     classify.assert_not_called()
-    notify.assert_not_called()
+    if dry_run:
+        notify.assert_not_called()
+    else:
+        notify.assert_called_once()
+        assert notify.call_args.kwargs["scan_status"] == "collection_failed_preserved"
+        assert notify.call_args.kwargs["collector_runs"][0]["name"] == "broken"
     assert json.loads((tmp_path / "last_report.json").read_text())["status"] == "collection_failed_preserved"
 
 

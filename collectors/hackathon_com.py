@@ -6,11 +6,12 @@ Aggregatore dedicato. HTML scraping delle card evento.
 """
 
 import logging
+import re
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
@@ -43,11 +44,15 @@ class HackathonComCollector(BaseCollector):
 
     def _parse_html(self, html: str, seen_urls: set[str]) -> list[HackathonEvent]:
         """Parsa la pagina listing di hackathon.com."""
+        previous_urls = seen_urls
+        seen_urls = set()
         soup = BeautifulSoup(html, "lxml")
         events: list[HackathonEvent] = []
 
         # hackathon.com usa card con link + titolo + date + location
-        cards = soup.find_all("div", class_=lambda c: c and "hackathon" in str(c).lower())
+        cards = soup.select(".ht-event-card")
+        if not cards:
+            cards = soup.find_all("div", class_=lambda c: c and "hackathon" in str(c).lower())
         if not cards:
             cards = soup.find_all("a", class_=lambda c: c and ("card" in str(c).lower() or "event" in str(c).lower()))
         if not cards:
@@ -77,12 +82,18 @@ class HackathonComCollector(BaseCollector):
                     location="",
                 ))
 
-        return events
+        if not events and not re.search(r"no upcoming\s+hackathons found", soup.get_text(" ", strip=True), re.I):
+            record_issue("parse_error", "Hackathon.com listing has no recognizable records or empty state")
+        unique_events = [event for event in events if event.url not in previous_urls]
+        previous_urls.update(event.url for event in events)
+        return unique_events
 
     def _parse_card(self, card, seen_urls: set[str]) -> HackathonEvent | None:
         """Estrae un evento da una card di hackathon.com."""
         try:
-            link = card.find("a") if card.name != "a" else card
+            link = card.select_one("a.ht-event-card__title[href]")
+            if link is None:
+                link = card.find("a") if card.name != "a" else card
             if not link:
                 return None
 
@@ -96,7 +107,7 @@ class HackathonComCollector(BaseCollector):
             seen_urls.add(url)
 
             # Titolo
-            title_el = card.find(["h2", "h3", "h4", "h5"])
+            title_el = card.select_one(".ht-event-card__title") or card.find(["h2", "h3", "h4", "h5"])
             title = title_el.get_text(strip=True) if title_el else link.get_text(strip=True)
             if not title or len(title) < 3:
                 return None
@@ -113,12 +124,19 @@ class HackathonComCollector(BaseCollector):
             desc_el = card.find(class_=lambda c: c and ("desc" in str(c).lower() or "summary" in str(c).lower()))
             description = desc_el.get_text(strip=True)[:500] if desc_el else ""
 
+            # This aggregator can keep historical events under Upcoming and omit
+            # the year in card labels. Never promote such labels to a current date.
+            dated = bool(re.search(r"\b20\d{2}\b", date_str))
+            if date_str and not dated:
+                description = f"{description}\nData indicata senza anno: {date_str}".strip()
+
             return HackathonEvent(
                 title=title,
                 url=url,
                 source=self.name,
                 description=description,
-                date_str=date_str,
+                date_str=date_str if dated else "",
+                date_source="event_card" if dated else "unknown",
                 location=location,
             )
         except Exception as e:

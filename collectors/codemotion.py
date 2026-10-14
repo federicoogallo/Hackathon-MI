@@ -1,132 +1,77 @@
-"""
-Collector Codemotion — scraping community.codemotion.com.
-
-La più grande community tech italiana. Organizza hackathon propri e
-aggrega eventi della community. Scraping HTML della pagina eventi.
-"""
+"""Read Codemotion's public, server-rendered event catalogue."""
 
 import logging
+import re
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
-CODEMOTION_URLS = [
-    "https://community.codemotion.com/events",
-    "https://www.codemotion.com/events",
-    "https://community.codemotion.com/hackathons",
-]
+CODEMOTION_URLS = ["https://events.codemotion.com/"]
 
 
 class CodemotionCollector(BaseCollector):
-
     @property
     def name(self) -> str:
         return "codemotion"
 
     def collect(self) -> list[HackathonEvent]:
-        all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
-
+        events: list[HackathonEvent] = []
+        seen: set[str] = set()
         for url in CODEMOTION_URLS:
             response = safe_get(url)
-            if response is None:
-                continue
-            events = self._parse_html(response.text, url, seen_urls)
-            all_events.extend(events)
-
-        logger.info("Codemotion: trovati %d eventi", len(all_events))
-        return all_events
+            if response is not None:
+                events.extend(self._parse_html(response.text, url, seen))
+        logger.info("Codemotion: trovati %d eventi", len(events))
+        return events
 
     def _parse_html(self, html: str, base_url: str, seen_urls: set[str]) -> list[HackathonEvent]:
-        """Parsa la pagina eventi di Codemotion."""
         soup = BeautifulSoup(html, "lxml")
-        events: list[HackathonEvent] = []
-
-        # Codemotion usa card per gli eventi
-        cards = soup.find_all("div", class_=lambda c: c and ("event" in str(c).lower() or "card" in str(c).lower()))
+        cards = soup.select("a.v-card[href]")
         if not cards:
-            cards = soup.find_all("article")
-        if not cards:
-            cards = soup.find_all("li", class_=lambda c: c and "event" in str(c).lower())
-
+            # An explicit empty catalogue is different from a changed page or JS shell.
+            if "there are no events that match" not in soup.get_text(" ", strip=True).lower():
+                record_issue("parse_error", "Codemotion event cards not found", base_url)
+            return []
+        events = []
         for card in cards:
             event = self._parse_card(card, base_url, seen_urls)
             if event:
                 events.append(event)
-
-        # Fallback: link generici a eventi
-        if not events:
-            links = soup.find_all("a", href=lambda h: h and ("event" in h.lower() or "hackathon" in h.lower()))
-            for link in links:
-                href = link.get("href", "").strip()
-                title = link.get_text(strip=True)
-                if not href or not title or len(title) < 5 or href in seen_urls:
-                    continue
-                if not href.startswith("http"):
-                    from urllib.parse import urljoin
-                    href = urljoin(base_url, href)
-                seen_urls.add(href)
-
-                events.append(HackathonEvent(
-                    title=title,
-                    url=href,
-                    source=self.name,
-                    location="",
-                ))
-
         return events
 
     def _parse_card(self, card, base_url: str, seen_urls: set[str]) -> HackathonEvent | None:
-        """Estrae un evento da una card Codemotion."""
-        try:
-            link = card.find("a", href=True)
-            if not link:
-                return None
-
-            url = link.get("href", "").strip()
-            if not url:
-                return None
-            if not url.startswith("http"):
-                from urllib.parse import urljoin
-                url = urljoin(base_url, url)
-            if url in seen_urls:
-                return None
-            seen_urls.add(url)
-
-            # Titolo
-            title_el = card.find(["h2", "h3", "h4", "h5"])
-            title = title_el.get_text(strip=True) if title_el else link.get_text(strip=True)
-            if not title or len(title) < 3:
-                return None
-
-            # Data
-            date_el = card.find(["time"]) or card.find(class_=lambda c: c and "date" in str(c).lower())
-            date_str = ""
-            if date_el:
-                date_str = date_el.get("datetime", "") or date_el.get_text(strip=True)
-
-            # Location
-            loc_el = card.find(class_=lambda c: c and ("location" in str(c).lower() or "venue" in str(c).lower()))
-            location = loc_el.get_text(strip=True) if loc_el else ""
-
-            # Description
-            desc_el = card.find(class_=lambda c: c and ("desc" in str(c).lower() or "summary" in str(c).lower() or "text" in str(c).lower()))
-            description = desc_el.get_text(strip=True)[:500] if desc_el else ""
-
-            return HackathonEvent(
-                title=title,
-                url=url,
-                source=self.name,
-                description=description,
-                date_str=date_str,
-                location=location,
-                organizer="Codemotion",
-            )
-        except Exception as e:
-            logger.debug("Codemotion card parse error: %s", e)
+        title_el = card.select_one(".event-desc h2")
+        if title_el is None:
             return None
+        title = title_el.get_text(" ", strip=True)
+        url = urljoin(base_url, card.get("href", ""))
+        parts = urlparse(url)
+        host = parts.hostname or ""
+        if (len(title) < 5 or url in seen_urls or not card.get("href")
+                or parts.scheme not in {"http", "https"}
+                or not (host == "codemotion.com" or host.endswith(".codemotion.com"))):
+            return None
+        date_el = card.select_one(".event-calendar")
+        date = date_el.get_text(" ", strip=True) if date_el else ""
+        # Most upcoming cards omit the year. Preserve that label as evidence,
+        # but never manufacture a year (especially across December/January).
+        dated = bool(re.search(r"\b20\d{2}\b", date))
+        location_el = card.select_one(".event-topics > span")
+        location = location_el.get_text(" ", strip=True).strip(" •") if location_el else ""
+        organizer_el = card.select_one(".event-organizer")
+        organizer = organizer_el.get_text(" ", strip=True) if organizer_el else "Codemotion"
+        type_el = card.select_one(".event-type")
+        event_type = type_el.get_text(" ", strip=True) if type_el else ""
+        seen_urls.add(url)
+        return HackathonEvent(
+            title=title, url=url, source=self.name,
+            description=". ".join(x for x in [event_type, f"Data indicata: {date}" if date else ""] if x),
+            date_str=date if dated else "", date_source="event_card" if dated else "unknown",
+            location=location, organizer=organizer,
+        )

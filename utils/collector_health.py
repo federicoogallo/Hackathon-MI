@@ -25,13 +25,15 @@ class CollectorHealth:
     def outcome(self, event_count: int) -> str:
         if not self.issues:
             return "healthy" if event_count else "empty"
-        if event_count or self.requests_ok:
+        if event_count:
             return "degraded"
         kinds = {item["kind"] for item in self.issues}
         if kinds == {"disabled"}:
             return "disabled"
         if kinds <= {"blocked"}:
             return "blocked"
+        if self.requests_ok:
+            return "degraded"
         return "failed"
 
 

@@ -65,8 +65,7 @@ class UniversitiesCollector(BaseCollector):
 
     def _collect_polimi(self) -> list[HackathonEvent]:
         urls = [
-            "https://www.polimi.it/en/news-and-events",
-            "https://www.eventi.polimi.it/",
+            "https://www.polimi.it/il-politecnico/eventi",
         ]
         events: list[HackathonEvent] = []
         seen: set[str] = set()
@@ -143,7 +142,7 @@ class UniversitiesCollector(BaseCollector):
 
     def _collect_iulm(self) -> list[HackathonEvent]:
         urls = [
-            "https://www.iulm.it/it/eventi",
+            "https://www.iulm.it/it/news-ed-eventi/eventi",
         ]
         events: list[HackathonEvent] = []
         seen: set[str] = set()
@@ -162,7 +161,7 @@ class UniversitiesCollector(BaseCollector):
 
     def _collect_san_raffaele(self) -> list[HackathonEvent]:
         urls = [
-            "https://www.unisr.it/eventi",
+            "https://www.unisr.it/news?category=eventi",
         ]
         events: list[HackathonEvent] = []
         seen: set[str] = set()
@@ -188,6 +187,8 @@ class UniversitiesCollector(BaseCollector):
 
         if domain == "unibocconi.it":
             return self._extract_bocconi_cards(soup, base_url, organizer, seen)
+        if domain in {"polimi.it", "iulm.it", "unisr.it"}:
+            return self._extract_current_cards(soup, base_url, domain, organizer, seen)
 
         # Cerca articoli, card, item di eventi
         containers = soup.find_all("article")
@@ -258,6 +259,61 @@ class UniversitiesCollector(BaseCollector):
                 logger.debug("Errore parsing container %s: %s", domain, e)
                 continue
 
+        return events
+
+    def _extract_current_cards(
+        self, soup, base_url: str, domain: str, organizer: str, seen: set[str]
+    ) -> list[HackathonEvent]:
+        """Read each university's event records, excluding navigation cards."""
+        selectors = {
+            "polimi.it": ".card--editorial-photo",
+            "iulm.it": ".rigaevento[data-date]",
+            "unisr.it": ".newscard figure[data-linkmanager-href]",
+        }
+        cards = soup.select(selectors[domain])
+        if not cards:
+            record_issue("parse_error", f"Unrecognized event listing: {domain}", base_url)
+            return []
+        events: list[HackathonEvent] = []
+        for card in cards:
+            if domain == "polimi.it":
+                title_el = card.select_one(".card-title")
+                link = card.select_one('a[href*="/dettaglio-evento/"]')
+                href = link.get("href", "") if link else ""
+                date_el = card.select_one(".card-body__date")
+                desc_el = card.select_one(".card-text")
+            elif domain == "iulm.it":
+                title_el = card.select_one("h2 a[href]")
+                href = title_el.get("href", "") if title_el else ""
+                date_el = None
+                desc_el = None
+            else:
+                title_el = card.select_one("h2")
+                href = card.get("data-linkmanager-href", "")
+                date_el = card.select_one("figcaption small")
+                desc_el = card.select_one("p")
+            title = title_el.get_text(" ", strip=True) if title_el else ""
+            url = urljoin(base_url, href)
+            parts = urlparse(url)
+            host = parts.hostname or ""
+            if (len(title) < 5 or not href or url in seen
+                    or parts.scheme not in {"http", "https"}
+                    or not (host == domain or host.endswith("." + domain))):
+                continue
+            date = (card.get("data-date", "") if domain == "iulm.it"
+                    else date_el.get_text(" ", strip=True) if date_el else "")
+            description = (card.get("data-abstract", "") if domain == "iulm.it"
+                           else desc_el.get_text(" ", strip=True) if desc_el else "")
+            # UniSR's news list displays publication dates, not event dates.
+            editorial = domain == "unisr.it"
+            seen.add(url)
+            events.append(HackathonEvent(
+                title=title, url=url, source=self.name, description=description[:500],
+                date_str="" if editorial else date,
+                published_at=date if editorial else "",
+                date_source="publication" if editorial else "event_card",
+                location="", organizer=organizer,
+            ))
         return events
 
     def _extract_bocconi_cards(

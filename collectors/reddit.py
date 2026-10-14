@@ -1,36 +1,29 @@
-"""
-Collector Reddit — ricerca hackathon su subreddit italiani via PRAW.
+"""Read-only Reddit discovery for existing approved API clients.
 
-Subreddit monitorati:
-- r/ItalyInformatica (~48k membri, community developer italiana)
-- r/italy (community italiana generale)
-
-Copertura bassa ma complementare — cattura annunci che non appaiono altrove.
-
-Se praw non è installato o Reddit non è configurato, il collector viene saltato
-senza far fallire la pipeline.
+Reddit is migrating public Data API applications to its Developer Platform.
+No anonymous RSS fallback is used: Reddit is ending RSS support in November 2026.
 """
 
 import logging
+from datetime import datetime, timezone
+from urllib.parse import urlsplit
 
 try:
     import praw
-    from prawcore.exceptions import PrawcoreException
     _PRAW_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     praw = None
-    PrawcoreException = None
     _PRAW_AVAILABLE = False
-    _PRAW_IMPORT_ERROR = e
 
 import config
 from models import BaseCollector, HackathonEvent
+from utils.collector_health import record_issue, record_success
 
 logger = logging.getLogger(__name__)
 
 SUBREDDITS = ["ItalyInformatica", "italy"]
 SEARCH_QUERIES = ["hackathon", "hackathon Milano", "hackathon Milan"]
-SEARCH_TIME_FILTER = "month"  # Ultimi 30 giorni
+SEARCH_TIME_FILTER = "month"
 MAX_RESULTS_PER_QUERY = 25
 
 
@@ -41,100 +34,102 @@ class RedditCollector(BaseCollector):
         return "reddit"
 
     def collect(self) -> list[HackathonEvent]:
-        from utils.collector_health import record_issue
+        user_agent = getattr(config, "REDDIT_USER_AGENT", "")
+        if not config.REDDIT_CLIENT_ID or not config.REDDIT_CLIENT_SECRET:
+            record_issue("disabled", "Approved Reddit API access not configured; public API migration required")
+            logger.info("Reddit: accesso API approvato non configurato; migrazione Developer Platform richiesta")
+            return []
+        if not isinstance(user_agent, str) or not user_agent.strip():
+            record_issue("disabled", "REDDIT_USER_AGENT must identify the actual approved application")
+            return []
         if not _PRAW_AVAILABLE:
             record_issue("disabled", "praw not installed")
-            logger.warning(
-                "Reddit collector disattivato: praw non installato (%s). "
-                "Esegui: pip install praw",
-                getattr(_PRAW_IMPORT_ERROR, "msg", _PRAW_IMPORT_ERROR),
-            )
-            return []
-        if not config.REDDIT_CLIENT_ID or not config.REDDIT_CLIENT_SECRET:
-            record_issue("disabled", "Reddit credentials not configured")
-            logger.warning("Reddit non configurato (manca CLIENT_ID o CLIENT_SECRET) — skip")
             return []
 
+        self._stop_requested = False
         try:
             reddit = praw.Reddit(
                 client_id=config.REDDIT_CLIENT_ID,
                 client_secret=config.REDDIT_CLIENT_SECRET,
-                user_agent="hackathon-monitor/1.0 (by /u/hackathon-bot)",
+                user_agent=user_agent.strip(),
+                requestor_kwargs={"timeout": config.HTTP_TIMEOUT},
+                ratelimit_seconds=0,
             )
-        except PrawcoreException as e:
-            record_issue("error", type(e).__name__)
-            logger.error("Errore inizializzazione Reddit: %s", e)
+            reddit.read_only = True
+        except Exception as error:
+            self._record_error(error)
             return []
 
-        all_events: list[HackathonEvent] = []
-        seen_urls: set[str] = set()
-
-        for subreddit_name in SUBREDDITS:
-            try:
-                events = self._search_subreddit(reddit, subreddit_name, seen_urls)
-                all_events.extend(events)
-            except Exception as e:
-                record_issue("error", type(e).__name__)
-                logger.error("Reddit r/%s fallito: %s", subreddit_name, e)
-
-        logger.info("Reddit: trovati %d post rilevanti", len(all_events))
-        return all_events
-
-    def _search_subreddit(
-        self, reddit: praw.Reddit, subreddit_name: str, seen_urls: set[str]
-    ) -> list[HackathonEvent]:
-        """Cerca hackathon in un subreddit specifico."""
         events: list[HackathonEvent] = []
-        subreddit = reddit.subreddit(subreddit_name)
+        seen_ids: set[str] = set()
+        for subreddit_name in SUBREDDITS:
+            events.extend(self._search_subreddit(reddit, subreddit_name, seen_ids))
+            if self._stop_requested:
+                break
+
+        logger.info("Reddit: %d post rilevanti", len(events))
+        return events
+
+    def _record_error(self, error: Exception) -> None:
+        status = getattr(getattr(error, "response", None), "status_code", None)
+        kind = "blocked" if status in {401, 403, 429} else "error"
+        detail = f"HTTP {status}" if type(status) is int else type(error).__name__
+        record_issue(kind, detail)
+        logger.warning("Reddit API: %s", detail)
+        if kind == "blocked" or type(error).__name__ in {"OAuthException", "InvalidToken", "InsufficientScope"}:
+            self._stop_requested = True
+
+    def _search_subreddit(self, reddit, subreddit_name: str, seen_ids: set[str]) -> list[HackathonEvent]:
+        events: list[HackathonEvent] = []
+        try:
+            subreddit = reddit.subreddit(subreddit_name)
+        except Exception as error:
+            self._record_error(error)
+            return events
 
         for query in SEARCH_QUERIES:
             try:
-                results = subreddit.search(
-                    query,
-                    sort="new",
-                    time_filter=SEARCH_TIME_FILTER,
-                    limit=MAX_RESULTS_PER_QUERY,
-                )
-
+                results = subreddit.search(query, sort="new", time_filter=SEARCH_TIME_FILTER,
+                                           limit=MAX_RESULTS_PER_QUERY)
                 for submission in results:
-                    url = submission.url
-                    if url in seen_urls:
-                        continue
-                    seen_urls.add(url)
-
-                    # Se il link è un post Reddit (self-post), usa il permalink
-                    if "reddit.com" in url:
-                        url = f"https://www.reddit.com{submission.permalink}"
-
-                    title = submission.title.strip()
-                    if not title:
-                        continue
-
-                    # Descrizione dal selftext o dal titolo
-                    description = ""
-                    if submission.selftext:
-                        description = submission.selftext[:500]
-
-                    events.append(HackathonEvent(
-                        title=title,
-                        url=url,
-                        source=f"reddit/r/{subreddit_name}",
-                        description=description,
-                        date_str="",
-                        location="",
-                    ))
-
-            except Exception as e:
-                from utils.collector_health import record_issue
-                record_issue("error", type(e).__name__)
-                logger.warning("Reddit search '%s' in r/%s: %s", query, subreddit_name, e)
-
+                    event = self._parse_submission(submission, subreddit_name)
+                    if event is not None and event.id not in seen_ids:
+                        seen_ids.add(event.id)
+                        events.append(event)
+                record_success()
+            except Exception as error:
+                self._record_error(error)
+                if self._stop_requested:
+                    break
         return events
 
+    def _parse_submission(self, submission, subreddit_name: str) -> HackathonEvent | None:
+        title = getattr(submission, "title", "")
+        url = getattr(submission, "url", "")
+        if not isinstance(title, str) or not title.strip() or not isinstance(url, str):
+            return None
+        try:
+            parts = urlsplit(url)
+            if parts.scheme not in {"http", "https"} or not parts.hostname or parts.username:
+                return None
+        except ValueError:
+            return None
+        if parts.hostname == "reddit.com" or parts.hostname.endswith(".reddit.com"):
+            permalink = getattr(submission, "permalink", "")
+            if not isinstance(permalink, str) or not permalink.startswith("/r/"):
+                return None
+            url = f"https://www.reddit.com{permalink}"
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    collector = RedditCollector()
-    events = collector.collect()
-    for e in events:
-        print(f"  [{e.source}] {e.title} — {e.url}")
+        description = getattr(submission, "selftext", "")
+        published_at = ""
+        created = getattr(submission, "created_utc", None)
+        if type(created) in {float, int}:
+            try:
+                published_at = datetime.fromtimestamp(created, timezone.utc).isoformat()
+            except (ValueError, OverflowError, OSError):
+                pass
+        return HackathonEvent(
+            title=title.strip(), url=url, source=f"reddit/r/{subreddit_name}",
+            description=description[:500] if isinstance(description, str) else "",
+            published_at=published_at, date_source="unknown",
+        )

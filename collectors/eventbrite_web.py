@@ -3,7 +3,7 @@ Collector Eventbrite (HTML scraping, nessuna API key).
 
 Strategia: fetch della pagina categoria hackathon Milano e parsing del JSON-LD
 (<script type="application/ld+json">) che Eventbrite include server-side.
-Funziona anche in GitHub Actions (non usa DuckDuckGo/DDGS).
+Non richiede chiavi API. I blocchi HTTP vengono riportati nella salute della fonte.
 """
 
 import json
@@ -11,16 +11,16 @@ import logging
 
 from bs4 import BeautifulSoup
 
-import config
 from models import BaseCollector, HackathonEvent
 from utils.http import safe_get
+from utils.collector_health import record_issue
 
 logger = logging.getLogger(__name__)
 
 # Pagine Eventbrite con ricerca hackathon/tech Milano — nessuna API key richiesta
 EVENTBRITE_URLS = [
-    "https://www.eventbrite.com/d/italy--milan/hackathon/",
-    "https://www.eventbrite.com/d/italy--milan/technology/",
+    "https://www.eventbrite.com/d/italy--milano/hackathon/",
+    "https://www.eventbrite.com/d/italy--milano/technology/",
 ]
 
 
@@ -57,38 +57,44 @@ class EventbriteWebCollector(BaseCollector):
 
         soup = BeautifulSoup(response.text, "lxml")
 
-        # Il JSON-LD migliore è il primo script — contiene itemListElement con tutti gli eventi
-        ld_scripts = soup.find_all("script", type="application/ld+json")
-        for script in ld_scripts:
-            if not script.string:
-                continue
+        events = []
+        recognised = False
+        for script in soup.find_all("script", type="application/ld+json"):
             try:
-                data = json.loads(script.string)
-            except json.JSONDecodeError:
+                payload = json.loads(script.get_text())
+            except (ValueError, TypeError):
                 continue
-
-            items = data.get("itemListElement", [])
-            if not items:
-                continue
-
-            events = []
-            for item_wrap in items:
-                ev = self._parse_item(item_wrap)
-                if ev:
-                    events.append(ev)
-
-            if events:
-                logger.debug("EventbriteWeb: %d eventi da JSON-LD su %s", len(events), url)
-                return events
-
-        logger.warning("EventbriteWeb: nessun JSON-LD con itemListElement trovato su %s", url)
-        return []
+            nodes = list(payload) if isinstance(payload, list) else [payload]
+            while nodes:
+                node = nodes.pop(0)
+                if not isinstance(node, dict):
+                    continue
+                if isinstance(node.get("@graph"), list):
+                    nodes.extend(node["@graph"])
+                # BreadcrumbList also has itemListElement, but is not an event list.
+                if node.get("@type") == "ItemList" and isinstance(node.get("itemListElement"), list):
+                    items = node["itemListElement"]
+                    list_events = []
+                    for item in items:
+                        event = self._parse_item(item)
+                        if event:
+                            list_events.append(event)
+                    if items and not list_events:
+                        record_issue("parse_error", "nonempty ItemList has no readable events", url)
+                    else:
+                        recognised = True
+                    events.extend(list_events)
+        if not recognised:
+            record_issue("parse_error", "event ItemList missing", url)
+        return events
 
     def _parse_item(self, item_wrap: dict) -> HackathonEvent | None:
         """Converte un item del JSON-LD Eventbrite in HackathonEvent."""
         try:
+            if not isinstance(item_wrap, dict):
+                return None
             item = item_wrap.get("item", item_wrap)
-            if item.get("@type") != "Event":
+            if not isinstance(item, dict) or item.get("@type") != "Event":
                 return None
 
             title = (item.get("name", "") or "").strip()
@@ -103,12 +109,15 @@ class EventbriteWebCollector(BaseCollector):
             description = (item.get("description", "") or "")[:500]
 
             # Date
-            start_date = item.get("startDate", "") or ""
-            end_date = item.get("endDate", "") or ""
-            if end_date and end_date != start_date:
+            start_date = item.get("startDate") if isinstance(item.get("startDate"), str) else ""
+            end_date = item.get("endDate") if isinstance(item.get("endDate"), str) else ""
+            start_date, end_date = start_date.strip(), end_date.strip()
+            if start_date and end_date and end_date != start_date:
                 date_str = f"{start_date} — {end_date}"
             else:
                 date_str = start_date
+            if end_date and not start_date:
+                description = f"{description} Fine evento indicata dalla fonte: {end_date}.".strip()
 
             # Location
             location = ""
@@ -127,6 +136,7 @@ class EventbriteWebCollector(BaseCollector):
                 source=self.name,
                 description=description,
                 date_str=date_str,
+                date_source="event_jsonld" if start_date else "",
                 location=location,
             )
 

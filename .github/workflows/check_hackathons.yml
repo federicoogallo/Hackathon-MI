@@ -48,9 +48,11 @@ jobs:
       - name: Run Hackathon Monitor
         env:
           EVENTBRITE_API_KEY: ${{ secrets.EVENTBRITE_API_KEY }}
+          EVENTBRITE_ORGANIZATION_IDS: ${{ vars.EVENTBRITE_ORGANIZATION_IDS }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ vars.REDDIT_USER_AGENT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
