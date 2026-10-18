@@ -17,13 +17,12 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: Oct 17, 2026 16:08 CEST
+> **7 hackathons** coming up in Milan · Last updated: Oct 18, 2026 16:25 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [BCG Platinion Hackathon — Fighting World Hunger](https://www.bcgplatinion.com/hackathon) | 16 Oct 2026 – 17 Oct 2026 | Milano · in presenza | BCG Platinion |
 | [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | PLB WORLD · Viale Francesco Restelli 3, Milano | ServiceNow |
 | [Talenti STEM per l’Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Social Innovation Academy · MIND, Milano | Fondazione Triulza |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |

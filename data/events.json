@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-17T16:03:44.657397+02:00",
+  "last_check": "2026-10-18T16:19:15.299742+02:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -216,27 +216,6 @@
         "https://www.gsom.polimi.it/en/knowledge/harvard-hsil-hackathon-2026"
       ],
       "discovered_at": "2026-10-06T17:03:15.838492+00:00"
-    },
-    {
-      "id": "d91b1a3a31ddc1b7f133d6d380085a12873789e90ce84c209ea14a7c96446aab",
-      "title": "BCG Platinion Hackathon - Fighting World Hunger | October 16-17, 2026",
-      "url": "https://www.bcgplatinion.com/hackathon",
-      "source": "web_search",
-      "description": "The Hackathon will take place on October 16-17 in our hubs in Casablanca, Frankfurt, Johannesburg, Madrid, Milan, Riyadh, Santiago de Chile, and São Paulo. Depending on which country you live in, you will be assigned to the Hackathon closest ...",
-      "date_str": "2026-10-16",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.97,
-      "review_status": "ai_verified",
-      "review_reason": "Explicit hackathon with dates Oct 16-17 2026 and a physical hub in Milan",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://github.com/federicoogallo/Hackathon-MI",
-        "https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg",
-        "https://experiencedtalent.bcg.com/events/candidate/registration?plannedEventId=aQnm026Vg"
-      ],
-      "discovered_at": "2026-06-23T13:43:21.161572"
     },
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
