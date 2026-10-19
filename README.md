@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: Oct 18, 2026 16:25 CEST
+> **7 hackathons** coming up in Milan · Last updated: Oct 19, 2026 19:24 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
