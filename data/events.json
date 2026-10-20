@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-19T19:20:01.193211+02:00",
+  "last_check": "2026-10-20T17:33:16.271260+02:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -295,6 +295,26 @@
         "https://www.meetup.com/master-the-vibe-milan/events/315691552?eventOrigin=group_upcoming_events"
       ],
       "discovered_at": "2026-10-11T16:33:39.089646+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "confirmed"
+    },
+    {
+      "id": "fa3ee4487f413cd4420c0a1e92b00e64149e92d15edbf51f4bcaf6e9e20a0f20",
+      "title": "AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...",
+      "url": "https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017",
+      "source": "web_search",
+      "description": "Eventbrite - AIRIC | Polimi presents AIRIC X PMDS – AI Dynamic Pricing Hackathon - Wednesday, 18 November 2026 at PoliMi · Sala conferenze Emilio Gatti (DEIB), Milano, Lombardia. Find event and ticket information.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon con data 18 Nov 2026 e venue specifica a Polimi, Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-10-20T15:34:08.023057+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "confirmed"
