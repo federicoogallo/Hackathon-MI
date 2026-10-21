@@ -40,7 +40,7 @@ export default function Home() {
                 <label htmlFor="hero-query">Cosa vuoi costruire?</label>
                 <div className="hero-search-field"><Search /><input id="hero-query" name="q" type="search" placeholder="Cerca per tema, nome o luogo" autoComplete="off" /><button type="submit" aria-label="Cerca hackathon"><Arrow /></button></div>
               </form>
-              <div className="hero-suggestions"><span>Esplora:</span><a href="/?q=AI#events" aria-label="Esplora gli hackathon di intelligenza artificiale">AI <LinkArrow /></a><a href="/?q=data+science#events">Data science <LinkArrow /></a><a href="/?q=impatto+sociale#events">Impatto sociale <LinkArrow /></a></div>
+              <div className="hero-suggestions"><span>Esplora:</span><a href="/?q=AI#events" aria-label="Esplora AI: intelligenza artificiale"><span className="hero-topic-long">Intelligenza artificiale</span><span className="hero-topic-short">AI</span><LinkArrow /></a><a href="/?q=data+science#events">Data science <LinkArrow /></a><a href="/?q=impatto+sociale#events">Impatto sociale <LinkArrow /></a></div>
             </div>
           </HeroExperience>
         </section>
