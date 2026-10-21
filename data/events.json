@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-20T17:33:16.271260+02:00",
+  "last_check": "2026-10-21T17:49:39.898618+02:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -179,25 +179,6 @@
       "discovered_at": "2026-09-20T14:31:13.380049+00:00"
     },
     {
-      "id": "a858d0761c2e4263c0fe2859e04e6b0c7e7feb1f50763d2d024e617281413d42",
-      "title": "Hackathon ServiceNow Milano",
-      "url": "https://rsvp.servicenow.com/hackathon-milano/begin",
-      "source": "web_search",
-      "description": "Non parlare di AI. Creala. martedì 20 ottobre 2026 | 09:30-18:00 PLB WORLD, Viale Francesco Restelli, 3, Milano Registrati ora speaker-area, agenda-area, sponsor-section, why-attend-area",
-      "date_str": "2026-10-20",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.97,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon onsite a Milano con data futura 20 ottobre 2026",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://rsvp.servicenow.com/hackathon-milano"
-      ],
-      "discovered_at": "2026-08-31T17:54:54.852105"
-    },
-    {
       "id": "f74f1b8b10c8617a054396d464d59767739b2aeea4d369ed0243ecff005dbf59",
       "title": "AI Hackathon in Milan 24 October 2026 | Albert School",
       "url": "https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/",
@@ -247,6 +228,7 @@
         "https://www.bo-om.it/news-ed-eventi/post-evento-cyberguard",
         "https://www.bo-om.it/news-ed-eventi/tech-empowher",
         "https://www.bo-om.it/news-ed-eventi/trender-2026",
+        "https://www.et.bo-om.it/news-ed-eventi",
         "https://www.meetup.com/data-science-nc/events/314212547?recId=081447ca-aefb-4bda-9368-d542616df414&recSource=event-search&searchId=c3c97e73-e408-4503-82c9-4d2afd60b0b5&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547?recId=18edbb5b-8daf-4dec-ba6d-834c9ac9db5a&recSource=event-search&searchId=53dc4d48-1383-4702-9cd0-a18d6181a971&eventOrigin=find_page%24all",
         "https://www.meetup.com/data-science-nc/events/314212547?recId=732ad5a2-6774-4da5-9368-be1f6ef8f5fc&recSource=event-search&searchId=c36a5b82-6ccf-40c2-846f-1e0b85930984&eventOrigin=find_page%24all",
@@ -256,6 +238,26 @@
         "https://www.meetup.com/data-science-nc/events/314212547?recId=f01424bb-a224-40a7-a821-ab629c189d65&recSource=event-search&searchId=77f45520-a554-4bab-9bba-67770ba75a8f&eventOrigin=find_page%24all"
       ],
       "discovered_at": "2026-05-17T11:59:51.240045"
+    },
+    {
+      "id": "fa3ee4487f413cd4420c0a1e92b00e64149e92d15edbf51f4bcaf6e9e20a0f20",
+      "title": "AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...",
+      "url": "https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017",
+      "source": "web_search",
+      "description": "Eventbrite - AIRIC | Polimi presents AIRIC X PMDS – AI Dynamic Pricing Hackathon - Wednesday, 18 November 2026 at PoliMi · Sala conferenze Emilio Gatti (DEIB), Milano, Lombardia. Find event and ticket information.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon con data 18 Nov 2026 e venue specifica a Polimi, Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-10-20T15:34:08.023057+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "confirmed"
     },
     {
       "id": "a90e0d40d081016d7d781e1dd163c29dd3ed8fd3ccf1289e9f66c0ee4342e6c1",
@@ -300,21 +302,43 @@
       "classification_status": "confirmed"
     },
     {
-      "id": "fa3ee4487f413cd4420c0a1e92b00e64149e92d15edbf51f4bcaf6e9e20a0f20",
-      "title": "AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...",
-      "url": "https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017",
+      "id": "0ed192cb327295de555cff5973d38f2b0c07bb1a031994508eb02a7421c77fc0",
+      "title": "BAINSA - Bocconi AI & Neuroscience Association | BAINSA ...",
+      "url": "https://www.instagram.com/p/DdW5fHmKP63/",
       "source": "web_search",
-      "description": "Eventbrite - AIRIC | Polimi presents AIRIC X PMDS – AI Dynamic Pricing Hackathon - Wednesday, 18 November 2026 at PoliMi · Sala conferenze Emilio Gatti (DEIB), Milano, Lombardia. Find event and ticket information.",
+      "description": "122 likes, 6 comments - bainsa_bocconi on September 16, 2026: \"BAINSA ACCESSIBILITY HACKATHON Save the date: Saturday, September 26th, Milan, 8:30 to 19:00! The world isn’t built for everyone - screens that don’t speak, tools that don’t listen, systems that leave people out by default. On September 26th, BAINSA is bringing together builders who want to contribute for a better, more ...",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": true,
       "confidence": 0.96,
       "review_status": "ai_verified",
-      "review_reason": "Hackathon con data 18 Nov 2026 e venue specifica a Polimi, Milano",
+      "review_reason": "Hackathon announced for 26 Sep 2026 in Milan with specific time and venue implied",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.instagram.com/p/DdZILhLiqVC"
+      ],
+      "discovered_at": "2026-10-21T15:51:32.653013+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "confirmed"
+    },
+    {
+      "id": "0df2efea440eb949a0528879223ce9bb64fbc2c8129af6980ddb099faee5ca3d",
+      "title": "Applications for BAINSA ACCESSIBILITY HACKATHON in ... - LinkedIn",
+      "url": "https://www.linkedin.com/posts/bainsa_applications-for-bainsa-accessibility-hackathon-activity-7506341576797929472-pTsQ",
+      "source": "web_search",
+      "description": "Applications for BAINSA ACCESSIBILITY HACKATHON in collaboration with ANTHROPIC and GENERALI are officially open!💫 Save the date: Saturday, September 26th, Milan, 8:30 to 19:00! The world isn ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.96,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon with explicit date 26 Sep 2026 and location Milan, physical event",
       "reviewed_at": "",
       "alternate_urls": [],
-      "discovered_at": "2026-10-20T15:34:08.023057+00:00",
+      "discovered_at": "2026-10-21T15:51:32.652981+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "confirmed"

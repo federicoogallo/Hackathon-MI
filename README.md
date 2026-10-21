@@ -17,20 +17,21 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **8 hackathons** coming up in Milan · Last updated: Oct 20, 2026 17:39 CEST
+> **9 hackathons** coming up in Milan · Last updated: Oct 21, 2026 17:56 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Hackathon ServiceNow Milano](https://rsvp.servicenow.com/hackathon-milano/begin) | 20 Oct 2026 | PLB WORLD · Viale Francesco Restelli 3, Milano | ServiceNow |
 | [Talenti STEM per l’Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Social Innovation Academy · MIND, Milano | Fondazione Triulza |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |
 | [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
 | [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | To verify | To verify | Web search |
+| [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
 | [Hackathon di Natale!](https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events) | To verify | To verify | Meetup |
-| [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
+| [BAINSA - Bocconi AI & Neuroscience Association \| BAINSA ...](https://www.instagram.com/p/DdW5fHmKP63/) | To verify | To verify | Web search |
+| [Applications for BAINSA ACCESSIBILITY HACKATHON in ... - LinkedIn](https://www.linkedin.com/posts/bainsa_applications-for-bainsa-accessibility-hackathon-activity-7506341576797929472-pTsQ) | To verify | To verify | Web search |
 
 <!-- HACKATHON_TABLE_END -->
 
