@@ -122,6 +122,7 @@ function confirmationHarness({ status = 200, brokenJson = false, offline = false
     if (name === "react") return react;
     if (name === "react/jsx-runtime") return { jsx, jsxs: jsx };
     if (name === "next/link") return { default: "link" };
+    if (name === "@/components/LinkArrow") return { default: "svg" };
     if (name === "@/lib/newsletter-preferences") return { markNewsletterConfirmed() { markerCalls++; } };
     throw new Error(`Unexpected import: ${name}`);
   };

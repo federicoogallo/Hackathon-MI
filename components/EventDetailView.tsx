@@ -1,3 +1,4 @@
+import LinkArrow from "@/components/LinkArrow";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -53,7 +54,7 @@ export default function EventDetailView({ event, related }: { event: EventDetail
   const showOverview = Boolean(event.description && event.description !== factsSummary);
 
   return <>
-    <Nav><Link className="btn btn-nav" href="/#events">Tutti gli eventi <span aria-hidden="true">↗</span></Link></Nav>
+    <Nav><Link className="btn btn-nav" href="/#events">Tutti gli eventi <LinkArrow /></Link></Nav>
     <main id="top" tabIndex={-1} className="event-detail">
       <div className="container">
         <nav className="event-detail-breadcrumb" aria-label="Percorso di navigazione">

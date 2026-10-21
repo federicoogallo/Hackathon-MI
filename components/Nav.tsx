@@ -1,5 +1,6 @@
 "use client";
 
+import LinkArrow from "@/components/LinkArrow";
 import { Suspense, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -111,7 +112,7 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
           </Link>
         </nav>
         <div className="nav-cta">
-          {children || <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon&body=Nome%20evento%3A%0AData%3A%0ALuogo%3A%0ALink%20ufficiale%3A" target="_blank" rel="noopener noreferrer" className="btn btn-nav">Segnala un evento <span aria-hidden="true">↗</span></a>}
+          {children || <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon&body=Nome%20evento%3A%0AData%3A%0ALuogo%3A%0ALink%20ufficiale%3A" target="_blank" rel="noopener noreferrer" className="btn btn-nav">Segnala un evento <LinkArrow /></a>}
         </div>
         <ThemeControl />
         <button className="mobile-menu-button" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? "Chiudi il menu" : "Apri il menu"}>
@@ -119,11 +120,11 @@ export default function Nav({ children }: { children?: React.ReactNode }) {
         </button>
       </div>
       {open && <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navigazione mobile" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); document.querySelector<HTMLButtonElement>(".mobile-menu-button")?.focus(); } }}>
-        <Link href={eventsHref} aria-current={current("events")} onClick={() => setOpen(false)}>Esplora gli eventi <span aria-hidden="true">↗</span></Link>
+        <Link href={eventsHref} aria-current={current("events")} onClick={() => setOpen(false)}>Esplora gli eventi <LinkArrow /></Link>
         <Link href="/?saved=1#events" className={`nav-saved${saved ? " is-current" : ""}`} aria-current={current("saved")} aria-label={saved ? "I tuoi eventi salvati: filtro attivo" : undefined} onClick={() => setOpen(false)}>I tuoi eventi salvati <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg></Link>
-        <a href={aboutHref} aria-current={current("about")} onClick={() => setOpen(false)}>Come funziona <span aria-hidden="true">↗</span></a>
-        <Link href="/review" onClick={() => setOpen(false)}>Eventi in revisione <span aria-hidden="true">↗</span></Link>
-        <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon" target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Segnala un evento <span aria-hidden="true">↗</span></a>
+        <a href={aboutHref} aria-current={current("about")} onClick={() => setOpen(false)}>Come funziona <LinkArrow /></a>
+        <Link href="/review" onClick={() => setOpen(false)}>Eventi in revisione <LinkArrow /></Link>
+        <a href="https://github.com/federicoogallo/Hackathon-MI/issues/new?title=Segnalazione%20hackathon" target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Segnala un evento <LinkArrow /></a>
       </nav>}
     </header>
   );

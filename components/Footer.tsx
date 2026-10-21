@@ -1,3 +1,4 @@
+import LinkArrow from "@/components/LinkArrow";
 import Link from "next/link";
 import { Brand } from "@/components/Nav";
 import { REPO_URL } from "@/lib/data";
@@ -10,7 +11,7 @@ export default function Footer() {
           <div><Brand /><p>Grandi idee. Nuove persone. La tua città.</p></div>
           <nav className="footer-links" aria-label="Link a fondo pagina">
             <Link href="/#events">Esplora</Link><Link href="/review">In revisione</Link><Link href="/privacy">Privacy</Link>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub <LinkArrow /></a>
             <a href="#top">Torna su <span aria-hidden="true">↑</span></a>
           </nav>
         </div>

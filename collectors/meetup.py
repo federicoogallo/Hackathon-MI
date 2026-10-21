@@ -9,11 +9,11 @@ Altrimenti, scraping HTML della pagina di ricerca come fallback.
 import json
 import logging
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 import config
 from models import BaseCollector, HackathonEvent
-from utils.http import safe_get, safe_get_json
+from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +65,27 @@ SEARCH_KEYWORDS = [
     "makeathon",
     "buildathon",
 ]
+
+
+def _card_title(link: Tag) -> str:
+    """Read the event label, never flatten an entire linked event card."""
+    title_node = link.select_one(
+        '[data-testid="event-title"], [itemprop="name"], h1, h2, h3, h4, [role="heading"]'
+    )
+    if title_node:
+        return title_node.get_text(" ", strip=True)
+
+    for attribute in ("title", "aria-label"):
+        label = link.get(attribute)
+        if isinstance(label, str) and label.strip():
+            return " ".join(label.split())
+
+    # Plain title links remain supported. Rich cards without an identifiable
+    # title need review; their description must not become an event name.
+    if link.select_one("time, p, ul, ol"):
+        return ""
+    text = link.get_text(" ", strip=True)
+    return text if len(text) <= 240 else ""
 
 
 class MeetupCollector(BaseCollector):
@@ -226,7 +247,7 @@ class MeetupCollector(BaseCollector):
             links = soup.find_all("a", href=lambda h: h and "/events/" in h)
             for link in links:
                 href = link.get("href", "")
-                title = link.get_text(strip=True)
+                title = _card_title(link)
                 if not href or not title:
                     continue
                 if not href.startswith("http"):
@@ -239,6 +260,7 @@ class MeetupCollector(BaseCollector):
                     title=title,
                     url=href,
                     source=self.name,
+                    description=link.get_text(" ", strip=True)[:500],
                     location="",
                 ))
 

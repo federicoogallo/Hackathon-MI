@@ -271,6 +271,80 @@ class TestRedditCollector:
 # =============================================================================
 
 class TestMeetupCollector:
+    def test_group_card_uses_heading_and_preserves_provisional_date_in_description(self):
+        html = """
+        <a data-event-label="Event Card"
+           href="https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events">
+          <img alt="Hackathon di Natale!" src="/event.jpg">
+          <div>
+            <h3 title="Hackathon di Natale!">Hackathon di Natale!</h3>
+            <div><time datetime="2026-12-03T17:15:00+01:00[Europe/Rome]">Thu, Dec 3 · 6:15 PM CET</time></div>
+            <div><span>Mia Platform Italia, Via Imbonati 18, MAC7 20159 Milano, Milano, IT</span></div>
+            <span class="line-clamp-3">
+              <p>Questa data è provvisoria. Verrà aggiornata a breve.</p>
+              <p>🎙️<strong>Speaker</strong><br>Giulio Roggero, CTO di Mia-Platform<br>
+                 25 anni di esperienza in software engineering.</p>
+              <p><strong>📝 Agenda</strong></p>
+              <ul><li>18:45: Talk</li><li>19:30: Q&amp;A</li><li>19:45: Pizza and drinks</li></ul>
+            </span>
+            <span>8 attendees</span>
+          </div>
+        </a>
+        """
+        from collectors.meetup import MeetupCollector
+
+        events = MeetupCollector()._parse_search_html(html, set())
+
+        assert len(events) == 1
+        assert events[0].title == "Hackathon di Natale!"
+        assert "Questa data è provvisoria." in events[0].description
+        assert "Speaker Giulio Roggero" in events[0].description
+        assert events[0].date_str == ""
+        assert events[0].location == ""
+
+    @pytest.mark.parametrize("title_html", [
+        '<h2>Hackathon <span>Milano</span></h2>',
+        '<div role="heading">Hackathon <span>Milano</span></div>',
+        '<div data-testid="event-title">Hackathon <span>Milano</span></div>',
+    ])
+    def test_search_card_keeps_only_event_title(self, title_html):
+        from collectors.meetup import MeetupCollector
+
+        html = f'''<a href="/group/events/123/">
+          <time>Wed, Nov 18 · 6 PM</time>{title_html}
+          <p>A full description of the challenge.</p><span>25 attendees</span>
+        </a>'''
+        events = MeetupCollector()._parse_search_html(html, set())
+
+        assert len(events) == 1
+        assert events[0].title == "Hackathon Milano"
+
+    def test_card_without_title_does_not_hide_later_valid_link(self):
+        from collectors.meetup import MeetupCollector
+
+        html = '''<a href="/group/events/123/">
+          <time>Wed, Nov 18</time><p>A description without an event heading.</p>
+        </a><a href="/group/events/123/"><h3>Hackathon Milano</h3></a>'''
+        events = MeetupCollector()._parse_search_html(html, set())
+
+        assert len(events) == 1
+        assert events[0].title == "Hackathon Milano"
+
+    def test_plain_link_does_not_publish_long_unstructured_description_as_title(self):
+        from collectors.meetup import MeetupCollector
+
+        html = '<a href="/group/events/123/">' + "Details about a hackathon. " * 40 + "</a>"
+
+        assert MeetupCollector()._parse_search_html(html, set()) == []
+
+    def test_card_does_not_override_event_already_collected_from_api(self):
+        from collectors.meetup import MeetupCollector
+
+        url = "https://www.meetup.com/group/events/123/"
+        html = f'<a href="{url}"><h3>Hackathon Milano</h3><p>Description</p></a>'
+
+        assert MeetupCollector()._parse_search_html(html, {url}) == []
+
     def test_html_fallback_does_not_infer_milan_without_venue(self):
         html = """
         <html><body>
