@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-21T17:49:39.898618+02:00",
+  "last_check": "2026-10-22T17:47:16.614513+02:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -279,29 +279,6 @@
       "discovered_at": "2026-08-29T15:30:53.633648"
     },
     {
-      "id": "3571f9275288dd4a896995aebc671ef2006bb5d0f35caba31c4b41d364270451",
-      "title": "Hackathon di Natale!",
-      "url": "https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events",
-      "source": "meetup",
-      "description": "",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.94,
-      "review_status": "ai_verified",
-      "review_reason": "Specific hackathon in Milan on Dec 3 2026 with concrete venue",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.meetup.com/master-the-vibe-milan/events/315691522?eventOrigin=group_upcoming_events",
-        "https://www.meetup.com/master-the-vibe-milan/events/315691552?eventOrigin=group_upcoming_events"
-      ],
-      "discovered_at": "2026-10-11T16:33:39.089646+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "confirmed"
-    },
-    {
       "id": "0ed192cb327295de555cff5973d38f2b0c07bb1a031994508eb02a7421c77fc0",
       "title": "BAINSA - Bocconi AI & Neuroscience Association | BAINSA ...",
       "url": "https://www.instagram.com/p/DdW5fHmKP63/",
@@ -339,6 +316,29 @@
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-21T15:51:32.652981+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "confirmed"
+    },
+    {
+      "id": "3571f9275288dd4a896995aebc671ef2006bb5d0f35caba31c4b41d364270451",
+      "title": "Hackathon di Natale!",
+      "url": "https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events",
+      "source": "meetup",
+      "description": "",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.94,
+      "review_status": "ai_verified",
+      "review_reason": "Specific hackathon in Milan on Dec 3 2026 with concrete venue",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.meetup.com/master-the-vibe-milan/events/315691522?eventOrigin=group_upcoming_events",
+        "https://www.meetup.com/master-the-vibe-milan/events/315691552?eventOrigin=group_upcoming_events"
+      ],
+      "discovered_at": "2026-10-11T16:33:39.089646+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "confirmed"
