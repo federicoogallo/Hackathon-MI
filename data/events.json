@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-22T17:47:16.614513+02:00",
+  "last_check": "2026-10-23T17:38:18.498184+02:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -293,6 +293,7 @@
       "review_reason": "Hackathon announced for 26 Sep 2026 in Milan with specific time and venue implied",
       "reviewed_at": "",
       "alternate_urls": [
+        "https://www.bainsa.xyz/projects/events",
         "https://www.instagram.com/p/DdZILhLiqVC"
       ],
       "discovered_at": "2026-10-21T15:51:32.653013+00:00",
