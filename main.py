@@ -6,7 +6,7 @@ Pipeline:
 2. Esegue tutti i collector in parallelo (con error handling per ciascuno)
 3. Deduplicazione a due livelli (URL esatto + fuzzy titolo)
 4. Pre-filtro keyword (+ filtro eventi passati)
-5. Filtro LLM (Groq — GPT-OSS 120B, fallback Qwen 3.6 27B)
+5. Filtro LLM (Groq — GPT-OSS 120B, fallback Qwen 3.8 27B)
 6. Notifica nuovi hackathon via Telegram
 7. Salvataggio storico e ultimo report
 
@@ -74,6 +74,7 @@ from utils.review_queue import (
 from utils.collector_health import CollectorHealth, record_issue, track_collector
 from utils.event_identity import deduplicate_events, deduplicate_event_dicts
 from utils.candidate_audit import CandidateAudit
+from utils.event_dates import event_temporal_status
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -229,9 +230,9 @@ def _now() -> datetime:
     return datetime.now(LOCAL_TZ)
 
 
-def _is_clearly_past(event: HackathonEvent) -> bool:
+def _is_clearly_past(event: HackathonEvent, ref_date: date | None = None) -> bool:
     """Regola deterministica anti-falsi positivi su eventi vecchi."""
-    current_year = _now().year
+    current_year = (ref_date or _now().date()).year
     years = _extract_years(event.title, event.description, event.date_str, event.url)
     if not years:
         return False
@@ -337,7 +338,12 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
     return True
 
 
-def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
+_UNCERTAIN_EVENT_DATE = "data evento ambigua o priva di anno: verifica necessaria"
+
+
+def _passes_quality_gate(
+    event: HackathonEvent, ref_date: date | None = None, *, reviewed_end_date: date | None = None,
+) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
     exclusion_reason = event_exclusion_reason(event.url)
     if exclusion_reason:
@@ -348,16 +354,23 @@ def _passes_quality_gate(event: HackathonEvent) -> tuple[bool, str]:
         return False, "evento in blacklist manuale"
     if _has_conflicting_meetup_location(event):
         return False, "evento Meetup con segnali geografici non milanesi"
-    if _is_clearly_past(event):
-        return False, "evento chiaramente passato"
     if _is_online_only_event(event):
         return False, "evento online/non fisico a Milano"
+    if _is_clearly_non_milan(event):
+        return False, "evento chiaramente non a Milano"
+    today = ref_date or _now().date()
+    temporal = event_temporal_status(event, today)
+    # Reviewed multi-day events remain eligible through their documented end.
+    if reviewed_end_date is not None:
+        temporal = "past" if reviewed_end_date < today else "future"
+    if temporal == "past" or (temporal == "unknown" and _is_clearly_past(event, today)):
+        return False, "evento chiaramente passato"
+    if temporal == "uncertain":
+        return False, _UNCERTAIN_EVENT_DATE
     if _is_tentative_without_concrete_details(event):
         return False, "evento senza data/venue concreta"
     if _is_undated_likely_stale_web_result(event):
         return False, "evento web senza data verificabile"
-    if _is_clearly_non_milan(event):
-        return False, "evento chiaramente non a Milano"
     return True, "ok"
 
 
@@ -421,12 +434,12 @@ def _cleanup_existing_event_dicts(events: list[dict], ref_date: date | None = No
         if item.get("review_status") in {"rejected", "manual_rejected"}:
             continue
         event = _event_from_dict(item)
-        end_date = reviewed_end_dates.get(item.get("id"), event.parsed_date())
+        end_date = reviewed_end_dates.get(item.get("id"))
         if end_date is not None and end_date < today:
             logger.info("Cleanup storico: rimosso '%s' (evento scaduto)", event.title[:70])
             continue
 
-        ok, reason = _passes_quality_gate(event)
+        ok, reason = _passes_quality_gate(event, today, reviewed_end_date=end_date)
         if ok:
             kept.append(item)
         else:
@@ -689,7 +702,9 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 4b. Filtra eventi passati rispetto alla data corrente
     pre_date_filter = len(keyword_passed)
     before_date_filter = keyword_passed
-    keyword_passed = [e for e in keyword_passed if e.is_upcoming()]
+    keyword_passed = [
+        e for e in keyword_passed if event_temporal_status(e, start_time.date()) != "past"
+    ]
     audit.stage("event_date", before_date_filter, keyword_passed)
     post_date_filter = len(keyword_passed)
     logger.info(
@@ -783,8 +798,6 @@ def run_pipeline(dry_run: bool = False) -> None:
             logger.info("=" * 60)
             return
 
-    save_review_queue(review_queue)
-
     # 5b. Dedup semantica con LLM (rimuove duplicati con titoli/URL diversi)
     before_llm_dedup = list(llm_confirmed)
     llm_confirmed = llm_dedup(llm_confirmed)
@@ -799,7 +812,9 @@ def run_pipeline(dry_run: bool = False) -> None:
     # 5c. Ricontrolla le date della fonte dopo la classificazione.
     pre_date_filter2 = len(llm_confirmed)
     before_date_filter2 = llm_confirmed
-    llm_confirmed = [e for e in llm_confirmed if e.is_upcoming()]
+    llm_confirmed = [
+        e for e in llm_confirmed if event_temporal_status(e, start_time.date()) != "past"
+    ]
     audit.stage("post_classification_date", before_date_filter2, llm_confirmed)
     post_date_filter2 = len(llm_confirmed)
     if pre_date_filter2 > post_date_filter2:
@@ -812,14 +827,27 @@ def run_pipeline(dry_run: bool = False) -> None:
     quality_passed: list[HackathonEvent] = []
     quality_reasons: dict[str, str] = {}
     for event in llm_confirmed:
-        ok, reason = _passes_quality_gate(event)
+        ok, reason = _passes_quality_gate(event, start_time.date())
         quality_reasons[event.id] = reason
         if ok:
             quality_passed.append(event)
         else:
+            if reason == _UNCERTAIN_EVENT_DATE:
+                event.is_hackathon = False
+                event.classification_status = "insufficient_evidence"
+                event.review_status = "needs_review"
+                event.review_reason = reason
             logger.info("Quality gate: scartato '%s' (%s)", event.title[:70], reason)
     audit.stage("quality", llm_confirmed, quality_passed, quality_reasons)
     llm_confirmed = quality_passed
+    # The final gate can overrule an LLM approval; retain these candidates for
+    # review instead of silently losing them after the initial queue was built.
+    review_queue = build_review_queue(
+        keyword_passed, llm_confirmed, review_decisions,
+        previous=review_queue, ref_date=start_time.date(),
+        published_ids={item.get("id") for item in store.all_events() if item.get("is_hackathon")},
+    )
+    save_review_queue(review_queue)
 
     # 5e. Dedup fallback deterministico (anche se llm_dedup fallisce parsing)
     pre_fallback_dedup = len(llm_confirmed)

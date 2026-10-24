@@ -50,3 +50,9 @@ docs/hero-hackathon-milano.png
 # Private reports, local evidence and moderation audit trail
 .local/
 data/admin_actions.json
+
+# Local classifier experiments: corpus, annotations, raw responses and reports.
+/eval/
+/scripts/eval_classifier.py
+/scripts/eval_dataset.py
+/tests/test_eval_classifier.py

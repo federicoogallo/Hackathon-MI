@@ -1,5 +1,5 @@
 """
-Filtro LLM con Groq (GPT-OSS 120B con fallback Qwen 3.6 27B) per classificare
+Filtro LLM con Groq (GPT-OSS 120B con fallback Qwen 3.8 27B) per classificare
 se un evento è un hackathon.
 
 Usa batching per ridurre il numero di chiamate API.
@@ -86,9 +86,13 @@ Rispondi SOLO con JSON: {{"results": [{{"index": 0, "status": "confirmed|rejecte
 Restituisci esattamente un risultato per ogni index ricevuto, senza duplicati. is_hackathon è un booleano JSON, confidence un numero finito tra 0 e 1."""
 
 
-def _get_system_prompt() -> str:
-    """Genera il system prompt con la data odierna (dinamico ad ogni chiamata)."""
-    now = datetime.now()
+def _get_system_prompt(now: datetime | None = None) -> str:
+    """Genera il system prompt con la data odierna, o con `now` se indicata.
+
+    La valutazione offline passa la data in cui il candidato è stato visto,
+    così un evento allora futuro non risulta "passato" oggi.
+    """
+    now = now or datetime.now()
     return _SYSTEM_PROMPT_TEMPLATE.format(
         current_date=now.strftime("%d %B %Y"),
         current_year=now.year,
@@ -326,11 +330,12 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
     return ""
 
 
-def classify_batch(events: list[HackathonEvent]) -> list[LLMResult]:
+def classify_batch(events: list[HackathonEvent], now: datetime | None = None) -> list[LLMResult]:
     """Classifica un batch di eventi usando Groq.
 
     Args:
         events: Lista di eventi da classificare (max LLM_BATCH_SIZE).
+        now: Data di riferimento del prompt (default: oggi).
 
     Returns:
         Lista di LLMResult, uno per evento.
@@ -340,7 +345,7 @@ def classify_batch(events: list[HackathonEvent]) -> list[LLMResult]:
         return [_error_result("LLM disabled") for _ in events]
 
     user_prompt = _build_user_prompt(events)
-    content = _call_llm(_get_system_prompt(), user_prompt)
+    content = _call_llm(_get_system_prompt(now), user_prompt)
 
     if not content:
         return [_error_result("API error") for _ in events]

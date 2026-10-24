@@ -5,7 +5,7 @@ Test suite per notifiers/telegram.py e per la pipeline completa.
 import json
 from html import unescape
 import re
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
@@ -874,3 +874,118 @@ class TestPipelineQualityGate:
 
         with patch("main.config.DATA_DIR", tmp_path):
             assert _cleanup_existing_event_dicts(records, ref_date=date(2026, 10, 17)) == []
+
+
+class TestSourceDatePublicationGuard:
+    """Source dates must outweigh an erroneous high-confidence LLM approval."""
+
+    @staticmethod
+    def event(description, suffix="candidate", **fields):
+        return HackathonEvent(
+            title=f"Accessibility hackathon Milano {suffix}",
+            url=f"https://example.com/events/{suffix}",
+            source="web_search",
+            description=description,
+            location="Milano",
+            date_str="",
+            **fields,
+        )
+
+    @pytest.mark.parametrize("description", [
+        "Save the date: Saturday, September 26th, 2026, Milan, 8:30 to 19:00!",
+        "L'hackathon si svolge il 26 settembre 2026 a Milano.",
+        "Save the date: Saturday, September 26th, Milan, 8:30 to 19:00!",
+        '122 likes - organizer on September 16, 2026: "Save the date: Saturday, September 26th, Milan!"',
+    ])
+    def test_gate_blocks_past_or_yearless_event_dates_even_with_current_year(self, description):
+        from main import _passes_quality_gate
+
+        event = self.event(
+            description,
+            published_at="2026-10-21",
+            is_hackathon=True,
+            confidence=0.99,
+            review_status="ai_verified",
+            review_reason="Future event on 26 September 2027",
+            classification_status="confirmed",
+        )
+        with patch("main._now", return_value=datetime(2026, 10, 22, tzinfo=timezone.utc)):
+            assert _passes_quality_gate(event)[0] is False
+        assert event.date_str == ""
+        assert event.published_at == "2026-10-21"
+
+    def test_cleanup_uses_reference_day_for_dates_in_source_text(self, tmp_path):
+        from main import _cleanup_existing_event_dicts
+
+        event = self.event(
+            "Save the date: September 26, 2026, Milan. Build accessibility tools together.",
+            is_hackathon=True,
+            review_status="ai_verified",
+        ).to_dict()
+        with (
+            patch("main.config.DATA_DIR", tmp_path),
+            patch("main._now", return_value=datetime(2026, 10, 22, tzinfo=timezone.utc)),
+        ):
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 9, 25)) == [event]
+            assert _cleanup_existing_event_dicts([event], ref_date=date(2026, 10, 22)) == []
+        assert event["date_str"] == ""
+
+    def test_erroneous_llm_approval_cannot_publish_or_notify_stale_snippets(self, tmp_path):
+        from main import run_pipeline
+
+        stale = self.event("Save the date: September 26, 2026, Milan.", "past")
+        uncertain = self.event("Save the date: September 26th, Milan.", "yearless")
+        future = self.event("Save the date: November 20, 2026, Milan.", "future")
+        events = [stale, uncertain, future]
+        for event in events:
+            event.is_hackathon = True
+            event.confidence = 0.99
+            event.review_status = "ai_verified"
+            event.classification_status = "confirmed"
+            event.review_reason = "Future hackathon in Milano"
+
+        with (
+            patch("main.config.DATA_DIR", tmp_path),
+            patch("main.config.EVENTS_FILE", tmp_path / "events.json"),
+            patch("main.config.REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"),
+            patch("main.config.REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"),
+            patch("main._now", return_value=datetime(2026, 10, 22, tzinfo=timezone.utc)),
+            patch("main.get_collectors", return_value=["web_search"]),
+            patch("main.run_collectors", return_value=(events, ["web_search"], [], [])),
+            patch("main.keyword_filter_batch", return_value=(events, 0)),
+            patch("main.llm_filter", return_value=(events, 0)),
+            patch("main.llm_dedup", side_effect=lambda items: items),
+            patch("main.generate_html"),
+            patch("main.generate_readme_table"),
+            patch("main.notify_run_summary") as notify,
+        ):
+            run_pipeline()
+
+        stored = json.loads((tmp_path / "events.json").read_text())["events"]
+        assert [item["id"] for item in stored] == [future.id]
+        queue = json.loads((tmp_path / "review_queue.json").read_text())["candidates"]
+        assert [item["id"] for item in queue] == [uncertain.id]
+        assert queue[0]["classification_status"] == "insufficient_evidence"
+        assert queue[0]["date_str"] == ""
+        assert future.date_str == ""
+        notify.assert_called_once()
+        assert notify.call_args.kwargs["new_events"] == 1
+        assert notify.call_args.kwargs["events"] == [future]
+
+    def test_manual_cleanup_keeps_reviewed_ongoing_event_and_source_provenance(self):
+        from scripts import cleanup_store
+
+        event = self.event("Hackathon in presenza a Milano.", "ongoing").to_dict()
+        event.update(date_str="2026-09-16", date_source="publication")
+        store = MagicMock()
+        store.all_events.return_value = [event]
+        with (
+            patch.object(cleanup_store, "EventStore", return_value=store),
+            patch.object(cleanup_store, "_now", return_value=datetime(2026, 10, 22, tzinfo=timezone.utc)),
+            patch.object(cleanup_store, "_reviewed_event_end_dates", return_value={event["id"]: date(2026, 10, 23)}),
+            patch.object(cleanup_store, "generate_html"),
+            patch.object(cleanup_store, "generate_readme_table"),
+        ):
+            cleanup_store.run()
+        store.replace_events.assert_called_once_with([event])
+        assert event["date_source"] == "publication"

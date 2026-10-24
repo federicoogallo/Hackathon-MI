@@ -206,18 +206,19 @@ HTTP_USER_AGENT = (
 )
 
 # ─── LLM (Groq — OpenAI-compatible API) ─────────────────────────────────────
-# Llama 3.3 70B è stato dismesso da Groq il 16 agosto 2026. Manteniamo una
-# lista esplicita per ignorare anche configurazioni d'ambiente legacy.
-DEPRECATED_LLM_MODELS = frozenset({"llama-3.3-70b-versatile"})
+# Ritirati da Groq per free/developer: Llama 3.3 il 16 agosto 2026,
+# Qwen 3.6 il 14 settembre 2026 (https://console.groq.com/docs/deprecations).
+# Ignora anche configurazioni d'ambiente legacy.
+DEPRECATED_LLM_MODELS = frozenset({"llama-3.3-70b-versatile", "qwen/qwen3.6-27b"})
 
-# GPT-OSS è il modello principale consigliato da Groq; Qwen è il fallback
-# ufficiale compatibile con JSON Object Mode.
+# GPT-OSS resta il modello principale consolidato. Qwen è usato solo come
+# fallback compatibile con JSON Object Mode; è un modello preview del provider.
 LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-oss-120b")
 LLM_MODEL_FALLBACKS = [
     m.strip()
     for m in os.getenv(
         "LLM_MODEL_FALLBACKS",
-        "qwen/qwen3.6-27b",
+        "qwen/qwen3.8-27b",
     ).split(",")
     if m.strip()
 ]

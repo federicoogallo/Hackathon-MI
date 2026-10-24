@@ -3,10 +3,13 @@ Test suite per filtri: keyword_filter e llm_filter.
 """
 
 import json
+import re
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 import pytest
 
+import config as real_config
 import filters.keyword_filter as keyword_filter_module
 from models import HackathonEvent
 from filters.keyword_filter import keyword_filter, keyword_filter_batch
@@ -441,16 +444,24 @@ class TestLLMWithMockAPI:
         mock_config.LLM_MODEL_FALLBACKS = [
             "llama-3.3-70b-versatile",
             "qwen/qwen3.6-27b",
+            "qwen/qwen3.8-27b",
         ]
-        mock_config.DEPRECATED_LLM_MODELS = frozenset({"llama-3.3-70b-versatile"})
+        mock_config.DEPRECATED_LLM_MODELS = real_config.DEPRECATED_LLM_MODELS
 
-        assert _llm_models_to_try() == ["qwen/qwen3.6-27b"]
+        assert _llm_models_to_try() == ["qwen/qwen3.8-27b"]
+
+    def test_default_fallback_is_not_a_decommissioned_model(self):
+        # Read the code default, independent of any local LLM_MODEL_FALLBACKS.
+        source = Path(real_config.__file__).read_text()
+        default = re.search(r'"LLM_MODEL_FALLBACKS",\s*"([^"]+)"', source).group(1)
+        assert default == "qwen/qwen3.8-27b"
+        assert default not in real_config.DEPRECATED_LLM_MODELS
 
     @pytest.mark.parametrize(
         ("model", "expected"),
         [
             ("openai/gpt-oss-120b", {"reasoning_effort": "low"}),
-            ("qwen/qwen3.6-27b", {"reasoning_effort": "none"}),
+            ("qwen/qwen3.8-27b", {"reasoning_effort": "none"}),
             ("custom-model", {}),
         ],
     )

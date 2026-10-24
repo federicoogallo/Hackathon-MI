@@ -6,8 +6,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from main import _deterministic_semantic_dedup_dicts, _now, _passes_quality_gate
-from models import HackathonEvent
+from main import (
+    _deterministic_semantic_dedup_dicts, _event_from_dict, _now,
+    _passes_quality_gate, _reviewed_event_end_dates,
+)
 from storage.json_store import EventStore
 from utils.html_export import generate_html
 from utils.readme_export import generate_readme_table
@@ -17,18 +19,16 @@ def run() -> None:
     store = EventStore()
     kept: list[dict] = []
     removed: list[tuple[str, str]] = []
+    today = _now().date()
+    reviewed_end_dates = _reviewed_event_end_dates()
 
     for item in store.all_events():
-        ev = HackathonEvent(
-            title=item.get("title", ""),
-            url=item.get("url", ""),
-            source=item.get("source", ""),
-            description=item.get("description", ""),
-            date_str=item.get("date_str", ""),
-            location=item.get("location", ""),
-            organizer=item.get("organizer", ""),
+        ev = _event_from_dict(item)
+        ok, reason = _passes_quality_gate(
+            ev, today, reviewed_end_date=reviewed_end_dates.get(item.get("id")),
         )
-        ok, reason = _passes_quality_gate(ev)
+        if item.get("review_status") in {"rejected", "manual_rejected"}:
+            ok, reason = False, "evento rifiutato in revisione"
         if ok:
             kept.append(item)
         else:

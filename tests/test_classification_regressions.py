@@ -149,6 +149,13 @@ def test_prompt_requires_evidence_even_on_direct_event_pages():
     assert "anche su una pagina diretta con form di registrazione, NON pubblicare" in prompt
 
 
+def test_prompt_can_use_a_fixed_reference_date_for_offline_evaluation():
+    reference = datetime(2026, 3, 2)
+    prompt = _get_system_prompt(reference)
+    assert f"DATA ODIERNA: {reference.strftime('%d %B %Y')}" in prompt
+    assert datetime.now().strftime("%d %B %Y") not in prompt
+
+
 class AuditClock(datetime):
     @classmethod
     def now(cls, tz=None):

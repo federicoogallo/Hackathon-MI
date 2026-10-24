@@ -68,7 +68,7 @@ def test_other_editions_and_canonical_bcg_remain_eligible(url):
 
     assert event_exclusion_reason(url) is None
     assert keyword_filter(event) is True
-    assert _passes_quality_gate(event) == (True, "ok")
+    assert _passes_quality_gate(event, ref_date=date(2026, 10, 15)) == (True, "ok")
 
 
 def test_exclusions_match_the_host_and_event_id_not_an_embedded_url():
@@ -99,3 +99,25 @@ def test_cleanup_removes_reported_aliases_and_keeps_official_bcg():
     )
 
     assert cleaned == [canonical]
+
+
+@pytest.mark.parametrize("url", [
+    "https://www.instagram.com/p/DdW5fHmKP63/",
+    "https://instagram.com/p/DdZILhLiqVC?utm_source=share",
+    "https://www.linkedin.com/posts/bainsa_applications-for-bainsa-accessibility-hackathon-activity-7506341576797929472-pTsQ",
+    "https://it.linkedin.com/posts/bainsa_activity-7506341576797929472-pTsQ?trk=share",
+    "https://www.linkedin.com/feed/update/urn:li:activity:7506341576797929472/",
+])
+def test_finished_bainsa_edition_cannot_return_via_social_aliases(url):
+    assert "26 settembre 2026" in event_exclusion_reason(url)
+
+
+@pytest.mark.parametrize("url", [
+    "https://www.instagram.com/bainsa_bocconi/",
+    "https://www.instagram.com/p/NewEdition2027/",
+    "https://www.linkedin.com/posts/bainsa_activity-7506341576797929473-new",
+    "https://www.linkedin.com/posts/bainsa_activity-75063415767979294720-other",
+    "https://notlinkedin.com/posts/bainsa_activity-7506341576797929472-pTsQ",
+])
+def test_bainsa_exclusion_does_not_block_organizer_or_other_editions(url):
+    assert event_exclusion_reason(url) is None

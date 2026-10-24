@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **9 hackathons** coming up in Milan · Last updated: Oct 24, 2026 16:19 CEST
+> **7 hackathons** coming up in Milan · Last updated: Oct 24, 2026 19:25 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
@@ -29,8 +29,6 @@ The source count describes implemented integrations, not a guarantee that all so
 | [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | To verify | To verify | Web search |
 | [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
-| [BAINSA - Bocconi AI & Neuroscience Association \| BAINSA ...](https://www.instagram.com/p/DdW5fHmKP63/) | To verify | To verify | Web search |
-| [Applications for BAINSA ACCESSIBILITY HACKATHON in ... - LinkedIn](https://www.linkedin.com/posts/bainsa_applications-for-bainsa-accessibility-hackathon-activity-7506341576797929472-pTsQ) | To verify | To verify | Web search |
 | [Hackathon di Natale!](https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events) | To verify | To verify | Meetup |
 
 <!-- HACKATHON_TABLE_END -->
@@ -80,7 +78,7 @@ Collectors (28 registered integrations, parallel collection)
     Positive/negative patterns, junk-URL blocklist, past-event checks
         │
         ▼
-  LLM Classification (Groq · GPT-OSS 120B + Qwen 3.6 27B fallback)
+  LLM Classification (Groq · GPT-OSS 120B + Qwen 3.8 27B fallback)
     Batches of 5, confidence threshold 0.7; Milan relevance checks
         ├── Uncertain/incomplete candidates → Persistent Review Queue
         │       data/review_queue.json + public review page
@@ -517,7 +515,7 @@ hackathon-monitor/
 
 - **Source coverage:** scraping can fail when websites change, block automated access or return incomplete data. Integrations such as PoliHub may be affected by access controls; web search can surface additional public pages but is not exhaustive.
 - **Social platforms:** LinkedIn and Twitter/X content is discovered through web-search queries in this project; no direct event API integration is implemented for them.
-- **Groq LLM:** the configured defaults are `openai/gpt-oss-120b` and the `qwen/qwen3.6-27b` fallback; legacy model IDs listed in `config.py` are ignored. Provider availability and account limits can change. Without working classification access, new candidates cannot be validated; a complete classification failure preserves the existing archive and records the issue in `data/last_report.json`.
+- **Groq LLM:** the configured defaults are `openai/gpt-oss-120b` and the `qwen/qwen3.8-27b` fallback; legacy model IDs listed in `config.py` are ignored. Provider availability and account limits can change. Without working classification access, new candidates cannot be validated; a complete classification failure preserves the existing archive and records the issue in `data/last_report.json`.
 - **Manual review**: low-confidence, insufficient-evidence and failed-classification candidates stay pending until resolution or expiry; undated entries expire after 60 days. They can be approved or rejected with `scripts/admin.py`. Rejection also prevents automatic republication of the same candidate.
 - **Run diagnostics**: `data/last_report.json` distinguishes healthy, empty, degraded, blocked, disabled and failed sources, plus classification errors and stage counts. GitHub Actions uploads this aggregate report as the `hackathon-monitor-report` artifact. Candidate evidence stays in ignored local storage, not in that artifact.
 - **Some collectors** may return errors while the remaining sources complete. A successful overall run does not imply every source was healthy.

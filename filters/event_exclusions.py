@@ -29,6 +29,8 @@ _BCG_CANDIDATE_PATHS = {
     "/events/candidate/registration",
 }
 _AI_OLYMPICS_EVENTBRITE_PATH = re.compile(r"/e/(?:[^/]*-)?1987936520647")
+_BAINSA_INSTAGRAM_POSTS = {"/p/ddw5fhmkp63", "/p/ddzilhliqvc"}
+_BAINSA_LINKEDIN_ACTIVITY = re.compile(r"(?:^|[-:])7506341576797929472(?:-|$)")
 
 
 def event_exclusion_reason(url: str) -> str | None:
@@ -39,6 +41,16 @@ def event_exclusion_reason(url: str) -> str | None:
         path = unquote(parsed.path).rstrip("/").lower()
     except ValueError:
         return None
+
+    # BAINSA/Anthropic accessibility edition, 26 September 2026. These posts
+    # announce the same finished event; do not block the organizer or new posts.
+    if (
+        host == "instagram.com" and path in _BAINSA_INSTAGRAM_POSTS
+        or (host == "linkedin.com" or host.endswith(".linkedin.com"))
+        and path.startswith(("/posts/", "/feed/update/"))
+        and _BAINSA_LINKEDIN_ACTIVITY.search(path)
+    ):
+        return "evento passato noto (BAINSA Accessibility Hackathon, 26 settembre 2026)"
 
     # Harvard HSIL: 10–11 April 2026. GDG AI HACK: 8–10 May 2026.
     if host == "gsom.polimi.it" and path in _HARVARD_PATHS:

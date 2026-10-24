@@ -13,6 +13,8 @@ The monitor searches for in-person hackathons in Milan and the surrounding monit
 
 Specific exclusions for known false positives still apply. Keywords such as “winners” or an introductory workshop do not by themselves invalidate a concrete future hackathon announcement, but recaps, unrelated workshops, remote-only events and wrong locations remain subject to rejection.
 
+The date guard also checks explicit Italian/English event-date announcements in source titles and snippets, including events earlier in the current year. It runs before classification and again before publication. Recognized dates without a year, invalid dates and conflicting dates cannot be automatically approved: an LLM approval is overridden and the candidate is queued for review. Discovery timestamps, publication timestamps, application deadlines and model explanations never supply an event date or a missing year. Structured event dates take precedence over incidental prose; reviewed multi-day events stay in the archive through their documented end date. Unsupported text is not proof of a future event and remains subject to the existing classifier and quality checks; this guard is not a general natural-language date parser.
+
 ## Source health
 
 `data/last_report.json` includes per-source request issues, durations and counts:
