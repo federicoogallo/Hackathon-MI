@@ -7,6 +7,7 @@ import pytest
 from models import HackathonEvent
 from storage.json_store import EventStore
 from utils.event_identity import (
+    alternate_url_list, prune_unrelated_alternate_urls,
     deduplicate_event_dicts, deduplicate_events, editions_compatible,
     merge_event_evidence, same_event,
 )
@@ -159,3 +160,67 @@ def test_store_keeps_normalized_alternate_urls(tmp_path):
     assert store.is_duplicate(duplicate)
     assert store.all_events()[0]["alternate_urls"] == ["https://other.org/event", "https://third.org/event"]
     assert store.is_duplicate(event("Unrelated shortened title", url="https://third.org/event"))
+
+
+MEETUP = "https://www.meetup.com/master-the-vibe-milan/events"
+
+
+def test_meetup_listing_parameters_do_not_create_a_new_identity():
+    listed = event("Hackathon di Natale!", url=f"{MEETUP}/315691626/?recId=17b7&recSource=event-search")
+    group = event("Hackathon di Natale!", url=f"{MEETUP}/315691626/?eventOrigin=group_upcoming_events")
+    assert same_event(listed, group)
+    assert len(deduplicate_events([listed, group])) == 1
+
+
+def test_a_stale_alias_cannot_merge_two_meetup_events(tmp_path):
+    # 2026-10-24: another event of the same group was discarded as "already known"
+    # because its URL had been saved as an alias of "Hackathon di Natale!".
+    store = EventStore(path=tmp_path / "events.json")
+    store.add_event(event("Hackathon di Natale!", url=f"{MEETUP}/315691626/",
+                          alternate_urls=[f"{MEETUP}/315691522?eventOrigin=group_upcoming_events"]))
+    other = event("LLM FinOps", url=f"{MEETUP}/315691522/?eventOrigin=group_upcoming_events")
+    assert not store.is_duplicate(other)
+
+
+def test_alias_list_keeps_one_url_per_meetup_event_and_never_another_event():
+    aliases = alternate_url_list(f"{MEETUP}/315691626/", [
+        f"{MEETUP}/315691626/?recId=a",          # the primary event itself
+        f"{MEETUP}/315691522/",                  # another event of the group
+        "https://luma.com/abc",
+    ])
+    assert aliases == ["https://luma.com/abc"]
+    aliases = alternate_url_list("https://example.org/event", [
+        "https://www.meetup.com/g/events/1/?recId=a", "https://www.meetup.com/g/events/1/?recId=b",
+    ])
+    assert len(aliases) == 1
+
+
+def test_legacy_alias_repair_keeps_pages_that_name_the_event_only():
+    record = event("Hackathon per universitari Talenti STEM per l'Innovazione Sociale",
+                   url="https://fondazionetriulza.org/hackathon-talenti-stem-deadline-19-ottobre").to_dict()
+    record["alternate_urls"] = [
+        "https://www.unimib.it/news/hackathon-talenti-stem-linnovazione-sociale",
+        "https://fondazionetriulza.org",                                 # organizer homepage
+        "https://myaccount.microsoft.com/login",                         # login page
+        "https://www.meetup.com/ac-phx/events/316530156?recId=73dc620c",  # foreign Meetup event
+    ]
+    repaired, dropped = prune_unrelated_alternate_urls(record)
+    assert repaired["alternate_urls"] == ["https://www.unimib.it/news/hackathon-talenti-stem-linnovazione-sociale"]
+    assert len(dropped) == 3
+    assert record["alternate_urls"][1] == "https://fondazionetriulza.org"  # input untouched
+
+
+@pytest.mark.parametrize("variant", [
+    "https://meetup.com/it-IT/master-the-vibe-milan/events/315691626/?recId=x",
+    "https://www.meetup.com/en-US/master-the-vibe-milan/events/315691626",
+    "http://www.meetup.com/renamed-group/events/315691626/?eventOrigin=find_page",
+])
+def test_meetup_event_number_is_the_identity_under_any_url_variant(tmp_path, variant):
+    # A later discovery may carry a locale path and a translated title.
+    original = event("Hackathon di Natale!", url=f"{MEETUP}/315691626/")
+    translated = event("Christmas Hackathon!", url=variant, source="web_search")
+    assert same_event(original, translated)
+    store = EventStore(path=tmp_path / "events.json")
+    store.add_event(original)
+    assert store.is_duplicate(translated)
+    assert store.all_events()[0]["alternate_urls"] == []  # no alias needed for the same number

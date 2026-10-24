@@ -31,6 +31,25 @@ _BCG_CANDIDATE_PATHS = {
 _AI_OLYMPICS_EVENTBRITE_PATH = re.compile(r"/e/(?:[^/]*-)?1987936520647")
 _BAINSA_INSTAGRAM_POSTS = {"/p/ddw5fhmkp63", "/p/ddzilhliqvc"}
 _BAINSA_LINKEDIN_ACTIVITY = re.compile(r"(?:^|[-:])7506341576797929472(?:-|$)")
+# Meetup localizes paths (/it-IT/...): match the group and event number only.
+_MASTER_THE_VIBE_CHRISTMAS = re.compile(r"(?:^|/)master-the-vibe-milan/events/315691626$")
+_GLAM_TOOL_HOSPITAL_PATH = "/wiki/glam_tool_hospital/wikimedia_hackathon,_milan_2026"
+
+
+# Pages excluded only because they duplicate an official page: the event is valid.
+_BCG_DUPLICATE = "duplicato noto (pagina ufficiale: bcgplatinion.com/hackathon)"
+_DUPLICATE_PAGE_REASONS = frozenset({_BCG_DUPLICATE})
+
+
+def alias_exclusion_reason(url: str) -> str | None:
+    """Exclusion that still applies when the page is only an alias of a stored event.
+
+    An excluded event (past, conference, not a hackathon) stays excluded under
+    any alias. A duplicate page is expected among the aliases of the event it
+    duplicates, and must not remove that event.
+    """
+    reason = event_exclusion_reason(url)
+    return None if reason in _DUPLICATE_PAGE_REASONS else reason
 
 
 def event_exclusion_reason(url: str) -> str | None:
@@ -72,10 +91,20 @@ def event_exclusion_reason(url: str) -> str | None:
     if host in {"bcg.eightfold.ai", "experiencedtalent.bcg.com"} and path in _BCG_CANDIDATE_PATHS:
         event_ids = parse_qs(parsed.query).get("plannedEventId", [])
         if "aQnm026Vg" in event_ids:
-            return "duplicato noto (pagina ufficiale: bcgplatinion.com/hackathon)"
+            return _BCG_DUPLICATE
 
     # The official 21 September 2026 page labels this event as "Convegni".
     if host == "polimi.it" and path == _POLIMI_CONFERENCE_PATH:
         return "convegno, non hackathon (Innovation Challenge 2026)"
+
+    # "Hackathon di Natale!" (3 December 2026): its agenda is a talk, Q&A and pizza.
+    if host == "meetup.com" and _MASTER_THE_VIBE_CHRISTMAS.search(path):
+        return "meetup con talk, non hackathon (Hackathon di Natale!, 3 dicembre 2026)"
+
+    # Project page of a session at the Wikimedia Hackathon, 1–3 May 2026.
+    if host == "meta.wikimedia.org" and (
+        path == _GLAM_TOOL_HOSPITAL_PATH or path.startswith(_GLAM_TOOL_HOSPITAL_PATH + "/")
+    ):
+        return "pagina di progetto di un evento passato (Wikimedia Hackathon, 1–3 maggio 2026)"
 
     return None

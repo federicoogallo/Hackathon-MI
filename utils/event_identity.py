@@ -14,7 +14,7 @@ import logging
 import json
 import re
 from typing import Any, Mapping
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import parse_qsl, unquote, urlencode, urlsplit, urlunsplit
 
 import config
 from models import HackathonEvent, _normalize_title, _normalize_url
@@ -111,11 +111,94 @@ def editions_compatible(left: EventLike, right: EventLike) -> bool:
     return not (left_editions and right_editions and left_editions.isdisjoint(right_editions))
 
 
+# Listing and recommendation parameters Meetup appends to one event page.
+_MEETUP_TRACKING_PARAMS = frozenset({"recid", "recsource", "searchid", "eventorigin"})
+_MEETUP_EVENT_PATH = re.compile(r"/events/(\d+)(?:/|$)")
+_MEETUP_LOCALE_PREFIX = re.compile(r"^/[a-z]{2}-[a-z]{2}(?=/|$)", re.I)
+
+
+def _is_meetup(netloc: str) -> bool:
+    return netloc.removeprefix("www.") == "meetup.com"
+
+
 def _identity_url(url: str) -> str:
+    """Compare URLs without changing the stored URL or the ID derived from it."""
     parsed = urlsplit(_normalize_url(url))
     if parsed.netloc in {"lu.ma", "www.lu.ma", "www.luma.com"}:
         return urlunsplit(("https", "luma.com", parsed.path, parsed.query, ""))
+    if _is_meetup(parsed.netloc):
+        # The event number names one event under any host, locale, group slug or listing.
+        event_id = _MEETUP_EVENT_PATH.search(parsed.path)
+        if event_id:
+            return f"https://www.meetup.com/events/{event_id.group(1)}"
+        query = urlencode([(key, value) for key, value in parse_qsl(parsed.query)
+                           if key.lower() not in _MEETUP_TRACKING_PARAMS])
+        path = _MEETUP_LOCALE_PREFIX.sub("", parsed.path)
+        return urlunsplit(("https", "www.meetup.com", path, query, ""))
     return urlunsplit(parsed)
+
+
+def _meetup_event_id(url: str) -> str | None:
+    """Meetup event number, which names exactly one event, including localized paths."""
+    parsed = urlsplit(_normalize_url(url))
+    if not _is_meetup(parsed.netloc):
+        return None
+    match = _MEETUP_EVENT_PATH.search(parsed.path)
+    return match.group(1) if match else None
+
+
+def _distinct_meetup_events(left: EventLike, right: EventLike) -> bool:
+    left_id, right_id = _meetup_event_id(_get(left, "url")), _meetup_event_id(_get(right, "url"))
+    return bool(left_id and right_id and left_id != right_id)
+
+
+def alternate_url_list(primary_url: str, urls) -> list[str]:
+    """Normalized aliases of the primary URL.
+
+    Meetup listing parameters create a new URL for every appearance of an event:
+    keep one alias per Meetup event number, none for the primary's own number,
+    and never a different Meetup event than the primary one.
+    """
+    primary = _normalize_url(primary_url)
+    primary_meetup = _meetup_event_id(primary_url)
+    aliases: list[str] = []
+    meetup_seen: set[str] = set()
+    for url in sorted({_normalize_url(url) for url in urls if url} - {primary}):
+        meetup = _meetup_event_id(url)
+        if meetup:
+            if meetup in meetup_seen or (primary_meetup and meetup != primary_meetup) or meetup == primary_meetup:
+                continue
+            meetup_seen.add(meetup)
+        aliases.append(url)
+    return aliases
+
+
+def prune_unrelated_alternate_urls(record: Mapping[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """Repair aliases attached by the pre-2026-10-11 matcher, which linked unrelated pages.
+
+    That matcher accepted shared fragments such as "11 00 am" or "in to your" as
+    identity, so archived aliases include login pages and foreign Meetup events.
+    Every alias acts as an identity key, so a stale one silently discards new
+    candidates. One-off repair, not a per-scan rule: a valid alias may be a short
+    ID (luma.com/abc123) that this keyword test would reject.
+
+    Kept: aliases whose host or path names a distinctive word of the title.
+    Dropped: Meetup events other than the primary one, and every other alias.
+    """
+    repaired = _record(record)
+    primary = repaired.get("url", "")
+    keywords = {word for word in distinctive_keywords(repaired.get("title", "")) if len(word) >= 3}
+    kept: list[str] = []
+    for url in alternate_url_list(primary, repaired.get("alternate_urls", [])):
+        parsed = urlsplit(url)
+        tokens = set(re.findall(r"[^\W_]+", f"{parsed.netloc} {unquote(parsed.path)}".lower()))
+        if _meetup_event_id(url) and _meetup_event_id(url) != _meetup_event_id(primary):
+            continue
+        if keywords & tokens:
+            kept.append(url)
+    dropped = sorted(set(repaired.get("alternate_urls", [])) - set(kept))
+    repaired["alternate_urls"] = kept
+    return repaired, dropped
 
 
 def _urls(event: EventLike) -> set[str]:
@@ -126,6 +209,9 @@ def _urls(event: EventLike) -> set[str]:
 def same_event(left: EventLike, right: EventLike) -> bool:
     """Match event identity, rejecting incompatible dates/editions even on one URL."""
     if not editions_compatible(left, right):
+        return False
+    # Two Meetup event numbers are two events, even if a stale alias links them.
+    if _distinct_meetup_events(left, right):
         return False
     if _urls(left) & _urls(right):
         return True
@@ -218,10 +304,8 @@ def merge_event_evidence(left: EventLike, right: EventLike) -> dict[str, Any]:
     if not primary.get("date_str") and secondary.get("date_str"):
         primary["date_str"] = secondary["date_str"]
         primary["date_source"] = secondary.get("date_source", "")
-    primary_url = _normalize_url(primary.get("url", ""))
-    urls = {_normalize_url(url) for record in records
-            for url in [record.get("url", ""), *record.get("alternate_urls", [])] if url}
-    primary["alternate_urls"] = sorted(urls - {primary_url})
+    urls = [url for record in records for url in [record.get("url", ""), *record.get("alternate_urls", [])]]
+    primary["alternate_urls"] = alternate_url_list(primary.get("url", ""), urls)
     timestamps = [record.get("discovered_at") for record in records if record.get("discovered_at")]
     if timestamps:
         primary["discovered_at"] = min(timestamps)

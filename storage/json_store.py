@@ -12,7 +12,7 @@ from pathlib import Path
 import config
 from models import HackathonEvent, _normalize_url
 from utils.event_identity import (
-    distinctive_keywords, merge_event_evidence, same_event, title_core_words,
+    alternate_url_list, distinctive_keywords, merge_event_evidence, same_event, title_core_words,
 )
 
 logger = logging.getLogger(__name__)
@@ -116,9 +116,8 @@ class EventStore:
         return True
 
     def _add_alternate_url(self, match: dict, event: HackathonEvent, label: str) -> None:
-        primary = _normalize_url(match.get("url", ""))
-        urls = {*match.get("alternate_urls", []), event.url, *event.alternate_urls}
-        match["alternate_urls"] = sorted({_normalize_url(url) for url in urls if url} - {primary})
+        urls = [*match.get("alternate_urls", []), event.url, *event.alternate_urls]
+        match["alternate_urls"] = alternate_url_list(match.get("url", ""), urls)
         for url in match["alternate_urls"]:
             self._alt_url_index[url] = match.get("id", "")
 

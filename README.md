@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **7 hackathons** coming up in Milan · Last updated: Oct 24, 2026 19:25 CEST
+> **6 hackathons** coming up in Milan · Last updated: Oct 24, 2026 21:57 CEST
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
@@ -29,7 +29,6 @@ The source count describes implemented integrations, not a guarantee that all so
 | [AI Hackathon in Milan 24 October 2026 \| Albert School](https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/) | To verify | To verify | Web search |
 | [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
-| [Hackathon di Natale!](https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events) | To verify | To verify | Meetup |
 
 <!-- HACKATHON_TABLE_END -->
 

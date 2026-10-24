@@ -27,6 +27,10 @@ EXCLUDED_URLS = [
     ("https://www.experiencedtalent.bcg.com/events/candidate/landing/?ref=email&plannedEventId=aQnm026Vg#details", "duplicato"),
     ("https://polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai", "convegno"),
     ("https://www.polimi.it/il-politecnico/eventi/dettaglio-evento/innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai/?utm_source=mail#details", "convegno"),
+    ("https://www.meetup.com/master-the-vibe-milan/events/315691626/?eventOrigin=group_upcoming_events", "talk"),
+    ("https://www.meetup.com/it-IT/master-the-vibe-milan/events/315691626/?recId=17b7", "talk"),
+    ("https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon,_Milan_2026", "passato"),
+    ("https://meta.wikimedia.org/wiki/GLAM_Tool_Hospital/Wikimedia_Hackathon%2C_Milan_2026#Survey", "passato"),
 ]
 
 
@@ -62,6 +66,9 @@ def test_verified_exclusions_override_missing_or_incorrect_future_dates(url, rea
     "https://luma.com/another-event",
     "https://lablab.ai/ai-hackathons/milan-ai-week-hackathon-2027",
     "https://www.eventbrite.it/e/biglietti-ai-agent-olympics-1987936520648",
+    "https://www.meetup.com/master-the-vibe-milan/events/315691522/",
+    "https://www.meetup.com/master-the-vibe-milan/events/3156916260/",
+    "https://meta.wikimedia.org/wiki/Wikimedia_Hackathon_2027",
 ])
 def test_other_editions_and_canonical_bcg_remain_eligible(url):
     event = _candidate(url, "2026-10-16")
@@ -121,3 +128,35 @@ def test_finished_bainsa_edition_cannot_return_via_social_aliases(url):
 ])
 def test_bainsa_exclusion_does_not_block_organizer_or_other_editions(url):
     assert event_exclusion_reason(url) is None
+
+
+def test_an_excluded_page_kept_only_as_alias_still_removes_the_stored_event():
+    # Innovation Challenge 2026 was archived under a Politecnico listing URL, with
+    # the excluded event page among its aliases.
+    stored = _candidate(
+        "https://polimi.it/il-politecnico/eventi?tx_filterevent_newsfilterevent%5BcurrentPage%5D=2",
+        "2026-12-01",
+    ).to_dict()
+    stored["alternate_urls"] = [
+        "https://polimi.it/il-politecnico/eventi/dettaglio-evento/"
+        "innovation-challenge-2026-soluzioni-per-evitare-la-disillusione-dellai"
+    ]
+
+    assert _cleanup_existing_event_dicts([stored], ref_date=date(2026, 10, 24)) == []
+
+
+def test_a_duplicate_page_among_aliases_keeps_the_official_event():
+    official = HackathonEvent(
+        title="BCG Platinion Hackathon 2026",
+        url="https://www.bcgplatinion.com/hackathon",
+        source="web_search",
+        description="Hackathon BCG Platinion in presenza a Milano il 16–17 ottobre 2026.",
+        date_str="2026-10-16",
+        location="Milano",
+        alternate_urls=["https://bcg.eightfold.ai/events/candidate/landing?plannedEventId=aQnm026Vg"],
+    )
+
+    assert _passes_quality_gate(official, ref_date=date(2026, 10, 1)) == (True, "ok")
+    assert _cleanup_existing_event_dicts([official.to_dict()], ref_date=date(2026, 10, 1)) == [official.to_dict()]
+    # The duplicate page itself is still rejected when it arrives as a candidate.
+    assert "duplicato" in _passes_quality_gate(_candidate(official.alternate_urls[0]))[1]

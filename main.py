@@ -58,7 +58,7 @@ from collectors.camera_commercio import CameraCommercioCollector
 from collectors.regione_lombardia import RegioneLombardiaCollector
 from collectors.gdg import GDGCollector
 from collectors.telespazio import TelespazioCollector
-from filters.event_exclusions import event_exclusion_reason
+from filters.event_exclusions import alias_exclusion_reason, event_exclusion_reason
 from filters.keyword_filter import keyword_filter_batch
 from filters.llm_filter import llm_filter, llm_dedup
 from storage.json_store import EventStore
@@ -345,7 +345,11 @@ def _passes_quality_gate(
     event: HackathonEvent, ref_date: date | None = None, *, reviewed_end_date: date | None = None,
 ) -> tuple[bool, str]:
     """Vincoli hard prima del salvataggio finale."""
-    exclusion_reason = event_exclusion_reason(event.url)
+    # An excluded event stays excluded when its page survives only as an alias;
+    # a duplicate page among the aliases does not exclude the official event.
+    exclusion_reason = event_exclusion_reason(event.url) or next(
+        filter(None, (alias_exclusion_reason(url) for url in event.alternate_urls)), None,
+    )
     if exclusion_reason:
         return False, exclusion_reason
     if _KNOWN_FALSE_POSITIVE_URL_RE.search(event.url or ""):
@@ -396,6 +400,7 @@ def _event_from_dict(item: dict) -> HackathonEvent:
         published_at=item.get("published_at", ""),
         location=item.get("location", ""),
         organizer=item.get("organizer", ""),
+        alternate_urls=list(item.get("alternate_urls") or []),
     )
 
 
