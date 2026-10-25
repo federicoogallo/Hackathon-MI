@@ -33,6 +33,8 @@ _NATURAL = re.compile(
     rf"|(?P<month_first>{_MONTH})\s+(?P<first_day>{_DAY})(?:{_RANGE}(?P<first_end>{_DAY}))?)"
     r"(?:,?\s+(?P<year>20\d{2})\b)?", re.I,
 )
+# Separator between the two ends of a range written in an event-date field.
+_FIELD_RANGE = re.compile(r"\s[-–—]\s|→")
 _NUMERIC = re.compile(r"\b(?:(?P<year>20\d{2})-(?P<month>\d{1,2})-(?P<day>\d{1,2})|(?P<d>\d{1,2})[/.](?P<m>\d{1,2})[/.](?P<y>20\d{2}))\b")
 _SCHEDULE_CUE = re.compile(
     r"\b(?:save\s+the\s+date|(?:si\s+)?(?:svolge(?:rà)?|svolgerà|terrà|tenuto|tenuta)|"
@@ -46,6 +48,11 @@ _OTHER_CUE = re.compile(
     r"registration\s+(?:opens?|closes?|starts?|ends?)|"
     r"iscrizioni\s+(?:entro|fino)|candidature\s+(?:entro|fino))\b", re.I,
 )
+
+
+def month_number(name: str) -> int | None:
+    """Month number for an Italian or English month name or abbreviation."""
+    return _MONTHS.get((name or "").strip().lower().rstrip("."))
 
 
 def _source_dates(text: str, *, event_field: bool = False, title: bool = False) -> list[date | None]:
@@ -93,6 +100,11 @@ def event_temporal_status(event: HackathonEvent, ref_date: date) -> TemporalStat
     """
     if event.has_event_date:
         dates = _source_dates(event.date_str, event_field=True)
+        # "2026-11-04 — 2026-11-11" is one event through its last day, like
+        # "04 – 11 novembre 2026", not two conflicting dates.
+        if (len(dates) == 2 and None not in dates and dates[0] <= dates[1]
+                and _FIELD_RANGE.search(event.date_str)):
+            dates = dates[1:]
         if not dates:
             parsed = event.parsed_date()
             dates = [parsed] if parsed is not None else []

@@ -15,7 +15,7 @@ from utils.collector_health import track_collector
     ('polimi.it', '''<nav class="card"><h5>Eventi</h5><a href="/eventi">Menu</a></nav>
     <div class="card card--editorial-photo"><a href="/il-politecnico/eventi/dettaglio-evento/aurora"><img></a>
     <h5 class="card-title">Aurora Hackathon</h5><div class="card-body__date"><p>30 <span>ottobre</span> <span>2026</span></p></div>
-    <div class="card-text">Sfida per studenti</div></div>''', '30 ottobre 2026', ''),
+    <div class="card-text">Sfida per studenti</div></div>''', '2026-10-30', ''),
     ('iulm.it', '''<div class="rigaevento" data-date="30/10/2026" data-abstract="Sfida per studenti">
     <h4>Università</h4><h2><a href="/it/news-ed-eventi/news/aurora">Aurora Hackathon</a></h2></div>''', '30/10/2026', ''),
     ('unisr.it', '''<div class="newscard"><figure data-linkManager-href="/news/2026/10/aurora">
@@ -158,3 +158,36 @@ def test_camera_does_not_count_imperva_http_200_challenge_as_empty_catalogue():
     with track_collector() as health:
         assert CameraCommercioCollector()._parse_html('<html>New layout</html>', 'https://www.milomb.camcom.it/eventi', set()) == []
     assert health.issues[0]['kind'] == 'parse_error'
+
+
+def _polimi_card(date_markup):
+    return f'''<div class="card card--editorial-photo"><a href="/il-politecnico/eventi/dettaglio-evento/aurora"><img></a>
+    <h5 class="card-title">Aurora Hackathon</h5>
+    <div class="card-body__item card-body__date">
+    <!-- Alert: dat inizio evento > data fine -->
+    {date_markup}
+    </div><div class="card-text">Sfida per studenti</div></div>'''
+
+
+# Markup as served by polimi.it on 2026-10-25, tabs and template comments included.
+@pytest.mark.parametrize(('date_markup', 'expected'), [
+    ('<!-- Stessa data -->\n<p>\n\t\t\t26\n\t\t\t<span class="month">ottobre</span>\n<span class="year">2026</span>\n</p>',
+     '2026-10-26'),
+    ('<!-- Stesso mese e anno -->\n<p>\n\t\t\t04 – 11\n\t\t\t<span class="month">novembre</span>\n<span class="year">2026</span>\n</p>',
+     '2026-11-04 — 2026-11-11'),
+    ('<!-- Stesso anno, mesi diversi -->\n<p>\n\t\t\t20\n\t\t\t<span class="month">ottobre</span>\n\t\t\t→\n\t\t\t18\n'
+     '\t\t\t<span class="month">dicembre</span>\n<span class="year">2026</span>\n</p>',
+     '2026-10-20 — 2026-12-18'),
+    ('<p>28 <span class="month">dicembre</span> <span class="year">2026</span> → 06 '
+     '<span class="month">gennaio</span> <span class="year">2027</span></p>',
+     '2026-12-28 — 2027-01-06'),
+    # Shapes the card is not known to use stay as printed, for review.
+    ('<p>18 <span class="month">dicembre</span> → 20 <span class="month">ottobre</span> '
+     '<span class="year">2026</span></p>', '18 dicembre → 20 ottobre 2026'),
+    ('<p>\n\t\tDa definire\n</p>', 'Da definire'),
+])
+def test_polimi_card_dates_become_iso_dates(date_markup, expected):
+    events = UniversitiesCollector()._extract_events(
+        _polimi_card(date_markup), 'https://www.polimi.it/il-politecnico/eventi', 'polimi.it', 'Politecnico di Milano', set())
+    assert [event.date_str for event in events] == [expected]
+    assert events[0].date_source == 'event_card'

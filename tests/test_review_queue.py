@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 
 from models import HackathonEvent
@@ -106,3 +107,13 @@ def test_review_queue_roundtrip(tmp_path: Path):
 
     assert load_review_queue(queue_path)[0]["id"] == candidate.id
     assert load_review_decisions(decisions_path)[candidate.id]["decision"] == "approved"
+
+
+def test_queued_range_stays_until_its_last_day():
+    event = HackathonEvent(title="Sfida PoliMi", url="https://www.polimi.it/il-politecnico/eventi/dettaglio-evento/sfida",
+                           source="universities", organizer="Politecnico di Milano",
+                           date_str="2026-11-04 — 2026-11-11", date_source="event_card",
+                           confidence=0.9, classification_status="insufficient_evidence")
+    queue = build_review_queue([event], confirmed=[], ref_date=date(2026, 10, 25))
+    assert len(build_review_queue([], confirmed=[], previous=queue, ref_date=date(2026, 11, 5))) == 1
+    assert build_review_queue([], confirmed=[], previous=queue, ref_date=date(2026, 11, 12)) == []

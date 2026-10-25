@@ -14,6 +14,8 @@ così se un sito cambia struttura gli altri continuano a funzionare.
 """
 
 import logging
+import re
+from datetime import date
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
@@ -21,9 +23,47 @@ from bs4 import BeautifulSoup
 import config
 from models import BaseCollector, HackathonEvent
 from utils.collector_health import record_issue
+from utils.event_dates import month_number
 from utils.http import safe_get
 
 logger = logging.getLogger(__name__)
+
+# PoliMi cards print "26 ottobre 2026", "04 – 11 novembre 2026" or
+# "20 ottobre → 18 dicembre 2026": a range shows its year once, after the end.
+_POLIMI_CARD_DATE = re.compile(
+    r"^(?P<start_day>\d{1,2})(?:\s*[–-]\s*(?P<same_month_end>\d{1,2}))?\s+(?P<start_month>[^\W\d_]+)"
+    r"(?:\s+(?P<start_year>20\d{2}))?"
+    r"(?:\s*→\s*(?P<end_day>\d{1,2})\s+(?P<end_month>[^\W\d_]+))?"
+    r"\s+(?P<year>20\d{2})$"
+)
+
+
+def _polimi_card_date(date_el) -> str:
+    """ISO date, or "start — end" range, read from a PoliMi event card.
+
+    Text in any other shape is kept as printed (whitespace collapsed), so the
+    date checks treat it as uncertain instead of guessing.
+    """
+    text = " ".join(date_el.get_text(" ", strip=True).split()) if date_el else ""
+    match = _POLIMI_CARD_DATE.match(text)
+    if not match:
+        return text
+    parts = match.groupdict()
+    start_month = month_number(parts["start_month"])
+    end_month = month_number(parts["end_month"]) if parts["end_month"] else start_month
+    if start_month is None or end_month is None:
+        return text
+    end_year = int(parts["year"])
+    start_year = int(parts["start_year"]) if parts["start_year"] else end_year
+    start_day = int(parts["start_day"])
+    end_day = int(parts["end_day"] or parts["same_month_end"] or start_day)
+    try:
+        start, end = date(start_year, start_month, start_day), date(end_year, end_month, end_day)
+    except ValueError:
+        return text
+    if end < start:  # the template itself warns when start follows end
+        return text
+    return start.isoformat() if start == end else f"{start.isoformat()} — {end.isoformat()}"
 
 
 def _response_url(response, fallback: str) -> str:
@@ -301,6 +341,7 @@ class UniversitiesCollector(BaseCollector):
                     or not (host == domain or host.endswith("." + domain))):
                 continue
             date = (card.get("data-date", "") if domain == "iulm.it"
+                    else _polimi_card_date(date_el) if domain == "polimi.it"
                     else date_el.get_text(" ", strip=True) if date_el else "")
             description = (card.get("data-abstract", "") if domain == "iulm.it"
                            else desc_el.get_text(" ", strip=True) if desc_el else "")

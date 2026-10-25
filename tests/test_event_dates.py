@@ -85,3 +85,17 @@ def test_date_in_event_title_is_recognized_without_snippet():
 def test_deadline_in_title_is_not_an_event_date():
     event = candidate(title="Hackathon application deadline: September 26, 2026")
     assert event_temporal_status(event, TODAY) == "unknown"
+
+
+@pytest.mark.parametrize("date_str", ["2026-10-21 — 2026-10-23", "2026-10-21 → 2026-10-23"])
+def test_iso_range_in_event_field_is_kept_through_last_day(date_str):
+    # Before 2026-10-25 an ongoing multi-day event was "uncertain" on its second day
+    # and the archive cleanup removed it.
+    event = candidate(date_str=date_str)
+    assert event_temporal_status(event, date(2026, 10, 22)) == "future"
+    assert event_temporal_status(event, date(2026, 10, 24)) == "past"
+
+
+@pytest.mark.parametrize("date_str", ["2026-10-23 — 2026-10-21", "2026-10-21, 2026-11-20"])
+def test_reversed_range_or_date_list_stays_uncertain(date_str):
+    assert event_temporal_status(candidate(date_str=date_str), date(2026, 10, 22)) == "uncertain"

@@ -11,6 +11,7 @@ from typing import Any
 
 import config
 from models import HackathonEvent
+from utils.event_dates import event_temporal_status
 from utils.event_identity import editions_compatible, merge_event_evidence
 
 
@@ -105,9 +106,11 @@ def build_review_queue(
             continue
         event = HackathonEvent(
             title=item.get("title", ""), url=item.get("url", ""), source=item.get("source", ""),
+            description=item.get("description", ""),
             date_str=item.get("date_str", ""), date_source=item.get("date_source", ""),
         )
-        if event.is_past(today):
+        # Same rule as publication: a range stays current through its last day.
+        if event_temporal_status(event, today) == "past":
             continue
         if event.parsed_date() is None:
             try:
