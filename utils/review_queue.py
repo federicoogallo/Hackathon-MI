@@ -5,6 +5,7 @@ Utility per mantenere una coda di revisione manuale dei candidati dubbi.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,46 @@ from utils.event_identity import editions_compatible, merge_event_evidence
 
 REVIEW_MIN_CONFIDENCE = 0.45
 REVIEW_REJECT_CONFIDENCE_CUTOFF = 0.85
+
+# Milan, a Milan venue or a Milan institution named by the candidate itself.
+# This signal is enough for manual review; publication uses stricter checks.
+_MILAN_SIGNAL = re.compile(
+    r"\b(?:milan(?:o|ese|esi)?|politecnico|polimi|polihub|bocconi|unibocconi|bicocca|unimib|unimi|"
+    r"iulm|unicatt|human\s+technopole|mind\s+milano|triulza|cariplo\s+factory|talent\s+garden|"
+    r"fiera\s+milano|sesto\s+san\s+giovanni|rho|segrate|cinisello\s+balsamo)\b",
+    re.I,
+)
+# A bare city is the event's own city when a collector reads it from the event
+# (Eventbrite, Luma, Meetup venues, university and hub calendars). Search results
+# may echo the query instead: archived web_search records carry "Milano" whatever
+# the event's city.
+_BARE_MILAN_LOCATIONS = frozenset({
+    "milano", "milan", "milano, italia", "milan, italy", "milano, italy", "milan, italia",
+})
+_QUERY_ECHO_SOURCES = frozenset({"web_search", "reddit"})
+_LOCATION_EVIDENCE_FIELDS = ("title", "description", "url", "organizer", "location", "source")
+
+
+def _milan_evidence(event: HackathonEvent | dict[str, Any]) -> dict[str, str] | None:
+    """Keep the source text behind a review signal, including an earlier discovery."""
+    get = event.get if isinstance(event, dict) else lambda key, default="": getattr(event, key, default)
+    current = {key: str(get(key, "") or "") for key in _LOCATION_EVIDENCE_FIELDS}
+    for record in (current, get("review_location_evidence", None)):
+        if not isinstance(record, dict):
+            continue
+        evidence = {key: str(record.get(key, "") or "") for key in _LOCATION_EVIDENCE_FIELDS}
+        location = evidence["location"].strip()
+        if location.lower() in _BARE_MILAN_LOCATIONS and evidence["source"] in _QUERY_ECHO_SOURCES:
+            location = ""
+        text = " ".join(evidence[key] for key in ("title", "description", "url", "organizer"))
+        if _MILAN_SIGNAL.search(f"{text} {location}".replace("-", " ").replace("_", " ")):
+            return evidence
+    return None
+
+
+def has_milan_signal(event: HackathonEvent | dict[str, Any]) -> bool:
+    """True when source evidence names Milan or the surrounding metropolitan area."""
+    return _milan_evidence(event) is not None
 
 
 def load_review_decisions(path: Path | None = None) -> dict[str, dict[str, Any]]:
@@ -44,9 +85,16 @@ def save_review_decisions(decisions: dict[str, dict[str, Any]], path: Path | Non
     return path
 
 
-def _needs_manual_review(event: HackathonEvent) -> bool:
-    """Decide se un candidato LLM merita revisione umana."""
-    if event.classification_status in {"insufficient_evidence", "error"}:
+def _needs_manual_review(event: HackathonEvent, milan_signal: bool | None = None) -> bool:
+    """Decide se un candidato LLM merita revisione umana.
+
+    `milan_signal` lets the caller include evidence already queued for the event.
+    """
+    if event.classification_status == "error":
+        return True  # never judged: a person must see it
+    if not (has_milan_signal(event) if milan_signal is None else milan_signal):
+        return False
+    if event.classification_status == "insufficient_evidence":
         return True
     if event.confidence <= 0.0:
         return False
@@ -84,25 +132,36 @@ def build_review_queue(
     queue_by_id = {item["id"]: dict(item) for item in (previous or []) if item.get("id")}
 
     for event in candidates:
-        if not _needs_manual_review(event):
-            if event.classification_status in {"confirmed", "rejected"}:
+        item = _candidate_dict(event)
+        prior = queue_by_id.get(event.id)
+        same_edition = prior is not None and editions_compatible(prior, item)
+        # A rediscovery may carry less text than the queued record: judge both.
+        evidence = _milan_evidence(event) or (_milan_evidence(prior) if same_edition else None)
+        milan = evidence is not None
+        if not _needs_manual_review(event, milan):
+            if event.classification_status in {"confirmed", "rejected"} or not milan:
                 queue_by_id.pop(event.id, None)
             continue
-        item = _candidate_dict(event)
-        if event.id in queue_by_id:
-            prior = queue_by_id[event.id]
-            if editions_compatible(prior, item):
+        if prior is not None:
+            if same_edition:
                 merged = merge_event_evidence(prior, item)
                 for key in ("confidence", "is_hackathon", "review_status", "review_reason",
                             "classification_status", "review_note", "last_seen_at"):
                     merged[key] = item[key]
                 merged["queued_at"] = prior.get("queued_at", item["queued_at"])
                 item = merged
+        # A more precise date can win the merge while its shorter description
+        # loses the location. Retain the source evidence for subsequent scans.
+        if evidence is not None and not has_milan_signal(item):
+            item["review_location_evidence"] = evidence
         queue_by_id[event.id] = item
 
     queue: list[dict[str, Any]] = []
     for event_id, item in queue_by_id.items():
         if event_id in confirmed_ids or decisions.get(event_id, {}).get("decision") in {"approved", "rejected"}:
+            continue
+        # Earlier scans queued candidates without any Milan reference.
+        if item.get("classification_status") != "error" and not has_milan_signal(item):
             continue
         event = HackathonEvent(
             title=item.get("title", ""), url=item.get("url", ""), source=item.get("source", ""),

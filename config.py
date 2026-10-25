@@ -222,6 +222,8 @@ LLM_MODEL_FALLBACKS = [
     ).split(",")
     if m.strip()
 ]
+# Publication requires `confirmed`; confidence is an additional minimum,
+# not a substitute for the classification status.
 LLM_CONFIDENCE_THRESHOLD = 0.7
 LLM_BATCH_SIZE = 5  # eventi per singola chiamata API (ridotto per rate-limit)
 LLM_MAX_DESCRIPTION_LENGTH = 500  # troncamento descrizione

@@ -231,3 +231,21 @@ def test_llm_can_select_an_existing_source_record_for_proven_duplicates():
     with patch("filters.llm_filter.config.GROQ_API_KEY", "fixture"), patch("filters.llm_filter._call_llm", return_value=answer):
         assert llm_dedup([first, second]) == [second]
     assert first.url in second.alternate_urls
+
+
+@pytest.mark.parametrize(("overrides", "label"), [
+    ({"date_str": "2026-06-20", "date_source": "event"}, "passata"),
+    ({"date_str": "2026-11-20", "date_source": "event"}, "futura"),
+    ({"date_str": "", "description": "Dettagli in arrivo"}, "assente"),
+])
+def test_prompt_carries_the_deterministic_date_check(overrides, label):
+    # In production logs the model confirmed past events as "future" on some days.
+    prompt = _build_user_prompt([candidate(**overrides)], datetime(2026, 10, 25))
+    assert f'Verifica automatica della data: "{label}"' in prompt
+
+
+def test_prompt_accepts_milan_stated_in_the_text_without_an_address():
+    # An event explicitly held in Milan does not also need a street address.
+    prompt = _get_system_prompt(datetime(2026, 10, 25))
+    assert "questo basta per il criterio LOCATION anche senza indirizzo" in prompt
+    assert '"Data Hackathon Challenge Milan"' in prompt

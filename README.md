@@ -78,7 +78,8 @@ Collectors (28 registered integrations, parallel collection)
         │
         ▼
   LLM Classification (Groq · GPT-OSS 120B + Qwen 3.8 27B fallback)
-    Batches of 5, confidence threshold 0.7; Milan relevance checks
+    Batches of 5; only the `confirmed` status publishes (0.7 confidence floor);
+    date status computed in code and passed to the model; Milan relevance checks
         ├── Uncertain/incomplete candidates → Persistent Review Queue
         │       data/review_queue.json + public review page
         ▼
@@ -515,7 +516,7 @@ hackathon-monitor/
 - **Source coverage:** scraping can fail when websites change, block automated access or return incomplete data. Integrations such as PoliHub may be affected by access controls; web search can surface additional public pages but is not exhaustive.
 - **Social platforms:** LinkedIn and Twitter/X content is discovered through web-search queries in this project; no direct event API integration is implemented for them.
 - **Groq LLM:** the configured defaults are `openai/gpt-oss-120b` and the `qwen/qwen3.8-27b` fallback; legacy model IDs listed in `config.py` are ignored. Provider availability and account limits can change. Without working classification access, new candidates cannot be validated; a complete classification failure preserves the existing archive and records the issue in `data/last_report.json`.
-- **Manual review**: low-confidence, insufficient-evidence and failed-classification candidates stay pending until resolution or expiry; undated entries expire after 60 days. They can be approved or rejected with `scripts/admin.py`. Rejection also prevents automatic republication of the same candidate.
+- **Manual review**: low-confidence and insufficient-evidence candidates that name Milan or a Milan venue or institution, and every failed classification, stay pending until resolution or expiry; uncertain candidates with no Milan reference are dropped; undated entries expire after 60 days. They can be approved or rejected with `scripts/admin.py`. Rejection also prevents automatic republication of the same candidate.
 - **Run diagnostics**: `data/last_report.json` distinguishes healthy, empty, degraded, blocked, disabled and failed sources, plus classification errors and stage counts. GitHub Actions uploads this aggregate report as the `hackathon-monitor-report` artifact. Candidate evidence stays in ignored local storage, not in that artifact.
 - **Some collectors** may return errors while the remaining sources complete. A successful overall run does not imply every source was healthy.
 - **Publication timing:** the Next.js site reads the archive bundled with its deployment. Data changes become visible after the production build, not immediately after a local command.

@@ -19,6 +19,7 @@ from groq import Groq
 
 import config
 from models import HackathonEvent
+from utils.event_dates import event_temporal_status
 from utils.event_identity import same_event
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
    NO: hackathon in cui la fase di building/competizione è online e Milano ospita solo pitch, demo, finale o conferenza, salvo testo chiarissimo che il lavoro di hacking avvenga onsite a Milano.
    IMPORTANTE: Il campo "Location" è forte SOLO quando contiene una venue/indirizzo concreto (es. "Via Confalonieri 4, 20124 Milano", "Fiera Milano, Rho", "Politecnico di Milano").
    Se Location è vuota/"(non specificata)" o generica ("Milano"/"Milan") e titolo/descrizione/URL/organizer non indicano CHIARAMENTE Milano → is_hackathon: false.
+   Se invece il titolo o la descrizione dichiarano che l'evento SI SVOLGE a Milano ("hackathon a Milano", "in Milan", "Milano – 25 novembre"), questo basta per il criterio LOCATION anche senza indirizzo: l'indirizzo serve solo a rendere affidabile il campo Location. Non chiedere un indirizzo che il testo non deve contenere.
    Per fonti aggregatrici o search-based (meetup, hackathon.com, reddit, web_search, listing generici), una location generica "Milano" può derivare dalla query di ricerca: richiedi conferma nel testo, nel venue o nel dominio ufficiale dell'evento.
    Il solo fatto che un'organizzazione (es. PoliHub) sia milanese NON basta: serve conferma esplicita nel campo Location o nel testo.
    ATTENZIONE EXTRA: Se il dominio è .in, devfolio.co, unstop.com, hackerearth.com, o la location menziona India, Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, USA, Los Angeles, San Francisco, New York, London, Paris, Berlin, Munich/München/Germany — è quasi certamente NON a Milano → false.
@@ -58,6 +60,7 @@ CRITERI (TUTTI E 4 devono essere soddisfatti):
    - Un ARTICOLO, NEWS, BLOG o RASSEGNA STAMPA con un annuncio concreto ma senza data evento futura verificabile richiede revisione; una data editoriale recente non basta.
    - Se la pagina dice solo "Spring 2026", "TBD", "Very soon", "pre-register", "applications open soon" o simili, senza data precisa e venue milanese concreta → is_hackathon: false.
    - Se le uniche date trovate sono < {current_date} → is_hackathon: false.
+   - "Verifica automatica della data" è calcolata dal codice sulle date della fonte rispetto a {current_date}: "passata" → l'evento NON è futuro (status "rejected"), a meno che il testo indichi esplicitamente una nuova data futura; "futura" → la data è verificata; "incerta" o "assente" → decidi dal testo, e senza una data attendibile usa "insufficient_evidence".
    - Se l'URL contiene anni passati (es. /2019/, /2020/, /2023/) e nessuna data futura nel testo → is_hackathon: false.
    NO: eventi passati, recap, articoli su eventi già avvenuti, edizioni precedenti.
    ATTENZIONE: Non fidarti ciecamente del dominio/URL per la data. Aggregatori come hackathon.com possono mostrare eventi vecchi con URL fuorvianti.
@@ -77,8 +80,10 @@ ESEMPI:
 2. Titolo: "Scopri hackathon su Eventbrite" | URL: eventbrite.it/d/italy--milano/hackathon → {{"status": "rejected", "is_hackathon": false, "confidence": 0.95, "reason": "Pagina di ricerca, non evento specifico"}}
 3. Titolo: "Hackathon recap" | Desc: "Great experience last weekend" → {{"status": "rejected", "is_hackathon": false, "confidence": 0.95, "reason": "Resoconto di un evento passato"}}
 4. Titolo: "Global Hackathon Online" | Desc: "Build remotely and submit online" → {{"status": "rejected", "is_hackathon": false, "confidence": 0.95, "reason": "Evento online, non fisico a Milano"}}
-5. Titolo: "AI Hackathon Milano" | Data evento: "(non verificata)" | Pubblicazione: "{current_date}" | Desc: "Nuova sfida di sviluppo, dettagli in arrivo" → {{"status": "insufficient_evidence", "is_hackathon": false, "confidence": 0.95, "reason": "Mancano data evento e venue; pubblicazione non equivale alla data evento"}}
+5. Titolo: "AI Hackathon Milano" | Data evento: "(non verificata)" | Pubblicazione: "{current_date}" | Desc: "Nuova sfida di sviluppo, dettagli in arrivo" → {{"status": "insufficient_evidence", "is_hackathon": false, "confidence": 0.95, "reason": "Manca la data evento; pubblicazione non equivale alla data evento"}}
 6. Titolo: "AI Hackathon" | Data evento: "{current_date}" | Loc: "Munich, Germany" → {{"status": "rejected", "is_hackathon": false, "confidence": 0.95, "reason": "Evento fuori Milano"}}
+7. Titolo: "Data Hackathon Challenge Milan" | Data evento: "{current_date}" | Verifica data: "futura" | Loc: "(non specificata)" | Desc: "Join the hackathon in Milan and build a solution in teams" → {{"status": "confirmed", "is_hackathon": true, "confidence": 0.95, "reason": "Hackathon a Milano dichiarato nel testo, data futura; l'indirizzo non è necessario"}}
+8. Titolo: "Robotics Hackathon Milano" | Data evento: "20 giugno 2026" | Verifica data: "passata" | Desc: "Hackathon in presenza a Milano" → {{"status": "rejected", "is_hackathon": false, "confidence": 0.95, "reason": "La data dell'evento è passata"}}
 
 NEL DUBBIO → status: "insufficient_evidence", is_hackathon: false. Non allentare i requisiti per pubblicare.
 
@@ -108,10 +113,19 @@ class LLMResult:
     status: str = ""
 
 
-def _build_user_prompt(events: list[HackathonEvent]) -> str:
-    """Costruisce il prompt utente con la lista di eventi da classificare."""
+_DATE_CHECK_LABELS = {"future": "futura", "past": "passata", "uncertain": "incerta", "unknown": "assente"}
+
+
+def _build_user_prompt(events: list[HackathonEvent], now: datetime | None = None) -> str:
+    """Costruisce il prompt utente con la lista di eventi da classificare.
+
+    Each event carries the deterministic date check, so the model does not have
+    to compare dates itself (it used to confirm events whose date had passed).
+    """
+    today = (now or datetime.now()).date()
     items = []
     for i, event in enumerate(events):
+        date_check = _DATE_CHECK_LABELS[event_temporal_status(event, today)]
         desc = event.description[:config.LLM_MAX_DESCRIPTION_LENGTH]
         loc = event.location or "(non specificata)"
         organizer = event.organizer or "(non specificato)"
@@ -125,6 +139,7 @@ def _build_user_prompt(events: list[HackathonEvent]) -> str:
             f"\n   Organizer: \"{organizer}\""
             f"\n   Data evento dalla fonte: \"{event_date}\""
             f"\n   Provenienza data evento: \"{event.date_source or 'legacy'}\""
+            f"\n   Verifica automatica della data: \"{date_check}\""
             f"\n   Pubblicazione articolo (non data evento): \"{published_at}\""
             f"\n   Descrizione: \"{desc}\""
         )
@@ -344,7 +359,7 @@ def classify_batch(events: list[HackathonEvent], now: datetime | None = None) ->
         logger.warning("GROQ_API_KEY non configurata — skip filtro LLM (scarto tutto)")
         return [_error_result("LLM disabled") for _ in events]
 
-    user_prompt = _build_user_prompt(events)
+    user_prompt = _build_user_prompt(events, now)
     content = _call_llm(_get_system_prompt(now), user_prompt)
 
     if not content:
