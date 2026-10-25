@@ -18,6 +18,7 @@ Usage:
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -594,6 +595,27 @@ def _failed_collector_names(failed_collectors: list[str]) -> list[str]:
     return [f.split(":", 1)[0] for f in failed_collectors]
 
 
+# Every alias is an identity key; unusually large sets may hide unrelated events.
+ALIAS_WARNING_LIMIT = 10
+
+
+def _alias_warnings(events: list[dict], limit: int = ALIAS_WARNING_LIMIT) -> list[dict]:
+    """Archived events whose alias count suggests unrelated pages were merged into them."""
+    warnings = [
+        {"id": item.get("id", ""), "title": item.get("title", "")[:90],
+         "aliases": len(item.get("alternate_urls") or [])}
+        for item in events if len(item.get("alternate_urls") or []) > limit
+    ]
+    for warning in warnings:
+        logger.warning("Evento con %d URL alternativi (soglia %d): '%s'",
+                       warning["aliases"], limit, warning["title"])
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            # Shown on the workflow run page, not only in the raw log.
+            print(f"::warning title=URL alternativi sospetti::{warning['title']}: "
+                  f"{warning['aliases']} URL alternativi (soglia {limit})")
+    return warnings
+
+
 def _write_report(report: dict) -> Path:
     """Scrive il report dell'ultima run e ritorna il path."""
     statuses = [item.get("status", "healthy" if item.get("ok") else "failed")
@@ -906,6 +928,7 @@ def run_pipeline(dry_run: bool = False) -> None:
         "classification_completed": classification_errors == 0,
         "classification_errors": classification_errors,
         "candidate_stages": audit.summary(),
+        "alias_warnings": _alias_warnings(store.all_events()),
     }
     _write_report(report)
 

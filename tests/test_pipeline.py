@@ -989,3 +989,20 @@ class TestSourceDatePublicationGuard:
             cleanup_store.run()
         store.replace_events.assert_called_once_with([event])
         assert event["date_source"] == "publication"
+
+
+def test_scan_warns_about_events_with_too_many_aliases(monkeypatch, capsys):
+    from main import ALIAS_WARNING_LIMIT, _alias_warnings
+
+    crowded = {"id": "a", "title": "Oliver Wyman Hackathon",
+               "alternate_urls": [f"https://example.org/{n}" for n in range(ALIAS_WARNING_LIMIT + 1)]}
+    normal = {"id": "b", "title": "Talenti STEM", "alternate_urls": ["https://example.org/x"]}
+
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    assert _alias_warnings([crowded, normal]) == [
+        {"id": "a", "title": "Oliver Wyman Hackathon", "aliases": ALIAS_WARNING_LIMIT + 1}]
+    assert capsys.readouterr().out == ""
+
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    _alias_warnings([crowded])
+    assert capsys.readouterr().out.startswith("::warning title=URL alternativi sospetti::Oliver Wyman")
