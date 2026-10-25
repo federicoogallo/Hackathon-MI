@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-10-24T16:15:18.223272+02:00",
+  "last_check": "2026-10-25T15:49:53.865993+01:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -38,23 +38,6 @@
         "https://www.unimib.it/news/hackathon-talenti-stem-linnovazione-sociale-tecnologie-affrontare-sfide-sociali"
       ],
       "discovered_at": "2026-07-31T12:55:16.164587"
-    },
-    {
-      "id": "f74f1b8b10c8617a054396d464d59767739b2aeea4d369ed0243ecff005dbf59",
-      "title": "AI Hackathon in Milan 24 October 2026 | Albert School",
-      "url": "https://www.albertschool.com/en/events/learning-reimagined-hackaton-albertschool-codemotion-2026/",
-      "source": "web_search",
-      "description": "Join a hands-on vibe coding with Lovable hackathon at Albert School Milan on 24 October 2026. Team up to build a product that improves learning.",
-      "date_str": "2026-10-24",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": true,
-      "confidence": 0.96,
-      "review_status": "ai_verified",
-      "review_reason": "Hackathon specifico a Milano con data futura e venue indicata",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-06T17:03:15.838492+00:00"
     },
     {
       "id": "8017aeda8ac54b5ec0fc5a48d7bb365eb968e052c87d87b1d494db24aa74d6df",
