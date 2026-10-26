@@ -340,6 +340,9 @@ def _is_undated_likely_stale_web_result(event: HackathonEvent) -> bool:
 
 
 _UNCERTAIN_EVENT_DATE = "data evento ambigua o priva di anno: verifica necessaria"
+# Automatic publication needs an event date the code reads as current or future;
+# a model's confirmation alone does not establish the event schedule.
+_UNVERIFIED_EVENT_DATE = "data evento non verificata dal codice: verifica necessaria"
 
 
 def _passes_quality_gate(
@@ -855,11 +858,14 @@ def run_pipeline(dry_run: bool = False) -> None:
     quality_reasons: dict[str, str] = {}
     for event in llm_confirmed:
         ok, reason = _passes_quality_gate(event, start_time.date())
+        # Only at publication: archived and manually approved events keep their place.
+        if ok and event_temporal_status(event, start_time.date()) != "future":
+            ok, reason = False, _UNVERIFIED_EVENT_DATE
         quality_reasons[event.id] = reason
         if ok:
             quality_passed.append(event)
         else:
-            if reason == _UNCERTAIN_EVENT_DATE:
+            if reason in {_UNCERTAIN_EVENT_DATE, _UNVERIFIED_EVENT_DATE}:
                 event.is_hackathon = False
                 event.classification_status = "insufficient_evidence"
                 event.review_status = "needs_review"

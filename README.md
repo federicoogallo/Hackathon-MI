@@ -77,7 +77,9 @@ Collectors (28 registered integrations, parallel collection)
         │
         ▼
   LLM Classification (Groq · GPT-OSS 120B + Qwen 3.8 27B fallback)
-    Batches of 5; only the `confirmed` status publishes (0.7 confidence floor);
+    Batches of 5; only the `confirmed` status publishes (0.7 confidence floor),
+    and only with an event date the code verifies as current or future;
+    eligible candidates with unverified dates go to review;
     date status computed in code and passed to the model; Milan relevance checks
         ├── Uncertain/incomplete candidates → Persistent Review Queue
         │       data/review_queue.json + public review page

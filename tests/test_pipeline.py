@@ -235,9 +235,12 @@ class TestPipelineIntegration:
         store_instance.is_duplicate.return_value = False
         MockStore.return_value = store_instance
 
+        # Automatic publication needs a verified future date.
         events = [
-            HackathonEvent(title="Hack1", url="https://a.com/1", source="s"),
-            HackathonEvent(title="Hack2", url="https://a.com/2", source="s"),
+            HackathonEvent(title="Hack1", url="https://a.com/1", source="s",
+                           date_str="2030-11-20", date_source="event"),
+            HackathonEvent(title="Hack2", url="https://a.com/2", source="s",
+                           date_str="2030-11-21", date_source="event"),
         ]
         collector_runs = [{
             "name": "s",
@@ -971,6 +974,51 @@ class TestSourceDatePublicationGuard:
         notify.assert_called_once()
         assert notify.call_args.kwargs["new_events"] == 1
         assert notify.call_args.kwargs["events"] == [future]
+
+    def test_llm_approval_without_a_verified_future_date_goes_to_review(self, tmp_path):
+        # LLM approval cannot replace a verifiable event date from the source.
+        from main import run_pipeline
+
+        undated = self.event("Hackathon in presenza a Milano, dettagli in arrivo.", "undated")
+        future = self.event("Save the date: November 20, 2026, Milan.", "future")
+        events = [undated, future]
+        for event in events:
+            event.is_hackathon = True
+            event.confidence = 0.95
+            event.review_status = "ai_verified"
+            event.classification_status = "confirmed"
+            event.review_reason = "Hackathon a Milano"
+
+        with (
+            patch("main.config.DATA_DIR", tmp_path),
+            patch("main.config.EVENTS_FILE", tmp_path / "events.json"),
+            patch("main.config.REVIEW_QUEUE_FILE", tmp_path / "review_queue.json"),
+            patch("main.config.REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json"),
+            patch("main._now", return_value=datetime(2026, 10, 22, tzinfo=timezone.utc)),
+            patch("main.get_collectors", return_value=["web_search"]),
+            patch("main.run_collectors", return_value=(events, ["web_search"], [], [])),
+            patch("main.keyword_filter_batch", return_value=(events, 0)),
+            patch("main.llm_filter", return_value=(events, 0)),
+            patch("main.llm_dedup", side_effect=lambda items: items),
+            patch("main.generate_html"),
+            patch("main.generate_readme_table"),
+            patch("main.notify_run_summary"),
+        ):
+            run_pipeline()
+
+        stored = json.loads((tmp_path / "events.json").read_text())["events"]
+        assert [item["id"] for item in stored] == [future.id]
+        queue = json.loads((tmp_path / "review_queue.json").read_text())["candidates"]
+        assert [item["id"] for item in queue] == [undated.id]
+        assert queue[0]["classification_status"] == "insufficient_evidence"
+        assert "non verificata" in queue[0]["review_reason"]
+
+    def test_verified_date_rule_does_not_touch_the_archive(self):
+        from main import _cleanup_existing_event_dicts
+
+        approved = self.event("Hackathon in presenza a Milano.", "approved",
+                              is_hackathon=True, review_status="manual_approved").to_dict()
+        assert _cleanup_existing_event_dicts([approved], ref_date=date(2026, 10, 22)) == [approved]
 
     def test_manual_cleanup_keeps_reviewed_ongoing_event_and_source_provenance(self):
         from scripts import cleanup_store
