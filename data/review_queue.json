@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-25T14:56:45.259189",
-  "count": 20,
+  "updated_at": "2026-10-26T17:14:29.101377",
+  "count": 16,
   "candidates": [
     {
       "id": "e9138b2e0f969e9c69ac75922f086326f0616a1f1bacb5bcd51bbea33657afb8",
@@ -14,7 +14,7 @@
       "is_hackathon": false,
       "confidence": 0.95,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento e location specifica a Milano",
+      "review_reason": "Mancano data evento, location milanese e dettagli sul formato hackathon",
       "reviewed_at": "",
       "alternate_urls": [
         "https://luma.com/AMDHackathon-Milan"
@@ -24,7 +24,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-11T16:38:42.210693+00:00",
-      "last_seen_at": "2026-10-25T14:56:45.257281+00:00",
+      "last_seen_at": "2026-10-26T17:14:29.098039+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -77,29 +77,6 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
-      "title": "BAINSA Accessibility Hackathon | Hackathon Hub",
-      "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
-      "source": "web_search",
-      "description": "Sep 26, 2026 · Description The BAINSA Accessibility Hackathon brings together students in Milan to develop technological solutions for accessibility. Participants will work in teams on challenges aimed at making everyday experiences more accessible for people with visual or hearing impairments. The goal is to create a real social impact, supported by partners like Anthropic and Generali.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Date mentioned (Sep 26, 2026) but location not explicitly confirmed as a physical venue in Milan; venue details missing.",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-21T15:51:32.653064+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-21T15:56:03.593176+00:00",
-      "last_seen_at": "2026-10-23T15:44:06.576601+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
       "id": "09fb015e0a1ad8bfb80c14b0ef72f540e0b29efa7e92cefc5dcc24625eeaff5e",
       "title": "Developer hackathons in Milan 2026 / 2027 - dev.events",
       "url": "https://dev.events/hackathons/EU/IT/Milan",
@@ -124,17 +101,17 @@
     },
     {
       "id": "1eed076ec86f2c466e0cfd71db301558e1f9f760569cbd210de90102bc8383b3",
-      "title": "Hackathon Italy 2026 / 2027 · All upcoming events · 28 upcoming events ...",
+      "title": "Hackathon Italy 2026 / 2027 · All upcoming events | Hackathon Hub",
       "url": "https://hackathonhub.eu/hackathons/italy",
       "source": "web_search",
-      "description": "28 upcoming hackathons in Italy 2026 / 2027 in Milan, Rome, Turin & more. Dates, prizes, online & on-site · verified on Hackathon Hub.",
+      "description": "27 upcoming hackathons in Italy 2026 / 2027 in Milan, Rome, Turin & more. Dates, prizes, online & on-site · verified on Hackathon Hub.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing generica senza evento specifico, data e sede non conferite",
+      "review_reason": "Pagina di listing senza evento specifico, data e location non verificabili",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-25T14:49:56.453126+00:00",
@@ -142,7 +119,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-25T14:56:45.251516+00:00",
-      "last_seen_at": "2026-10-25T14:56:45.256981+00:00",
+      "last_seen_at": "2026-10-26T17:14:29.097571+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -218,31 +195,6 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "0f2f1d1e026789f2b25c7807c673ad39f6fd5e3cb8557403b970e725faf1f0ae",
-      "title": "IT hackathons in Milan 2026 / 2027 - dev.events",
-      "url": "https://dev.events/hackathons/EU/IT/Milan/it",
-      "source": "web_search",
-      "description": "IT hackathons in Milan 2026 / 2027 The Principal Dev - Masterclass for Tech Leads Certification masterclass for experienced software engineers.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Listing page without concrete hackathon info, missing date and venue",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://dev.events/hackathons/EU/IT/Milan/tech"
-      ],
-      "discovered_at": "2026-10-19T17:20:14.606506+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-19T17:24:58.426889+00:00",
-      "last_seen_at": "2026-10-23T15:44:06.576029+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
       "id": "bdeb55c446c8567c5709d21aefa9bbbcb13c154168df7e291bb73a75058f24c9",
       "title": "Insegnamento a.a. 2026-2027 - Universita' Bocconi",
       "url": "https://didattica.unibocconi.it/ts/tsn_anteprima.php?cod_ins=30154&anno=2027&IdPag=8192",
@@ -277,7 +229,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento verificata e conferma esplicita di sede fisica a Milano",
+      "review_reason": "Hackathon mentioned but lacks concrete date and confirmed physical Milan location",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-25T14:49:56.453181+00:00",
@@ -285,7 +237,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-25T14:56:45.251489+00:00",
-      "last_seen_at": "2026-10-25T14:56:45.256780+00:00",
+      "last_seen_at": "2026-10-26T17:14:29.096905+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -312,31 +264,6 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "a650b8e75d1b310e65e0b2373aeb9b52b6ceb58ebd0a6089649b9f8672876b7b",
-      "title": "Open Source hackathons in Milan 2026 / 2027 - dev.events",
-      "url": "https://dev.events/hackathons/EU/IT/Milan/oss",
-      "source": "web_search",
-      "description": "Open Source hackathons in Milan 2026 / 2027 dev.events is the #1 tech conference listing. Coded at night under caffeine, ad-free, curated by tech community.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Pagina di listing senza evento specifico, data e venue non verificati",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://dev.events/hackathons/EU/IT/Milan"
-      ],
-      "discovered_at": "2026-10-13T17:56:33.636593+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-13T18:00:33.623386+00:00",
-      "last_seen_at": "2026-10-13T18:00:33.623386+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
       "id": "6324b06085fd1e85393b7d650ccf23a78208256cc44bc75277cc16998c559ea8",
       "title": "Social Innovation Campus 2027 | Hackathon Hub",
       "url": "https://hackathonhub.eu/events/social-innovation-campus-2027-milano-2027",
@@ -348,7 +275,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento verificata e venue fisica a Milano; location non specificata",
+      "review_reason": "Manca data evento concreta e location esplicita a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-13T17:56:37.201097+00:00",
@@ -356,7 +283,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-13T18:00:33.624116+00:00",
-      "last_seen_at": "2026-10-23T15:44:06.576880+00:00",
+      "last_seen_at": "2026-10-26T17:14:29.097248+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -403,29 +330,6 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-12T20:12:33.936048+00:00",
       "last_seen_at": "2026-10-14T15:48:34.197204+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "98693d640be5ca66f131cbf4d6421654f4235d9b34a1f1e26029979fd61a3adc",
-      "title": "#bainsa #hackathon #ai #neuroscience #bocconi #milan - LinkedIn",
-      "url": "https://www.linkedin.com/posts/bainsa-bocconi_bainsa-hackathon-ai-activity-7508114542720229376-HkKQ",
-      "source": "web_search",
-      "description": "Whether you're looking to build, learn, or connect with people pushing the field forward, this is a room you will want to be in. Applications close on 23 September at 23:59 - don't miss your chance...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento concreta e venue fisica a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-12T20:08:49.710172+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-12T20:12:33.936432+00:00",
-      "last_seen_at": "2026-10-23T15:44:06.578614+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
