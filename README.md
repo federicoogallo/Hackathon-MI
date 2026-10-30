@@ -17,13 +17,12 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **5 hackathons** coming up in Milan · Last updated: Oct 29, 2026 18:23 CET
+> **4 hackathons** coming up in Milan · Last updated: Oct 30, 2026 18:02 CET
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Talenti STEM per l’Innovazione Sociale](https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/) | 29 Oct 2026 | Social Innovation Academy · MIND, Milano | Fondazione Triulza |
 | [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |
 | [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
 | [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
