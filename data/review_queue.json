@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-30T17:02:29.297531",
-  "count": 18,
+  "updated_at": "2026-10-31T16:03:13.941292",
+  "count": 17,
   "candidates": [
     {
       "id": "93dde9e270b9300afff15915b6d5fa4fd1f03fd02c0eff23cc92cb40f042f8b5",
@@ -132,7 +132,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing aggregata senza evento specifico, data e location non forniti",
+      "review_reason": "Manca data evento specifica e conferma di sede a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-29T17:18:35.193751+00:00",
@@ -140,7 +140,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-29T17:23:21.806494+00:00",
-      "last_seen_at": "2026-10-30T17:02:29.295837+00:00",
+      "last_seen_at": "2026-10-31T16:03:13.937377+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -227,7 +227,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Nessuna data evento verificata né location specifica a Milano; non è chiaro se sia un hackathon fisico futuro",
+      "review_reason": "Hackathon mentioned with Milan in title but no specific future date or venue details",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-25T14:49:56.453181+00:00",
@@ -235,7 +235,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-25T14:56:45.251489+00:00",
-      "last_seen_at": "2026-10-30T17:02:29.295487+00:00",
+      "last_seen_at": "2026-10-31T16:03:13.936625+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -273,7 +273,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento precisa e location non confermata a Milano; descrizione generica di campus sociale",
+      "review_reason": "Social Innovation Campus event lacks clear hackathon format, date, and confirmed Milan venue",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-29T17:18:42.385065+00:00",
@@ -281,7 +281,7 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-29T17:23:21.806422+00:00",
-      "last_seen_at": "2026-10-30T17:02:29.295682+00:00",
+      "last_seen_at": "2026-10-31T16:03:13.936940+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -305,29 +305,6 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-12T20:12:33.936048+00:00",
       "last_seen_at": "2026-10-14T15:48:34.197204+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "00e966fb02d4506a299ac6fd430d4918f763cdc31146e89aad9c1c821dcacf55",
-      "title": "Un Hackathon europeo per riattivare le comunità partendo ...",
-      "url": "https://fondazionetriulza.org/un-hackathon-europeo-per-riattivare-le-comunita-partendo-dalle-idee-dei-giovani/",
-      "source": "web_search",
-      "description": "1 day ago · Prende il via in Italia l’Hackathon europeo “Microsoft Social Hackathon for Communities. Connessioni & Idee dai Giovani per l’Animazione e la Coesione Territoriale” , promosso da Fondazione Triulza ETS con il supporto di Microsoft Italia, che ha l’obiettivo di coinvolgere e attivare giovani dai 18 ai 35 anni nel proporre idee e soluzioni – creative e/o tecnologiche – utili a ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento concreta e location milanese esplicita; descrizione non conferma hackathon fisico a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-29T17:19:58.784755+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-29T17:23:21.806255+00:00",
-      "last_seen_at": "2026-10-30T17:02:29.295268+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -400,26 +377,28 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "02eebf4d878361c71ab110566fc844ec44f78771cc3154e9e09f60cee7e28da8",
-      "title": "i-missed-that/BRIEF.md at main · feifei4/i-missed-that · GitHub",
-      "url": "https://github.com/feifei4/i-missed-that/blob/main/BRIEF.md",
-      "source": "web_search",
-      "description": "Sep 26, 2026 · 0. Hackathon logistics Organiser: BAINSA (Bocconi) Dates / duration: submission deadline 2026-09-26, 17:00",
+      "id": "0e8c0f565b620ed922f7d02aaebf80ce64eccf70aa93d6293b0dc58f8433e02b",
+      "title": "ExecuTorch Hackathon",
+      "url": "https://lablab.ai/ai-hackathons/qualcomm-x-meta-executorch-hackathon",
+      "source": "lablab",
+      "description": "Oct 17, 2026 · Whether you are an experienced edge AI developer or eager to explore the future of open-source, on-device intelligence, the ExecuTorch Hackathon is an opportunity to collaborate, experiment, and build with the latest hardware and software across compute, mobile, XR, and IoT. Questions? Join our Discord!",
       "date_str": "",
       "location": "",
-      "organizer": "",
+      "organizer": "lablab.ai",
       "is_hackathon": false,
-      "confidence": 0.85,
+      "confidence": 0.0,
       "review_status": "needs_review",
-      "review_reason": "Mentions hackathon logistics and a submission deadline but lacks explicit event date and venue in Milan.",
+      "review_reason": "missing from LLM response",
       "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-28T17:01:16.482834+00:00",
+      "alternate_urls": [
+        "https://luma.com/executorch-hackathon"
+      ],
+      "discovered_at": "2026-10-31T15:57:02.905375+00:00",
       "published_at": "",
       "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-28T17:05:46.480822+00:00",
-      "last_seen_at": "2026-10-28T17:05:46.485017+00:00",
+      "classification_status": "error",
+      "queued_at": "2026-10-31T16:03:13.932908+00:00",
+      "last_seen_at": "2026-10-31T16:03:13.937919+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     }
   ]
