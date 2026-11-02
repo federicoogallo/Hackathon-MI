@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-01T17:04:53.662251",
-  "count": 19,
+  "updated_at": "2026-11-02T20:44:03.447342",
+  "count": 20,
   "candidates": [
     {
       "id": "93dde9e270b9300afff15915b6d5fa4fd1f03fd02c0eff23cc92cb40f042f8b5",
@@ -52,29 +52,6 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "2dd968a3228ee470b9368e1a8a1eae295eeba3475d988405e481d6ff3101c13b",
-      "title": "EuroGenAI Hackathon League For Social Good: dai giovani ...",
-      "url": "https://fondazionetriulza.org/eurogenai-hackathon-league-for-social-good-dai-giovani-soluzioni-sostenibili-per-i-territori-con-data-center/",
-      "source": "web_search",
-      "description": "Feb 5, 2026 · L’iniziativa è ideata e promossa da Fondazione Triulza ETS (Milano) e FactoriaF5 (Madrid), con il supporto di Microsoft, in linea con il Datacenter Community Pledge.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.93,
-      "review_status": "needs_review",
-      "review_reason": "Nessuna data evento specifica, location non confermata",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-30T16:58:06.470875+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-30T17:02:29.292137+00:00",
-      "last_seen_at": "2026-10-30T17:02:29.295051+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
       "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
       "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
       "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
@@ -84,9 +61,9 @@
       "location": "",
       "organizer": "",
       "is_hackathon": false,
-      "confidence": 0.9,
+      "confidence": 0.93,
       "review_status": "needs_review",
-      "review_reason": "Mentions Milan but lacks explicit future date and concrete venue",
+      "review_reason": "Mentions Milan but lacks a specific future event date",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-01T17:01:30.434999+00:00",
@@ -94,7 +71,42 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-11-01T17:04:53.649102+00:00",
-      "last_seen_at": "2026-11-01T17:04:53.654534+00:00",
+      "last_seen_at": "2026-11-02T20:44:03.410524+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:40:53+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      }
+    },
+    {
+      "id": "00e966fb02d4506a299ac6fd430d4918f763cdc31146e89aad9c1c821dcacf55",
+      "title": "Un Hackathon europeo per riattivare le comunità partendo ...",
+      "url": "https://fondazionetriulza.org/un-hackathon-europeo-per-riattivare-le-comunita-partendo-dalle-idee-dei-giovani/",
+      "source": "web_search",
+      "description": "5 days ago · Prende il via in Italia l’Hackathon europeo “Microsoft Social Hackathon for Communities. Connessioni & Idee dai Giovani per l’Animazione e la Coesione Territoriale” , promosso da Fondazione Triulza ETS con il supporto di Microsoft Italia, che ha l’obiettivo di coinvolgere e attivare giovani dai 18 ai 35 anni nel proporre idee e soluzioni – creative e/o tecnologiche – utili a ...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.92,
+      "review_status": "needs_review",
+      "review_reason": "No concrete event date and no explicit physical venue in Milan provided",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-02T20:39:24.524250+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:40:53+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      },
+      "queued_at": "2026-11-02T20:44:03.403759+00:00",
+      "last_seen_at": "2026-11-02T20:44:03.409807+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -132,7 +144,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento concreta e location specifica a Milano; pagina è lista generica di hackathon",
+      "review_reason": "Pagina di listing generica senza evento specifico, data e location non verificabili",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-29T17:18:35.193751+00:00",
@@ -140,8 +152,14 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-29T17:23:21.806494+00:00",
-      "last_seen_at": "2026-11-01T17:04:53.655178+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+      "last_seen_at": "2026-11-02T20:44:03.411216+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:41:02+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      }
     },
     {
       "id": "2595608abef3d90fd72a1263bcdc4aa24cc0015328f329c913d0117cc66464ff",
@@ -227,7 +245,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Mentions Milan but lacks explicit future date and concrete venue",
+      "review_reason": "Manca data evento concreta e location esplicita a Milano; descrizione non specifica luogo né data",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-25T14:49:56.453181+00:00",
@@ -235,8 +253,14 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-25T14:56:45.251489+00:00",
-      "last_seen_at": "2026-11-01T17:04:53.654867+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+      "last_seen_at": "2026-11-02T20:44:03.410843+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:41:02+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      }
     },
     {
       "id": "8c0147d058ea0d1ed16657baaac9289bcc46fc9b511758e7a4494dfab70986c4",
@@ -332,25 +356,31 @@
     },
     {
       "id": "de873c7fa0c68c01ac1c85fe08406fd1655c1ae6107158bfa2deb66d4108bbdb",
-      "title": "GDG AI HACK - 2026 Tickets, Saturday, May 9 - Eventbrite",
+      "title": "2026 Tickets, Saturday, May 9 • 8:30 AM - Eventbrite",
       "url": "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
       "source": "web_search",
-      "description": "May 9, 2026 · A free 3-day AI hackathon by Google Developer Group PoliMi — 160 selected builders, three challenge tracks, and €15K+ in prizes.",
+      "description": "GDG AI HACK - 2026\nMay 9, 2026 · A free 3-day AI hackathon by Google Developer Group PoliMi — 160 selected builders, three challenge tracks, and €15K+ in prizes.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.85,
       "review_status": "needs_review",
-      "review_reason": "Hackathon menzionato ma manca conferma esplicita di sede fisica a Milano e data evento verificabile",
+      "review_reason": "Hackathon ma la location a Milano non è esplicitamente indicata nella fonte",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-29T17:19:20.285208+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:43:12+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      },
       "queued_at": "2026-10-29T17:23:21.807310+00:00",
-      "last_seen_at": "2026-10-29T17:23:21.812616+00:00",
+      "last_seen_at": "2026-11-02T20:44:03.412637+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -397,6 +427,37 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-16T15:19:45.772019+00:00",
       "last_seen_at": "2026-10-16T15:19:45.772019+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "0e310245360107da7de2dd0e935f33b98047b32cc15a0f84069dd3712229889c",
+      "title": "Hackathon “Talenti STEM per l’Innovazione Sociale”",
+      "url": "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale/",
+      "source": "web_search",
+      "description": "Sep 14, 2026 · 14 Settembre 2026 Il 29 ottobre 2026 torna “Talenti STEM per l’Innovazione Sociale”, l’Hackathon organizzato da Fondazione Triulza ETS, in collaborazione e con il supporto di Fondazione Cariplo, rivolto a studenti universitari e degli ITS.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.8,
+      "review_status": "needs_review",
+      "review_reason": "Hackathon con data futura ma la location a Milano non è confermata esplicitamente",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre"
+      ],
+      "discovered_at": "2026-11-02T20:39:24.524283+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-02T20:43:12+00:00",
+        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
+      },
+      "queued_at": "2026-11-02T20:44:03.406573+00:00",
+      "last_seen_at": "2026-11-02T20:44:03.413103+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
