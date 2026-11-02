@@ -4,7 +4,6 @@ Utility per mantenere una coda di revisione manuale dei candidati dubbi.
 
 from __future__ import annotations
 
-import json
 import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -12,6 +11,7 @@ from typing import Any
 
 import config
 from models import HackathonEvent
+from storage.files import CorruptDataFile, read_json, write_json
 from utils.event_dates import event_temporal_status
 from utils.event_identity import editions_compatible, merge_event_evidence
 
@@ -61,16 +61,30 @@ def has_milan_signal(event: HackathonEvent | dict[str, Any]) -> bool:
 
 
 def load_review_decisions(path: Path | None = None) -> dict[str, dict[str, Any]]:
-    """Carica decisioni manuali persistenti, indicizzate per event id."""
+    """Carica decisioni manuali persistenti, indicizzate per event id.
+
+    Un file illeggibile solleva CorruptDataFile: ignorarlo ripubblicherebbe
+    gli eventi rifiutati a mano.
+    """
     path = path or config.REVIEW_DECISIONS_FILE
-    if not path.exists():
+    data = read_json(path)
+    if data is None:
         return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return {}
-    decisions = data.get("decisions", {})
-    return decisions if isinstance(decisions, dict) else {}
+    if "decisions" not in data:
+        raise CorruptDataFile(path, "manca l'oggetto decisions")
+    decisions = data["decisions"]
+    if not isinstance(decisions, dict):
+        raise CorruptDataFile(path, "decisions non è un oggetto")
+    for index, (identifier, item) in enumerate(decisions.items()):
+        label = f"decisions[{index}]"
+        if not isinstance(identifier, str) or not identifier.strip():
+            raise CorruptDataFile(path, f"{label}: id deve essere una stringa non vuota")
+        if not isinstance(item, dict):
+            raise CorruptDataFile(path, f"{label} non è un oggetto")
+        decision = item.get("decision")
+        if not isinstance(decision, str) or decision not in {"approved", "rejected"}:
+            raise CorruptDataFile(path, f"{label}: decision deve essere approved o rejected")
+    return decisions
 
 
 def save_review_decisions(decisions: dict[str, dict[str, Any]], path: Path | None = None) -> Path:
@@ -81,8 +95,7 @@ def save_review_decisions(decisions: dict[str, dict[str, Any]], path: Path | Non
         "updated_at": datetime.now().isoformat(),
         "decisions": decisions,
     }
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
-    return path
+    return write_json(path, payload)
 
 
 def _needs_manual_review(event: HackathonEvent, milan_signal: bool | None = None) -> bool:
@@ -148,6 +161,9 @@ def build_review_queue(
                 for key in ("confidence", "is_hackathon", "review_status", "review_reason",
                             "classification_status", "review_note", "last_seen_at"):
                     merged[key] = item[key]
+                # The queued record describes the latest classification.
+                if item.get("provenance"):
+                    merged["provenance"] = item["provenance"]
                 merged["queued_at"] = prior.get("queued_at", item["queued_at"])
                 item = merged
         # A more precise date can win the merge while its shorter description
@@ -194,18 +210,31 @@ def save_review_queue(queue: list[dict[str, Any]], path: Path | None = None) -> 
         "count": len(queue),
         "candidates": queue,
     }
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
-    return path
+    return write_json(path, payload)
 
 
 def load_review_queue(path: Path | None = None) -> list[dict[str, Any]]:
-    """Carica la lista candidati in coda."""
+    """Carica la lista candidati in coda; un file illeggibile solleva CorruptDataFile."""
     path = path or config.REVIEW_QUEUE_FILE
-    if not path.exists():
+    data = read_json(path)
+    if data is None:
         return []
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError, ValueError):
-        return []
-    candidates = data.get("candidates", [])
-    return candidates if isinstance(candidates, list) else []
+    if "candidates" not in data:
+        raise CorruptDataFile(path, "manca la lista candidates")
+    candidates = data["candidates"]
+    if not isinstance(candidates, list):
+        raise CorruptDataFile(path, "candidates non è una lista")
+    if "count" in data and (type(data["count"]) is not int or data["count"] != len(candidates)):
+        raise CorruptDataFile(path, "count deve essere un intero uguale al numero di candidati")
+    seen: set[str] = set()
+    for index, item in enumerate(candidates):
+        label = f"candidates[{index}]"
+        if not isinstance(item, dict):
+            raise CorruptDataFile(path, f"{label} non è un oggetto")
+        identifier = item.get("id")
+        if not isinstance(identifier, str) or not identifier.strip():
+            raise CorruptDataFile(path, f"{label}: id deve essere una stringa non vuota")
+        if identifier in seen:
+            raise CorruptDataFile(path, f"{label}: id duplicato")
+        seen.add(identifier)
+    return candidates

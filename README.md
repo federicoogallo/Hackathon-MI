@@ -86,7 +86,12 @@ Collectors (28 registered integrations, parallel collection)
   Post-classification Quality Gates and Semantic Deduplication
         │
         ▼
+  Data Contracts (schema, identities, aliases, dates)
+    A violation stops publication before archive or queue replacement
+        │
+        ▼
   Persistent Archive (data/events.json)
+        ├── Scan metrics → data/metrics/scans.jsonl + source/classifier alerts
         ├── Next.js website → Vercel build
         ├── GitHub Pages redirects → docs/index.html + docs/review.html
         ├── Generated README event table
@@ -94,9 +99,9 @@ Collectors (28 registered integrations, parallel collection)
         └── Weekly email digest (separate authorized Vercel Cron)
 ```
 
-The pipeline targets in-person hackathons in Milan and the monitored surrounding area. These filters reduce irrelevant results; they do not establish that every event has been manually verified. The website reads the public archive, while email addresses and delivery state stay in private services.
+The pipeline targets in-person hackathons in Milan and the monitored surrounding area. These filters reduce irrelevant results; they do not establish that every event has been manually verified. The archive, review queue and suppression decisions intentionally contain public event information from web sources. Email addresses and delivery state stay in private services; raw diagnostics and local classifier experiments stay outside Git and public artifacts.
 
-Editorial publication dates stay separate from event dates. LLM output is validated by candidate index and cannot supply new event facts; model-proposed duplicate groups also require deterministic identity checks. Source health, classification failures and stage counts are reported separately. See [discovery and diagnostics](docs/discovery.md) for coverage limits and private evidence retention.
+Editorial publication dates stay separate from event dates. LLM output is validated by candidate index and cannot supply new event facts; model-proposed duplicate groups also require deterministic identity checks. Source health, classification failures and stage counts are reported separately. Each classified record keeps its provenance (model, prompt version, time and pipeline commit), and scans append aggregate outcomes to `data/metrics/scans.jsonl` that drive alerts for silent sources, volume drops and classifier fallbacks. See [discovery and diagnostics](docs/discovery.md#scan-metrics-and-alerts) for metrics, data contracts, coverage limits and trace retention.
 
 <details>
 <summary><strong>Registered Collectors</strong></summary>
@@ -330,6 +335,7 @@ The workflow is in [`.github/workflows/check_hackathons.yml`](.github/workflows/
 - **Manual:** from the Actions tab → Run workflow.
 - Tests run before collection. Updated public data, generated redirect pages and the README table are committed when they change.
 - The run report is uploaded as the `hackathon-monitor-report` artifact.
+- A separate persistence step keeps available scan metrics when collection, a data contract or a later build/upload step fails.
 
 The separate [test workflow](.github/workflows/tests.yml) checks pull requests and relevant code changes. The weekly email schedule is independent of the daily collection schedule.
 
@@ -347,7 +353,7 @@ The separate [test workflow](.github/workflows/tests.yml) checks pull requests a
 | `/scan` | Trigger a manual scan |
 | `/help` | List commands |
 
-The bot sends a **summary after each scan** with up to four new event previews, dates and locations, upcoming event count, elapsed time and a calendar button. Sources with results, empty results, partial coverage, access blocks, errors and disabled integrations are distinguished. A failed collection/classification reports the preserved archive rather than claiming no new events exist. Scans with no new events still send a status summary.
+The bot sends a **summary after each scan** with up to four new event previews, dates and locations, upcoming event count, elapsed time and a calendar button. Sources with results, empty results, partial coverage, access blocks, errors and disabled integrations are distinguished. A failed collection/classification or a data-contract violation reports the preserved archive rather than claiming no new events exist. Alerts (a productive source silent for three scans, a collapse of collected volume, fallback-model use, classifier failures) are listed with new ones marked. Scans with no new events still send a status summary.
 Find events on the [main website](https://hackathon-milano.vercel.app/) and in the README table above; older GitHub Pages links redirect to the main site.
 
 Local start:
@@ -470,13 +476,18 @@ hackathon-monitor/
 │   ├── keyword_filter.py     # Keyword, date and junk-URL checks
 │   └── llm_filter.py         # Groq classifier and semantic deduplication
 ├── notifiers/telegram.py      # Telegram summaries
-├── storage/json_store.py     # Persistence and layered deduplication
+├── storage/
+│   ├── files.py              # Strict JSON reads, atomic saves and publication recovery
+│   └── json_store.py         # Persistence and layered deduplication
 ├── utils/
 │   ├── admin_audit.py        # Structured admin audit and regression cases
 │   ├── http.py               # HTTP retry and timeout utilities
 │   ├── html_export.py        # GitHub Pages redirect generator
 │   ├── readme_export.py      # README table generator
-│   └── review_queue.py       # Manual review persistence
+│   ├── review_queue.py       # Manual review persistence
+│   ├── scan_metrics.py       # Per-scan metrics line and alerts
+│   ├── data_contracts.py     # Invariants checked before data is written
+│   └── provenance.py         # Pipeline commit and scan identifiers
 ├── scripts/
 │   ├── admin.py              # Local maintainer entrypoint
 │   ├── review_candidate.py   # Admin workflow implementation
@@ -485,12 +496,14 @@ hackathon-monitor/
 │   ├── collect_only.py       # Collection diagnostics
 │   ├── extract_dates.py      # Read-only diagnosis of missing dates
 │   ├── project_metrics.py    # Aggregate reports in ignored .local/metrics/
+│   ├── backfill_scan_metrics.py # Rebuild scan metrics from GitHub Actions history
 │   ├── generate-brand-assets.mjs # Generate favicon and identity variants
 │   └── test-*.mjs            # Frontend and newsletter regression tests
 ├── data/
 │   ├── events.json           # Public event archive
-│   ├── review_queue.json     # Uncertain candidates
-│   └── review_decisions.json # Manual approve/reject decisions
+│   ├── review_queue.json     # Public uncertain candidates from web sources
+│   ├── review_decisions.json # Public manual approve/reject decisions
+│   └── metrics/scans.jsonl   # One aggregate line per scan
 ├── docs/
 │   ├── index.html            # Redirect to the canonical calendar
 │   ├── review.html           # Redirect to the canonical review page
@@ -517,7 +530,9 @@ hackathon-monitor/
 - **Social platforms:** LinkedIn and Twitter/X content is discovered through web-search queries in this project; no direct event API integration is implemented for them.
 - **Groq LLM:** the configured defaults are `openai/gpt-oss-120b` and the `qwen/qwen3.8-27b` fallback; legacy model IDs listed in `config.py` are ignored. Provider availability and account limits can change. Without working classification access, new candidates cannot be validated; a complete classification failure preserves the existing archive and records the issue in `data/last_report.json`.
 - **Manual review**: low-confidence and insufficient-evidence candidates that name Milan or a Milan venue or institution, and every failed classification, stay pending until resolution or expiry; uncertain candidates with no Milan reference are dropped; undated entries expire after 60 days. They can be approved or rejected with `scripts/admin.py`. Rejection also prevents automatic republication of the same candidate.
-- **Run diagnostics**: `data/last_report.json` distinguishes healthy, empty, degraded, blocked, disabled and failed sources, plus classification errors and stage counts. GitHub Actions uploads this aggregate report as the `hackathon-monitor-report` artifact. Candidate evidence stays in ignored local storage, not in that artifact.
+- **Run diagnostics**: `data/last_report.json` distinguishes healthy, empty, degraded, blocked, disabled and failed sources, plus classification errors, model usage, alerts and stage counts. GitHub Actions uploads this aggregate report as the `hackathon-monitor-report` artifact and persists available metrics even if the scan or a later build/upload step fails. Contract and alias diagnostics use record IDs; public Actions logs may include web-source candidate titles and classifier reasons. Raw traces, evaluation corpora and local operational notes stay outside public artifacts (see [private traces](docs/discovery.md#private-traces)).
+- **Data files**: an unreadable or structurally invalid `events.json`, `review_queue.json` or `review_decisions.json` stops the scan before collection. Missing collection keys and malformed identities are errors, not empty datasets. Each save replaces one file atomically; pipeline publication uses a private journal to roll back or recover an interrupted archive/queue update. Concurrent readers can still observe the interval between the two replacements; see [recovery details](docs/discovery.md#data-files).
+- **Alerts and contracts** are thresholds on aggregate counts, not proof of coverage: a source can keep returning records while missing events, and a contract only checks the invariants it names.
 - **Some collectors** may return errors while the remaining sources complete. A successful overall run does not imply every source was healthy.
 - **Publication timing:** the Next.js site reads the archive bundled with its deployment. Data changes become visible after the production build, not immediately after a local command.
 - **Newsletter:** real subscriptions and delivery require configured private services; unconfigured deployments show the unavailable state without an email form. Email-provider errors or uncertain sends can require maintainer intervention.

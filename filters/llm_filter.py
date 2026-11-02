@@ -7,13 +7,15 @@ Graceful degradation: se GROQ_API_KEY non è configurata, i candidati vengono
 marcati come non verificati (confidence=0.0) e la pipeline preserva lo storico.
 """
 
+import hashlib
 import json
 import logging
 import math
 import re
 import time
-from dataclasses import dataclass
-from datetime import datetime
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from functools import lru_cache
 
 from groq import Groq
 
@@ -21,6 +23,7 @@ import config
 from models import HackathonEvent
 from utils.event_dates import event_temporal_status
 from utils.event_identity import same_event
+from utils.provenance import pipeline_commit
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +147,73 @@ def _build_user_prompt(events: list[HackathonEvent], now: datetime | None = None
             f"\n   Descrizione: \"{desc}\""
         )
     return "Classifica questi eventi:\n\n" + "\n\n".join(items)
+
+
+# Fixed input for the prompt fingerprint: any change to the instructions or to the
+# candidate layout gives a new version, without a manually bumped number.
+_PROMPT_FIXTURE = HackathonEvent(
+    title="Fixture Hackathon", url="https://example.com/fixture", source="fixture",
+    description="Fixture description", date_str="2030-01-01", date_source="event",
+    location="Milano", organizer="Fixture organizer", published_at="2029-12-01",
+)
+
+
+@lru_cache(maxsize=1)
+def prompt_version() -> str:
+    """Short hash of the system prompt and of how candidates are presented to the model."""
+    now = datetime(2030, 1, 1)
+    text = _get_system_prompt(now) + "\n" + _build_user_prompt([_PROMPT_FIXTURE], now)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+
+@dataclass
+class LLMUsage:
+    """Groq usage during one scan: calls, tokens and response time per model."""
+
+    models: dict[str, dict] = field(default_factory=dict)
+    failed_calls: int = 0
+    rate_limit_retries: int = 0
+    last_model: str = ""
+
+    def record(self, model: str, response, seconds: float) -> None:
+        entry = self.models.setdefault(
+            model, {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "seconds": 0.0},
+        )
+        entry["calls"] += 1
+        usage = getattr(response, "usage", None)
+        for key in ("prompt_tokens", "completion_tokens"):
+            value = getattr(usage, key, None)
+            if type(value) is int:
+                entry[key] += value
+        entry["seconds"] = round(entry["seconds"] + seconds, 2)
+        self.last_model = model
+
+    def summary(self) -> dict:
+        configured = _llm_models_to_try()
+        primary = configured[0] if configured else ""
+        return {
+            "primary_model": primary,
+            "prompt_version": prompt_version(),
+            "models": {name: dict(values) for name, values in sorted(self.models.items())},
+            "fallback_calls": sum(values["calls"] for name, values in self.models.items()
+                                  if name != primary),
+            "failed_calls": self.failed_calls,
+            "rate_limit_retries": self.rate_limit_retries,
+        }
+
+
+_usage = LLMUsage()
+
+
+def reset_usage() -> None:
+    """Start counting a new scan."""
+    global _usage
+    _usage = LLMUsage()
+
+
+def usage_summary() -> dict:
+    """Calls, tokens, fallback use and failures since the last reset."""
+    return _usage.summary()
 
 
 def _extract_json_objects(text: str) -> list[dict]:
@@ -282,12 +352,14 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
     models = _llm_models_to_try()
     if not models:
         logger.error("Nessun modello LLM configurato")
+        _usage.failed_calls += 1
         return ""
 
     for model_name in models:
         for attempt in range(config.LLM_RETRY_MAX):
             try:
                 client = _get_groq_client()
+                started = time.perf_counter()
                 response = client.chat.completions.create(
                     model=model_name,
                     messages=[
@@ -299,11 +371,13 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
                     response_format={"type": "json_object"},
                     **_model_request_options(model_name),
                 )
+                _usage.record(model_name, response, time.perf_counter() - started)
                 return response.choices[0].message.content or "[]"
 
             except Exception as e:
                 error_str = str(e)
                 if "429" in error_str or "rate_limit" in error_str.lower():
+                    _usage.rate_limit_retries += 1
                     delay = config.LLM_RETRY_DELAY * (2 ** attempt)
                     logger.warning(
                         "Rate limit Groq (%s, tentativo %d/%d) — attendo %ds",
@@ -342,6 +416,7 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
         logger.warning("Fallback LLM: provo modello successivo dopo %s", model_name)
 
     logger.error("Tutti i modelli LLM hanno fallito: %s", ", ".join(models))
+    _usage.failed_calls += 1
     return ""
 
 
@@ -360,6 +435,7 @@ def classify_batch(events: list[HackathonEvent], now: datetime | None = None) ->
         return [_error_result("LLM disabled") for _ in events]
 
     user_prompt = _build_user_prompt(events, now)
+    _usage.last_model = ""
     content = _call_llm(_get_system_prompt(now), user_prompt)
 
     if not content:
@@ -371,7 +447,8 @@ def classify_batch(events: list[HackathonEvent], now: datetime | None = None) ->
 def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]:
     """Classifica tutti gli eventi con il LLM, in batch.
 
-    Aggiorna classificazione, confidence e metadati di revisione.
+    Aggiorna classificazione, confidence, metadati di revisione e provenienza
+    (modello, versione del prompt, ora e commit della pipeline).
     Non completa né modifica i dati fattuali dell'evento.
 
     Returns:
@@ -391,9 +468,18 @@ def llm_filter(events: list[HackathonEvent]) -> tuple[list[HackathonEvent], int]
         if i > 0:
             time.sleep(8)
 
+        _usage.last_model = ""
         results = classify_batch(batch)
+        # Which model answered, with which prompt and code: kept on the record.
+        provenance = {
+            "model": _usage.last_model,
+            "prompt_version": prompt_version(),
+            "classified_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "pipeline_commit": pipeline_commit(),
+        }
 
         for event, result in zip(batch, results):
+            event.provenance = dict(provenance)
             event.is_hackathon = result.is_hackathon
             event.confidence = result.confidence
             event.review_reason = result.reason

@@ -46,6 +46,7 @@ jobs:
           fi
 
       - name: Run Hackathon Monitor
+        id: scan
         env:
           EVENTBRITE_API_KEY: ${{ secrets.EVENTBRITE_API_KEY }}
           EVENTBRITE_ORGANIZATION_IDS: ${{ vars.EVENTBRITE_ORGANIZATION_IDS }}
@@ -69,8 +70,17 @@ jobs:
           path: data/last_report.json
           if-no-files-found: ignore
 
+      # Preserve the scan's metrics if collection, SSG or report upload fails.
+      # Keep this before the full commit so it cannot push a failed full commit.
+      - name: Commit metrics after a failed run
+        if: failure() && (steps.scan.outcome == 'success' || steps.scan.outcome == 'failure')
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          commit_message: "chore: record scan metrics after workflow failure"
+          file_pattern: data/metrics/scans.jsonl
+
       - name: Commit updated data and page
         uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
           commit_message: "chore: update events + page + readme"
-          file_pattern: data/events.json data/review_queue.json data/review_decisions.json docs/index.html docs/review.html docs/assets/* README.md
+          file_pattern: data/events.json data/review_queue.json data/review_decisions.json data/metrics/scans.jsonl docs/index.html docs/review.html docs/assets/* README.md

@@ -43,6 +43,48 @@ python scripts/check_sources.py universities eventbrite_web devpost
 
 `--save` writes an owner-only aggregate report to ignored `.local/audit/`; it contains counts and sanitized diagnostics, not candidate content. Exit code 1 means at least one source is partial, blocked or failed. Disabled integrations are reported but do not cause failure by themselves. Results depend on the network and time of execution; local access does not prove that GitHub-hosted runners have the same access.
 
+## Scan metrics and alerts
+
+Scans append their recorded outcome to `data/metrics/scans.jsonl`, committed with the public data. It holds aggregates only: per-source status, record count and issue kinds (no request details or endpoints), stage counts, review-queue and archive size, duration, status, pipeline commit and classifier usage (calls, prompt/completion tokens and response time per model, fallback calls, rate-limit retries, failed calls, unclassified candidates, prompt version). `--dry-run` computes alerts without appending.
+
+A successful publication is recorded after both `events.json` and `review_queue.json` are saved. An unexpected error before an outcome is recorded produces a line with status `crashed` and the exception type (`error`), without collection counts or source results; such lines neither extend nor interrupt a source's silence. A data-contract failure records `contract_failed_preserved`. The workflow has a separate metrics persistence step that also runs after a failed scan or a later build/upload failure, committing available metrics without publishing the other changed data files. A terminated runner or an unavailable Git remote can still prevent persistence.
+
+Alerts compare the scan with the previous lines:
+
+| Alert | Condition |
+| --- | --- |
+| Silent source | No records for 3 consecutive scans, after at least 3 of the 14 scans before the silence had records. Disabled integrations are excluded. |
+| Source back | A source that was silent in the previous scan has records again. |
+| Volume drop | Raw records below half the median of the previous 14 scans (at least 5 needed). |
+| Fallback model | A fallback model answered at least one call. |
+| Classifier errors | Calls failed on every model, or candidates were left unclassified. |
+
+An alert is reported in full, as a log warning, a workflow annotation and a Telegram line, when it starts, when a source comes back, and as a reminder every 7 scans while it lasts. In the scans between, the Telegram summary names it in one line ("Ancora attivi, già segnalati") and the log keeps an info line.
+
+`scripts/backfill_scan_metrics.py fetch` downloads, with the `gh` CLI, the reports, logs and commits GitHub Actions still keeps (90 days by default) into ignored `.local/ci-history/`; `build` merges them into the metrics file, keeping existing lines, and prints the alerts that would have been reported. Only runs with available reports can be reconstructed. Backfilled lines (`origin: backfill`) take per-source counts from the uploaded reports and classifier trouble from the logs; tokens and per-model calls were not logged before, so they stay unknown. Replaying 1 August to 1 November 2026 reports 22 alerts out of 113 active across the 94 scans: Regione Lombardia and Camera di Commercio silent from 17 October (blocked since the 15th), Codemotion failing from 21 October, Taikai silent from 14 August and back on 17 September, a sparse HackerEarth silence back on 21 September, one fallback call on 22 August and one unclassified candidate on 31 October; the rest are reminders every seven scans.
+
+Each classified record carries `provenance`: the model that answered (empty when no model did), a hash of the system prompt and candidate layout (`prompt_version`), the classification time and the pipeline commit. Records classified before this field existed have none.
+
+## Data files
+
+`events.json`, `review_queue.json` and `review_decisions.json` are read before collection starts. Existing files must contain their expected `events`, `candidates` or `decisions` collection. Invalid JSON, missing collection keys, malformed records or decision entries, and missing or duplicate record IDs stop the scan with `CorruptDataFile` (exit code 1 and a `crashed` metrics line). A genuinely absent file can initialize an empty dataset. A damaged existing file is never silently read as empty, which could erase records or ignore manual rejections. Restore it, for example from Git history, before running again.
+
+The pipeline, review scripts and admin server write each JSON file, including the run report, to a temporary file in the same folder and then rename it over the target. Each replacement is atomic: readers see a complete old or new file.
+
+Pipeline publication coordinates the archive and review queue with the ignored journal `data/.publication-transaction.json`. The journal preserves the previous state before replacement. A failed publication rolls back the pair; if the process stops before that finishes, the next scan recovers the previous state before loading data or collecting sources. Keep a pending journal until recovery succeeds. The journal and temporary files are local recovery data and must not enter public artifacts. Writers must be serialized, as they are in the scheduled workflow. This recovery protocol does not make both renames simultaneous: a concurrent reader can briefly observe a new archive with an old queue. It protects against process interruptions, not power loss or operating-system crashes, and does not provide database-style reader isolation.
+
+## Data contracts
+
+Before a scan replaces `events.json` or `review_queue.json`, `utils/data_contracts.py` checks:
+
+- every record has the fields and types of `HackathonEvent.to_dict`, an `http(s)` URL, an ID equal to the hash of that URL, a confidence between 0 and 1 and a known review status;
+- IDs are unique, an alternate URL is never another archived event's URL, and no record has more than 25 alternate URLs (the warning starts above 10);
+- no published event is past, except through a reviewed end date;
+- queued candidates are unpublished, undecided, still current, `needs_review` and carry `queued_at`;
+- this scan's automatic publications have an event date the code reads as future.
+
+A violation stops the scan: the previous files stay on disk, the report records `contract_failed_preserved` with the violations, Telegram reports the interruption and the command exits with an error, so the workflow commits only the scan's metrics line. The report's archive, queue and publication counts describe the files left on disk; what the scan would have written is under `proposed`. Contract and alias diagnostics use record IDs to keep the report and annotations compact; the Telegram summary and local runs add titles to contract violations. This is an aggregate reporting convention, not a claim that web-source candidate titles are private. The test suite applies the same checks to the committed files as of their own `last_check`. On the 101 archive versions committed between August and October 2026, the only violation is the alias corruption of one record, which the ceiling would have stopped on 9 September 2026 (26 aliases; 99 by late October).
+
 ## Optional API access
 
 **Eventbrite:** the general event-search endpoint was [retired in December 2019](https://www.eventbrite.com/platform/docs/by-date). The API integration now reads only public, live events from explicitly configured organizations authorized by the token. Set `EVENTBRITE_API_KEY` and comma-separated numeric `EVENTBRITE_ORGANIZATION_IDS` only if you already have that access. Organization IDs are not public organizer-profile IDs. Private, unlisted, invitation-only and draft records are excluded. The separate web collector remains the route for general public discovery; a token alone cannot restore global search.
@@ -55,9 +97,13 @@ Search queries also cover official pages from PoliHub, Comune di Milano, DoraHac
 
 ## Private traces
 
+The catalogue (`events.json`), review queue (`review_queue.json`) and review/suppression decisions (`review_decisions.json`) intentionally publish information about events found on public web sources. An uncertain or rejected classification does not make that source information private. Public review entries and decisions must not contain credentials, subscriber addresses, private correspondence or operator details.
+
 `CANDIDATE_AUDIT_DIR` defaults to `.local/discovery/`; an empty value disables trace files. The latest 30 scans retain bounded source excerpts, URLs without query parameters/credentials, source dates, classification reasons and per-stage outcomes. Files are created with owner-only permissions. These are operational records, not public event data.
 
-The aggregate Actions report remains uploaded by the workflow. Raw traces are neither committed nor uploaded; on ephemeral runners they disappear after the job. Retaining them across CI runs requires a separately configured private destination. Do not include API keys, operator details or subscriber information, and do not add these traces to the public workflow's artifact or auto-commit paths.
+The aggregate Actions report remains uploaded by the workflow. Raw diagnostic traces, local evaluation corpora and responses under `eval/`, credentials, and local operational notes are neither committed nor uploaded. On ephemeral runners local traces disappear after the job; retaining them across CI runs requires a separately configured private destination. Do not include API keys, operator details or subscriber information in trace content, and do not add local traces or evaluation files to the public workflow's artifact or auto-commit paths.
+
+Actions logs are public and intentionally include web-source candidate titles and classification reasons, including rejected candidates. Some later filters also log titles. These lines can inform local classifier evaluation; they do not make the local corpus, annotations or raw model responses public. Credentials and other private operational data must stay out of these logs.
 
 ## Verification and coverage
 

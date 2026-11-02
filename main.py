@@ -61,7 +61,8 @@ from collectors.gdg import GDGCollector
 from collectors.telespazio import TelespazioCollector
 from filters.event_exclusions import alias_exclusion_reason, event_exclusion_reason
 from filters.keyword_filter import keyword_filter_batch
-from filters.llm_filter import llm_filter, llm_dedup
+from filters.llm_filter import llm_filter, llm_dedup, reset_usage, usage_summary
+from storage.files import CorruptDataFile, publication_transaction, recover_publication, write_json
 from storage.json_store import EventStore
 from notifiers.telegram import notify_run_summary
 from utils.html_export import generate_html
@@ -76,6 +77,9 @@ from utils.collector_health import CollectorHealth, record_issue, track_collecto
 from utils.event_identity import deduplicate_events, deduplicate_event_dicts
 from utils.candidate_audit import CandidateAudit
 from utils.event_dates import event_temporal_status
+from utils import data_contracts, scan_metrics
+from utils.data_contracts import DataContractError
+from utils.provenance import pipeline_commit, scan_id
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 
@@ -605,30 +609,47 @@ ALIAS_WARNING_LIMIT = 10
 def _alias_warnings(events: list[dict], limit: int = ALIAS_WARNING_LIMIT) -> list[dict]:
     """Archived events whose alias count suggests unrelated pages were merged into them."""
     warnings = [
-        {"id": item.get("id", ""), "title": item.get("title", "")[:90],
-         "aliases": len(item.get("alternate_urls") or [])}
+        {"id": item.get("id", ""), "aliases": len(item.get("alternate_urls") or [])}
         for item in events if len(item.get("alternate_urls") or []) > limit
     ]
     for warning in warnings:
-        logger.warning("Evento con %d URL alternativi (soglia %d): '%s'",
-                       warning["aliases"], limit, warning["title"])
+        logger.warning("Evento %s con %d URL alternativi (soglia %d)",
+                       warning["id"][:12], warning["aliases"], limit)
         if os.environ.get("GITHUB_ACTIONS") == "true":
             # Shown on the workflow run page, not only in the raw log.
-            print(f"::warning title=URL alternativi sospetti::{warning['title']}: "
+            print(f"::warning title=URL alternativi sospetti::{warning['id'][:12]}: "
                   f"{warning['aliases']} URL alternativi (soglia {limit})")
     return warnings
 
 
-def _write_report(report: dict) -> Path:
-    """Scrive il report dell'ultima run e ritorna il path."""
+def _write_report(report: dict, *, persist_metrics: bool = True) -> Path:
+    """Scrive il report dell'ultima run, aggiunge la riga delle metriche e ritorna il path.
+
+    The metrics line (data/metrics/scans.jsonl) holds counts and statuses only;
+    alerts compare this scan with the earlier lines. A dry run computes them
+    without appending.
+    """
     statuses = [item.get("status", "healthy" if item.get("ok") else "failed")
                 for item in report.get("collector_runs", [])]
     report["collector_status_counts"] = {status: statuses.count(status) for status in sorted(set(statuses))}
     report["disabled_collectors"] = [item["name"] for item in report.get("collector_runs", [])
                                      if item.get("status") == "disabled"]
-    report_path = Path(config.DATA_DIR) / "last_report.json"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    started = None
+    try:
+        started = datetime.fromisoformat(report.get("attempted_at", ""))
+        report.setdefault("duration_seconds", round((_now() - started).total_seconds(), 1))
+    except (TypeError, ValueError):
+        pass
+    report["scan_id"] = scan_id(started)
+    report["pipeline_commit"] = pipeline_commit()
+    report["classifier"] = {**usage_summary(), "errors": report.get("classification_errors", 0)}
+    _, alerts = scan_metrics.record_scan(
+        report, scan_id=report["scan_id"], commit=report["pipeline_commit"],
+        classifier=report["classifier"], persist=persist_metrics,
+    )
+    report["alerts"] = alerts
+    scan_metrics.emit_alerts(alerts)
+    report_path = write_json(Path(config.DATA_DIR) / "last_report.json", report)
     logger.info("Report salvato in %s", report_path)
     return report_path
 
@@ -638,6 +659,80 @@ def _save_candidate_audit(audit: CandidateAudit) -> None:
         audit.save(config.CANDIDATE_AUDIT_DIR)
     except OSError as exc:
         logger.warning("Candidate audit could not be saved: %s", type(exc).__name__)
+
+
+def _contract_violations(
+    *, today: date, archive: list[dict] | None = None, queue: list[dict] | None = None,
+    published: list[HackathonEvent] | None = None, decisions: dict | None = None,
+    last_check: str | None = None,
+) -> list[str]:
+    """Data contracts on what this scan is about to write (see utils/data_contracts.py)."""
+    violations: list[str] = []
+    if archive is not None:
+        violations += data_contracts.check_archive(
+            {"last_check": last_check, "events": archive}, today,
+            reviewed_end_dates=_reviewed_event_end_dates(),
+        )
+    if queue is not None:
+        violations += data_contracts.check_review_queue(
+            queue, today, decisions=decisions,
+            published_ids={item.get("id") for item in archive or [] if item.get("is_hackathon")},
+        )
+    if published is not None:
+        violations += data_contracts.check_publications(published, today)
+    return violations
+
+
+_SHORT_ID = re.compile(r"\b[0-9a-f]{12}\b")
+
+
+def _with_titles(violations: list[str], records: list[dict]) -> list[str]:
+    """Violations name records by short id; private outputs add the title back."""
+    titles = {str(item.get("id", ""))[:12]: str(item.get("title", ""))[:60]
+              for item in records if isinstance(item, dict) and item.get("title")}
+    return [_SHORT_ID.sub(lambda match: f"{match[0]} '{titles[match[0]]}'"
+                          if match[0] in titles else match[0], violation)
+            for violation in violations]
+
+
+def _stop_on_contract_violations(violations: list[str], report: dict, *, dry_run: bool,
+                                 store: EventStore, queue: list[dict], on_disk: dict,
+                                 collector_runs: list[dict], failed_collectors: list[str],
+                                 start_time: datetime) -> None:
+    """Report the violations and stop before events.json or review_queue.json are replaced.
+
+    The report and the Actions annotations are public: they name records by
+    short id only. Telegram and local logs add titles.
+    """
+    in_actions = os.environ.get("GITHUB_ACTIONS") == "true"
+    titled = _with_titles(violations, [*store.all_events(), *queue])
+    for violation, described in list(zip(violations, titled))[:data_contracts.MAX_REPORTED]:
+        logger.error("Contratto sui dati violato: %s", violation if in_actions else described)
+        if in_actions:
+            print(f"::error title=Contratto sui dati violato::{violation}")
+    # Counts describe the files left on disk; what the scan would have written is apart.
+    report["proposed"] = {key: report.get(key) for key in ("new_events", "total_stored", "review_queue")}
+    report.update({
+        "status": "contract_failed_preserved",
+        "contract_violations": violations[:data_contracts.MAX_REPORTED],
+        "contract_violation_count": len(violations),
+        "new_events": 0,
+        **on_disk,
+    })
+    _write_report(report, persist_metrics=not dry_run)
+    if not dry_run:
+        notify_run_summary(
+            new_events=0,
+            total_upcoming=on_disk["total_upcoming"],
+            elapsed_seconds=(_now() - start_time).total_seconds(),
+            failed_collectors=_failed_collector_names(failed_collectors),
+            page_url=config.PUBLIC_SITE_URL,
+            collector_runs=collector_runs,
+            scan_status="contract_failed_preserved",
+            alerts=report.get("alerts"),
+            contract_violations=titled,
+        )
+    raise DataContractError(violations)
 
 
 def deduplicate_against_store(
@@ -663,16 +758,68 @@ def deduplicate_post_llm_against_store(
     return unique
 
 
+def _error_fields(exc: BaseException) -> dict:
+    """Error type for the public report; the detail only for messages this code writes."""
+    fields = {"error": type(exc).__name__}
+    if isinstance(exc, CorruptDataFile):
+        fields["error_detail"] = str(exc)
+    return fields
+
+
+def _record_crash(start_time: datetime, exc: BaseException, *, dry_run: bool) -> None:
+    """Report and metrics line with status `crashed` for a scan stopped by an error."""
+    try:
+        if not dry_run:
+            last = scan_metrics.load_history(limit=1)
+            if last and last[-1].get("scan_id") == scan_id(start_time):
+                return  # the scan had already recorded its outcome
+        _write_report({
+            "date": start_time.strftime("%Y-%m-%d %H:%M"), "attempted_at": start_time.isoformat(),
+            "status": "crashed", "classification_completed": False, "new_events": 0,
+            **_error_fields(exc),
+        }, persist_metrics=not dry_run)
+    except Exception as nested:  # never hide the original error
+        logger.error("Report dell'errore non salvato: %s", type(nested).__name__)
+
+
 def run_pipeline(dry_run: bool = False) -> None:
-    """Pipeline completa di raccolta, filtro e notifica."""
+    """Pipeline completa di raccolta, filtro e notifica.
+
+    An unexpected error still leaves a report and a metrics line (status
+    `crashed`) before propagating; contract violations record their own.
+    """
     start_time = _now()
+    try:
+        _run_pipeline(start_time, dry_run)
+    except DataContractError:
+        raise
+    except Exception as exc:
+        _record_crash(start_time, exc, dry_run=dry_run)
+        raise
+
+
+def _run_pipeline(start_time: datetime, dry_run: bool) -> None:
     audit = CandidateAudit()
+    reset_usage()
     logger.info("=" * 60)
     logger.info("Hackathon Monitor — run iniziata: %s", start_time.isoformat())
     logger.info("=" * 60)
 
-    # 1. Carica storico
+    # 1. Carica storico, coda e decisioni manuali prima di raccogliere: un file
+    # illeggibile ferma la scansione (CorruptDataFile) prima di qualunque scrittura.
+    publication_paths = [config.EVENTS_FILE, config.REVIEW_QUEUE_FILE]
+    publication_journal = Path(config.DATA_DIR) / ".publication-transaction.json"
+    if recover_publication(publication_paths, publication_journal):
+        logger.warning("Ripristinati archivio e coda dopo una pubblicazione interrotta")
     store = EventStore()
+    review_decisions = load_review_decisions()
+    previous_queue = load_review_queue()
+    # What stays on disk if a contract stops the scan.
+    on_disk = {
+        "total_stored": store.count, "review_queue": len(previous_queue),
+        "total_upcoming": sum(1 for ev in store.all_events()
+                              if ev.get("is_hackathon") and _event_is_upcoming_dict(ev)),
+    }
     # Cleanup deterministico dello storico per rimuovere duplicati/falsi positivi legacy
     existing_events = _cleanup_existing_event_dicts(
         store.all_events(),
@@ -689,13 +836,14 @@ def run_pipeline(dry_run: bool = False) -> None:
     raw_count = len(all_events)
     logger.info("Totale eventi raw: %d (da %d collector)", raw_count, len(ok_collectors))
     if not all_events and collector_runs and not ok_collectors:
-        _write_report({
+        report = {
             "date": start_time.strftime("%Y-%m-%d %H:%M"), "attempted_at": start_time.isoformat(),
             "status": "collection_failed_preserved", "classification_completed": False,
             "collectors_ok": 0, "collectors_total": len(collectors), "collector_runs": collector_runs,
             "failed_collectors": _failed_collector_names(failed_collectors),
             "raw_events": 0, "new_events": 0, "total_stored": store.count,
-        })
+        }
+        _write_report(report, persist_metrics=not dry_run)
         logger.error("No source completed successfully; preserving the archive and its timestamp")
         if not dry_run:
             notify_run_summary(
@@ -707,13 +855,13 @@ def run_pipeline(dry_run: bool = False) -> None:
                 page_url=config.PUBLIC_SITE_URL,
                 collector_runs=collector_runs,
                 scan_status="collection_failed_preserved",
+                alerts=report.get("alerts"),
             )
         return
 
     # 3. Deduplicazione vs storico
     new_events = deduplicate_against_store(all_events, store)
     audit.stage("deduplication", all_events, new_events)
-    review_decisions = load_review_decisions()
     before_manual_decisions = new_events
     new_events = [event for event in new_events if not _manually_rejected(event, review_decisions)]
     audit.stage("manual_decisions", before_manual_decisions, new_events)
@@ -749,7 +897,7 @@ def run_pipeline(dry_run: bool = False) -> None:
     post_llm_count = len(llm_confirmed)
     review_queue = build_review_queue(
         keyword_passed, llm_confirmed, review_decisions,
-        previous=load_review_queue(), ref_date=start_time.date(),
+        previous=previous_queue, ref_date=start_time.date(),
         published_ids={item.get("id") for item in store.all_events() if item.get("is_hackathon")},
     )
     logger.info(
@@ -771,23 +919,7 @@ def run_pipeline(dry_run: bool = False) -> None:
             )
 
             # A failed attempt must not advance the archive's last successful check.
-            save_review_queue(review_queue)
-            _save_candidate_audit(audit)
-
-            # Rigenera comunque HTML e README (con dati dello storico esistente).
-            try:
-                generate_html()
-                logger.info("HTML page rigenerata (storico preservato)")
-            except Exception as e:
-                logger.warning("Impossibile rigenerare HTML page: %s", e)
-            try:
-                generate_readme_table()
-                logger.info("README.md aggiornato (storico preservato)")
-            except Exception as e:
-                logger.warning("Impossibile aggiornare README.md: %s", e)
-
-            elapsed = (_now() - start_time).total_seconds()
-            _write_report({
+            report = {
                 "date": start_time.strftime("%Y-%m-%d %H:%M"),
                 "status": "llm_failed_preserved",
                 "collectors_ok": len(ok_collectors),
@@ -805,7 +937,35 @@ def run_pipeline(dry_run: bool = False) -> None:
                 "classification_completed": False,
                 "classification_errors": len(keyword_passed),
                 "candidate_stages": audit.summary(),
-            })
+            }
+            violations = _contract_violations(
+                today=start_time.date(), queue=review_queue, decisions=review_decisions,
+                archive=store.all_events(),
+            )
+            if violations:
+                _save_candidate_audit(audit)
+                _stop_on_contract_violations(
+                    violations, report, dry_run=dry_run, store=store, queue=review_queue,
+                    on_disk=on_disk, collector_runs=collector_runs,
+                    failed_collectors=failed_collectors, start_time=start_time,
+                )
+            save_review_queue(review_queue)
+            _save_candidate_audit(audit)
+
+            # Rigenera comunque HTML e README (con dati dello storico esistente).
+            try:
+                generate_html()
+                logger.info("HTML page rigenerata (storico preservato)")
+            except Exception as e:
+                logger.warning("Impossibile rigenerare HTML page: %s", e)
+            try:
+                generate_readme_table()
+                logger.info("README.md aggiornato (storico preservato)")
+            except Exception as e:
+                logger.warning("Impossibile aggiornare README.md: %s", e)
+
+            elapsed = (_now() - start_time).total_seconds()
+            _write_report(report, persist_metrics=not dry_run)
             if not dry_run:
                 total_upcoming = sum(
                     1 for ev in store.all_events()
@@ -822,6 +982,7 @@ def run_pipeline(dry_run: bool = False) -> None:
                     collectors_total=len(collectors),
                     collector_runs=collector_runs,
                     scan_status="llm_failed_preserved",
+                    alerts=report.get("alerts"),
                 )
             logger.info("=" * 60)
             logger.info("Run completata in %.1f secondi (storico preservato)", elapsed)
@@ -880,7 +1041,6 @@ def run_pipeline(dry_run: bool = False) -> None:
         previous=review_queue, ref_date=start_time.date(),
         published_ids={item.get("id") for item in store.all_events() if item.get("is_hackathon")},
     )
-    save_review_queue(review_queue)
 
     # 5e. Dedup fallback deterministico (anche se llm_dedup fallisce parsing)
     pre_fallback_dedup = len(llm_confirmed)
@@ -936,13 +1096,27 @@ def run_pipeline(dry_run: bool = False) -> None:
         "candidate_stages": audit.summary(),
         "alias_warnings": _alias_warnings(store.all_events()),
     }
-    _write_report(report)
+
+    # 7b. Data contracts: nothing is replaced on disk unless they hold.
+    violations = _contract_violations(
+        today=start_time.date(), archive=store.all_events(), queue=review_queue,
+        published=llm_confirmed, decisions=review_decisions, last_check=start_time.isoformat(),
+    )
+    if violations:
+        _stop_on_contract_violations(
+            violations, report, dry_run=dry_run, store=store, queue=review_queue,
+            on_disk=on_disk, collector_runs=collector_runs,
+            failed_collectors=failed_collectors, start_time=start_time,
+        )
+    # 8. Salva storico e coda, poi report e metriche: la riga della scansione
+    # descrive file già scritti, non un salvataggio che può ancora fallire.
+    with publication_transaction(publication_paths, publication_journal):
+        store.save_with_timestamp(start_time.isoformat())
+        save_review_queue(review_queue)
+    _write_report(report, persist_metrics=not dry_run)
 
     if dry_run:
         logger.info("[DRY RUN] Report: %s", report)
-
-    # 8. Salva storico
-    store.save_with_timestamp(start_time.isoformat())
 
     # 9. Genera pagina HTML statica (docs/index.html → GitHub Pages)
     try:
@@ -978,6 +1152,7 @@ def run_pipeline(dry_run: bool = False) -> None:
             collectors_total=len(collectors),
             collector_runs=collector_runs,
             scan_status=report["status"],
+            alerts=report.get("alerts"),
         )
 
     # Riepilogo finale nei log
@@ -1006,7 +1181,18 @@ def main():
     )
     args = parser.parse_args()
 
-    run_pipeline(dry_run=args.dry_run)
+    try:
+        run_pipeline(dry_run=args.dry_run)
+    except DataContractError as exc:
+        # Files on disk are the previous scan's; a non-zero exit skips the auto-commit.
+        logger.error("Scansione interrotta: %s", exc)
+        sys.exit(1)
+    except CorruptDataFile as exc:
+        # Raised while loading, before any file is written.
+        logger.error("Scansione interrotta: %s", exc)
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            print(f"::error title=File di dati non leggibile::{exc}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

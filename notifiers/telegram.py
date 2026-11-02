@@ -13,11 +13,14 @@ from urllib.parse import urlparse
 import requests
 
 import config
+from utils.scan_metrics import alert_message, alert_subject, is_notable
 
 logger = logging.getLogger(__name__)
 
 TELEGRAM_API_BASE = "https://api.telegram.org/bot{token}/sendMessage"
 MAX_EVENT_PREVIEWS = 4
+MAX_ALERTS = 6
+MAX_CONTRACT_VIOLATIONS = 3
 
 _MONTHS_IT = (
     "gen", "feb", "mar", "apr", "mag", "giu",
@@ -80,6 +83,8 @@ def notify_run_summary(
     is_test: bool = False,
     collector_runs: list[dict] | None = None,
     scan_status: str = "completed",
+    alerts: list[dict] | None = None,
+    contract_violations: list[str] | None = None,
 ) -> bool:
     """Invia sempre un riepilogo a fine run, anche quando non ci sono novità."""
     text = _format_run_summary(
@@ -93,6 +98,8 @@ def notify_run_summary(
         is_test=is_test,
         collector_runs=collector_runs,
         scan_status=scan_status,
+        alerts=alerts,
+        contract_violations=contract_violations,
     )
     return _send_message(
         text,
@@ -112,6 +119,8 @@ def _format_run_summary(
     is_test: bool = False,
     collector_runs: list[dict] | None = None,
     scan_status: str = "completed",
+    alerts: list[dict] | None = None,
+    contract_violations: list[str] | None = None,
 ) -> str:
     """Costruisce il testo HTML del riepilogo senza effettuare chiamate di rete.
 
@@ -123,14 +132,25 @@ def _format_run_summary(
         "",
     ]
 
-    interrupted = scan_status in {"collection_failed_preserved", "llm_failed_preserved"}
+    interrupted = scan_status in {
+        "collection_failed_preserved", "llm_failed_preserved", "contract_failed_preserved",
+    }
     limited = scan_status == "degraded" or bool(failed_collectors)
     if interrupted:
-        stage = "raccolta delle fonti" if scan_status == "collection_failed_preserved" else "classificazione"
+        stage = {
+            "collection_failed_preserved": "Problema nella raccolta delle fonti.",
+            "llm_failed_preserved": "Problema nella classificazione.",
+            "contract_failed_preserved": "I dati prodotti violano i contratti sui dati.",
+        }[scan_status]
         lines.extend([
             "⚠️ <b>Scansione non completata</b>",
-            f"Problema nella {stage}. Archivio precedente preservato.",
+            f"{stage} Archivio precedente preservato.",
         ])
+        for violation in (contract_violations or [])[:MAX_CONTRACT_VIOLATIONS]:
+            lines.append(f"• {_escape_html(_short_text(violation, 160))}")
+        hidden = len(contract_violations or []) - MAX_CONTRACT_VIOLATIONS
+        if hidden > 0:
+            lines.append(f"<i>+{hidden} nel report della run</i>")
     elif new_events > 0:
         noun = "nuovo evento" if new_events == 1 else "nuovi eventi"
         verb = "trovato" if new_events == 1 else "trovati"
@@ -166,12 +186,32 @@ def _format_run_summary(
     if failed_collectors and collector_runs is None:
         lines.append(f"⚠️ Da verificare: {_escape_html(', '.join(failed_collectors))}")
 
+    if alerts:
+        lines.extend(_format_alerts(alerts))
+
     lines.append(f"⏱ {_format_duration(elapsed_seconds)}")
 
     if is_test:
         lines.extend(["", "<i>Messaggio di prova · nessun dato è stato modificato.</i>"])
 
     return "\n".join(lines)
+
+
+def _format_alerts(alerts: list[dict]) -> list[str]:
+    """New problems, recoveries and reminders in full; problems already reported in one line."""
+    notable = [alert for alert in alerts if is_notable(alert)]
+    known = [alert for alert in alerts if not is_notable(alert)]
+    lines = ["", "<b>Avvisi</b>"]
+    for alert in notable[:MAX_ALERTS]:
+        marker = ("✅" if alert.get("kind") == "source_recovered"
+                  else "🆕" if alert.get("new") else "🔁")
+        lines.append(f"{marker} {_escape_html(alert_message(alert))}")
+    if len(notable) > MAX_ALERTS:
+        lines.append(f"<i>+{len(notable) - MAX_ALERTS} nel report della run</i>")
+    if known:
+        names = ", ".join(dict.fromkeys(alert_subject(alert) for alert in known))
+        lines.append(f"<i>Ancora attivi, già segnalati: {_escape_html(names)}</i>")
+    return lines
 
 
 def _format_source_health(runs: list[dict]) -> list[str]:

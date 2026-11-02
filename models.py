@@ -83,6 +83,8 @@ class HackathonEvent:
     published_at: str = ""
     date_source: str = ""
     classification_status: str = ""
+    # Model, prompt version, time and pipeline commit of the last classification.
+    provenance: dict[str, str] = field(default_factory=dict)
 
     @property
     def has_event_date(self) -> bool:
@@ -196,6 +198,8 @@ class HackathonEvent:
             "date_source": self.date_source,
             "classification_status": self.classification_status,
         }
+        if self.provenance:
+            data["provenance"] = dict(self.provenance)
         return data
 
     def __eq__(self, other: object) -> bool:

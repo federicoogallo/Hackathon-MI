@@ -8,3 +8,16 @@ import config
 @pytest.fixture(autouse=True)
 def isolated_candidate_audit(monkeypatch, tmp_path):
     monkeypatch.setattr(config, "CANDIDATE_AUDIT_DIR", str(tmp_path / "candidate-audit"))
+
+
+@pytest.fixture(autouse=True)
+def isolated_scan_metrics(monkeypatch, tmp_path):
+    monkeypatch.setattr(config, "METRICS_FILE", str(tmp_path / "metrics" / "scans.jsonl"))
+
+
+@pytest.fixture(autouse=True)
+def isolated_data_files(monkeypatch, tmp_path):
+    """Mocked pipeline tests must never snapshot or restore the working catalog."""
+    monkeypatch.setattr(config, "EVENTS_FILE", tmp_path / "events.json")
+    monkeypatch.setattr(config, "REVIEW_QUEUE_FILE", tmp_path / "review_queue.json")
+    monkeypatch.setattr(config, "REVIEW_DECISIONS_FILE", tmp_path / "review_decisions.json")

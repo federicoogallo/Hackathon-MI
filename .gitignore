@@ -13,6 +13,10 @@ data/last_report.json
 data/.bot.lock
 data/.history_cleared
 data/pending_notifications.json
+# Private recovery journal for archive/review-queue publication
+data/.publication-transaction.json
+# Temporary files of an interrupted atomic save (storage/files.py)
+data/.*.tmp
 
 # Log
 logs/

@@ -5,17 +5,41 @@ URL e titoli distintivi identificano duplicati soltanto quando date ed
 edizioni sono compatibili. Le parole generiche non identificano un evento.
 """
 
-import json
 import logging
 from pathlib import Path
 
 import config
 from models import HackathonEvent, _normalize_url
+from storage.files import CorruptDataFile, read_json, write_json
 from utils.event_identity import (
     alternate_url_list, distinctive_keywords, merge_event_evidence, same_event, title_core_words,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _archive_records(data: dict, path: Path) -> list[dict]:
+    """Validate stored identities before indexing can discard any record."""
+    if "events" not in data:
+        raise CorruptDataFile(path, "manca la lista events")
+    records = data["events"]
+    if not isinstance(records, list):
+        raise CorruptDataFile(path, "events non è una lista")
+    seen: set[str] = set()
+    for index, item in enumerate(records):
+        label = f"events[{index}]"
+        if not isinstance(item, dict):
+            raise CorruptDataFile(path, f"{label} non è un oggetto")
+        identifier = item.get("id")
+        if not isinstance(identifier, str) or not identifier.strip():
+            raise CorruptDataFile(path, f"{label}: id deve essere una stringa non vuota")
+        if identifier in seen:
+            raise CorruptDataFile(path, f"{label}: id duplicato")
+        seen.add(identifier)
+        aliases = item.get("alternate_urls", [])
+        if not isinstance(aliases, list) or any(not isinstance(url, str) for url in aliases):
+            raise CorruptDataFile(path, f"{label}: alternate_urls deve essere una lista di stringhe")
+    return records
 
 
 class EventStore:
@@ -30,26 +54,23 @@ class EventStore:
     # ─── Persistenza ────────────────────────────────────────────────────
 
     def _load(self) -> None:
-        """Carica lo storico da file. Se corrotto o assente, riparte da vuoto."""
-        if not self.path.exists():
+        """Carica lo storico da file; se assente parte da vuoto.
+
+        Un file presente ma illeggibile solleva CorruptDataFile: ripartire da
+        vuoto farebbe sovrascrivere l'intero archivio al salvataggio successivo.
+        """
+        data = read_json(self.path)
+        if data is None:
             logger.info("Storico non trovato, si parte da zero: %s", self.path)
             return
 
-        try:
-            with open(self.path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.warning("Storico corrotto (%s), si riparte da zero: %s", e, self.path)
-            return
-
-        events_list = data.get("events", [])
+        events_list = _archive_records(data, self.path)
         for item in events_list:
-            eid = item.get("id")
-            if eid:
-                self._events[eid] = item
-                # Indicizza alternate_urls per lookup veloce
-                for alt_url in item.get("alternate_urls", []):
-                    self._alt_url_index[alt_url] = eid
+            eid = item["id"]
+            self._events[eid] = item
+            # Indicizza alternate_urls per lookup veloce
+            for alt_url in item.get("alternate_urls", []):
+                self._alt_url_index[alt_url] = eid
 
         logger.info("Caricati %d eventi dallo storico", len(self._events))
 
@@ -60,8 +81,7 @@ class EventStore:
             "last_check": None,  # Verrà impostato dall'orchestratore
             "events": list(self._events.values()),
         }
-        with open(self.path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        write_json(self.path, data)
         logger.info("Salvati %d eventi nello storico", len(self._events))
 
     # ─── Query ──────────────────────────────────────────────────────────
@@ -157,27 +177,16 @@ class EventStore:
             "last_check": timestamp,
             "events": list(self._events.values()),
         }
-        with open(self.path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        write_json(self.path, data)
         logger.info("Salvati %d eventi nello storico (check: %s)", len(self._events), timestamp)
 
     def touch_last_check(self, timestamp: str) -> None:
         """Aggiorna solo il timestamp dell'ultimo check, preservando gli eventi su disco."""
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        data: dict
-        if self.path.exists():
-            try:
-                with open(self.path, "r", encoding="utf-8") as f:
-                    loaded = json.load(f)
-                data = loaded if isinstance(loaded, dict) else {}
-            except (json.JSONDecodeError, ValueError, OSError) as e:
-                logger.warning("Impossibile aggiornare timestamp storico (%s): %s", e, self.path)
-                data = {}
+        data = read_json(self.path)
+        if data is None:
+            data = {"events": []}
         else:
-            data = {}
-
-        data.setdefault("events", [])
+            _archive_records(data, self.path)
         data["last_check"] = timestamp
-        with open(self.path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        write_json(self.path, data)
         logger.info("Aggiornato timestamp storico (check: %s)", timestamp)
