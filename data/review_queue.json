@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-03T18:20:31.496320",
-  "count": 20,
+  "updated_at": "2026-11-04T18:34:13.533986",
+  "count": 19,
   "candidates": [
     {
       "id": "93dde9e270b9300afff15915b6d5fa4fd1f03fd02c0eff23cc92cb40f042f8b5",
@@ -121,7 +121,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing senza evento specifico, location non specificata e data evento non verificata",
+      "review_reason": "Pagina di listing generica, senza data né venue specifica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-03T18:13:54.897099+00:00",
@@ -131,11 +131,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-03T18:16:52+00:00",
-        "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
+        "classified_at": "2026-11-04T18:30:59+00:00",
+        "pipeline_commit": "ede4619d5a60273ff990b23e3a604611fddea0a1"
       },
       "queued_at": "2026-11-03T18:20:31.446814+00:00",
-      "last_seen_at": "2026-11-03T18:20:31.453819+00:00",
+      "last_seen_at": "2026-11-04T18:34:13.512297+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -159,6 +159,66 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-14T15:48:34.197760+00:00",
       "last_seen_at": "2026-10-27T16:17:57.165001+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
+      "title": "Hackathon “Talenti STEM per l’Innovazione Sociale”. Deadline ...",
+      "url": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/",
+      "source": "web_search",
+      "description": "Luglio 30, 2026\nHackathon “Talenti STEM per l’Innovazione Sociale”. Deadline: 19 ottobre\nIl 29 ottobre 2026 torna “Talenti STEM per l’Innovazione Sociale” , l’Hackathon organizzato da Fondazione Triulza ETS, in collaborazione e con il supporto di Fondazione Cariplo , rivolto a studenti universitari e degli ITS. L’obiettivo dell’iniziativa è coinvolgere le nuove generazioni – con i loro talenti, competenze e sensibilità – nell’elaborazione di proposte e idee innovative per affrontare alcune delle sfide sociali del presente e del futuro, valorizzando il contributo delle discipline STEM e il dialogo con competenze umanistiche. Si tratta di un contest di co-design in cui piccoli team multidisciplinari di studentesse e studenti universitari e degli ITS – Istituti Tecnici Superiori, con competenze STEM e umanistiche, elaboreranno proposte innovative per affrontare una determinata sfida sociale, in risposta a una challenge specifica che verrà lanciata il giorno stesso dell’evento.\nRegistrazioni all’hackathon CLICCANDO QUESTO LINK.\nL’Hackathon si svolgerà in presenza giovedì 29 ottobre 2026, presso la Social Innovation Academy di Fondazione Triulza in MIND – Milano Innovation District. Link iscrizione entro il 19 ottobre.\nL’ambito tematico della sfida sarà “Nuove prospettive per ripensare spazi, servizi e comunità attraverso le STEM”. Il contenuto specifico della challenge sarà presentato in occasione dell’apertura dell’Hackathon, il 29 ottobre 2026. L’obiettivo sarà elaborare proposte innovative per ripensare spazi, servizi e comunità attraverso le STEM, adottando un nuovo punto di vista che sarà svelato il giorno stesso dell’evento.\nJul 30, 2026 · L'Hackathon per i talenti STEM si svolgerà il 29 ottobre in MIND Milano Innovation District. Rivolto a studenti universitari e deg",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Manca data evento verificabile e location specifica a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale"
+      ],
+      "discovered_at": "2026-11-01T17:01:20.559458+00:00",
+      "published_at": "2026-07-30T14:31:58+00:00",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "queued_at": "2026-11-01T17:04:53.648847+00:00",
+      "last_seen_at": "2026-11-04T18:34:13.512661+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-04T18:31:35+00:00",
+        "pipeline_commit": "ede4619d5a60273ff990b23e3a604611fddea0a1"
+      }
+    },
+    {
+      "id": "ca0682c61afc939f1e1a3f84c31721e8d81b0b2c5b7bd59cc1c603ac13685ebd",
+      "title": "Hackathons in Europe 2026/2027 — Dates, Cities & Prizes ...",
+      "url": "https://hackathonhub.eu/events",
+      "source": "web_search",
+      "description": "Grok Hackathon at the Museum SpaceXAI for Milan, Italy This hackathon takes place at a retro computing museum in Pavia, where participants can hack on robots, drones, and simulators.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Descrizione non indica data concreta né location fisica a Milano per l'hackathon",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-04T18:28:29.121097+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-04T18:31:35+00:00",
+        "pipeline_commit": "ede4619d5a60273ff990b23e3a604611fddea0a1"
+      },
+      "queued_at": "2026-11-04T18:34:13.509547+00:00",
+      "last_seen_at": "2026-11-04T18:34:13.512957+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -219,7 +279,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento verificabile e location specifica; descrizione indica hackathon ma senza dettagli concreti",
+      "review_reason": "Manca data evento e location specifica a Milano, solo descrizione generica",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-25T14:49:56.453181+00:00",
@@ -227,13 +287,13 @@
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-25T14:56:45.251489+00:00",
-      "last_seen_at": "2026-11-03T18:20:31.454785+00:00",
+      "last_seen_at": "2026-11-04T18:34:13.513127+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval.",
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-03T18:17:01+00:00",
-        "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
+        "classified_at": "2026-11-04T18:31:35+00:00",
+        "pipeline_commit": "ede4619d5a60273ff990b23e3a604611fddea0a1"
       }
     },
     {
@@ -261,61 +321,32 @@
     },
     {
       "id": "6324b06085fd1e85393b7d650ccf23a78208256cc44bc75277cc16998c559ea8",
-      "title": "Social Innovation Campus 2027 | Hackathon Hub",
+      "title": "Social Innovation Campus 2027 - Hackathon Hub",
       "url": "https://hackathonhub.eu/events/social-innovation-campus-2027-milano-2027",
       "source": "web_search",
-      "description": "The Social Innovation Campus 2027 is an event focusing on social innovation, involving younger generations, especially high school and ITS students. It...",
+      "description": "The Social Innovation Campus 2027 is an event focusing on social innovation, involving younger generations, especially high school and ITS students. It offers hackathons, experimental workshops, and thematic labs to experience and co-design social innovation.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Evento non specifico, nessuna data né location concreta a Milano",
+      "review_reason": "Evento generico senza data concreta né conferma di sede fisica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-10-29T17:18:42.385065+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-04T18:31:35+00:00",
+        "pipeline_commit": "ede4619d5a60273ff990b23e3a604611fddea0a1"
+      },
       "queued_at": "2026-10-29T17:23:21.806422+00:00",
-      "last_seen_at": "2026-11-03T18:20:31.455108+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-03T18:17:01+00:00",
-        "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
-      }
-    },
-    {
-      "id": "b7c5e0bf21c9162de292f274ab4ffa6c64734704fe97a19ddf4a97c3fa81283c",
-      "title": "The Making: Creative Hackathon - The New Human (Milan) · Luma",
-      "url": "https://luma.com/g02myvsa",
-      "source": "web_search",
-      "description": "Mar 7, 2026 · A creative hackathon at CODAME means expressing an idea in your own medium — code is welcome but never required. What matters is the intentional use of art and technology, and a meaningful connection to The New Human.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento verificabile e conferma esplicita di sede a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-12T20:08:08.491377+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-12T20:12:33.936048+00:00",
-      "last_seen_at": "2026-11-03T18:20:31.455902+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval.",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-03T18:18:14+00:00",
-        "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
-      }
+      "last_seen_at": "2026-11-04T18:34:13.513285+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
       "id": "98693d640be5ca66f131cbf4d6421654f4235d9b34a1f1e26029979fd61a3adc",
@@ -345,35 +376,6 @@
         "classified_at": "2026-11-03T18:19:37+00:00",
         "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
       }
-    },
-    {
-      "id": "de873c7fa0c68c01ac1c85fe08406fd1655c1ae6107158bfa2deb66d4108bbdb",
-      "title": "2026 Tickets, Saturday, May 9 • 8:30 AM - Eventbrite",
-      "url": "https://www.eventbrite.com/e/gdg-ai-hack-2026-tickets-1984966852289",
-      "source": "web_search",
-      "description": "GDG AI HACK - 2026\nMay 9, 2026 · A free 3-day AI hackathon by Google Developer Group PoliMi — 160 selected builders, three challenge tracks, and €15K+ in prizes.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Hackathon ma la location a Milano non è esplicitamente indicata nella fonte",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-29T17:19:20.285208+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-02T20:43:12+00:00",
-        "pipeline_commit": "f22b8cb7be1fe1baadb03bb3f342501c43e0517e"
-      },
-      "queued_at": "2026-10-29T17:23:21.807310+00:00",
-      "last_seen_at": "2026-11-02T20:44:03.412637+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
       "id": "0335b4e3d6cfcf1c380b7c2b00464c194bf7b9c27fb4074a73cf2e0860fe8425",
@@ -482,31 +484,6 @@
       },
       "queued_at": "2026-11-02T20:44:03.406573+00:00",
       "last_seen_at": "2026-11-02T20:44:03.413103+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
-      "title": "Hackathon “Talenti STEM per l’Innovazione Sociale”. Deadline ...",
-      "url": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/",
-      "source": "web_search",
-      "description": "Luglio 30, 2026\nHackathon “Talenti STEM per l’Innovazione Sociale”. Deadline: 19 ottobre\nIl 29 ottobre 2026 torna “Talenti STEM per l’Innovazione Sociale” , l’Hackathon organizzato da Fondazione Triulza ETS, in collaborazione e con il supporto di Fondazione Cariplo , rivolto a studenti universitari e degli ITS. L’obiettivo dell’iniziativa è coinvolgere le nuove generazioni – con i loro talenti, competenze e sensibilità – nell’elaborazione di proposte e idee innovative per affrontare alcune delle sfide sociali del presente e del futuro, valorizzando il contributo delle discipline STEM e il dialogo con competenze umanistiche. Si tratta di un contest di co-design in cui piccoli team multidisciplinari di studentesse e studenti universitari e degli ITS – Istituti Tecnici Superiori, con competenze STEM e umanistiche, elaboreranno proposte innovative per affrontare una determinata sfida sociale, in risposta a una challenge specifica che verrà lanciata il giorno stesso dell’evento.\nRegistrazioni all’hackathon CLICCANDO QUESTO LINK.\nL’Hackathon si svolgerà in presenza giovedì 29 ottobre 2026, presso la Social Innovation Academy di Fondazione Triulza in MIND – Milano Innovation District. Link iscrizione entro il 19 ottobre.\nL’ambito tematico della sfida sarà “Nuove prospettive per ripensare spazi, servizi e comunità attraverso le STEM”. Il contenuto specifico della challenge sarà presentato in occasione dell’apertura dell’Hackathon, il 29 ottobre 2026. L’obiettivo sarà elaborare proposte innovative per ripensare spazi, servizi e comunità attraverso le STEM, adottando un nuovo punto di vista che sarà svelato il giorno stesso dell’evento.\nJul 30, 2026 · L'Hackathon per i talenti STEM si svolgerà il 29 ottobre in MIND Milano Innovation District. Rivolto a studenti universitari e deg",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.8,
-      "review_status": "needs_review",
-      "review_reason": "Deadline ottobre 2026, ma data evento non confermata né sede a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [
-        "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale"
-      ],
-      "discovered_at": "2026-11-01T17:01:20.559458+00:00",
-      "published_at": "2026-07-30T14:31:58+00:00",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-11-01T17:04:53.648847+00:00",
-      "last_seen_at": "2026-11-01T17:04:53.653889+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
