@@ -17,7 +17,7 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **4 hackathons** coming up in Milan · Last updated: Nov 11, 2026 19:28 CET
+> **5 hackathons** coming up in Milan · Last updated: Nov 12, 2026 19:44 CET
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
@@ -27,6 +27,7 @@ The source count describes implemented integrations, not a guarantee that all so
 | [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
 | [AIRIC X PMDS – AI Dynamic Pricing Hackathon Tickets ...](https://www.eventbrite.it/e/airic-x-pmds-ai-dynamic-pricing-hackathon-tickets-2003053526017) | To verify | To verify | Web search |
 | [NASA Space Apps Challenge – Milano](https://www.instagram.com/milano_spaceapps/) | To verify | To verify | Web search |
+| [Mage-OS Hackathon Cusano Milanino](https://www.eventbrite.com/e/mage-os-hackathon-cusano-milanino-tickets-2004670240654) | To verify | 39 Via G. Zucchi, Cusano Milanino | Eventbrite |
 
 <!-- HACKATHON_TABLE_END -->
 

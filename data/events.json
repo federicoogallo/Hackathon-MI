@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-11-11T19:23:04.844466+01:00",
+  "last_check": "2026-11-12T19:41:56.758392+01:00",
   "events": [
     {
       "id": "65a6ac1a4ed952aa53a25b9321d1b9fbfc9211f72748776553431c0679244203",
@@ -75,6 +75,32 @@
         "https://www.telespazio.com/it/news-and-stories-detail/-/detail/nasa"
       ],
       "discovered_at": "2026-08-29T15:30:53.633648"
+    },
+    {
+      "id": "01fa23a083325581ad7eea3b593793f6090ef6075cd0f68a85e90c3ba4a83232",
+      "title": "Mage-OS Hackathon Cusano Milanino",
+      "url": "https://www.eventbrite.com/e/mage-os-hackathon-cusano-milanino-tickets-2004670240654",
+      "source": "eventbrite_web",
+      "description": "Una giornata per costruire, contribuire e far crescere l'ecosistema Magento open source.",
+      "date_str": "2027-01-22",
+      "location": "39 Via G. Zucchi, Cusano Milanino",
+      "organizer": "",
+      "is_hackathon": true,
+      "confidence": 0.98,
+      "review_status": "ai_verified",
+      "review_reason": "Hackathon specifico, data futura 2027-01-22, location Cusano Milanino (area metropolitana Milano)",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-12T18:41:58.647221+00:00",
+      "published_at": "",
+      "date_source": "event_jsonld",
+      "classification_status": "confirmed",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-12T18:44:23+00:00",
+        "pipeline_commit": "57e8911d0607445d0e51e6543cff5f96489243a5"
+      }
     }
   ]
 }
