@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T18:29:03.773340",
+  "updated_at": "2026-11-14T16:56:23.741089",
   "count": 15,
   "candidates": [
     {
@@ -43,7 +43,7 @@
       "is_hackathon": false,
       "confidence": 0.95,
       "review_status": "needs_review",
-      "review_reason": "Manca la data dell'evento; non è possibile verificare se sia futuro",
+      "review_reason": "Manca data evento precisa nonostante la location Milano sia indicata",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:24:34.015451+00:00",
@@ -53,11 +53,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-13T18:26:30+00:00",
-        "pipeline_commit": "b3502ee9b2648c8c6ca3a7d5997f82841cccf56e"
+        "classified_at": "2026-11-14T16:53:45+00:00",
+        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
       },
       "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-13T18:29:03.737032+00:00",
+      "last_seen_at": "2026-11-14T16:56:23.717067+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -119,9 +119,9 @@
       "location": "",
       "organizer": "",
       "is_hackathon": false,
-      "confidence": 0.92,
+      "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Mentions Milan but lacks a concrete future event date",
+      "review_reason": "Evento hackathon menzionato ma manca data evento verificabile; location non confermata esplicitamente",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-01T17:01:30.435046+00:00",
@@ -131,11 +131,40 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-13T18:29:03+00:00",
-        "pipeline_commit": "b3502ee9b2648c8c6ca3a7d5997f82841cccf56e"
+        "classified_at": "2026-11-14T16:56:23+00:00",
+        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
       },
       "queued_at": "2026-11-01T17:04:53.650780+00:00",
-      "last_seen_at": "2026-11-13T18:29:03.739689+00:00",
+      "last_seen_at": "2026-11-14T16:56:23.718167+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "09fb015e0a1ad8bfb80c14b0ef72f540e0b29efa7e92cefc5dcc24625eeaff5e",
+      "title": "Developer hackathons in Milan 2026 / 2027 - dev.events",
+      "url": "https://dev.events/hackathons/EU/IT/Milan",
+      "source": "web_search",
+      "description": "Developer hackathons in Milan 2026 / 2027 The Principal Dev – Masterclass for Tech Leads Certification masterclass for experienced software engineers.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Pagina di listing generica, nessuna data o venue specifica a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-14T16:51:27.231800+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-14T16:53:35+00:00",
+        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
+      },
+      "queued_at": "2026-11-14T16:56:23.713799+00:00",
+      "last_seen_at": "2026-11-14T16:56:23.716553+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -159,35 +188,6 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-14T15:48:34.197760+00:00",
       "last_seen_at": "2026-10-27T16:17:57.165001+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "1eed076ec86f2c466e0cfd71db301558e1f9f760569cbd210de90102bc8383b3",
-      "title": "Hackathon Italy 2026 / 2027 · All upcoming events | Hackathon Hub",
-      "url": "https://hackathonhub.eu/hackathons/italy",
-      "source": "web_search",
-      "description": "The TIGER Service Hackathon is an international event in Milan focused on developing innovative digital solutions for challenges in healthcare and social care for the elderly.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Descrizione menziona Milano ma senza data evento futura né venue specifica; informazioni insufficienti.",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-13T18:23:01.819369+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-13T18:26:55+00:00",
-        "pipeline_commit": "b3502ee9b2648c8c6ca3a7d5997f82841cccf56e"
-      },
-      "queued_at": "2026-11-13T18:29:03.732145+00:00",
-      "last_seen_at": "2026-11-13T18:29:03.738182+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -217,6 +217,35 @@
       },
       "queued_at": "2026-11-04T18:34:13.509547+00:00",
       "last_seen_at": "2026-11-04T18:34:13.512957+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "0f2f1d1e026789f2b25c7807c673ad39f6fd5e3cb8557403b970e725faf1f0ae",
+      "title": "IT hackathons in Milan 2026 / 2027 - dev.events",
+      "url": "https://dev.events/hackathons/EU/IT/Milan/it",
+      "source": "web_search",
+      "description": "Certification masterclass for experienced Java developers. Codegeist 2026: Build with context. Ship with confidence.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Pagina di listing generica, nessuna data o venue specifica a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-14T16:51:27.231860+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-14T16:53:35+00:00",
+        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
+      },
+      "queued_at": "2026-11-14T16:56:23.713822+00:00",
+      "last_seen_at": "2026-11-14T16:56:23.716759+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -254,7 +283,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento verificata e location specifica a Milano; descrizione non conferma sede fisica.",
+      "review_reason": "Manca data evento concreta; titolo indica Milano 2026 ma senza data precisa, quindi non si può confermare futuro.",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -264,11 +293,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-13T18:26:55+00:00",
-        "pipeline_commit": "b3502ee9b2648c8c6ca3a7d5997f82841cccf56e"
+        "classified_at": "2026-11-14T16:54:11+00:00",
+        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-13T18:29:03.737364+00:00",
+      "last_seen_at": "2026-11-14T16:56:23.717261+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -376,29 +405,6 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-16T15:19:45.772005+00:00",
       "last_seen_at": "2026-10-16T15:19:45.772005+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "ee15d9c4a23c9f437222a162916fc980280b6510d141b408786b9df3cdfff90f",
-      "title": "Milano Digital Week. Tecnologie al servizio della comunità ...",
-      "url": "https://www.comune.milano.it/w/milano-digital-week.-tecnologie-al-servizio-della-comunità-dieci-appuntamenti-del-comune",
-      "source": "web_search",
-      "description": "Sep 30, 2026 · Sabato 3 ottobre è in programma Hackathon Anthropic, una giornata di lavoro collettivo per sviluppare soluzioni di intelligenza artificiale per il Comune di Milano, chiusa dalla premiazione.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Hackathon specifico citato, data futura, ma assenza di luogo fisico concreto a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-10-16T15:14:23.824157+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "queued_at": "2026-10-16T15:19:45.772019+00:00",
-      "last_seen_at": "2026-10-16T15:19:45.772019+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     }
   ]
