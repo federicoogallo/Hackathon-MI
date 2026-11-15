@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T16:56:23.741089",
-  "count": 15,
+  "updated_at": "2026-11-15T17:38:41.310778",
+  "count": 16,
   "candidates": [
     {
       "id": "d431a6fdd253b00e26805b45c2505adc0a2ce6d7bb8fecd4701860bfd3202329",
@@ -29,35 +29,6 @@
       },
       "queued_at": "2026-11-13T18:29:03.738796+00:00",
       "last_seen_at": "2026-11-13T18:29:03.738796+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
-      "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
-      "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
-      "source": "web_search",
-      "description": "The BAINSA Accessibility Hackathon brings together students in Milan to develop technological solutions for accessibility. Participants will work in teams on challenges aimed at making everyday experiences more accessible for people with visual or hearing impairments.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.95,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento precisa nonostante la location Milano sia indicata",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-13T18:24:34.015451+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-14T16:53:45+00:00",
-        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
-      },
-      "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-14T16:56:23.717067+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -139,32 +110,32 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "09fb015e0a1ad8bfb80c14b0ef72f540e0b29efa7e92cefc5dcc24625eeaff5e",
-      "title": "Developer hackathons in Milan 2026 / 2027 - dev.events",
-      "url": "https://dev.events/hackathons/EU/IT/Milan",
+      "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
+      "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
+      "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
       "source": "web_search",
-      "description": "Developer hackathons in Milan 2026 / 2027 The Principal Dev – Masterclass for Tech Leads Certification masterclass for experienced software engineers.",
+      "description": "The BAINSA Accessibility Hackathon brings together students in Milan to develop technological solutions for accessibility. Participants will work in teams on challenges aimed at making everyday experiences more accessible for people with visual or hearing impairments.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing generica, nessuna data o venue specifica a Milano",
+      "review_reason": "Manca data evento verificabile e location specifica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
-      "discovered_at": "2026-11-14T16:51:27.231800+00:00",
+      "discovered_at": "2026-11-13T18:24:34.015451+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-14T16:53:35+00:00",
-        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
+        "classified_at": "2026-11-15T17:36:53+00:00",
+        "pipeline_commit": "1c45f7630def7911ede6dc96bb80fe3cfcd40654"
       },
-      "queued_at": "2026-11-14T16:56:23.713799+00:00",
-      "last_seen_at": "2026-11-14T16:56:23.716553+00:00",
+      "queued_at": "2026-11-13T18:29:03.731860+00:00",
+      "last_seen_at": "2026-11-15T17:38:41.276638+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -188,6 +159,35 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-14T15:48:34.197760+00:00",
       "last_seen_at": "2026-10-27T16:17:57.165001+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "1eed076ec86f2c466e0cfd71db301558e1f9f760569cbd210de90102bc8383b3",
+      "title": "Hackathon Italy 2026 / 2027 · All upcoming events · 17 ...",
+      "url": "https://hackathonhub.eu/hackathons/italy",
+      "source": "web_search",
+      "description": "1 day ago · 17 upcoming hackathons in Italy 2026 / 2027 in Milan, Rome, Bari & more. Dates, prizes, online & on-site · verified on Hackathon Hub.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Elenco aggregato, manca data e venue specifica per un hackathon a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-15T17:33:45.527381+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-15T17:36:53+00:00",
+        "pipeline_commit": "1c45f7630def7911ede6dc96bb80fe3cfcd40654"
+      },
+      "queued_at": "2026-11-15T17:38:41.273419+00:00",
+      "last_seen_at": "2026-11-15T17:38:41.277688+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -283,7 +283,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento concreta; titolo indica Milano 2026 ma senza data precisa, quindi non si può confermare futuro.",
+      "review_reason": "Manca data evento verificabile e location specifica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -293,11 +293,40 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-14T16:54:11+00:00",
-        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
+        "classified_at": "2026-11-15T17:36:53+00:00",
+        "pipeline_commit": "1c45f7630def7911ede6dc96bb80fe3cfcd40654"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-14T16:56:23.717261+00:00",
+      "last_seen_at": "2026-11-15T17:38:41.276967+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "da2b5000280def3a8ff33ae87e10588235254d4cfaf365f8946bf2c80ee3296c",
+      "title": "Milano Agentic City Hackathon · 2026 | Hackathon Hub",
+      "url": "https://hackathonhub.eu/events/milano-agentic-city-hackathon-milan-2026",
+      "source": "web_search",
+      "description": "2 days ago · Discover Europe's leading hackathon platform and community. Explore 300+ upcoming hackathons, tech competitions and student challenges and connect with builders across 30+ countries.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Pagina di listing senza data né venue concreta a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-15T17:34:11.086321+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-15T17:36:53+00:00",
+        "pipeline_commit": "1c45f7630def7911ede6dc96bb80fe3cfcd40654"
+      },
+      "queued_at": "2026-11-15T17:38:41.273334+00:00",
+      "last_seen_at": "2026-11-15T17:38:41.277289+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
