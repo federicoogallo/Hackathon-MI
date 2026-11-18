@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-17T19:44:42.002061",
-  "count": 22,
+  "updated_at": "2026-11-18T19:20:06.013719",
+  "count": 24,
   "candidates": [
     {
       "id": "d431a6fdd253b00e26805b45c2505adc0a2ce6d7bb8fecd4701860bfd3202329",
@@ -29,6 +29,35 @@
       },
       "queued_at": "2026-11-17T19:44:41.971813+00:00",
       "last_seen_at": "2026-11-17T19:44:41.971813+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "b1c8fe45c68a238141e98960381714389d7bce90bde46dac3c7409fc5250e1e3",
+      "title": "Sphere Milano 2027 · Luma",
+      "url": "https://luma.com/z545paaq",
+      "source": "web_search",
+      "description": "Entra nello Sphere, diventa oggi parte del futuro. Il 15 gennaio 2027 ci troviamo a Palazzo Bovara, in centro a Milano, per Sphere Milano 2027. È un hackathon,…",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.96,
+      "review_status": "needs_review",
+      "review_reason": "data evento non verificata dal codice: verifica necessaria",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-18T19:14:37.264413+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-18T19:18:11+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
+      },
+      "queued_at": "2026-11-18T19:20:05.980215+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.980215+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -150,7 +179,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Event mentions Milan but lacks a concrete future date.",
+      "review_reason": "Evento specifico ma data e location non confermate, location generica e data assente",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:24:34.015451+00:00",
@@ -160,11 +189,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-17T19:41:24+00:00",
-        "pipeline_commit": "1d1e0f6bc76a9359da76588beba929818c1c3214"
+        "classified_at": "2026-11-18T19:17:09+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-17T19:44:41.970915+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.978284+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -172,14 +201,14 @@
       "title": "Developer hackathons in Milan 2026 / 2027 - dev.events",
       "url": "https://dev.events/hackathons/EU/IT/Milan",
       "source": "web_search",
-      "description": "Certification masterclass for experienced Java developers. Codegeist 2026: Build with context. Ship with confidence.",
+      "description": "Developer hackathons in Milan 2026 / 2027 The Principal Dev – Masterclass for Tech Leads Certification masterclass for experienced software engineers.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing generica senza evento specifico, data o location confermata a Milano",
+      "review_reason": "Pagina di ricerca aggregata, manca data specifica e venue fisica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-17T19:38:07.663128+00:00",
@@ -189,11 +218,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-17T19:40:47+00:00",
-        "pipeline_commit": "1d1e0f6bc76a9359da76588beba929818c1c3214"
+        "classified_at": "2026-11-18T19:17:00+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-17T19:44:34.390384+00:00",
-      "last_seen_at": "2026-11-17T19:44:41.970089+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.977143+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -231,7 +260,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Hackathon con data ma location non specificata e nessuna indicazione di sede a Milano",
+      "review_reason": "Evento con data indicata (29 ottobre 2026) è passato e location non è Milano",
       "reviewed_at": "",
       "alternate_urls": [
         "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale"
@@ -243,11 +272,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-16T20:51:19+00:00",
-        "pipeline_commit": "fe44444ef73c186901f648292809032a8baf44ad"
+        "classified_at": "2026-11-18T19:17:00+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-16T20:53:45.650881+00:00",
-      "last_seen_at": "2026-11-16T20:53:45.657162+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.977806+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -291,7 +320,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing generica senza evento specifico, data o location confermata a Milano",
+      "review_reason": "Pagina di ricerca aggregata, manca data specifica e venue fisica a Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-14T16:51:27.231860+00:00",
@@ -301,11 +330,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-17T19:40:47+00:00",
-        "pipeline_commit": "1d1e0f6bc76a9359da76588beba929818c1c3214"
+        "classified_at": "2026-11-18T19:17:00+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-14T16:56:23.713822+00:00",
-      "last_seen_at": "2026-11-17T19:44:41.970366+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.977472+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -343,7 +372,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Event mentions Milan but lacks a concrete future date.",
+      "review_reason": "Evento specifico ma data e location non verificate, location generica e data assente",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -353,11 +382,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-17T19:41:24+00:00",
-        "pipeline_commit": "1d1e0f6bc76a9359da76588beba929818c1c3214"
+        "classified_at": "2026-11-18T19:17:09+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-17T19:44:41.971129+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.978585+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -372,7 +401,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Pagina di listing senza data né venue concreta a Milano",
+      "review_reason": "Evento specifico ma data e location non confermate, location generica e data assente",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-15T17:34:11.086321+00:00",
@@ -382,11 +411,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-15T17:36:53+00:00",
-        "pipeline_commit": "1c45f7630def7911ede6dc96bb80fe3cfcd40654"
+        "classified_at": "2026-11-18T19:17:09+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
       },
       "queued_at": "2026-11-15T17:38:41.273334+00:00",
-      "last_seen_at": "2026-11-15T17:38:41.277289+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.978920+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -610,6 +639,35 @@
       },
       "queued_at": "2026-11-17T19:44:34.392995+00:00",
       "last_seen_at": "2026-11-17T19:44:41.973072+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "5cbd93805b120a6fbdac5a792ce1e2176172233a265ae7edf8835b01de139489",
+      "title": "build fridays Milan: work on your startup alongside others ...",
+      "url": "https://luma.com/85of9hzc",
+      "source": "web_search",
+      "description": "from the crew that did the biggest AI hackathon in Germany (https://luma.com/hl7wv7k3): build fridays is back in Milan. location — Bocconi, Sarfatti 25…",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.85,
+      "review_status": "needs_review",
+      "review_reason": "Menzione di Milano ma manca data evento e non è chiaro se sia una hackathon di tipo competizione",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-18T19:16:02.807008+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-18T19:17:44+00:00",
+        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
+      },
+      "queued_at": "2026-11-18T19:20:05.972880+00:00",
+      "last_seen_at": "2026-11-18T19:20:05.979784+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     }
   ]
