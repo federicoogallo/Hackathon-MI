@@ -17,13 +17,12 @@ The source count describes implemented integrations, not a guarantee that all so
 
 <!-- HACKATHON_TABLE_START -->
 
-> **3 hackathons** coming up in Milan · Last updated: Nov 20, 2026 20:02 CET
+> **2 hackathons** coming up in Milan · Last updated: Nov 21, 2026 18:57 CET
 >
 > **[View the full website](https://hackathon-milano.vercel.app/)** for search, filters and details.
 
 | Name | Date | Location | Source |
 | --- | --- | --- | --- |
-| [Oliver Wyman Data & Analytics Hackathon Challenge Milan](https://careers.marsh.com/global/en/event/6a8d475341b49ecd3616675a/Oliver-Wyman-Data-Analytics-Hackathon-Challenge-Milan) | 20 Nov 2026 | Oliver Wyman S.R.L. · Via Broletto 16, Milano | Oliver Wyman / Marsh |
 | [NTT DATA IkigAIverse — Milano](https://www.bo-om.it/nttdata_hackathon/) | 3 Dec 2026 | Sede NTT DATA · Milano | BOOM / NTT DATA |
 | [Mage-OS Hackathon Cusano Milanino](https://www.eventbrite.com/e/mage-os-hackathon-cusano-milanino-tickets-2004670240654) | To verify | 39 Via G. Zucchi, Cusano Milanino | Eventbrite |
 
