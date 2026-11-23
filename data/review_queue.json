@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-22T18:20:37.122535",
-  "count": 23,
+  "updated_at": "2026-11-23T22:33:01.653087",
+  "count": 22,
   "candidates": [
     {
       "id": "d431a6fdd253b00e26805b45c2505adc0a2ce6d7bb8fecd4701860bfd3202329",
@@ -41,23 +41,23 @@
       "location": "",
       "organizer": "",
       "is_hackathon": false,
-      "confidence": 0.97,
+      "confidence": 0.98,
       "review_status": "needs_review",
       "review_reason": "data evento non verificata dal codice: verifica necessaria",
       "reviewed_at": "",
       "alternate_urls": [],
-      "discovered_at": "2026-11-21T17:52:39.476985+00:00",
+      "discovered_at": "2026-11-23T22:27:15.696515+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-21T17:56:34+00:00",
-        "pipeline_commit": "23c80e60685c5c3b5cd16de0f187f8053fbbcf03"
+        "classified_at": "2026-11-23T22:30:48+00:00",
+        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
       },
-      "queued_at": "2026-11-21T17:57:46.879940+00:00",
-      "last_seen_at": "2026-11-21T17:57:46.879940+00:00",
+      "queued_at": "2026-11-23T22:33:01.622483+00:00",
+      "last_seen_at": "2026-11-23T22:33:01.622483+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -170,32 +170,32 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "4fab012f2cab51bcfb855c7a39ff0be3a711fea279cdc1837cddaf2ecf36b1b0",
-      "title": "AMD Developer Hackathon: ACT III — Milan - Luma",
-      "url": "https://luma.com/AMDHackathon-Milan",
+      "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
+      "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
+      "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
       "source": "web_search",
-      "description": "Oct 17, 2026 · Take your AI idea from prototype to working product at the AMD Developer Hackathon: ACT III in Milan. This hackathon brings together developers, founders,…",
+      "description": "The BAINSA Accessibility Hackathon brings together students in Milan to develop technological solutions for accessibility. Participants will work in teams on challenges aimed at making everyday experiences more accessible for people with visual or hearing impairments.",
       "date_str": "",
       "location": "",
       "organizer": "",
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Data indicata è solo data di pubblicazione (Oct 17, 2026) ma manca conferma della data evento e location precisa a Milano",
+      "review_reason": "Manca data evento verificabile e location specifica a Milano; pagina è un listing generico.",
       "reviewed_at": "",
       "alternate_urls": [],
-      "discovered_at": "2026-11-20T18:58:56.014046+00:00",
+      "discovered_at": "2026-11-13T18:24:34.015451+00:00",
       "published_at": "",
       "date_source": "",
       "classification_status": "insufficient_evidence",
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-20T19:00:56+00:00",
-        "pipeline_commit": "d7b45763159f2fd1bd0ed5b67e1a0680ef249cc4"
+        "classified_at": "2026-11-23T22:29:54+00:00",
+        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
       },
-      "queued_at": "2026-11-20T19:02:31.647297+00:00",
-      "last_seen_at": "2026-11-20T19:02:31.651465+00:00",
+      "queued_at": "2026-11-13T18:29:03.731860+00:00",
+      "last_seen_at": "2026-11-23T22:33:01.621578+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -251,6 +251,35 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
+      "id": "c54d9d8937e15f78309baa7ca5706dcc764b4920bddb172349cd08a8fc19baee",
+      "title": "Innovazione. Venerdì 20 novembre Layla Pavone a Insurtech Summit e a Milano Agentic City Hackaton",
+      "url": "https://www.comune.milano.it/w/innovazione.-venerd%C3%AC-20-novembre-layla-pavone-a-insurtech-summit-e-a-milano-agentic-city-hackaton",
+      "source": "comune_milano",
+      "description": "",
+      "date_str": "",
+      "location": "",
+      "organizer": "Comune di Milano",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Manca data evento futura e venue milanese concreta",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-23T22:27:12.044449+00:00",
+      "published_at": "19/11/2026",
+      "date_source": "publication",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-23T22:32:11+00:00",
+        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
+      },
+      "queued_at": "2026-11-23T22:33:01.618903+00:00",
+      "last_seen_at": "2026-11-23T22:33:01.622901+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
       "id": "bdeb55c446c8567c5709d21aefa9bbbcb13c154168df7e291bb73a75058f24c9",
       "title": "Insegnamento a.a. 2026-2027 - Universita' Bocconi",
       "url": "https://didattica.unibocconi.it/ts/tsn_anteprima.php?cod_ins=30154&anno=2027&IdPag=8192",
@@ -285,7 +314,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Evento specifico ma data e location non verificate, location generica e data assente",
+      "review_reason": "Nessuna data evento né venue concreta a Milano; solo annuncio generico.",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -295,11 +324,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-18T19:17:09+00:00",
-        "pipeline_commit": "16e8e79e273d402035d57ff86eacac37ab53a59a"
+        "classified_at": "2026-11-23T22:29:54+00:00",
+        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-18T19:20:05.978585+00:00",
+      "last_seen_at": "2026-11-23T22:33:01.621849+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -410,64 +439,6 @@
       },
       "queued_at": "2026-11-16T20:53:45.654668+00:00",
       "last_seen_at": "2026-11-16T20:53:45.657898+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "d3f81ccf7f506f46bdfbe89880bcfe2d341d07d79b4ff371fa6aa9fa2f5ab84f",
-      "title": "Application process for BAINSA - Bocconi Fine ... - LinkedIn",
-      "url": "https://www.linkedin.com/posts/bainsa-bocconi_application-process-for-bainsa-bocconi-activity-7507103501882408960-50FO",
-      "source": "web_search",
-      "description": "Application process for BAINSA - Bocconi 🔥 Fine-tuned for Success. If you are interested, make sure to come to our opening aperitivo on September 26th, closing out the hackathon - more info on ...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Menziona un hackathon Bocconi ma manca data evento verificabile e conferma esplicita della sede a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-17T19:39:33.591938+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-17T19:44:22+00:00",
-        "pipeline_commit": "1d1e0f6bc76a9359da76588beba929818c1c3214"
-      },
-      "queued_at": "2026-11-17T19:44:34.392846+00:00",
-      "last_seen_at": "2026-11-17T19:44:41.972685+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
-      "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
-      "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
-      "source": "web_search",
-      "description": "The BAINSA Accessibility Hackathon brings together students in Milan to develop technological solutions for accessibility. Participants will work in teams on challenges aimed at making everyday experiences more accessible for people with visual or hearing impairments.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento concreta; solo indicazione di Milano senza data futura",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-13T18:24:34.015451+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-22T18:17:32+00:00",
-        "pipeline_commit": "a8ff591f42817e42904a8ce2d6d0b435e67bead4"
-      },
-      "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-22T18:20:37.088135+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
