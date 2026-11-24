@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T22:33:01.653087",
+  "updated_at": "2026-11-24T21:05:11.086017",
   "count": 22,
   "candidates": [
     {
@@ -181,7 +181,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Manca data evento verificabile e location specifica a Milano; pagina è un listing generico.",
+      "review_reason": "Menzione di Milano ma nessuna data evento futura verificabile",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:24:34.015451+00:00",
@@ -191,11 +191,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-23T22:29:54+00:00",
-        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
+        "classified_at": "2026-11-24T21:02:30+00:00",
+        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
       },
       "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-23T22:33:01.621578+00:00",
+      "last_seen_at": "2026-11-24T21:05:11.058916+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -219,6 +219,37 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-14T15:48:34.197760+00:00",
       "last_seen_at": "2026-10-27T16:17:57.165001+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "a801490ebf7044c7bb4f63ce07c3cc60ae19d2e668f1f279d029ba7cc515328e",
+      "title": "Hackathon “Talenti STEM per l’Innovazione Sociale”. Deadline ...",
+      "url": "https://fondazionetriulza.org/hackathon-talenti-stem-per-linnovazione-sociale-deadline-19-ottobre/",
+      "source": "web_search",
+      "description": "Jul 30, 2026 · Il 29 ottobre 2026 torna “Talenti STEM per l’Innovazione Sociale”, l’Hackathon organizzato da Fondazione Triulza ETS, in collaborazione e con il supporto di Fondazione Cariplo, rivolto a studenti universitari e degli ITS.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Data evento non specificata e sede non confermata a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [
+        "https://www.fondazionecariplo.it/hackathon-talenti-stem-per-linnovazione-sociale"
+      ],
+      "discovered_at": "2026-11-24T21:00:40.535781+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-24T21:02:30+00:00",
+        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+      },
+      "queued_at": "2026-11-24T21:05:11.051052+00:00",
+      "last_seen_at": "2026-11-24T21:05:11.058500+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -248,35 +279,6 @@
       },
       "queued_at": "2026-11-04T18:34:13.509547+00:00",
       "last_seen_at": "2026-11-04T18:34:13.512957+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "c54d9d8937e15f78309baa7ca5706dcc764b4920bddb172349cd08a8fc19baee",
-      "title": "Innovazione. Venerdì 20 novembre Layla Pavone a Insurtech Summit e a Milano Agentic City Hackaton",
-      "url": "https://www.comune.milano.it/w/innovazione.-venerd%C3%AC-20-novembre-layla-pavone-a-insurtech-summit-e-a-milano-agentic-city-hackaton",
-      "source": "comune_milano",
-      "description": "",
-      "date_str": "",
-      "location": "",
-      "organizer": "Comune di Milano",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Manca data evento futura e venue milanese concreta",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-23T22:27:12.044449+00:00",
-      "published_at": "19/11/2026",
-      "date_source": "publication",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-23T22:32:11+00:00",
-        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
-      },
-      "queued_at": "2026-11-23T22:33:01.618903+00:00",
-      "last_seen_at": "2026-11-23T22:33:01.622901+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -314,7 +316,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Nessuna data evento né venue concreta a Milano; solo annuncio generico.",
+      "review_reason": "Hackathon described but no concrete date or confirmed Milan venue",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -324,11 +326,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-23T22:29:54+00:00",
-        "pipeline_commit": "613e2f730503d9c2c4c7d384db67c52b764716b2"
+        "classified_at": "2026-11-24T21:02:46+00:00",
+        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-23T22:33:01.621849+00:00",
+      "last_seen_at": "2026-11-24T21:05:11.059130+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -352,6 +354,35 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-18T14:25:18.160667+00:00",
       "last_seen_at": "2026-10-18T14:25:18.160667+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "6324b06085fd1e85393b7d650ccf23a78208256cc44bc75277cc16998c559ea8",
+      "title": "Social Innovation Campus 2027 - Hackathon Hub",
+      "url": "https://hackathonhub.eu/events/social-innovation-campus-2027-milano-2027",
+      "source": "web_search",
+      "description": "The Social Innovation Campus 2027 is an event focusing on social innovation, involving younger generations, especially high school and ITS students. It offers hackathons, experimental workshops, and thematic labs to experience and co-design social innovation.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "No specific date or Milan location provided",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-13T18:23:09.157389+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-24T21:02:46+00:00",
+        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+      },
+      "queued_at": "2026-11-13T18:29:03.731935+00:00",
+      "last_seen_at": "2026-11-24T21:05:11.059356+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -474,6 +505,35 @@
       }
     },
     {
+      "id": "c54d9d8937e15f78309baa7ca5706dcc764b4920bddb172349cd08a8fc19baee",
+      "title": "Innovazione. Venerdì 20 novembre Layla Pavone a Insurtech Summit e a Milano Agentic City Hackaton",
+      "url": "https://www.comune.milano.it/w/innovazione.-venerd%C3%AC-20-novembre-layla-pavone-a-insurtech-summit-e-a-milano-agentic-city-hackaton",
+      "source": "comune_milano",
+      "description": "",
+      "date_str": "",
+      "location": "",
+      "organizer": "Comune di Milano",
+      "is_hackathon": false,
+      "confidence": 0.85,
+      "review_status": "needs_review",
+      "review_reason": "Menziona un hackathon a Milano ma manca data evento verificabile e venue concreta",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-23T22:27:12.044449+00:00",
+      "published_at": "19/11/2026",
+      "date_source": "publication",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-24T21:04:24+00:00",
+        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+      },
+      "queued_at": "2026-11-23T22:33:01.618903+00:00",
+      "last_seen_at": "2026-11-24T21:05:11.060461+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
       "id": "6128169fe07f475966f3a73139bb371cb9e5c0898f8d773c12a99f7880ad6288",
       "title": "Milan Digital Week. Technology at the Service of the ...",
       "url": "https://www.comune.milano.it/en/w/milano-digital-week.-tecnologie-al-servizio-della-comunità-dieci-appuntamenti-del-comune",
@@ -494,35 +554,6 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-16T15:19:45.772005+00:00",
       "last_seen_at": "2026-10-16T15:19:45.772005+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "da2b5000280def3a8ff33ae87e10588235254d4cfaf365f8946bf2c80ee3296c",
-      "title": "Milano Agentic City Hackathon · 2026 | Hackathon Hub",
-      "url": "https://hackathonhub.eu/events/milano-agentic-city-hackathon-milan-2026",
-      "source": "web_search",
-      "description": "2 days ago · Discover Europe's leading hackathon platform and community. Explore 300+ upcoming hackathons, tech competitions and student challenges and connect with builders across 30+ countries.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Nessuna data evento specifica, solo scadenza di iscrizione passata; data futura non verificabile",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-15T17:34:11.086321+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-22T18:17:32+00:00",
-        "pipeline_commit": "a8ff591f42817e42904a8ce2d6d0b435e67bead4"
-      },
-      "queued_at": "2026-11-15T17:38:41.273334+00:00",
-      "last_seen_at": "2026-11-22T18:20:37.088461+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -581,35 +612,6 @@
       },
       "queued_at": "2026-11-18T19:20:05.972880+00:00",
       "last_seen_at": "2026-11-18T19:20:05.979784+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
-      "id": "6324b06085fd1e85393b7d650ccf23a78208256cc44bc75277cc16998c559ea8",
-      "title": "Social Innovation Campus 2027 - Hackathon Hub",
-      "url": "https://hackathonhub.eu/events/social-innovation-campus-2027-milano-2027",
-      "source": "web_search",
-      "description": "The Social Innovation Campus 2027 is an event focusing on social innovation, involving younger generations, especially high school and ITS students. It offers hackathons, experimental workshops, and thematic labs to experience and co-design social innovation.",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.75,
-      "review_status": "needs_review",
-      "review_reason": "Manca conferma esplicita della sede a Milano nonostante l'URL menzioni Milano; data futura ma location non verificata",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-13T18:23:09.157389+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-20T19:00:47+00:00",
-        "pipeline_commit": "d7b45763159f2fd1bd0ed5b67e1a0680ef249cc4"
-      },
-      "queued_at": "2026-11-13T18:29:03.731935+00:00",
-      "last_seen_at": "2026-11-20T19:02:31.650817+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     }
   ]
