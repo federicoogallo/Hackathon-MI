@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T21:05:11.086017",
+  "updated_at": "2026-11-25T20:24:32.564615",
   "count": 22,
   "candidates": [
     {
@@ -516,7 +516,7 @@
       "is_hackathon": false,
       "confidence": 0.85,
       "review_status": "needs_review",
-      "review_reason": "Menziona un hackathon a Milano ma manca data evento verificabile e venue concreta",
+      "review_reason": "Manca data evento concreta e location fisica specifica nonostante menzione di Milano",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-23T22:27:12.044449+00:00",
@@ -526,11 +526,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-24T21:04:24+00:00",
-        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+        "classified_at": "2026-11-25T20:24:32+00:00",
+        "pipeline_commit": "874fe2940f65465f6e0008a9415bf30cba29125c"
       },
       "queued_at": "2026-11-23T22:33:01.618903+00:00",
-      "last_seen_at": "2026-11-24T21:05:11.060461+00:00",
+      "last_seen_at": "2026-11-25T20:24:32.541839+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
