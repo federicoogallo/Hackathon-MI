@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-26T20:01:10.130817",
-  "count": 22,
+  "updated_at": "2026-11-27T19:53:33.426423",
+  "count": 27,
   "candidates": [
     {
       "id": "d431a6fdd253b00e26805b45c2505adc0a2ce6d7bb8fecd4701860bfd3202329",
@@ -92,6 +92,35 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
+      "id": "98693d640be5ca66f131cbf4d6421654f4235d9b34a1f1e26029979fd61a3adc",
+      "title": "#bainsa #hackathon #ai #neuroscience #bocconi #milan - LinkedIn",
+      "url": "https://www.linkedin.com/posts/bainsa-bocconi_bainsa-hackathon-ai-activity-7508114542720229376-HkKQ",
+      "source": "web_search",
+      "description": "Whether you're looking to build, learn, or connect with people pushing the field forward, this is a room you will want to be in. Applications close on 23 September at 23:59 - don't miss your chance...",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.95,
+      "review_status": "needs_review",
+      "review_reason": "Post LinkedIn senza data né location esplicita a Milano, formato non chiaro",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-01T17:01:30.435046+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:53:09+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-01T17:04:53.650780+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.398253+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
       "id": "93dde9e270b9300afff15915b6d5fa4fd1f03fd02c0eff23cc92cb40f042f8b5",
       "title": "Hacktoberfest Hack Day Milano x Coding Bunker - mlh.com",
       "url": "https://www.mlh.com/events/hacktoberfest-hack-day-milano-x-coding-bunker/challenges",
@@ -141,35 +170,6 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
-      "id": "98693d640be5ca66f131cbf4d6421654f4235d9b34a1f1e26029979fd61a3adc",
-      "title": "#bainsa #hackathon #ai #neuroscience #bocconi #milan - LinkedIn",
-      "url": "https://www.linkedin.com/posts/bainsa-bocconi_bainsa-hackathon-ai-activity-7508114542720229376-HkKQ",
-      "source": "web_search",
-      "description": "Whether you're looking to build, learn, or connect with people pushing the field forward, this is a room you will want to be in. Applications close on 23 September at 23:59 - don't miss your chance...",
-      "date_str": "",
-      "location": "",
-      "organizer": "",
-      "is_hackathon": false,
-      "confidence": 0.9,
-      "review_status": "needs_review",
-      "review_reason": "Evento hackathon menzionato ma manca data evento verificabile; location non confermata esplicitamente",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-01T17:01:30.435046+00:00",
-      "published_at": "",
-      "date_source": "",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-14T16:56:23+00:00",
-        "pipeline_commit": "c4ee9c0fa00d15653209a523c8e187c2e6df260b"
-      },
-      "queued_at": "2026-11-01T17:04:53.650780+00:00",
-      "last_seen_at": "2026-11-14T16:56:23.718167+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
-    },
-    {
       "id": "bb15fd2f28abda41c75efcd038d0c1e516a4300bb938d39ef8ad33aa5edb5779",
       "title": "BAINSA Accessibility Hackathon · Milan 2026 | Hackathon Hub",
       "url": "https://hackathonhub.eu/events/bainsa-accessibility-hackathon-milan-2026-2",
@@ -181,7 +181,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Menzione di Milano ma nessuna data evento futura verificabile",
+      "review_reason": "Menzione di hackathon a Milano ma senza data evento concreta né venue specifica",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:24:34.015451+00:00",
@@ -191,11 +191,11 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-24T21:02:30+00:00",
-        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+        "classified_at": "2026-11-27T19:50:32+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
       },
       "queued_at": "2026-11-13T18:29:03.731860+00:00",
-      "last_seen_at": "2026-11-24T21:05:11.058916+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.395593+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -219,6 +219,35 @@
       "classification_status": "insufficient_evidence",
       "queued_at": "2026-10-14T15:48:34.197760+00:00",
       "last_seen_at": "2026-10-27T16:17:57.165001+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "74a351b0f5436deb8fc66ed00f9d186330ef15a80816068aa8c5daef65733d14",
+      "title": "Hackathon a Milano 2026 - calendario | Eventitech",
+      "url": "https://eventitech.it/?city=Milano&type=hackathon",
+      "source": "web_search",
+      "description": "1 day ago · 3 hackathon a Milano nel 2026: date, luoghi e iscrizioni. Calendario aggiornato.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Pagina di listing di hackathon a Milano senza evento specifico, data e venue non forniti",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-27T19:48:01.975503+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:50:32+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-27T19:53:33.390231+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.395112+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -253,6 +282,35 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
+      "id": "1eed076ec86f2c466e0cfd71db301558e1f9f760569cbd210de90102bc8383b3",
+      "title": "Hackathons Italy 2026 / 2027 · Dates, Prizes & Cities · 7 ...",
+      "url": "https://hackathonhub.eu/hackathons/italy",
+      "source": "web_search",
+      "description": "19 hours ago · 7 upcoming hackathons in Italy 2026 / 2027 in Milan, Cusano Milanino, Venice & more. Dates, prizes & deadlines, checked daily on Hackathon Hub.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Listing page without specific event details, no date or confirmed Milan venue",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-27T19:48:01.975445+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:50:58+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-27T19:53:33.390977+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.396352+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
       "id": "ca0682c61afc939f1e1a3f84c31721e8d81b0b2c5b7bd59cc1c603ac13685ebd",
       "title": "Hackathons in Europe 2026/2027 — Dates, Cities & Prizes ...",
       "url": "https://hackathonhub.eu/events",
@@ -279,6 +337,35 @@
       },
       "queued_at": "2026-11-04T18:34:13.509547+00:00",
       "last_seen_at": "2026-11-04T18:34:13.512957+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "c54d9d8937e15f78309baa7ca5706dcc764b4920bddb172349cd08a8fc19baee",
+      "title": "Innovazione. Venerdì 20 novembre Layla Pavone a Insurtech Summit e a Milano Agentic City Hackaton",
+      "url": "https://www.comune.milano.it/w/innovazione.-venerd%C3%AC-20-novembre-layla-pavone-a-insurtech-summit-e-a-milano-agentic-city-hackaton",
+      "source": "comune_milano",
+      "description": "",
+      "date_str": "",
+      "location": "",
+      "organizer": "Comune di Milano",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "Manca data evento concreta e location specifica a Milano",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-23T22:27:12.044449+00:00",
+      "published_at": "19/11/2026",
+      "date_source": "publication",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:52:42+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-23T22:33:01.618903+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.397565+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -316,7 +403,7 @@
       "is_hackathon": false,
       "confidence": 0.9,
       "review_status": "needs_review",
-      "review_reason": "Hackathon described but no concrete date or confirmed Milan venue",
+      "review_reason": "No concrete event date and location not specified as Milan",
       "reviewed_at": "",
       "alternate_urls": [],
       "discovered_at": "2026-11-13T18:23:01.819402+00:00",
@@ -326,11 +413,40 @@
       "provenance": {
         "model": "openai/gpt-oss-120b",
         "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-24T21:02:46+00:00",
-        "pipeline_commit": "b7248824d085aba30dcfb327fd3f1736295c0c27"
+        "classified_at": "2026-11-27T19:50:58+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
       },
       "queued_at": "2026-11-13T18:29:03.731897+00:00",
-      "last_seen_at": "2026-11-24T21:05:11.059130+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.395850+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "da2b5000280def3a8ff33ae87e10588235254d4cfaf365f8946bf2c80ee3296c",
+      "title": "Milano Agentic City Hackathon · 2026 | Hackathon Hub",
+      "url": "https://hackathonhub.eu/events/milano-agentic-city-hackathon-milan-2026",
+      "source": "web_search",
+      "description": "Nov 13, 2026 · This hackathon brings autonomous AI agents into the urban environment of Milan to create interconnected public services. Over two days, teams develop collaborative systems addressing challenges in mobility, accessibility, and environmental sustainability.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.9,
+      "review_status": "needs_review",
+      "review_reason": "No concrete event date and location not specified as Milan",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-27T19:48:30.285869+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:50:58+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-27T19:53:33.390948+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.396124+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
@@ -473,6 +589,35 @@
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
+      "id": "1043ec1710585a1fc4169f23eb349b8cda218d5f69a2e4d7042c16e2ca1f3950",
+      "title": "Hackathon - IA nei software gestionali - Evento organizzato ...",
+      "url": "https://polihub.it/events/ia-nei-software-gestionali/",
+      "source": "web_search",
+      "description": "Assosoftware organizza il primo Hackathon su scala nazionale dedicato all'IA nei software gestionali, in collaborazione con PoliHub e BINP.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.85,
+      "review_status": "needs_review",
+      "review_reason": "Missing event date and explicit Milan location",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-27T19:49:07.819981+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:51:23+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-27T19:53:33.391257+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.396848+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
       "id": "0335b4e3d6cfcf1c380b7c2b00464c194bf7b9c27fb4074a73cf2e0860fe8425",
       "title": "Hacktoberfest Hack Day Milano x Coding Bunker - mlh.com",
       "url": "https://www.mlh.com/events/hacktoberfest-hack-day-milano-x-coding-bunker/challenges/01a0d987-0c41-12ea-13ac-5b85755dc2f3",
@@ -503,35 +648,6 @@
         "classified_at": "2026-11-03T18:20:05+00:00",
         "pipeline_commit": "379dffbc5beeb0fc7a17570aaca3d36075d45d62"
       }
-    },
-    {
-      "id": "c54d9d8937e15f78309baa7ca5706dcc764b4920bddb172349cd08a8fc19baee",
-      "title": "Innovazione. Venerdì 20 novembre Layla Pavone a Insurtech Summit e a Milano Agentic City Hackaton",
-      "url": "https://www.comune.milano.it/w/innovazione.-venerd%C3%AC-20-novembre-layla-pavone-a-insurtech-summit-e-a-milano-agentic-city-hackaton",
-      "source": "comune_milano",
-      "description": "",
-      "date_str": "",
-      "location": "",
-      "organizer": "Comune di Milano",
-      "is_hackathon": false,
-      "confidence": 0.85,
-      "review_status": "needs_review",
-      "review_reason": "Menzione di hackathon ma manca data evento concreta e venue fisica a Milano",
-      "reviewed_at": "",
-      "alternate_urls": [],
-      "discovered_at": "2026-11-23T22:27:12.044449+00:00",
-      "published_at": "19/11/2026",
-      "date_source": "publication",
-      "classification_status": "insufficient_evidence",
-      "provenance": {
-        "model": "openai/gpt-oss-120b",
-        "prompt_version": "b59b713f075f",
-        "classified_at": "2026-11-26T20:01:10+00:00",
-        "pipeline_commit": "db20d746bdcb49403c737c3a30d975818deca18d"
-      },
-      "queued_at": "2026-11-23T22:33:01.618903+00:00",
-      "last_seen_at": "2026-11-26T20:01:10.116594+00:00",
-      "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
       "id": "6128169fe07f475966f3a73139bb371cb9e5c0898f8d773c12a99f7880ad6288",
@@ -583,6 +699,35 @@
       },
       "queued_at": "2026-11-17T19:44:34.392995+00:00",
       "last_seen_at": "2026-11-17T19:44:41.973072+00:00",
+      "review_note": "Evidence needs review: verify date, venue and event format before approval."
+    },
+    {
+      "id": "3a60d2f2427473cd0774b69a79e09efd54772a1f601eb597c6f60a3f457d90ca",
+      "title": "The AI.conometrics Challenge | Economic Society",
+      "url": "https://www.economicsocietybocconi.org/theaiconometricschallenge",
+      "source": "web_search",
+      "description": "In-person Final Round Come to Bocconi for an opening event featuring keynote speakers and networking opportunities. On Friday, the final round will take place, in a hackathon style format.",
+      "date_str": "",
+      "location": "",
+      "organizer": "",
+      "is_hackathon": false,
+      "confidence": 0.85,
+      "review_status": "needs_review",
+      "review_reason": "Evento in stile hackathon a Bocconi (Milano) ma senza data evento verificabile",
+      "reviewed_at": "",
+      "alternate_urls": [],
+      "discovered_at": "2026-11-27T19:49:35.967752+00:00",
+      "published_at": "",
+      "date_source": "",
+      "classification_status": "insufficient_evidence",
+      "provenance": {
+        "model": "openai/gpt-oss-120b",
+        "prompt_version": "b59b713f075f",
+        "classified_at": "2026-11-27T19:52:42+00:00",
+        "pipeline_commit": "4ba80a1eaf761a9b9dfcfab11fa76d5b40011e90"
+      },
+      "queued_at": "2026-11-27T19:53:33.392044+00:00",
+      "last_seen_at": "2026-11-27T19:53:33.397889+00:00",
       "review_note": "Evidence needs review: verify date, venue and event format before approval."
     },
     {
